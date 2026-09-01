@@ -1,0 +1,284 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Installs the toolchain named by `lean-toolchain`, resolves the dependencies, and hydrates
+      # Mathlib from its own artifact cache. `build: false` stops the action there, so that build
+      # artifacts can be restored before the build runs.
+      - name: Toolchain and dependencies
+        uses: leanprover/lean-action@38fbc41a8c28c4cbaec22d7f7de508ec2e7c0dd9
+        with:
+          auto-config: false
+          build: false
+          use-github-cache: false
+          use-mathlib-cache: true
+
+      # Build artifacts carry over between runs. Lake keys every artifact by a trace over its
+      # module's source and the traces of its imports, so a restored olean is reused only when
+      # everything it transitively depends on hashes identically. A change in a subject-specific
+      # module therefore reuses cached artifacts for unchanged general mathematics.
+      #
+      # The key covers what changes elaboration from outside the source tree: the compiler, the
+      # dependency revisions, and `lakefile.toml`, which carries `warningAsError` and the linter
+      # set. The source tree is not in the key, since Lake's traces decide per module;
+      # `restore-keys` is what allows a partial hit.
+      #
+      # Mathlib comes from its own artifact cache above rather than through here, since several
+      # gigabytes through the Actions cache would cost more than it saves. CombinatorialGames and
+      # SubVerso are not covered by that cache, so they are restored here. The project build also
+      # contains selected-source artifacts under `.lake/build/highlighted` and exact InfoView states
+      # under `.lake/build/proof-states`.
+      - name: Restore build artifacts
+        id: restore-build
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            .lake/build
+            .lake/packages/CombinatorialGames/.lake/build
+            .lake/packages/subverso/.lake/build
+          key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}-${{ github.sha }}
+          restore-keys: |
+            lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}-
+
+      # `lake build` is a gate in its own right. It elaborates every module under the authoritative
+      # `ConwayRefinement.*` glob with `warningAsError = true`, which rejects `sorry`, runs
+      # Mathlib's elaboration-time linters, and builds the audits below. The environment linters run
+      # separately, below. Mathlib's line-length and whitespace rules live in its text-based
+      # linter and are not part of that, which is why `style` is a separate audit.
+      - name: Palomar Challenge drift audit
+        run: scripts/check-palomar-challenge.sh
+
+      - name: Build
+        run: |
+          echo "::group::Lake Build Output"
+          lake build
+          echo "::endgroup::"
+
+      # Save as soon as compilation succeeds. A later audit or proof-guide failure must not throw
+      # away a valid hour-long build; Lake's traces will reject stale artifacts on the next run.
+      - name: Save build artifacts
+        if: steps.restore-build.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            .lake/build
+            .lake/packages/CombinatorialGames/.lake/build
+            .lake/packages/subverso/.lake/build
+          key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}-${{ github.sha }}
+
+      # Every declaration under ConwayRefinement reduces to propext, Classical.choice, and
+      # Quot.sound. No sorry, direct or transitive, occurs there in a statement or a proof.
+      - name: Axiom audit
+        run: lake exe axioms
+
+      - name: Module system audit
+        run: lake exe module-system
+
+      # Standalone statements either rest on Mathlib alone or additionally on CombinatorialGames.
+      - name: Standalone Mathlib audit
+        run: lake exe standalone-mathlib
+
+      - name: Standalone CombinatorialGames audit
+        run: lake exe standalone-combinatorial-games
+
+      - name: Isolated-claim proof audit
+        run: lake exe proof-links
+
+      - name: Style audit
+        run: lake exe style
+
+      # Core documentation records current mathematics, without editorial labels or workflow
+      # status that can silently become false.
+      - name: Documentation audit
+        run: lake exe documentation
+
+      # General mathematics imports neither Hahn-series nor surreal modules; checks stay leaves.
+      - name: Layering audit
+        run: lake exe layering
+
+      # Mathlib's default environment linters (simpNF, unusedArguments, ...) over every
+      # declaration, from a driver generated from the source tree, parsed fail-closed against an
+      # (empty) grandfathered baseline; `@[nolint]` uses must be allowlisted. See the script header.
+      - name: Environment lint
+        run: scripts/lint-env.sh
+
+  proof-guide:
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # The Mathlib cache and verified project artifacts expand to almost 9 GiB. Remove SDKs that
+      # this job never uses before restoring them onto the GitHub-hosted runner.
+      - name: Free disk space for Lean artifacts
+        run: |
+          df -h /
+          sudo rm -rf -- /usr/local/lib/android /usr/share/dotnet /opt/ghc
+          df -h /
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+          run_install: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: blueprint/src/web-reader/pnpm-lock.yaml
+
+      - name: Install proof-guide reader dependencies
+        working-directory: blueprint/src/web-reader
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Tectonic 0.17.0
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/tectonic.tar.gz"
+          url="https://github.com/tectonic-typesetting/tectonic/releases/download/"
+          url+="tectonic%400.17.0/tectonic-0.17.0-x86_64-unknown-linux-musl.tar.gz"
+          checksum="8533d07f9ccbd7a65824b9e0459041bca34af1eb33daba48f59215593753a3b7"
+          curl --fail --location --silent --show-error "$url" --output "$archive"
+          echo "$checksum  $archive" | sha256sum --check --status
+          tar --extract --gzip --file "$archive" --directory "$RUNNER_TEMP"
+          sudo install -m 0755 "$RUNNER_TEMP/tectonic" /usr/local/bin/tectonic
+
+      # The verified job has already compiled the checked commit and saved this exact key. The
+      # fallback keeps pull requests useful when their token may restore but not save caches.
+      - name: Toolchain and dependencies
+        uses: leanprover/lean-action@38fbc41a8c28c4cbaec22d7f7de508ec2e7c0dd9
+        with:
+          auto-config: false
+          build: false
+          use-github-cache: false
+          use-mathlib-cache: true
+
+      - name: Restore verified build artifacts
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            .lake/build
+            .lake/packages/CombinatorialGames/.lake/build
+            .lake/packages/subverso/.lake/build
+          key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}-${{ github.sha }}
+          restore-keys: |
+            lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}-
+
+      # Exact proof states are cached per selected module by the extractor itself. This outer cache
+      # carries those module entries between runners without coupling them to the immutable Lean
+      # build cache saved by the verified job.
+      - name: Restore proof-guide source cache
+        id: restore-proof-guide-source
+        uses: actions/cache/restore@v4
+        with:
+          path: .lake/build/blueprint-source
+          key: blueprint-source-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}-${{ github.sha }}
+          # The second prefix migrates the cache produced by the previous key format. Remove it
+          # after the first successful v2 save.
+          restore-keys: |
+            blueprint-source-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}-
+            blueprint-source-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}-
+
+      # Generate the proof guide before the negative controls. Several blueprint probes mutate
+      # generated files and verify that the checker rejects the resulting drift.
+      - name: Build proof guide from the checked commit
+        run: |
+          source_revision=$(git rev-parse HEAD)
+          CONWAY_REFINEMENT_BLUEPRINT_SOURCE_REVISION="$source_revision" \
+            CONWAY_REFINEMENT_BLUEPRINT_PUBLISHED=1 scripts/blueprint.sh build
+
+      # Preserve a successful extraction even if a later publication check finds a problem.
+      - name: Save proof-guide source cache
+        if: steps.restore-proof-guide-source.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: .lake/build/blueprint-source
+          key: blueprint-source-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}-${{ github.sha }}
+
+      # An audit that inspects nothing passes every commit. Each probe below is a defect the
+      # corresponding audit must reject, and the failure must name that probe: an audit that fails
+      # for an unrelated reason would otherwise look like a working one. These run last, after the
+      # real audits have already passed on the unmodified tree.
+      - name: Audits reject what they claim to reject
+        run: scripts/audit-probes.sh
+
+      - name: Check proof-guide publication
+        run: |
+          source_revision=$(git rev-parse HEAD)
+          CONWAY_REFINEMENT_BLUEPRINT_SOURCE_REVISION="$source_revision" \
+            scripts/check-blueprint-publication.sh
+
+      - name: Upload proof-guide PDF
+        uses: actions/upload-artifact@v4
+        with:
+          name: proof-guide-${{ github.sha }}
+          path: blueprint/blueprint.pdf
+          if-no-files-found: error
+
+      - name: Upload GitHub Pages artifact
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: blueprint/web
+
+  deploy-guide:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: proof-guide
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy proof guide to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  attach-guide-to-release:
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    needs: proof-guide
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download proof-guide PDF
+        uses: actions/download-artifact@v4
+        with:
+          name: proof-guide-${{ github.sha }}
+          path: release-artifacts
+
+      - name: Attach PDF to the GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          pdf=release-artifacts/blueprint.pdf
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" "$pdf" --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" "$pdf" \
+              --title "$GITHUB_REF_NAME" --generate-notes
+          fi

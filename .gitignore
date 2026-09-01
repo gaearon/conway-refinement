@@ -1,0 +1,17 @@
+/.lake/
+/.worktrees/
+/tmp/
+/blueprint/lean_decls
+/blueprint/blueprint.pdf
+/blueprint/print/
+/blueprint/source-revision.json
+/blueprint/src/content.tex
+/blueprint/src/revision.tex
+/blueprint/src/*.paux
+/blueprint/web/
+/blueprint/references/
+/output/
+__pycache__/
+.DS_Store
+node_modules/
+.pnpm-store/

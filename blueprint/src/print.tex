@@ -1,0 +1,63 @@
+% This file makes a printable version of the blueprint
+% It should include all the \usepackage needed for the pdf version.
+% The template version assume you want to use a modern TeX compiler
+% such as xeLaTeX or luaLaTeX including support for unicode
+% and Latin Modern Math font with standard bugfixes applied.
+% It also uses expl3 in order to support macros related to the dependency graph.
+% It also includes standard AMS packages (and their improved version
+% mathtools) as well as support for links with a sober decoration
+% (no ugly rectangles around links).
+% It is otherwise a very minimal preamble (you should probably at least
+% add cleveref and tikz-cd).
+
+\documentclass[a4paper]{article}
+
+\usepackage{geometry}
+
+\usepackage{expl3}
+
+\usepackage{amssymb, amsthm, mathtools}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage[unicode,colorlinks=true,linkcolor=black,urlcolor=blue,citecolor=black]{hyperref}
+
+\input{macros/common.tex}
+\input{macros/print.tex}
+\input{revision.tex}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[R]{\footnotesize\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\begin{document}
+\begin{titlepage}
+  \thispagestyle{empty}
+  \vspace*{0.22\textheight}
+  \begin{center}
+    \rule{0.68\textwidth}{0.5pt}
+    \vspace{2.2em}
+
+    {\Huge\bfseries \blueprinttitle\par}
+    \vspace{1.2em}
+    {\Large \blueprintsubtitle\par}
+
+    \vspace{2.2em}
+    \rule{0.68\textwidth}{0.5pt}
+  \end{center}
+  \vspace{2.4em}
+  \vfill
+  \begin{center}
+    {\small \blueprintprovenance\par}
+    \vspace{0.8em}
+    {\small This guide's prose was written by AI and may contain mistakes.\par}
+    \vspace{0.35em}
+    {\small Linked Lean declarations are machine-checked, but Lean does not verify that their
+      formal statements and definitions express the intended mathematics; inspect the formal
+      statements and source.\par}
+  \end{center}
+\end{titlepage}
+\input{statements}
+\input{content}
+\input{references}
+\end{document}

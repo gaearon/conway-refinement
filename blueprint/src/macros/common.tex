@@ -1,0 +1,88 @@
+% Mathematical notation and theorem environments for the printed guide.
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{fact}[theorem]{Fact}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+
+% Generated source locations are indexed by blueprint label.
+\newcommand{\blueprintrepository}{https://github.com/gaearon/conway-refinement}
+\newcommand{\blueprintrevision}{unpublished}
+\newcommand{\blueprintshortrevision}{unpublished}
+\definecolor{blueprintsource}{HTML}{626A73}
+\providecommand{\mermaidsource}[5]{%
+  \expandafter\gdef\csname blueprintsourcepath@#1\endcsname{#2}%
+  \expandafter\gdef\csname blueprintsource_line@#1\endcsname{#3}%
+}
+\newcommand{\blueprintsourcelink}[3]{%
+  \par\nopagebreak[4]\smallskip
+  \noindent\begingroup\footnotesize\ttfamily\raggedleft
+  \href{\blueprintrepository/blob/\blueprintrevision/%
+    \csname blueprintsourcepath@#1\endcsname%
+    \#L\csname blueprintsource_line@#1\endcsname-L#3}{\textcolor{blueprintsource}{#2}}%
+  \par\endgroup\vspace{0.8\baselineskip}
+}
+\newcommand{\blueprintfilelink}[2]{%
+  \href{\blueprintrepository/blob/\blueprintrevision/#1}{\emph{#2}}%
+}
+
+% Blueprint proofs cite a result by kind, number, and mathematical title.
+\let\blueprintnumericref\ref
+\def\blueprintlabelprefix#1:#2\blueprintstop{#1}
+\expandafter\def\csname blueprintkind@def\endcsname{Definition}
+\expandafter\def\csname blueprintkind@thm\endcsname{Theorem}
+\expandafter\def\csname blueprintkind@lem\endcsname{Lemma}
+\expandafter\def\csname blueprintkind@prop\endcsname{Proposition}
+\expandafter\def\csname blueprintkind@cor\endcsname{Corollary}
+\expandafter\def\csname blueprintkind@fact\endcsname{Fact}
+\newcommand{\blueprintresultkind}[1]{%
+  \csname blueprintkind@\expandafter\blueprintlabelprefix#1\blueprintstop\endcsname%
+}
+\newcommand{\blueprintresultref}[1]{%
+  \blueprintresultkind{#1}~\blueprintnumericref{#1} (\emph{\nameref*{#1}})%
+}
+\renewcommand{\ref}[1]{\blueprintresultref{#1}}
+
+\newcommand{\blueprinttitle}{A Lean proof guide}
+\newcommand{\blueprintsubtitle}{Conway's refinement conjecture for omnific integers}
+\newcommand{\blueprintprovenance}{Generated from AI-written annotations in the Lean source.}
+
+\newcommand{\Kser}{K((\mathbb R^{\le 0}))}
+\newcommand{\Kfin}{K(\mathbb R^{\le 0})}
+\newcommand{\Ph}{\widehat{\mathrm P}}
+\newcommand{\Prin}{\mathrm P}
+\newcommand{\RVh}{\widehat{\mathrm{RV}}}
+\newcommand{\RV}{\mathrm{RV}}
+\DeclareMathOperator{\rv}{rv}
+\newcommand{\vJ}{v_J}
+\newcommand{\trunc}[2]{#1^{|#2}}
+\newcommand{\nsum}{\oplus}
+\newcommand{\nprod}{\odot}
+\newcommand{\hplus}{\mathbin{\hat+}}
+\DeclareMathOperator{\ot}{ot}
+\DeclareMathOperator{\supp}{supp}
+\newcommand{\On}{\mathbf{On}}
+\newcommand{\Oz}{\mathbf{Oz}}
+\newcommand{\No}{\mathbf{No}}
+\newcommand{\Lsig}{\mathbf L_\sigma}
+\newcommand{\Nn}{\mathrm{Fun}_{0^-}}
+\newcommand{\mono}{\mathsf m}
+\newcommand{\calB}{\mathcal B}
+\newcommand{\Eser}{E((\mathbb R^{\le 0}))}
+\newcommand{\hdot}{\mathbin{\hat\cdot}}
+\newcommand{\partGE}[2]{{#1}_{\ge #2}}
+\newcommand{\partLT}[2]{{#1}_{< #2}}
+\newcommand{\nsub}{\ominus}
+\newcommand{\pol}{\operatorname{pol}}
+\newcommand{\utrunc}[2]{{#1}_{>#2}}
+\newcommand{\lifts}{b_{\calB}}
+\newcommand{\KX}{K[X]}
+\newcommand{\EX}{E[X]}
+\newcommand{\Fun}{\Nn}
+\newcommand{\calT}{\mathcal T}
+
+\renewcommand{\labelenumi}{(\roman{enumi})}
+\renewcommand{\theenumi}{\roman{enumi}}

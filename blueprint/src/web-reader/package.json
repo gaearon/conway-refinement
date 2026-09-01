@@ -1,0 +1,23 @@
+{
+  "name": "conway-refinement-proof-guide",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "blueprint:reader": "../../../scripts/build-blueprint-reader.sh",
+    "blueprint:reader:check": "tsc --noEmit",
+    "blueprint:reader:dev": "vite"
+  },
+  "dependencies": {
+    "mathjax": "3.2.2",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.5",
+    "@vitejs/plugin-react": "5.2.0",
+    "typescript": "5.9.3",
+    "vite": "7.3.6"
+  },
+  "packageManager": "pnpm@11.19.0"
+}

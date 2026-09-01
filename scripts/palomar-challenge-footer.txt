@@ -1,0 +1,10 @@
+
+namespace ConwayRefinement.Palomar
+
+set_option warningAsError false in
+/-- Conway's refinement theorem for omnific integers, stated from first principles. -/
+theorem conwayRefinement :
+    ConwayRefinement.Standalone.InlineConwayRefinement.Surreal.ConwayConjecture.{u} := by
+  sorry
+
+end ConwayRefinement.Palomar

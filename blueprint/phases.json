@@ -1,0 +1,88 @@
+{
+  "phases": [
+    {
+      "key": "Algebraic and ordinal preliminaries",
+      "slug": "preliminaries",
+      "title": "Algebraic and ordinal preliminaries",
+      "description": "Homogeneous polynomials, associated graded algebras, divisibility, greatest common divisors, and ordinal arithmetic."
+    },
+    {
+      "key": "Ordinal value and degree",
+      "slug": "ordinal-value",
+      "title": "Ordinal value and degree",
+      "description": "The ordinal value, principal representatives, translated truncations, the convolution formula, and multiplicativity of the degree."
+    },
+    {
+      "key": "Cantor–Bendixson ranks of supports",
+      "slug": "cantor-bendixson-ranks",
+      "title": "Cantor–Bendixson ranks of supports",
+      "description": "Cantor–Bendixson ranks of closures of supports, their multiplicativity, and their relation to the ordinal value and degree for real exponents."
+    },
+    {
+      "key": "Algebraic independence in graded rings",
+      "slug": "associated-graded-algebraic-independence",
+      "title": "Algebraic independence in graded rings",
+      "description": "Transfinite degree induction for algebraic independence in associated graded algebras."
+    },
+    {
+      "key": "Translated truncations",
+      "slug": "translated-truncations",
+      "title": "Translated truncations",
+      "description": "The translated-truncation calculation for real exponents, including its derivation and Leibniz rule."
+    },
+    {
+      "key": "Limit ordinals in the degree induction",
+      "slug": "limit-degree",
+      "title": "Limit ordinals in the degree induction",
+      "description": "The induction step and partial-derivative decomposition when the degree is a limit ordinal, for real exponents."
+    },
+    {
+      "key": "Principal RV-elements",
+      "slug": "principal-rv-algebraic-independence",
+      "title": "Principal RV-elements",
+      "description": "The associated graded description of the ring of principal RV-elements and algebraic independence of its minimal homogeneous generators."
+    },
+    {
+      "key": "Polynomial presentations",
+      "slug": "polynomial-presentations",
+      "title": "Polynomial presentations",
+      "description": "Polynomial presentations of the ring of principal RV-elements, the associated rings of RV-elements, the ring of germs, and rings of generalised power series."
+    },
+    {
+      "key": "Primality and factorisation for real exponents",
+      "slug": "real-exponent-primality",
+      "title": "Primality and factorisation for real exponents",
+      "description": "Greatest common divisors, primality, irreducibility, and factorisation for generalised power series with non-positive real exponents."
+    },
+    {
+      "key": "Finitely many Archimedean classes",
+      "slug": "finite-archimedean-support",
+      "title": "Reduction along Archimedean classes",
+      "description": "Reduction to real exponents at the leading Archimedean class, followed by induction when the support meets finitely many Archimedean classes."
+    },
+    {
+      "key": "Refinement over Archimedean classes",
+      "slug": "archimedean-class-refinement",
+      "title": "Refinement and transfinite induction",
+      "description": "Four-factor refinement after restriction to one Archimedean class, followed by transfinite induction from the case of finitely many classes."
+    },
+    {
+      "key": "A cut criterion for Cauchy completeness",
+      "slug": "cauchy-completeness",
+      "title": "A cut criterion for Cauchy completeness",
+      "description": "An order-theoretic criterion for Cauchy completeness."
+    },
+    {
+      "key": "Bounded generalised-power-series integer parts",
+      "slug": "bounded-integer-parts",
+      "title": "Bounded generalised-power-series integer parts",
+      "description": "The refinement property for bounded generalised-power-series integer parts and its saturated-group consequences."
+    },
+    {
+      "key": "Surreal numbers and omnific integers",
+      "slug": "conway-refinement",
+      "title": "Surreal numbers and omnific integers",
+      "description": "Primality and refinement for omnific integers, transported to Conway’s formulation."
+    }
+  ]
+}

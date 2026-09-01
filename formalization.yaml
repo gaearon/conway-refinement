@@ -1,0 +1,215 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+version: "v0.4"
+
+project:
+  name: "A proof of Conway's refinement conjecture"
+  description: >-
+    A Lean proof of Conway's 1976 refinement conjecture for omnific integers. For omnific integers
+    a, b, c, d with ab = cd, it proves the existence of omnific integers e, f, g, h satisfying
+    a = ef, b = gh, c = eg, and d = fh, including zero and degenerate cases. The proof proceeds
+    through factorisation and refinement theory for generalised-power-series
+    integer parts and connects the generalised-power-series and surreal-number formulations.
+  authors:
+    - "Dan Abramov"
+  license: "Apache-2.0"
+  responsible_maintainers:
+    - "Dan Abramov"
+
+classification:
+  arxiv: ["math.LO", "math.RA"]
+  msc2020: ["13F25", "13F15", "13A05", "03E10"]
+
+sources:
+  - title: "A proof of Conway's refinement conjecture for omnific integers"
+    authors:
+      - "Dan Abramov"
+    id: "https://github.com/gaearon/conway-refinement"
+    type: "original-proof"
+    location: "Lean proof in this repository"
+    relationship: "other"
+    note: >-
+      This formalization first presents the proof recorded by the compared Lean theorem. The
+      conjecture itself was stated by Conway and subsequently restated in the cited literature.
+      No earlier proof or formalization was found in the literature search recorded in
+      PALOMAR-PROVENANCE.md.
+    license: "Apache-2.0"
+    author_endorsement: "participated"
+  - title: "On Numbers and Games"
+    authors:
+      - "John H. Conway"
+    type: "book"
+    location: "London Mathematical Society Monographs 6, Academic Press, 1976, pp. 45–46"
+    relationship: "background"
+    note: >-
+      Page 45 records Norton's cut characterization of omnific integers, used by the Challenge;
+      page 46 states the four-factor refinement conjecture.
+  - title: "On a property of pre-Schreier domains"
+    authors:
+      - "Muhammad Zafrullah"
+    id: "https://doi.org/10.1080/00927878708823512"
+    type: "paper"
+    location: "Communications in Algebra 15 (1987), no. 9, 1895–1920"
+    relationship: "background"
+    note: >-
+      Supplies the pre-Schreier terminology related to the refinement property.
+  - title: "Factorization in generalized power series"
+    authors:
+      - "Alessandro Berarducci"
+    id: "https://doi.org/10.1090/S0002-9947-99-02172-8"
+    type: "paper"
+    location: "Transactions of the American Mathematical Society 352 (2000), no. 2, 553–577"
+    relationship: "background"
+    note: >-
+      Develops the generalised-power-series factorisation machinery on which later work and
+      this formalization build.
+  - title: "Existence of prime elements in rings of generalized power series"
+    authors:
+      - "Daniel Pitteloud"
+    id: "https://doi.org/10.2307/2695102"
+    type: "paper"
+    location: "The Journal of Symbolic Logic 66 (2001), no. 3, 1206–1216"
+    relationship: "background"
+    note: >-
+      Provides background on primality and transfer for generalised power series.
+  - title: "Algebraic properties of rings of generalized power series"
+    authors:
+      - "Daniel Pitteloud"
+    id: "https://doi.org/10.1016/S0168-0072(01)00099-9"
+    type: "paper"
+    location: "Annals of Pure and Applied Logic 116 (2002), nos. 1–3, 39–66"
+    relationship: "background"
+    note: >-
+      Provides background on factorisation and quotient rings of generalised power series.
+  - title: "Unique factorization in generalized power series rings"
+    authors:
+      - "James Pommersheim"
+      - "Shahriar Shahriari"
+    id: "https://doi.org/10.1090/S0002-9939-05-08162-1"
+    type: "paper"
+    location: "Proceedings of the American Mathematical Society 134 (2006), no. 5, 1277–1287"
+    relationship: "background"
+    note: >-
+      Provides background on factorisation and irreducibility in generalised-power-series rings.
+  - title: "Factorisation of germ-like series"
+    authors:
+      - "Sonia L'Innocente"
+      - "Vincenzo Mantova"
+    id: "https://doi.org/10.4115/jla.2017.9.3"
+    type: "paper"
+    location: "Journal of Logic and Analysis 9 (2017), no. 3, 1–16"
+    relationship: "background"
+    note: >-
+      Defines refinement of factorisations and states the corresponding conjecture for
+      K((ℝ^{≤ 0})) as Conjecture 1.4.
+  - title: "A factorisation theory for generalised power series and omnific integers"
+    authors:
+      - "Sonia L'Innocente"
+      - "Vincenzo Mantova"
+    id: "https://doi.org/10.1016/j.aim.2024.109513"
+    type: "paper"
+    location: "Advances in Mathematics 442 (2024), 109513"
+    relationship: "background"
+    note: >-
+      States the refinement property as Conjecture 1.1.1(2), supplies the current terminology,
+      and develops major ingredients used by this proof; it does not claim to prove the
+      refinement conjecture.
+  - title: "Irreducibility in generalized power series"
+    authors:
+      - "Antongiulio Fornasiero"
+      - "Noa Lavi"
+      - "Sonia L'Innocente"
+      - "Vincenzo Mantova"
+    id: "https://arxiv.org/abs/2405.13815"
+    type: "paper"
+    location: "arXiv:2405.13815v1 (2024)"
+    relationship: "background"
+    note: >-
+      Provides recent background on ordinal values and irreducibility for generalised power
+      series.
+
+related_formalizations: []
+
+status:
+  scope: >-
+    The compared Challenge defines well-founded Conway games with option families in an arbitrary
+    universe, Conway negation, addition, multiplication and order, surreal representatives as
+    numeric games, and omnific integers by the cut equation x = {x - 1 | x + 1}. Its theorem
+    proves the four-factor refinement statement for every a, b, c, d satisfying that equation,
+    including zero and degenerate cases. Equality is Conway equivalence of numeric games, hence
+    equality in their quotient. The statement is universe-polymorphic and uses set-sized option
+    families at each instantiation; it does not construct one type containing the proper class
+    of all surreal numbers.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: ["propext", "Classical.choice", "Quot.sound"]
+  main_results:
+    - "Conway's four-factor refinement theorem for omnific integers"
+
+automation:
+  methods:
+    - method: "agent"
+      models:
+        - "ChatGPT 5.6 Sol"
+        - "Claude Fable 5"
+        - "Claude Opus 5"
+      framework: "Interactive ChatGPT, Claude, and OpenAI Codex sessions with Lean and Lake"
+      tool_setup: >-
+        AI systems proposed mathematical routes, Lean declarations, proofs, refactorings,
+        documentation, and audits. Every accepted proof term was checked by Lean.
+      cost:
+        wall_time: "Approximately one month of intensive part-time work"
+        spend_usd: "Subscription-based; exact amount not tracked"
+        hardware: "Local development machine plus hosted AI services"
+      prompting_notes: >-
+        The human maintainer selected the problem, repeatedly redirected the search, requested
+        exact Lean validation and adversarial review, and accepted or rejected proposed changes.
+    - method: "manual"
+      models: []
+      framework: "Lean 4, Mathlib, CombinatorialGames, and repository-specific audits"
+      tool_setup: >-
+        Human-directed source selection, statement comparison, build supervision, and editorial
+        decisions, with kernel checking and automated axiom, layering, interface, and blueprint
+        gates.
+      prompting_notes: "Not applicable"
+  spend_usd: "Subscription-based; exact total not tracked"
+  notes: >-
+    The project is deliberately AI-assisted rather than an autonomous proof claim. Dan Abramov
+    steered the process, supplied literature, and made editorial decisions; AI systems supplied
+    all of the mathematical and Lean work; Lean's kernel checks the resulting proof terms.
+
+fidelity:
+  divergences: >-
+    No algebraic divergence from Conway's displayed four-factor formula is known. The Challenge
+    represents surreal numbers by numeric well-founded games and writes equality as Conway
+    equivalence, rather than constructing one class-sized quotient. Omnific-integer membership is
+    the cut equation x = {x - 1 | x + 1}; the full formalization also proves its equivalence with
+    the generalised-power-series normal-form formulation. Lean's universes impose set-sized option
+    families at each instantiation. No nonzero or nondegeneracy assumption is added.
+
+review:
+  status: "agent-reviewed and self-assessed"
+  notes: >-
+    Lean checks the proof and repository audits enforce the admitted-axiom policy. AI-assisted
+    review compared the proof guide's statements and proof prose with the Lean source. The
+    standalone statement and its correspondence with Conway's displayed formula were separately
+    re-audited before submission. No independent specialist or peer review is recorded.
+    PALOMAR-PROVENANCE.md gives the source comparison and literature search.
+
+alignment:
+  namespace: "ConwayRefinement.Palomar"
+  statements:
+    - source: >-
+        Conway, On Numbers and Games (1976), p. 46; L'Innocente–Mantova (2024),
+        Conjecture 1.1.1(2)
+      lean: "ConwayRefinement.Palomar.conwayRefinement"
+      module: "Challenge"
+      status: "proved"
+      note: >-
+        The Lean theorem is the same 2-by-2 multiplicative refinement formula. Its quantified
+        objects are numeric-game representatives satisfying the omnific-integer cut equation,
+        and every displayed equality is Conway equivalence.
+
+acknowledgements: >-
+  John Conway posed the conjecture. The proof draws on work of Zafrullah, Berarducci,
+  Pitteloud, Pommersheim–Shahriari, L'Innocente, Mantova, Fornasiero and Lavi, and on Mathlib
+  and CombinatorialGames. ChatGPT and Claude assisted extensively.

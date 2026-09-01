@@ -1,0 +1,99 @@
+name = "ConwayRefinement"
+version = "0.1.0"
+defaultTargets = [
+  "ConwayRefinement",
+  "Challenge",
+  "Solution",
+  "axioms",
+  "blueprint-proof-states",
+  "module-system",
+  "standalone-mathlib",
+  "standalone-combinatorial-games",
+  "proof-links",
+  "style",
+  "documentation",
+  "layering",
+]
+
+[leanOptions]
+autoImplicit = false
+relaxedAutoImplicit = false
+weak.linter.mathlibStandardSet = true
+warningAsError = true
+
+[[require]]
+name = "CombinatorialGames"
+git = "https://github.com/vihdzp/combinatorial-games.git"
+rev = "3c6dcdbc1ce9e4a16f9b6aa16ee485a744568404"
+
+[[require]]
+name = "subverso"
+git = "https://github.com/gaearon/subverso.git"
+rev = "75c3b2599925730e2c420e1c850dc0ed1b31b0a1"
+
+# Keep Mathlib's already-pinned transitive revisions authoritative over documentation tooling.
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+git = "https://github.com/leanprover-community/mathlib4.git"
+rev = "acbd8f078362a474866676e15325a129d7bdcc02"
+
+# This glob is AUTHORITATIVE for what is built and audited: `lake build` builds every
+# `ConwayRefinement/*.lean` directly and the audits enumerate the source tree, so an orphaned or broken
+# module still fails the build. `ConwayRefinement.lean` re-exports nothing and nothing imports it.
+[[lean_lib]]
+name = "ConwayRefinement"
+globs = ["ConwayRefinement.*"]
+
+# Palomar's independently compiled statement surface and its proved counterpart.
+[[lean_lib]]
+name = "Challenge"
+roots = ["Challenge"]
+
+[[lean_lib]]
+name = "Solution"
+roots = ["Solution"]
+
+# Audit the compiled artifacts rather than trusting source-text conventions.
+[[lean_exe]]
+name = "axioms"
+root = "scripts.Axioms"
+
+[[lean_exe]]
+name = "module-system"
+root = "scripts.ModuleSystem"
+
+# Check the two explicit external-dependency isolation levels.
+[[lean_exe]]
+name = "standalone-mathlib"
+root = "scripts.StandaloneMathlib"
+
+[[lean_exe]]
+name = "standalone-combinatorial-games"
+root = "scripts.StandaloneCombinatorialGames"
+
+# Every closed proposition in an isolated statement module has its exact proof theorem.
+[[lean_exe]]
+name = "proof-links"
+root = "scripts.ProofLinks"
+supportInterpreter = true
+
+# Line length and whitespace: Mathlib's text-based linter does not run during elaboration.
+[[lean_exe]]
+name = "style"
+root = "scripts.Style"
+
+# Keep core documentation about current mathematics rather than editorial or implementation state.
+[[lean_exe]]
+name = "documentation"
+root = "scripts.Documentation"
+
+# General mathematics does not import Hahn-series or surreal modules; reader-facing trees stay leaves.
+[[lean_exe]]
+name = "layering"
+root = "scripts.Layering"
+
+[[lean_exe]]
+name = "blueprint-proof-states"
+root = "scripts.BlueprintProofStates"
+supportInterpreter = true

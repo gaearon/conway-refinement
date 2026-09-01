@@ -1,0 +1,26 @@
+% Macros used only by the printed version.
+% These dummy definitions hide source metadata from the PDF.
+\newcommand{\lean}[1]{}
+\newcommand{\discussion}[1]{}
+\newcommand{\leanok}{}
+\newcommand{\mathlibok}{}
+\newcommand{\notready}{}
+% Make sure that arguments of \uses and \proves are real labels, by using invisible refs:
+% latex prints a warning if the label is not defined, but nothing is shown in the pdf file.
+% It uses LaTeX3 programming, this is why we use the expl3 package.
+\ExplSyntaxOn
+\NewDocumentCommand{\uses}{m}
+ {\clist_map_inline:nn{#1}{\vphantom{\ref{##1}}}%
+  \ignorespaces}
+\NewDocumentCommand{\proves}{m}
+ {\clist_map_inline:nn{#1}{\vphantom{\ref{##1}}}%
+  \ignorespaces}
+\ExplSyntaxOff
+
+% hyperref installs its final \ref implementation at the beginning of the document.
+% Preserve that implementation for the linked theorem number, then restore the
+% blueprint's descriptive references.
+\AtBeginDocument{%
+  \let\blueprintnumericref\ref
+  \renewcommand{\ref}[1]{\blueprintresultref{#1}}%
+}

@@ -1,0 +1,49 @@
+\section*{0. Formal statements}
+
+Three standalone files make the result easier to audit.
+\begin{itemize}
+  \item Conway's refinement conjecture using the surreal numbers from
+    \href{https://github.com/vihdzp/combinatorial-games}{CombinatorialGames};
+  \item a \href{https://github.com/leanprover-community/mathlib4}{Mathlib}-only construction of the
+    needed surreal numbers, order, and arithmetic;
+  \item a \href{https://github.com/leanprover-community/mathlib4}{Mathlib}-only refinement theorem
+    for integer parts of generalised power-series fields.
+\end{itemize}
+
+\subsection*{0.1 Conway's cut formulation}
+
+The concise
+\blueprintfilelink{ConwayRefinement/Standalone/CombinatorialGames/ConwayRefinement.lean}
+  {CombinatorialGames statement}
+uses Conway's equation
+\[
+  x=\{x-1\mid x+1\}
+\]
+to define omnific integers.  If $a,b,c,d$ satisfy this equation and $ab=cd$, then there are
+omnific integers $e,f,g,h$ such that
+\[
+  a=ef,\qquad b=gh,\qquad c=eg,\qquad d=fh.
+\]
+
+\subsection*{0.2 Conway's refinement conjecture from first principles}
+
+The
+\blueprintfilelink{ConwayRefinement/Standalone/Mathlib/InlineConwayRefinement.lean}
+  {Mathlib-only statement}
+constructs well-founded games, Conway's arithmetic and order, numeric games, surreal-number
+representatives, the omnific-integer cut, and the same four-factor proposition in one file.
+
+\subsection*{0.3 Refinement over saturated exponent groups}
+
+The
+\blueprintfilelink{ConwayRefinement/Standalone/Mathlib/HahnIntegerPartRefinement.lean}
+  {generalised-power-series statement}
+works entirely in Mathlib.  For a regular uncountable cardinal $\kappa$, a $\kappa$-saturated
+ordered rational vector space $G$, and a characteristic-zero field $R$, every equality $ab=cd$ in
+the cardinal-bounded integer part
+\[
+  \mathbb Z+R((G^{<0}))_\kappa
+\]
+admits the same four-factor refinement inside that integer part.
+
+\clearpage
