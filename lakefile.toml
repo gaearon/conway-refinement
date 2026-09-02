@@ -26,12 +26,12 @@ name = "CombinatorialGames"
 git = "https://github.com/vihdzp/combinatorial-games.git"
 rev = "3c6dcdbc1ce9e4a16f9b6aa16ee485a744568404"
 
-# Keep Mathlib's already-pinned transitive revisions authoritative over documentation tooling.
+# Use the cache-backed 4.31.0 release; the compatible CombinatorialGames commit predates it.
 [[require]]
 name = "mathlib"
 scope = "leanprover-community"
 git = "https://github.com/leanprover-community/mathlib4.git"
-rev = "acbd8f078362a474866676e15325a129d7bdcc02"
+rev = "fabf563a7c95a166b8d7b6efca11c8b4dc9d911f"
 
 # This glob is AUTHORITATIVE for what is built and audited: `lake build` builds every
 # `ConwayRefinement/*.lean` directly and the audits enumerate the source tree, so an orphaned or broken
