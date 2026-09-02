@@ -6,7 +6,6 @@ defaultTargets = [
   "Solution",
   "palomar-compatibility",
   "axioms",
-  "blueprint-proof-states",
   "module-system",
   "standalone-mathlib",
   "standalone-combinatorial-games",
@@ -26,11 +25,6 @@ warningAsError = true
 name = "CombinatorialGames"
 git = "https://github.com/vihdzp/combinatorial-games.git"
 rev = "3c6dcdbc1ce9e4a16f9b6aa16ee485a744568404"
-
-[[require]]
-name = "subverso"
-git = "https://github.com/gaearon/subverso.git"
-rev = "75c3b2599925730e2c420e1c850dc0ed1b31b0a1"
 
 # Keep Mathlib's already-pinned transitive revisions authoritative over documentation tooling.
 [[require]]
@@ -98,8 +92,3 @@ root = "scripts.Documentation"
 [[lean_exe]]
 name = "layering"
 root = "scripts.Layering"
-
-[[lean_exe]]
-name = "blueprint-proof-states"
-root = "scripts.BlueprintProofStates"
-supportInterpreter = true
