@@ -86,6 +86,10 @@ jobs:
             .lake/packages/subverso/.lake/build
           key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}-${{ github.sha }}
 
+      # The Palomar comparator compiles the copied statement under a different module name.
+      - name: Palomar comparator compatibility audit
+        run: lake exe palomar-compatibility
+
       # Every declaration under ConwayRefinement reduces to propext, Classical.choice, and
       # Quot.sound. No sorry, direct or transitive, occurs there in a statement or a proof.
       - name: Axiom audit
