@@ -18,6 +18,5 @@ rev = "75c3b2599925730e2c420e1c850dc0ed1b31b0a1"
 # The extractor has no project imports; at runtime its caller supplies the root project's LEAN_PATH.
 [[lean_exe]]
 name = "blueprint-proof-states"
-srcDir = "../../scripts"
 root = "BlueprintProofStates"
 supportInterpreter = true
