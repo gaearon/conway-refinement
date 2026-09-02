@@ -1447,7 +1447,7 @@ Forget all the numbers you know. Define a single number called "zero" and then g
 
 Turns out, if you do this forever, you'll get a fractal tree of [all numbers great and small](https://upload.wikimedia.org/wikipedia/commons/4/49/Surreal_number_tree.svg):
 
-<img width="500" height="618" alt="Surreal tree illustration by Joel David Hamkins" src="https://github.com/user-attachments/assets/82870d56-8057-424e-9aa6-27877429ba19" />
+<img width="500" height="618" alt="Surreal tree illustration by Joel David Hamkins" src="https://github.com/user-attachments/assets/5bcec33f-e41b-41af-b736-515df166388b" />
 
 *(Illustration by Joel David Hamkins, go [read his posts](https://www.infinitelymore.xyz/p/surreal-numbers) and [buy his book!](https://jdh.hamkins.org/the-book-of-infinity/))*
 
