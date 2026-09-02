@@ -2,7 +2,7 @@
 
 50 years ago, in his book *On Numbers and Games*, John Conway proposed a conjecture:
 
-<img width="500" height="267" alt="Conway's refinement conjecture: Omnific integers have a refinement property, i.e. if ab = cd for omnific integers, then there are further integers e, f, g, h with a = ef, b = gh, c = eg, d = fh." src="https://github.com/user-attachments/assets/5755cab5-efb1-44b2-8ee5-b9037358a388" />
+<img width="500" height="267" alt="Conway's refinement conjecture: Omnific integers have a refinement property, i.e. if ab = cd for omnific integers, then there are further integers e, f, g, h with a = ef, b = gh, c = eg, d = fh." src="https://github.com/user-attachments/assets/2d905459-91d8-4ebd-98e6-89f3dfc998f7" />
 
 He claims that if $a,b,c,d\in\mathbf{Oz}$ and $ab=cd$, then there are $e,f,g,h\in\mathbf{Oz}$ such that $a=ef$, $b=gh$, $c=eg$, and $d=fh$.
 
