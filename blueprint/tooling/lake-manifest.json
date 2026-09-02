@@ -1,0 +1,16 @@
+{"version": "1.2.0",
+ "packagesDir": ".lake/packages",
+ "packages":
+ [{"url": "https://github.com/gaearon/subverso.git",
+   "type": "git",
+   "subDir": null,
+   "scope": "",
+   "rev": "75c3b2599925730e2c420e1c850dc0ed1b31b0a1",
+   "name": "subverso",
+   "manifestFile": "lake-manifest.json",
+   "inputRev": "75c3b2599925730e2c420e1c850dc0ed1b31b0a1",
+   "inherited": false,
+   "configFile": "lakefile.lean"}],
+ "name": "ConwayRefinementBlueprintTooling",
+ "lakeDir": ".lake",
+ "fixedToolchain": false}

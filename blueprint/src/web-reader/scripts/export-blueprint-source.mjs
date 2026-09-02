@@ -658,8 +658,11 @@ async function extractModules(nodes, consume) {
   execFileSync('lake', ['-q', 'build', ...entries.map(([module]) => module)], {
     cwd: root, stdio: 'inherit',
   });
-  execFileSync('lake', ['-q', 'build', 'blueprint-proof-states'], { cwd: root, stdio: 'inherit' });
-  const extractor = path.join(root, '.lake/build/bin/blueprint-proof-states');
+  const tooling = path.join(root, 'blueprint/tooling');
+  execFileSync('lake', ['-q', 'build', 'blueprint-proof-states'], {
+    cwd: tooling, stdio: 'inherit',
+  });
+  const extractor = path.join(tooling, '.lake/build/bin/blueprint-proof-states');
   const extractorHash = createHash('sha256');
   extractorHash.update(await readFile(extractor));
   const leanPath = execFileSync('lake', ['env', 'printenv', 'LEAN_PATH'], {

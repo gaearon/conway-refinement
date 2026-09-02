@@ -44,10 +44,10 @@ jobs:
       # `restore-keys` is what allows a partial hit.
       #
       # Mathlib comes from its own artifact cache above rather than through here, since several
-      # gigabytes through the Actions cache would cost more than it saves. CombinatorialGames and
-      # SubVerso are not covered by that cache, so they are restored here. The project build also
-      # contains selected-source artifacts under `.lake/build/highlighted` and exact InfoView states
-      # under `.lake/build/proof-states`.
+      # gigabytes through the Actions cache would cost more than it saves. CombinatorialGames is not
+      # covered by that cache, so it is restored here. The project build also contains
+      # selected-source artifacts under `.lake/build/highlighted` and exact InfoView states under
+      # `.lake/build/proof-states`.
       - name: Restore build artifacts
         id: restore-build
         uses: actions/cache/restore@v4
@@ -55,7 +55,6 @@ jobs:
           path: |
             .lake/build
             .lake/packages/CombinatorialGames/.lake/build
-            .lake/packages/subverso/.lake/build
           key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}-${{ github.sha }}
           restore-keys: |
             lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}-
@@ -83,7 +82,6 @@ jobs:
           path: |
             .lake/build
             .lake/packages/CombinatorialGames/.lake/build
-            .lake/packages/subverso/.lake/build
           key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}-${{ github.sha }}
 
       # The Palomar comparator compiles the copied statement under a different module name.
@@ -185,7 +183,6 @@ jobs:
           path: |
             .lake/build
             .lake/packages/CombinatorialGames/.lake/build
-            .lake/packages/subverso/.lake/build
           key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}-${{ github.sha }}
           restore-keys: |
             lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}-

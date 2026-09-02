@@ -1,0 +1,23 @@
+name = "ConwayRefinementBlueprintTooling"
+version = "0.1.0"
+defaultTargets = ["blueprint-proof-states"]
+
+[leanOptions]
+autoImplicit = false
+relaxedAutoImplicit = false
+weak.linter.mathlibStandardSet = true
+warningAsError = true
+
+# Palomar's renderer brings its own official SubVerso revision. Keep this fork in a separate Lake
+# graph so the submitted mathematical package and the renderer do not define the same package.
+[[require]]
+name = "subverso"
+git = "https://github.com/gaearon/subverso.git"
+rev = "75c3b2599925730e2c420e1c850dc0ed1b31b0a1"
+
+# The extractor has no project imports; at runtime its caller supplies the root project's LEAN_PATH.
+[[lean_exe]]
+name = "blueprint-proof-states"
+srcDir = "../../scripts"
+root = "BlueprintProofStates"
+supportInterpreter = true
