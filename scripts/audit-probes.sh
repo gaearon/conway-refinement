@@ -232,6 +232,24 @@ audit_expect_rejection blueprint-declaration \
 cp "$audit_blueprint_data_backup" "$audit_blueprint_data_source"
 audit_blueprint_data_changed=false
 
+# Blueprint: the phase manifest includes the Highlights metadata.
+cp "$audit_blueprint_phases_source" "$audit_blueprint_phases_backup"
+audit_blueprint_phases_changed=true
+python3 - "$audit_blueprint_phases_source" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+path = Path(sys.argv[1])
+payload = json.loads(path.read_text())
+del payload["highlights"]
+path.write_text(json.dumps(payload))
+PY
+audit_expect_rejection blueprint-highlights-manifest \
+  'manifest root must contain exactly' scripts/blueprint.sh check
+cp "$audit_blueprint_phases_backup" "$audit_blueprint_phases_source"
+audit_blueprint_phases_changed=false
+
 # Blueprint: the phase manifest has unique stable slugs.
 cp "$audit_blueprint_phases_source" "$audit_blueprint_phases_backup"
 audit_blueprint_phases_changed=true

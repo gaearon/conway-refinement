@@ -1,88 +1,92 @@
 {
+  "highlights": {
+    "title": "Highlights",
+    "description": "Conway's refinement conjecture asks whether an equality of products between omnific integers can always be reshuffled into four factors in the same ring. The proof uses an equivalent condition: every omnific integer is primal, so a divisor of a product can be split between its two factors. Conway normal form lets us prove this in a bounded generalised-power-series integer part and carry the result back.\n\nFor series with real exponents, ordinal value and degree measure the final and leading behaviour of their supports. Cantor–Bendixson ranks and translated truncations turn those measurements into a test for algebraic independence. Generation then gives polynomial presentations. From these, the ring of series with non-positive real exponents is a GCD domain, so all of its elements are primal.\n\nA general exponent group may contain many Archimedean classes. The proof handles the leading class with the real-exponent theorem, removes it, and continues by transfinite induction. At a limit stage it works modulo a common tail. A cut-filling criterion provides the Cauchy completeness needed to lift the resulting four-factor refinement.\n\nFor surreal exponents, every non-zero Archimedean stratum is isomorphic to the ordered additive group of real numbers. Conway's cut construction supplies the cofinality and cut-filling facts from which completeness follows. The general theorem therefore applies to the series form of omnific integers, and Conway normal form transports the refinement to the original formulation."
+  },
   "phases": [
     {
       "key": "Algebraic and ordinal preliminaries",
       "slug": "preliminaries",
       "title": "Algebraic and ordinal preliminaries",
-      "description": "Homogeneous polynomials, associated graded algebras, divisibility, greatest common divisors, and ordinal arithmetic."
+      "description": "Before the proof can work with series, it needs two sets of tools. The algebraic tools cover divisibility and greatest common divisors, and describe polynomial relations in graded rings. They also connect a filtered ring to its associated graded ring. The ordinal tools describe Cantor normal forms and Hessenberg's natural sum, especially what can happen when one or more summands become smaller. These results do not yet form one argument; later chapters use them at several different points.\n\nThe two sets of tools meet in the degree induction. If a family of generators satisfied a polynomial relation, we will study its partial derivatives and the homogeneous ideal it generates. At the same time, we will use ordinal bounds to compare the terms produced by translated truncations. The final lifting result in this chapter will later help turn generation of an associated graded ring into generation of the original algebra."
     },
     {
       "key": "Ordinal value and degree",
       "slug": "ordinal-value",
       "title": "Ordinal value and degree",
-      "description": "The ordinal value, principal representatives, translated truncations, the convolution formula, and multiplicativity of the degree."
+      "description": "The support of a generalised power series is well ordered, but its full order type is hard to carry through a product. The first step is to keep two simpler ordinal measurements. Berarducci's ordinal value records the final behaviour of the support near zero, once terms bounded away from zero no longer matter. The degree of a series is the first exponent in the Cantor normal form of its support order type. Their multiplication laws replace a product of series by Hessenberg's natural operations on ordinals.\n\nTranslated truncation gives a matching local operation: cut a series at one exponent, then shift that exponent back to zero. The convolution formula writes a translated truncation of a product as a finite sum of products of translated truncations. A proper translated truncation also has smaller ordinal value near zero. These facts let the later induction compare local pieces by degree. The next chapter turns the Cantor degree of the ordinal value into a topological rank."
     },
     {
       "key": "Cantor–Bendixson ranks of supports",
       "slug": "cantor-bendixson-ranks",
       "title": "Cantor–Bendixson ranks of supports",
-      "description": "Cantor–Bendixson ranks of closures of supports, their multiplicativity, and their relation to the ordinal value and degree for real exponents."
+      "description": "The ordinal measurements tell us how supports behave under multiplication, but a polynomial relation calls for more local information. For series with real exponents, that information is visible in the closed support near zero. A Cantor–Bendixson derivative removes the isolated points of a set. Repeating it gives a rank: the stage at which zero disappears from the closed support.\n\nThis chapter proves that the value defined by this rank is multiplicative, then shows that it is Berarducci's ordinal value. The Cantor–Bendixson rank at zero therefore agrees with the Cantor degree of the ordinal value. This description is useful because the derivatives can pick out the points of an exact rank. The next chapter uses them to inspect the leading degree of a homogeneous polynomial relation."
     },
     {
       "key": "Algebraic independence in graded rings",
       "slug": "associated-graded-algebraic-independence",
       "title": "Algebraic independence in graded rings",
-      "description": "Transfinite degree induction for algebraic independence in associated graded algebras."
+      "description": "The last chapter turned degree into a topological rank that can be checked locally. Now suppose that a minimal homogeneous generating family satisfied a polynomial relation. Choose the first degree where evaluation is not injective, and apply Cantor–Bendixson derivatives to the leading supports of representatives. At a successor degree, the Leibniz rule turns this into identities between the ordinary partial derivatives of the polynomial. A limit degree needs separate control of the variables with maximal weight.\n\nHomogeneous ideals, a local-to-global argument, and polynomial syzygies combine these local identities into a contradiction. The result is a general test for algebraic independence of a minimal homogeneous generating family. The test asks for precise facts about the translated truncations of chosen representatives. Those facts are not automatic for generalised power series, so the next two chapters prove them."
     },
     {
       "key": "Translated truncations",
       "slug": "translated-truncations",
       "title": "Translated truncations",
-      "description": "The translated-truncation calculation for real exponents, including its derivation and Leibniz rule."
+      "description": "The test from the last chapter says which local identities would rule out a polynomial relation. This chapter gets those identities from the series. A translated truncation shows the part of a series just below a chosen exponent. When we truncate a polynomial expression in principal series, the convolution formula splits the answer according to how many factors were truncated. Working modulo the ideal of series bounded away from zero makes the leading degree of this expansion visible.\n\nThe terms with exactly one truncated factor form the expected partial derivative; this is the Leibniz rule in this setting. Terms with two or more truncated factors have smaller degree by the earlier ordinal estimates. A bound on the truncations of a relation can therefore be turned into membership in its Jacobian ideal. This gives the local calculation used at successor degrees. A limit degree has no single previous layer, so one more argument is needed."
     },
     {
       "key": "Limit ordinals in the degree induction",
       "slug": "limit-degree",
       "title": "Limit ordinals in the degree induction",
-      "description": "The induction step and partial-derivative decomposition when the degree is a limit ordinal, for real exponents."
+      "description": "At a successor degree, a smaller term belongs to a specific earlier stage of the induction. A limit degree has no immediately previous stage. Translated truncations may approach the target degree without all fitting below one smaller bound. This is the gap left by the preceding chapter.\n\nThe proof cuts supports into intervals and moves the cutoff so that translated truncations realise suitable smaller ordinal values. The earlier lemmas on Cantor normal form and Hessenberg's natural sum keep track of the high and low parts of the weights as the cutoff moves. In one case, they force a variable of maximal weight to occur linearly. In the other, they express the needed partial derivative in terms of the allowed derivatives of higher weight. Together, these two cases provide the limit-degree part of the algebraic-independence test."
     },
     {
       "key": "Principal RV-elements",
       "slug": "principal-rv-algebraic-independence",
       "title": "Principal RV-elements",
-      "description": "The associated graded description of the ring of principal RV-elements and algebraic independence of its minimal homogeneous generators."
+      "description": "The algebraic-independence test is now ready, including its successor and limit cases. We must apply it to principal RV-elements, the objects that record principal series up to terms of lower degree. They form the associated graded algebra for the degree derived from ordinal value. The Cantor–Bendixson construction gives another associated graded algebra, this time described directly through supports. A canonical isomorphism matches the two algebras degree by degree.\n\nEvery nonzero homogeneous class has a principal series representative of the exact degree, and every proper translated truncation of that representative has smaller degree. We can therefore carry the Jacobian relation from the previous chapters into the Cantor–Bendixson grading and apply the general test. It follows that every minimal homogeneous generating system of principal RV-elements is algebraically independent. The next chapter combines this absence of relations with generation."
     },
     {
       "key": "Polynomial presentations",
       "slug": "polynomial-presentations",
       "title": "Polynomial presentations",
-      "description": "Polynomial presentations of the ring of principal RV-elements, the associated rings of RV-elements, the ring of germs, and rings of generalised power series."
+      "description": "Algebraic independence says that the chosen generators satisfy no polynomial relation. To get a polynomial presentation, we must also know that they generate the whole ring. Earlier generation results provide this second half. Scalar extension passes from principal RV-elements to all RV-elements, and lifting the homogeneous generators gives actual series that represent the same variables.\n\nThis produces polynomial presentations for the graded algebra, the germ ring, and the full ring of series with non-positive real exponents. The polynomial representatives can also be chosen with a bound on their ordinal value, so the presentation respects the filtration used in the proof. We can now study divisibility and greatest common divisors in polynomial coordinates. The next chapter does so."
     },
     {
       "key": "Primality and factorisation for real exponents",
       "slug": "real-exponent-primality",
       "title": "Primality and factorisation for real exponents",
-      "description": "Greatest common divisors, primality, irreducibility, and factorisation for generalised power series with non-positive real exponents."
+      "description": "The polynomial presentations reduce the real-exponent case to familiar commutative algebra. The finite-support coefficient ring has greatest common divisors, and so does the polynomial algebra over it. Carrying this structure back through the presentation shows that the ring of series with non-positive real exponents is a GCD domain. It follows that every series is primal, or equivalently that the ring is pre-Schreier. In particular, every irreducible series is prime.\n\nThe chapter also turns several irreducibility criteria into results about prime series, and gives a unique-factorisation theorem under specific conditions on the support order type. For the main proof, the key result is the primality theorem for all series with real exponents. An Archimedean stratum in a more general exponent group can be represented by real exponents. The next chapter uses the real case on one stratum at a time."
     },
     {
       "key": "Finitely many Archimedean classes",
       "slug": "finite-archimedean-support",
       "title": "Reduction along Archimedean classes",
-      "description": "Reduction to real exponents at the leading Archimedean class, followed by induction when the support meets finitely many Archimedean classes."
+      "description": "The real-exponent theorem handles one Archimedean scale, but a general exponent group may contain many such scales. The proof separates the leading Archimedean class from the smaller ones. Regrouping the series treats the smaller exponents as coefficients in a larger field. An order isomorphism then identifies the remaining stratum with real exponents, so the result of the preceding chapter applies.\n\nConvexity of the supports of factors lets us carry primality back through this change of coordinates. For a reduced series, this makes the factor at the leading class primal. Removing that factor leaves only smaller Archimedean classes in the support. Repeating the step proves primality when the support meets finitely many Archimedean classes. This is the base case for the next chapter, where the occupied classes may have limit order type."
     },
     {
       "key": "Refinement over Archimedean classes",
       "slug": "archimedean-class-refinement",
       "title": "Refinement and transfinite induction",
-      "description": "Four-factor refinement after restriction to one Archimedean class, followed by transfinite induction from the case of finitely many classes."
+      "description": "Finite induction is not enough when the occupied Archimedean classes have limit order type. There is no last finite stage, and a common tail lies below every class already considered. The proof quotients the exponent group by this common tail. If the quotient is Cauchy complete, its germ ring has a polynomial presentation. An equality of products can then be refined into four factors at a suitable Archimedean class of the quotient.\n\nThe proof normalises this refinement, carries it back from the quotient, and lifts it from germs to the integer-part ring. Factoring by the resulting convex restriction removes a block of Archimedean classes from the support. The set of classes met by the remaining factor has strictly smaller order type, which makes transfinite induction possible. This extends the finite-class result to all series allowed by the cardinal bound. It assumes completeness and a fraction-field property for every common tail; the remaining chapters prove those facts in the cases we need."
     },
     {
       "key": "A cut criterion for Cauchy completeness",
       "slug": "cauchy-completeness",
       "title": "A cut criterion for Cauchy completeness",
-      "description": "An order-theoretic criterion for Cauchy completeness."
+      "description": "The transfinite theorem needs quotients by common tails to be Cauchy complete. In the applications, however, the available hypothesis is about order: two small separated families have an element between them. This chapter turns that ability to fill cuts into Cauchy completeness.\n\nStart with a Cauchy filter and choose points in sets of successively smaller diameter. The chosen points give the lower and upper sides of a cut. A point filling the cut lies within twice each chosen scale, so the filter converges. The chapter also shows that a monotone surjection which reflects strict inequalities passes cut filling to the quotient. This lets the same criterion handle both saturated ordered groups and surreal numbers."
     },
     {
       "key": "Bounded generalised-power-series integer parts",
       "slug": "bounded-integer-parts",
       "title": "Bounded generalised-power-series integer parts",
-      "description": "The refinement property for bounded generalised-power-series integer parts and its saturated-group consequences."
+      "description": "We can now apply the transfinite theorem to a saturated ordered rational vector space. Under the uncountable saturation hypothesis used here, every Archimedean stratum is isomorphic to the additive ordered group of real numbers. Saturation also gives the required cofinality for strict inner balls and common tails. By the cut criterion from the last chapter, each common-tail quotient is Cauchy complete. The cofinality of the tail also gives the required fraction-field property for bounded series on that tail.\n\nThis checks every hypothesis used by the reduction and the transfinite induction. If the coefficient subring is pre-Schreier, then the bounded generalised-power-series integer part is also pre-Schreier and has four-factor refinement. Taking integer constant coefficients gives the corresponding theorem for saturated Hahn integer parts. No facts about surreal numbers have been used yet. The last chapter proves the same needed properties for surreal exponents in a different way."
     },
     {
       "key": "Surreal numbers and omnific integers",
       "slug": "conway-refinement",
       "title": "Surreal numbers and omnific integers",
-      "description": "Primality and refinement for omnific integers, transported to Conway’s formulation."
+      "description": "The last step is to connect the general series theorem to omnific integers and check its hypotheses for surreal exponents. Conway normal form gives a ring isomorphism after we negate the exponents. Under this isomorphism, omnific integers become bounded series with non-positive surreal exponents and an integer constant term. We can therefore solve the algebraic problem for series and carry the answer back.\n\nEvery nonzero surreal Archimedean stratum is isomorphic to the ordered additive group of real numbers, as required by the reduction to real exponents. Conway's cut construction gives the required cofinality statements and fills small cuts. The cut criterion then makes the common-tail quotients Cauchy complete, while cofinality gives the fraction-field property. The transfinite theorem shows that every element of the corresponding integer part is primal and hence gives four-factor refinement. Conway normal form carries this refinement to the omnific-integer subring, and the equivalence with Conway's cut definition gives the final theorem."
     }
   ]
 }

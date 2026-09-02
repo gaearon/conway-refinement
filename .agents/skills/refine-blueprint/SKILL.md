@@ -125,6 +125,51 @@ literal statement in standard mathematical language. Never derive reader-facing 
 declaration, namespace, module path, repository directory, or internal abstraction. If the literature
 does not name a phase, describe what its theorems establish instead of coining a name for it.
 
+## Write mathematical glue between chapters
+
+After the chapter boundaries have settled, write connective prose for each chapter in the
+`description` field of `blueprint/phases.json`. First run `scripts/blueprint.sh render`, then read the
+chapter's complete section of `blueprint/src/content.tex`, from its `\section` command to the next
+one. Do not sample a few prominent nodes. Also inspect the complete reduced dependency graph in
+`blueprint/web/dependency-graph.mmd`, so the prose reflects what enters the chapter, what it
+establishes, and what later chapters actually use.
+
+The goal is glue between chapters, not a miniature abstract or an inventory of results. Start from
+the mathematical question left by the preceding chapter, explain why the present change of viewpoint
+or construction addresses it, and end with the concrete opening it creates for what follows. For the
+first chapter, orient the reader to the proof's starting ingredients instead. If a chapter is only a
+collection of independent prerequisites, say so instead of inventing a narrative.
+
+Give the explanation enough room to make the transition intelligible. Two short paragraphs are a
+useful default, but length should follow the mathematics: compress a genuinely simple handoff and
+expand a transition that introduces new coordinates or resolves a real obstruction. Do not achieve
+brevity by stacking unexplained technical nouns. Write in simple English: prefer short sentences and
+concrete verbs, keep a technical term only when the mathematics needs it, and explain what the object
+does when its role is not clear from its name. Never trade away a hypothesis or a mathematical
+distinction for simplicity. Prefer the large-scale argument over a lemma-by-lemma summary. Do not
+mention theorem numbers, declaration names, files, Lean machinery, or implementation details. Do not
+claim novelty, historical priority, necessity, or a dependency that the checked chapter and graph do
+not establish.
+
+Treat every factual clause as part of the mathematical blueprint. Trace it to the exact statements in
+the rendered chapter or to an edge of the checked graph, and open the corresponding Lean source when
+the generated prose leaves any doubt. Use only the terminology and notation fixed by the field map.
+Then read all chapter introductions consecutively: they should form an accurate orientation to the
+proof without repetition, lemma-by-lemma narration, or promises that later chapters do not fulfil.
+
+After the chapter glue is accurate, write the Highlights introduction as a summary of those
+summaries. Read every chapter description in order and inspect the complete reduced graph again;
+neither the highlighted nodes alone nor a handful of headline paths is enough. Present the proof as
+a few connected mathematical arcs, showing how the main changes of viewpoint lead from the formal
+statement to the final result. Summarise the chapters instead of retelling them: cover every major arc,
+but omit intermediate details that the chapter introductions already explain. Do not write one
+compressed sentence per chapter, and do not put a long essay before the selected results. Use a few
+short ordinary paragraphs, with no fixed number of stages or hidden correspondence between paragraph
+positions and phase groups. Give each transition enough room to be explained in simple English.
+Store the text with the Highlights metadata in `blueprint/phases.json`, and check it clause by clause
+in the same way as the chapter descriptions. The web guide's Highlights and the PDF's Overview must
+render the same description; never maintain a second copy for either format.
+
 Run the relevant Lean and blueprint checks, then apply `review-blueprint` to the affected chain.
 Reassess the new map, choose the next promising object, and continue this loop until the user asks
 to stop. When one theory stops removing machinery, abandon it and form a different theory of the

@@ -164,6 +164,32 @@ phase states the declaration's role in the argument, that dependencies respect t
 and that the result kind matches ordinary mathematical usage. Do not classify nodes to
 balance the diagram. A final PR or release review checks this metadata for every node.
 
+Treat each phase description as mathematical glue between chapters. For every changed description,
+read the complete rendered chapter in `blueprint/src/content.tex` and inspect the full reduced
+dependency graph in `blueprint/web/dependency-graph.mmd`. Check every factual clause against the
+selected statements or an actual graph edge, including claims about what the preceding chapter leaves
+open, why the present change of viewpoint addresses it, what this chapter establishes, and what that
+opens up next. A description may use a later result as motivation, but must not present it as already
+proved. Reject an isolated inventory in place of an explanation, and reject invented continuity when
+the chapter is only a collection of prerequisites.
+Check the prose for simple English without weakening its mathematical content. Prefer short sentences
+and concrete verbs. Require every necessary field term and hypothesis, but reject academic shorthand
+when the same point can be stated directly.
+
+Read all introductions in order to check the narrative handoffs, terminology, and repetition. A
+description-only edit does not reopen otherwise unchanged node statements and proofs, but it still
+requires `scripts/blueprint.sh check`, `scripts/blueprint.sh render`, and inspection of the regenerated
+maps to confirm that the checked nodes, edges, and phase assignments are unchanged. A final PR or
+release review checks every chapter introduction alongside every node.
+
+Review the Highlights introduction as a summary of all chapter descriptions and of the complete
+reduced graph. It must cover the whole proof route rather than only the highlighted nodes, and it
+must leave enough space to explain every major change of viewpoint. Check that it synthesises the
+chapter introductions instead of repeating their intermediate details, and that it remains readable
+before the selected results begin. Its layout must not depend on a fixed number of phases or arcs.
+Distinct steps must not be compressed into a false implication. Confirm that the web guide and PDF
+render the same introduction text as Highlights and Overview rather than separate copies.
+
 Review the publication provenance disclosures. Verify their claims about axiom use, standalone
 import boundaries, statement--proof pairing, generated content, source links, and release versioning
 against the current repository checks.  It must make unmistakable which text is AI-generated,

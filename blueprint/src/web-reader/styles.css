@@ -270,7 +270,9 @@ dialog::backdrop { background: rgba(255, 255, 255, .86); }
 .page-shell.has-reader-bar .map-reader { grid-row: 2; }
 .hero { padding: 0 0 48px; }
 .hero h1, .phase-header h1 { max-width: 680px; margin: 0 0 17px; font-size: 30px; line-height: 1.17; }
-.hero p, .phase-header > p { max-width: 660px; margin: 0; color: #3c3c3c; font-size: 16px; line-height: 1.52; }
+.hero p, .phase-introduction { max-width: 660px; margin: 0; color: #3c3c3c; font-size: 16px; line-height: 1.52; }
+.phase-introduction p { margin: 0; }
+.phase-introduction p + p { margin-top: 12px; }
 .formal-intro-list { max-width: 660px; margin: 12px 0 0; padding-left: 22px; color: #3c3c3c;
   font-size: 16px; line-height: 1.52; }
 .formal-intro-list li + li { margin-top: 4px; }
