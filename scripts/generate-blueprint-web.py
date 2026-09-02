@@ -251,6 +251,7 @@ def main() -> None:
     bibliography = json.loads(REFERENCES.read_text())
     generate_references_tex(bibliography)
     payload = {
+        "highlights": blueprint.HIGHLIGHTS_METADATA.web_data(),
         "phases": [phase.web_data() for phase in blueprint.PHASE_METADATA],
         "source": source,
         "references": bibliography,

@@ -15,6 +15,15 @@ SLUG_RE = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
 
 
 @dataclass(frozen=True)
+class Highlights:
+    title: str
+    description: str
+
+    def web_data(self) -> dict[str, str]:
+        return asdict(self)
+
+
+@dataclass(frozen=True)
 class Phase:
     key: str
     slug: str
@@ -32,13 +41,25 @@ def _fail(message: str) -> None:
     raise SystemExit(f"blueprint phases: {message}")
 
 
-def load_phases() -> tuple[Phase, ...]:
+def load_manifest() -> tuple[Highlights, tuple[Phase, ...]]:
     try:
         payload = json.loads(MANIFEST.read_text())
     except (OSError, json.JSONDecodeError) as error:
         _fail(f"cannot read {MANIFEST.relative_to(ROOT)}: {error}")
-    if not isinstance(payload, dict) or set(payload) != {"phases"}:
-        _fail("manifest root must contain exactly one `phases` array")
+    if not isinstance(payload, dict) or set(payload) != {"highlights", "phases"}:
+        _fail("manifest root must contain exactly `highlights` and `phases`")
+    highlights_record = payload["highlights"]
+    highlights_fields = {"title", "description"}
+    if not isinstance(highlights_record, dict) or set(highlights_record) != highlights_fields:
+        _fail("`highlights` must contain exactly `description` and `title`")
+    if any(
+        not isinstance(highlights_record[field], str)
+        or highlights_record[field].strip() != highlights_record[field]
+        or not highlights_record[field]
+        for field in highlights_fields
+    ):
+        _fail("`highlights` fields must be non-empty trimmed strings")
+    highlights = Highlights(**highlights_record)
     records = payload["phases"]
     if not isinstance(records, list) or not records:
         _fail("`phases` must be a non-empty array")
@@ -58,7 +79,7 @@ def load_phases() -> tuple[Phase, ...]:
         duplicates = sorted({value for value in values if values.count(value) > 1})
         if duplicates:
             _fail(f"duplicate {field}(s): {', '.join(duplicates)}")
-    return tuple(phases)
+    return highlights, tuple(phases)
 
 
 def validate_lean_keys(phases: tuple[Phase, ...]) -> None:
@@ -74,6 +95,6 @@ def validate_lean_keys(phases: tuple[Phase, ...]) -> None:
         )
 
 
-PHASE_METADATA = load_phases()
+HIGHLIGHTS_METADATA, PHASE_METADATA = load_manifest()
 PHASES = tuple(phase.key for phase in PHASE_METADATA)
 PHASE_BY_KEY = {phase.key: phase for phase in PHASE_METADATA}

@@ -68,8 +68,9 @@ Generated web and PDF artifacts are not committed.
 The Mermaid output has three synchronized scales: a phase overview, one detailed map for each
 phase with cross-phase dependencies compressed to boundary ports, and the complete theorem graph.
 Every theorem node is numbered as in the PDF and appears as a local node in exactly one phase map.
-Nodes and edges follow the Lean annotations automatically. The ordered phase titles, slugs, and
-descriptions live in `phases.json`; each annotation carries the corresponding stable internal key.
+Nodes and edges follow the Lean annotations automatically. The Highlights introduction and the
+ordered phase titles, slugs, and descriptions live in `phases.json`; the PDF uses that introduction
+as its Overview, and each annotation carries the corresponding stable internal key.
 Generation rejects unknown or unused keys, drift from Lean's compile-time key mirror, backwards
 dependencies, and modules split between phases. The annotation label's `def:`, `thm:`, `lem:`,
 `prop:`, `cor:`, or `fact:` prefix controls the displayed result kind. Phase and result kind are

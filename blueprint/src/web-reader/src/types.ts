@@ -31,6 +31,10 @@ export type BlueprintPhase = {
 };
 
 export type BlueprintData = {
+  highlights: {
+    title: string;
+    description: string;
+  };
   phases: BlueprintPhase[];
   source: {
     repository: string;
