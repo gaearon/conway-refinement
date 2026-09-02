@@ -143,6 +143,7 @@ improve the Lean factorization.
 
    ```text
    lake build
+   lake exe palomar-compatibility
    lake exe module-system
    lake exe axioms
    lake exe standalone-mathlib

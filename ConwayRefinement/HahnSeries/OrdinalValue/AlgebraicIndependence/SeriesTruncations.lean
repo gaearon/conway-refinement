@@ -44,7 +44,7 @@ theorem translatedTruncation_translate (b : K⟦ℝ⟧) (ξ ζ : ℝ) :
   apply Subtype.ext
   rw [coe_translatedTruncation, coe_translatedTruncation, truncLE_translate, translate_add_apply]
   congr 1
-  ring
+  ring_nf
 
 /-- A nonpositive series whose support lies below some `s < 0` belongs to `J`. -/
 theorem mem_negativeMonomialIdeal_of_forall_support_le {b : Series K} {s : ℝ} (hs : s < 0)

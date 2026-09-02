@@ -4,6 +4,7 @@ defaultTargets = [
   "ConwayRefinement",
   "Challenge",
   "Solution",
+  "palomar-compatibility",
   "axioms",
   "blueprint-proof-states",
   "module-system",
@@ -53,6 +54,11 @@ roots = ["Challenge"]
 [[lean_lib]]
 name = "Solution"
 roots = ["Solution"]
+
+# Palomar compares the statement after compiling it under two different module names.
+[[lean_exe]]
+name = "palomar-compatibility"
+root = "scripts.PalomarCompatibility"
 
 # Audit the compiled artifacts rather than trusting source-text conventions.
 [[lean_exe]]

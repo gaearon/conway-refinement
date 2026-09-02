@@ -29,6 +29,7 @@ scripts/check-palomar-challenge.sh
 lake build
 
 publication_audits=(
+  palomar-compatibility
   axioms
   module-system
   standalone-mathlib

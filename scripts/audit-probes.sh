@@ -81,6 +81,33 @@ audit_expect_rejection palomar-challenge 'has drifted' \
 rm -f -- "$audit_probe"
 audit_probe=""
 
+# Palomar compatibility: a reachable module-private helper changes name when the statement is
+# compiled under the Challenge module name.
+audit_probe=ConwayRefinement/ProbePalomarCompatibility.lean
+audit_require_absent "$audit_probe"
+printf '%s\n' \
+  '/-' \
+  'Copyright (c) 2026 Dan Abramov. All rights reserved.' \
+  'Released under Apache 2.0 license as described in the file LICENSE.' \
+  'Authors: Dan Abramov' \
+  '-/' \
+  'module' \
+  '' \
+  '/-! # Palomar-compatibility negative control -/' \
+  '' \
+  'private def hiddenPalomarStatement : Prop := True' \
+  '' \
+  'public def probePalomarStatement : Prop := hiddenPalomarStatement' \
+  > "$audit_probe"
+lake build ConwayRefinement.ProbePalomarCompatibility
+audit_expect_rejection palomar-compatibility \
+  '_private.ConwayRefinement.ProbePalomarCompatibility' \
+  lake exe palomar-compatibility \
+    ConwayRefinement.ProbePalomarCompatibility \
+    probePalomarStatement
+rm -f -- "$audit_probe"
+audit_probe=""
+
 # Style: conservative fixes repair prose, comma-separated code, whitespace, and the final newline.
 audit_probe=ConwayRefinement/ProbeStyleFix.lean
 audit_require_absent "$audit_probe"

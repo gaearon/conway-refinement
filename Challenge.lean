@@ -83,7 +83,7 @@ theorem pairRec_eq {C : Game → Game → Sort*}
   WellFounded.fix_eq ..
 
 /-- Negation interchanges the players and negates every option. -/
-def neg : Game → Game
+@[expose] def neg : Game → Game
   | .mk Left Right left right =>
       .mk Right Left (fun i ↦ neg (right i)) (fun i ↦ neg (left i))
 
@@ -94,7 +94,7 @@ theorem neg_mk (Left Right : Type u) (left : Left → Game) (right : Right → G
   (rfl)
 
 /-- Conway addition: either player moves in exactly one summand. -/
-noncomputable def add : Game → Game → Game :=
+@[expose] noncomputable def add : Game → Game → Game :=
   pairRec fun x y rec ↦
     match x, y with
     | .mk Lx Rx lx rx, .mk Ly Ry ly ry =>
@@ -120,14 +120,14 @@ theorem add_mk (Lx Rx Ly Ry : Type u) (lx : Lx → Game) (rx : Rx → Game)
   rw [add, pairRec_eq]
 
 /-- The zero game `{ | }`. -/
-def zero : Game.{u} := .mk (ULift.{u} Empty) (ULift.{u} Empty) nofun nofun
+@[expose] def zero : Game.{u} := .mk (ULift.{u} Empty) (ULift.{u} Empty) nofun nofun
 
 /-- The zero game has no options. -/
 theorem zero_eq : zero =
     .mk (ULift.{u} Empty) (ULift.{u} Empty) nofun nofun := (rfl)
 
 /-- The unit game `{0 | }`. -/
-def one : Game.{u} :=
+@[expose] def one : Game.{u} :=
   .mk PUnit.{u + 1} (ULift.{u} Empty) (fun _ ↦ zero) nofun
 
 /-- The unit game has zero as its sole left option. -/
@@ -137,7 +137,7 @@ theorem one_eq : one =
 /-- Conway multiplication. Its option from options `a` of `x` and `b` of `y` is
 `a * y + x * b - a * b`; equal-side moves are left options and opposite-side moves are right
 options. -/
-noncomputable def mul : Game → Game → Game :=
+@[expose] noncomputable def mul : Game → Game → Game :=
   pairRec fun x y rec ↦
     match x, y with
     | .mk Lx Rx lx rx, .mk Ly Ry ly ry =>
@@ -171,7 +171,7 @@ theorem mul_mk (Lx Rx Ly Ry : Type u) (lx : Lx → Game) (rx : Rx → Game)
 
 /-- Conway's recursive order: `x ≤ y` when no left option of `x` is at least `y`, and no right
 option of `y` is at most `x`. -/
-noncomputable def Le : Game → Game → Prop :=
+@[expose] noncomputable def Le : Game → Game → Prop :=
   Sym2.GameAdd.recursion move_wf fun x y rec ↦
     match x, y with
     | .mk Lx Rx lx rx, .mk Ly Ry ly ry =>
