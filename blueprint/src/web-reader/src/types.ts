@@ -28,12 +28,14 @@ export type BlueprintPhase = {
   id: string;
   title: string;
   description: string;
+  descriptionHtml: string;
 };
 
 export type BlueprintData = {
   highlights: {
     title: string;
     description: string;
+    descriptionHtml: string;
   };
   phases: BlueprintPhase[];
   source: {

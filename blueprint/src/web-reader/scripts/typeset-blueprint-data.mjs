@@ -49,6 +49,21 @@ function typeset(html) {
     .replace(/\\\(([\s\S]*?)\\\)/g, (_, tex) => math(tex, false));
 }
 
+function escapeHtml(value) {
+  return value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+}
+
+function descriptionHtml(description) {
+  let result = '';
+  let cursor = 0;
+  for (const match of description.matchAll(/\$([^$\n]+)\$/g)) {
+    result += escapeHtml(description.slice(cursor, match.index));
+    result += math(match[1], false);
+    cursor = match.index + match[0].length;
+  }
+  return result + escapeHtml(description.slice(cursor));
+}
+
 function titleHtml(title) {
   const escaped = title.replaceAll('---', '—').replaceAll('--', '–')
     .replaceAll('\\lbrack', '[').replaceAll('\\rbrack', ']')
@@ -57,6 +72,10 @@ function titleHtml(title) {
 }
 
 const data = JSON.parse(await readFile(dataUrl, 'utf8'));
+data.highlights.descriptionHtml = descriptionHtml(data.highlights.description);
+for (const phase of data.phases) {
+  phase.descriptionHtml = descriptionHtml(phase.description);
+}
 for (const node of data.nodes) {
   node.titleHtml = titleHtml(node.title);
   node.statement = typeset(node.statement);
