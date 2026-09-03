@@ -287,15 +287,16 @@ private theorem has_closed_class_normalization_at_support_classes
   (phase := "Refinement over Archimedean classes")
   (title := "Refinement at a quotient Archimedean class")
   (statement := /--
-    Let $a,b,c,d\in Z+R((G^{<0}))_\kappa$ satisfy $ab=cd$.  Suppose the
-    Archimedean support classes of $a$ are the union of a limit initial segment
-    $T_0$ and a finite final segment.  Assume primality for every series with
-    finite Archimedean support-class set.  Assume that the quotient by the
-    common tail below $T_0$ is Cauchy complete for its additive uniformity,
-    and that the bounded Hahn field on the common tail is the fraction field
-    of its bounded Hahn integer part.  Then some
-    quotient class met by the support of $a$ admits an exact four-factor
-    refinement of the four closed-ball restrictions of $a,b,c,d$.
+    Let $a,b,c,d\in Z+R((G^{<0}))_\kappa$ satisfy $ab=cd$. Suppose that the
+    Archimedean classes met by the support of $a$ are $T_0\cup T_1$, where
+    $T_1$ is finite, and $T_0$ contains a non-zero class and has no greatest
+    element. Assume primality for every series whose support meets only
+    finitely many Archimedean classes. Assume that the quotient by the common
+    tail below $T_0$ is Cauchy complete for its additive uniformity, and that
+    the $\kappa$-bounded Hahn field on the common tail is the fraction field of
+    its corresponding $\kappa$-bounded integer part. Then some Archimedean
+    class of the quotient met by the support of $a$ admits an exact four-factor
+    refinement of the restrictions of $a,b,c,d$ to its closed Archimedean ball.
   -/)
   (proof := /--
     Regroup each series as a series on the common-tail quotient.  The support

@@ -15,10 +15,14 @@ import ConwayRefinement.Blueprint
 /-!
 # Primality from common-tail quotients
 
-The induction rank is the order type of the Archimedean classes of the nonzero support. A supplied
-finite-class theorem handles finite rank. At a limit stage, Cauchy completeness of the common-tail
-quotient gives an exact refinement at a class met by the outer support. Factoring off that class
-strictly lowers the rank, so ordinal induction proves that every element is primal.
+The induction rank is the order type of the Archimedean classes met by the non-zero support. A
+supplied theorem handles the case in which this set is finite. At every infinite rank, the classes
+split into a non-zero limit initial segment and a finite final segment. Cauchy completeness of the
+quotient by the common tail below the limit segment, together with primality for every series whose
+support meets only finitely many Archimedean classes and the hypothesis that the κ-bounded integer
+part on the common tail has the required fraction field, gives an exact refinement at a class met by
+the support. Factoring off the resulting divisor strictly lowers the rank, so ordinal induction
+proves that every element is primal.
 -/
 
 public noncomputable section
