@@ -20,13 +20,15 @@ import ConwayRefinement.Blueprint
 # Algebraic independence for the Cantor--Bendixson degree
 
 A minimal system of homogeneous generators is algebraically independent. Equivalently, polynomial
-evaluation at the generators is injective. The proof is a transfinite induction on weighted degree:
-degree zero is scalar, the successor step is linear independence, and the limit step is a two-case
-analysis.
+evaluation at the generators is injective. The proof is a transfinite induction on weighted degree.
+Degree zero is scalar. A successor weighted degree is handled by the lowering derivation. At a
+non-zero limit weighted degree, maximal-variable linearity and the required partial-derivative
+identities are established together.
 
-Both steps are stated over an arbitrary filter, and each carries the inputs its setting owes it.
-This file records what the induction needs and does not otherwise depend on the setting, so that
-what remains for the Cantor--Bendixson degree is exactly the list of hypotheses below.
+The argument for a successor degree is stated over an arbitrary filter. The argument for a limit
+ordinal degree uses the hypotheses supplied by its ordered-group setting. This file records what
+the induction needs and does not otherwise depend on the setting, so that what remains for the
+Cantor--Bendixson degree is exactly the list of hypotheses below.
 -/
 
 universe u v w x

@@ -183,13 +183,13 @@ function FormalStatements({ data }: { data: BlueprintData }) {
 
 function Introduction({ text }: { text: string }) {
   return <div className="phase-introduction">{text.split(/\n\n+/).map((paragraph, index) =>
-    <p key={index}>{paragraph}</p>)}</div>;
+    <p key={index} dangerouslySetInnerHTML={{ __html: paragraph }} />)}</div>;
 }
 
 function Highlights({ data }: { data: BlueprintData }) {
   return <section className="highlights-page">
     <header className="phase-header"><h1>{data.highlights.title}</h1>
-      <Introduction text={data.highlights.description} /></header>
+      <Introduction text={data.highlights.descriptionHtml} /></header>
     {data.phases.map(phase => {
       const nodes = data.nodes.filter(node => node.phase === phase.id && node.highlight);
       if (!nodes.length) return null;
@@ -357,7 +357,7 @@ function Chapter({ data, phase, selected }: {
   const nodes = data.nodes.filter(node => node.phase === phase);
   const metadata = phaseMetadata(data, phase);
   return <><header className="phase-header"><h1>{phaseIndex(data, phase) + 1}. {metadata.title}</h1>
-    <Introduction text={metadata.description} /></header>
+    <Introduction text={metadata.descriptionHtml} /></header>
     <ResultCollection data={data} nodes={nodes} selected={selected} /></>;
 }
 
