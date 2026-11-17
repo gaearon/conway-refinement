@@ -21,19 +21,21 @@ import ConwayRefinement.HahnSeries.IntegerPart.Regrouping
 import ConwayRefinement.HahnSeries.IntegerPart.SupportClassFactorization
 
 /-!
-# Primality from common-tail quotients
+# Primality in bounded Hahn integer parts
 
-The induction rank is the order type of the Archimedean classes met by the non-zero support. A
-supplied theorem handles the case in which this set is finite. At every infinite rank, the classes
-split into a non-zero limit initial segment `T₀` and a finite final segment. Let `C` be the common
-tail below `T₀`, `Γ = G ⧸ C`, `L = R((C))_κ` and `D = Z + R((C^{<0}))_κ`. Regrouping exponents
-along `C` identifies `Z + R((G^{<0}))_κ` with the `D + M` construction `D + L((Γ^{<0}))_κ` inside
-`L((Γ^{≤0}))_κ`. The constant term meets only finitely many classes, so it is primal in `D`, and
-the fraction-field hypothesis on `D` handles a zero constant term. Primality in
-`L((Γ^{≤0}))_κ` follows from primality in its ring of germs, which is a polynomial ring when `Γ`
-is Cauchy complete: restriction to the closed ball of a small quotient class met by the support
-refines every divisibility relation exactly, and the complementary factor has strictly smaller
-rank, hence is primal by induction.
+The main theorem `HahnSeries.CardSuppLTTruncationIntegerPart.isPrimal` proves that every element of
+`Z + R((G^{<0}))_κ` is primal under the stratum, cofinality, and completeness hypotheses described
+there. It is proved by induction on the support classes. The induction rank is the order type of the
+Archimedean classes met by the non-zero support. A supplied theorem handles the case in which this
+set is finite. At every infinite rank, the classes split into a non-zero limit initial segment `T₀`
+and a finite final segment. Let `C` be the common tail below `T₀`, `Γ = G ⧸ C`, `L = R((C))_κ` and
+`D = Z + R((C^{<0}))_κ`. Regrouping exponents along `C` identifies `Z + R((G^{<0}))_κ` with the `D +
+M` construction `D + L((Γ^{<0}))_κ` inside `L((Γ^{≤0}))_κ`. The constant term meets only finitely
+many classes, so it is primal in `D`, and the fraction-field hypothesis on `D` handles a zero
+constant term. Primality in `L((Γ^{≤0}))_κ` follows from primality in its ring of germs, which is a
+polynomial ring when `Γ` is Cauchy complete: restriction to the closed ball of a small quotient
+class met by the support refines every divisibility relation exactly, and the complementary factor
+has strictly smaller rank, hence is primal by induction.
 -/
 
 public noncomputable section

@@ -10,7 +10,7 @@ import Mathlib.Algebra.Field.IsField
 import Mathlib.Data.Rat.Floor
 
 /-!
-# Residues of cardinal-bounded nonpositive Hahn series
+# Residues of bounded nonpositive Hahn series
 
 The cardinal-bounded nonpositive Hahn series form an algebra over their coefficient field.
 Coefficient at exponent zero is an algebra retraction, and imposing that this residue lie in a

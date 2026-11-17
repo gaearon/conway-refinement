@@ -17,7 +17,7 @@ public import Mathlib.Topology.Algebra.IsUniformGroup.Basic
 import ConwayRefinement.Blueprint
 
 /-!
-# Rational tail quotients of the surreals
+# Common-tail quotients of the surreal numbers
 
 For a family of finite Archimedean classes, its common tail is a rational subspace of the
 surreals. Quotienting by that subspace gives the usual ordered tail quotient together with its
