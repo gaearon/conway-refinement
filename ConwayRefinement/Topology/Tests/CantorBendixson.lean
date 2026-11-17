@@ -5,11 +5,10 @@ Authors: Dan Abramov
 -/
 module
 
-public import ConwayRefinement.Topology.CantorBendixsonProduct
-public import ConwayRefinement.Topology.CantorBendixsonReconstruction
+public import ConwayRefinement.Topology.CantorBendixson.Basic
 public import Mathlib.Topology.Instances.ENat
-import Mathlib.Topology.DiscreteSubset
-public import Mathlib.Topology.Maps.Proper.Basic
+import Mathlib.SetTheory.Ordinal.Arithmetic
+import Mathlib.Topology.Maps.Proper.Basic
 
 /-!
 # Semantic checks for transfinite Cantor–Bendixson derivatives
@@ -100,40 +99,7 @@ theorem two_point_projection (o : Ordinal) :
     exact Set.range_eq_univ.mpr Prod.fst_surjective
   simpa only [Closeds.coe_top, himage] using hf.cantorBendixson_image_subset hfin ⊤ o
 
-/-- The product of two convergent sequences has no point at stage three. This exercises the
-natural-sum bound with two nonzero coordinate ranks. -/
-theorem enat_product_stage_three :
-    (⊤ : Closeds (ℕ∞ × ℕ∞)).cantorBendixson (3 : Ordinal) = ⊥ := by
-  let r (n : ℕ∞) : NatOrdinal := if n = ⊤ then 1 else 0
-  have hr (x : ℕ∞) (_hx : x ∈ (⊤ : Closeds ℕ∞)) :
-      ∀ᶠ z in 𝓝 x, z ∈ (⊤ : Closeds ℕ∞) → z ≠ x → r z < r x := by
-    by_cases hx : x = ⊤
-    · subst x
-      exact Filter.Eventually.of_forall fun z _ hz ↦ by simp [r, hz]
-    · simp [ENat.nhds_eq_pure hx]
-  have hbound := (⊤ : Closeds ℕ∞).cantorBendixson_prod_subset_of_locally_lt
-    ⊤ r r hr hr (3 : Ordinal)
-  have hprod : (⊤ : Closeds ℕ∞) ×ˢ (⊤ : Closeds ℕ∞) = ⊤ := by
-    ext x
-    simp
-  rw [hprod] at hbound
-  apply Closeds.ext
-  apply eq_empty_iff_forall_notMem.mpr
-  intro p hp
-  have h := hbound hp
-  change (3 : Ordinal) ≤ (r p.1 + r p.2).val at h
-  have hle (n : ℕ∞) : r n ≤ 1 := by simp [r]; split <;> simp
-  have hsum : (r p.1 + r p.2).val ≤ 2 := by
-    have hs : r p.1 + r p.2 ≤ (2 : NatOrdinal) := by
-      calc
-        _ ≤ 1 + 1 := add_le_add (hle p.1) (hle p.2)
-        _ = 2 := one_add_one_eq_two
-    exact NatOrdinal.val.monotone hs
-  have hnot : ¬ (3 : Ordinal) ≤ 2 := by
-    exact_mod_cast (show ¬ (3 : ℕ) ≤ 2 by decide)
-  exact hnot (h.trans hsum)
-
-/-- The product bound is nondegenerate: the pair of limit points survives stage two. -/
+/-- In a product of two convergent sequences, the pair of limit points survives stage two. -/
 theorem enat_product_top_mem_stage_two :
     (⊤, ⊤) ∈ (⊤ : Closeds (ℕ∞ × ℕ∞)).cantorBendixson (2 : Ordinal) := by
   have htop : (⊤ : ℕ∞) ∈ derivedSet (univ : Set ℕ∞) := by rw [enat_derivedSet_univ]; simp
@@ -150,34 +116,5 @@ theorem enat_product_top_mem_stage_two :
     Closeds.cantorBendixson_zero]
   change (⊤, ⊤) ∈ ((⊤ : Closeds (ℕ∞ × ℕ∞)).derived.derived : Set (ℕ∞ × ℕ∞))
   simpa only [Closeds.coe_derived, Closeds.coe_top] using hcol
-
-/-- The sequence limit has point rank exactly one, rather than its order index `omega`. -/
-theorem enat_top_rank :
-    (⊤ : Closeds ℕ∞).cantorBendixsonRank (Set.isPWO_of_wellQuasiOrderedLE _) ⊤ = 1 := by
-  apply ((⊤ : Closeds ℕ∞).cantorBendixsonRank_eq_iff (Set.isPWO_of_wellQuasiOrderedLE _)
-    (by trivial) 1).mpr
-  constructor
-  · rw [enat_stage_one]
-    exact mem_singleton _
-  · rw [one_add_one_eq_two, enat_stage_two]
-    exact notMem_empty _
-
-/-- Every finite point is isolated, so its point rank is zero. -/
-theorem enat_nat_rank (n : ℕ) :
-    (⊤ : Closeds ℕ∞).cantorBendixsonRank (Set.isPWO_of_wellQuasiOrderedLE _) n = 0 := by
-  apply ((⊤ : Closeds ℕ∞).cantorBendixsonRank_eq_iff (Set.isPWO_of_wellQuasiOrderedLE _)
-    (by trivial) 0).mpr
-  constructor
-  · simp
-  · rw [zero_add, enat_stage_one]
-    exact ENat.coe_ne_top n
-
-/-- The isolated rank-zero points are dense even though the limit point has rank one. -/
-theorem enat_rank_zero_dense :
-    closure {x : ℕ∞ | (⊤ : Closeds ℕ∞).cantorBendixsonRank
-      (Set.isPWO_of_wellQuasiOrderedLE _) x = 0} = univ := by
-  have hm (x : ℕ∞) : x ∈ (⊤ : Closeds ℕ∞) := by trivial
-  simpa only [hm, true_and, Closeds.cantorBendixson_zero, Closeds.coe_top] using
-    (⊤ : Closeds ℕ∞).closure_rank_level_eq (Set.isPWO_of_wellQuasiOrderedLE _) 0
 
 end Tests.CantorBendixson

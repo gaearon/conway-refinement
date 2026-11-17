@@ -82,19 +82,6 @@ theorem exp_le_exp_iff {s : TermSeq} {i j} : s.exp i ≤ s.exp j ↔ j ≤ i :=
 theorem exp_inj {s : TermSeq} {i j} : s.exp i = s.exp j ↔ i = j :=
   s.exp_strictAnti.injective.eq_iff
 
-@[simps]
-instance : Zero TermSeq where
-  zero := .mk 0 0 0 (fun _ ↦ by simp) (by simp)
-
-@[simp, grind =]
-theorem length_eq_zero {s : TermSeq} : s.length = 0 ↔ s = 0 where
-  mp h := by
-    ext x _ hx
-    · rw [h, zero_length]
-    · simp at hx
-    · simp at hx
-  mpr := by simp +contextual
-
 open Classical in
 private theorem toSurrealHahnSeries_aux (o : Ordinal.{u}) (f : Iio o → Surreal.{u} × ℝ) :
     Function.support (fun i ↦ if h : ∃ o, (f o).1 = i then (f <| Classical.choose h).2 else 0) ⊆
@@ -207,16 +194,6 @@ theorem term_coe_of_lt {s : TermSeq} {i} (h : i < s.length) :
     term s i = s.coeff ⟨i, h⟩ * ω^ s.exp ⟨i, h⟩ := by
   rw [term_of_lt (by simpa), coeffIdx_coe_of_lt, exp_coe]
 
-theorem term_coe_of_le {s : TermSeq} {i} (h : s.length ≤ i) : term s i = 0 :=
-  term_of_le (by simpa)
-
-@[aesop simp]
-theorem term_coe (s : TermSeq) (i) :
-    term s i = if h : i < s.length then s.coeff ⟨i, h⟩ * ω^ s.exp ⟨i, h⟩ else 0 := by
-  split_ifs with h
-  · exact term_coe_of_lt h
-  · exact term_coe_of_le (le_of_not_gt h)
-
 /-- `TermSeq` and `SurrealHahnSeries` are alternate representations for the same structure. -/
 @[simps!, expose]
 def surrealHahnSeriesEquiv : TermSeq ≃ SurrealHahnSeries where
@@ -240,19 +217,6 @@ def surrealHahnSeriesEquiv : TermSeq ≃ SurrealHahnSeries where
 @[simp]
 theorem coe_ofSurrealHahnSeries (x : SurrealHahnSeries) : ofSurrealHahnSeries x = x :=
   surrealHahnSeriesEquiv.apply_symm_apply x
-
-@[simp]
-theorem ofSurrealHahnSeries_coe (x : TermSeq) : ofSurrealHahnSeries x = x :=
-  surrealHahnSeriesEquiv.symm_apply_apply x
-
-@[simp]
-theorem coe_inj {x y : TermSeq} : (x : SurrealHahnSeries) = y ↔ x = y :=
-  surrealHahnSeriesEquiv.apply_eq_iff_eq
-
-@[simp]
-theorem ofSurrealHahnSeries_inj {x y : SurrealHahnSeries} :
-    ofSurrealHahnSeries x = ofSurrealHahnSeries y ↔ x = y :=
-  surrealHahnSeriesEquiv.symm.apply_eq_iff_eq
 
 end TermSeq
 

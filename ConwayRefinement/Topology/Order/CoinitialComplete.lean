@@ -52,36 +52,12 @@ theorem fillsCuts_iff (ι : Type w) (G : Type u) [Preorder G] :
       ∀ L R : ι → G, (∀ i j, L i < R j) → ∃ z, (∀ i, L i ≤ z) ∧ ∀ j, z ≤ R j :=
   Iff.rfl
 
-/-- A conditionally complete order fills every cut between nonempty families: the supremum of the
-lower family is bounded above by the upper one, and lies below all of it. -/
-theorem fillsCuts_of_conditionallyCompleteLinearOrder {ι : Type w} [Nonempty ι]
-    {G : Type u} [ConditionallyCompleteLinearOrder G] : FillsCuts ι G := by
-  intro L R hLR
-  have hbdd : BddAbove (Set.range L) :=
-    ⟨R (Classical.arbitrary ι), by rintro _ ⟨i, rfl⟩; exact (hLR i _).le⟩
-  refine ⟨sSup (Set.range L), fun i ↦ le_csSup hbdd ⟨i, rfl⟩, fun j ↦ ?_⟩
-  exact csSup_le (Set.range_nonempty L) (by rintro _ ⟨i, rfl⟩; exact (hLR i j).le)
-
 /-- **Cut filling passes to a quotient.** A surjection that preserves `≤` and reflects `<` carries
 the property of filling `ι`-indexed cuts along with it: lift the two families to representatives,
 which the reflected order still separates, fill the cut upstairs, and push the filler down.
 
 For a quotient of an ordered group by a convex subgroup the hypotheses hold, so the quotient fills
 cuts as soon as the group does — which for the surreals is the simplicity theorem at sets. -/
-@[blueprint "lem:cut-filling-order-reflecting-surjection"
-  (phase := "A cut criterion for Cauchy completeness")
-  (title := "Cut filling under monotone order-reflecting surjections")
-  (statement := /--
-    Let $f\colon G\twoheadrightarrow C$ be a monotone surjection of preordered
-    sets that reflects strict inequalities.  If every cut between two
-    $I$-indexed families in $G$ can be filled, then the same is true in $C$.
-  -/)
-  (proof := /--
-    Choose preimages in $G$ of the two families in $C$.  Reflection of strict
-    inequalities keeps the lifted families separated.  Fill their cut in
-    $G$, then apply $f$; monotonicity places the image between the two original
-    families.
-  -/)]
 theorem FillsCuts.of_surjective {ι : Type w} {G : Type u} {C : Type*} [Preorder G] [Preorder C]
     {f : G → C} (hsurj : Function.Surjective f) (hmono : Monotone f)
     (hreflect : ∀ a b : G, f a < f b → a < b) (hG : FillsCuts ι G) : FillsCuts ι C := by
@@ -100,22 +76,6 @@ theorem mem_uniformity_Ioo_of_pos {c : G} (hc : 0 < c) :
   rw [uniformity_eq_comap_nhds_zero G]
   exact ⟨Ioo (-c) c, Ioo_mem_nhds (neg_neg_iff_pos.mpr hc) hc, subset_rfl⟩
 
-/-- Conversely every entourage contains a symmetric interval of positive radius. -/
-theorem exists_pos_Ioo_subset_of_mem_uniformity [Nontrivial G] {s : Set (G × G)}
-    (hs : s ∈ 𝓤 G) : ∃ c : G, 0 < c ∧ {p : G × G | p.2 - p.1 ∈ Ioo (-c) c} ⊆ s := by
-  rw [uniformity_eq_comap_nhds_zero G] at hs
-  obtain ⟨W, hW, hWs⟩ := hs
-  obtain ⟨x, hx⟩ := exists_ne (0 : G)
-  have hpos : (0 : G) < |x| := abs_pos.mpr hx
-  obtain ⟨l, u, hlu, hsub⟩ :=
-    (mem_nhds_iff_exists_Ioo_subset' ⟨-|x|, neg_neg_iff_pos.mpr hpos⟩ ⟨|x|, hpos⟩).mp hW
-  refine ⟨min (-l) u, lt_min (neg_pos.mpr hlu.1) hlu.2, fun p hp ↦ hWs ?_⟩
-  refine hsub ⟨?_, ?_⟩
-  · refine lt_of_le_of_lt ?_ hp.1
-    rw [le_neg]
-    exact min_le_left (-l) u
-  · exact hp.2.trans_le (min_le_right (-l) u)
-
 /-- **Completeness from a coinitial family and fillable cuts.** If the positive elements of `G`
 admit a coinitial family `ε : ι → G` whose members each fit twice below any prescribed positive
 element, and every cut between two `ι`-indexed families of `G` is filled, then `G` is Cauchy
@@ -124,19 +84,16 @@ complete.
 Only cuts indexed by the same `ι` as the coinitial family are used, so for a quotient of the
 surreals by a convex subgroup this asks for the simplicity theorem at sets, not at classes. -/
 @[blueprint "lem:complete-of-coinitial-scales-and-cut-filling"
-  (phase := "A cut criterion for Cauchy completeness")
+  (phase := "Surreal numbers and omnific integers")
   (title := "A cut criterion for Cauchy completeness")
   (statement := /--
-    Let $G$ be an ordered abelian group whose order topology is induced by a
-    compatible additive uniformity, and let $I$ be nonempty.  Suppose there
-    are elements $\varepsilon_i>0$ such that, for every $c>0$, some $i\in I$
-    satisfies
-    \[
-      \varepsilon_i+\varepsilon_i\le c.
-    \]
-    Suppose also that whenever $L_i<R_j$ for all $i,j\in I$, there is
-    $z\in G$ with $L_i\le z\le R_j$ for all $i,j$.  Then $G$ is Cauchy
-    complete.
+    Let $G$ be an ordered abelian group with its order topology and the
+    associated group uniformity, and let $I$ be a nonempty set.  Suppose there
+    are elements $\varepsilon_i>0$, $i\in I$, such that for every $c>0$ some
+    $i\in I$ satisfies $2\varepsilon_i\le c$.  Suppose also that for all
+    families $(l_i)_{i\in I}$ and $(r_i)_{i\in I}$ with $l_i<r_j$ for all
+    $i,j\in I$ there is $z\in G$ with $l_i\le z\le r_j$ for all $i,j$.  Then $G$
+    is Cauchy complete.
   -/)
   (proof := /--
     For a Cauchy filter and each $i$, choose a set of diameter less than
@@ -224,15 +181,3 @@ theorem completeSpace_of_coinitial_of_exists_half {ι : Type w} [Nonempty ι] (�
   obtain ⟨i, hi⟩ := hcoinitial d hd
   exact ⟨i, (add_le_add hi hi).trans hdc⟩
 
-/-- **Completeness of a group that fills its own cuts.** Taking the positive elements themselves as
-the coinitial family removes that hypothesis entirely, leaving cut filling as the sole burden.
-
-This is the form to aim at inside a set-sized group, where a coinitial family is free but filling
-cuts is not, rather than in an ambient group where the reverse holds. -/
-theorem completeSpace_of_fillsCuts_pos (hpos : ∃ c : G, 0 < c)
-    (hhalf : ∀ c : G, 0 < c → ∃ d : G, 0 < d ∧ d + d ≤ c)
-    (hcut : FillsCuts {x : G // 0 < x} G) : CompleteSpace G := by
-  obtain ⟨c₀, hc₀⟩ := hpos
-  haveI : Nonempty {x : G // 0 < x} := ⟨⟨c₀, hc₀⟩⟩
-  exact completeSpace_of_coinitial_of_exists_half Subtype.val (fun i ↦ i.2)
-    (fun c hc ↦ ⟨⟨c, hc⟩, le_rfl⟩) hhalf hcut

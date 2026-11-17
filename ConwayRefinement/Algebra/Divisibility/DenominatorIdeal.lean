@@ -6,11 +6,11 @@ Authors: Dan Abramov
 module
 
 public import ConwayRefinement.Algebra.Divisibility.Refinement
-public import Mathlib.Algebra.Ring.Subring.Basic
 public import Mathlib.RingTheory.Ideal.Defs
 
 import Mathlib.Tactic.FieldSimp
-import Mathlib.Tactic.Ring
+import Mathlib.Data.Finset.Attr
+import Mathlib.Tactic.Ring.RingNF
 
 /-!
 # Denominator ideals and four-factor refinement
@@ -56,12 +56,6 @@ theorem mem_denominatorIdeal_iff (R : Subring K) (ξ : K) (x : R) :
 the subring. -/
 def denominatorNumerator (R : Subring K) (ξ : K) (x : denominatorIdeal R ξ) : R :=
   ⟨ξ * (x : R), x.2⟩
-
-@[simp]
-theorem coe_denominatorNumerator (R : Subring K) (ξ : K)
-    (x : denominatorIdeal R ξ) :
-    (denominatorNumerator R ξ x : K) = ξ * (x : R) :=
-  (rfl)
 
 /-- Two nonzero elements of a denominator ideal have a nonzero common divisor in that ideal
 exactly when their associated rank-one equality has a four-factor refinement in the subring. -/

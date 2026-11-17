@@ -6,10 +6,12 @@ Authors: Dan Abramov
 module
 
 public import ConwayRefinement.Standalone.Mathlib.CompleteHahnGerm
-public import ConwayRefinement.HahnSeries.IntegerPart.Refinement.CompleteGermRefinement
+public import ConwayRefinement.HahnSeries.Germ.PolynomialRing
 
 import ConwayRefinement.Algebra.Divisibility.Refinement
+import ConwayRefinement.RingTheory.TruncationGerms.Transcendence
 import Mathlib.Algebra.Ring.Hom.InjSurj
+import Mathlib.RingTheory.Polynomial.UniqueFactorization
 
 public noncomputable section
 
@@ -42,15 +44,13 @@ private def seriesAlgEquiv :
 @[simp] private theorem coe_seriesEquiv (x : NonpositiveSeries G K) :
     ((seriesAlgEquiv x : HahnSeries.Nonpositive G K) : HahnSeries G K) = x := rfl
 
-variable [NoMinOrder G]
-variable [UniformSpace G] [IsUniformAddGroup G] [OrderTopology G]
-variable [Nontrivial G] [CompleteSpace G] [CharZero K]
+variable [Nontrivial G]
 
 private theorem boundedAwayIdeal_map_eq :
-    (HahnSeries.Nonpositive.cantorBendixsonValuation (G := G) (R := K)).supp =
+    (HahnSeries.Nonpositive.boundedAwayIdeal G K) =
       (BoundedAwayIdeal G K).map seriesAlgEquiv := by
   ext y
-  rw [HahnSeries.Nonpositive.mem_cantorBendixsonValuation_supp,
+  rw [HahnSeries.Nonpositive.mem_boundedAwayIdeal,
     Ideal.mem_map_iff_of_surjective seriesAlgEquiv seriesAlgEquiv.surjective]
   constructor
   · rintro ⟨r, hr, hyr⟩
@@ -63,25 +63,36 @@ private theorem boundedAwayIdeal_map_eq :
 /-- The internal Cantor–Bendixson construction gives the standalone polynomial presentation. -/
 theorem isPolynomialRing (G : Type u) (K : Type v)
     [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G]
-    [NoMinOrder G] [Field K] :
+    [Nontrivial G] [Field K] :
     IsPolynomialRing G K := by
-  intro _ _ _ _ _ _ _ _ _
+  intro _ _ _ _ _
   obtain ⟨ι, ⟨equiv⟩⟩ :=
     HahnSeries.Nonpositive.exists_mvPolynomial_algEquiv_germ (G := G) (K := K)
   let quotientEquiv : Germ G K ≃ₐ[K]
       HahnSeries.Nonpositive G K ⧸
-        (HahnSeries.Nonpositive.cantorBendixsonValuation (G := G) (R := K)).supp :=
+        (HahnSeries.Nonpositive.boundedAwayIdeal G K) :=
     Ideal.quotientEquivAlg (BoundedAwayIdeal G K)
-      (HahnSeries.Nonpositive.cantorBendixsonValuation (G := G) (R := K)).supp
+      (HahnSeries.Nonpositive.boundedAwayIdeal G K)
       seriesAlgEquiv boundedAwayIdeal_map_eq
   exact ⟨ι, ⟨equiv.trans quotientEquiv.symm⟩⟩
+
+/-- A polynomial presentation over a field is an integral domain, so the ideal is prime. -/
+theorem boundedAwayIdealIsPrime (G : Type u) (K : Type v)
+    [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G]
+    [Nontrivial G] [Field K] :
+    BoundedAwayIdealIsPrime G K := by
+  intro _ _ _ _ _
+  obtain ⟨ι, ⟨equiv⟩⟩ := isPolynomialRing G K
+  letI : IsDomain (Germ G K) :=
+    Function.Injective.isDomain equiv.symm.toRingHom equiv.symm.injective
+  exact (Ideal.Quotient.isDomain_iff_prime _).mp inferInstance
 
 /-- A polynomial presentation gives four-factor refinement. -/
 theorem hasRefinement (G : Type u) (K : Type v)
     [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G]
-    [NoMinOrder G] [Field K] :
+    [Nontrivial G] [Field K] :
     HasRefinement G K := by
-  intro _ _ _ _ _ _ _ _ _
+  intro _ _ _ _ _
   obtain ⟨ι, ⟨equiv⟩⟩ := isPolynomialRing G K
   letI : IsDomain (Germ G K) :=
     Function.Injective.isDomain equiv.symm.toRingHom equiv.symm.injective

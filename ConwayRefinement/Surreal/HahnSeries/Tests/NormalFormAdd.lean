@@ -5,7 +5,8 @@ Authors: Dan Abramov, Violeta Hernández Palacios
 -/
 module
 
-public import ConwayRefinement.Surreal.HahnSeries.NormalFormAdd
+public import ConwayRefinement.Surreal.HahnSeries.NormalForm
+import ConwayRefinement.Surreal.HahnSeries.NormalFormAdd
 
 /-!
 # API checks for additive Conway normal forms

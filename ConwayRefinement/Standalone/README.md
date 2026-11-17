@@ -16,7 +16,6 @@ $$
 | Formulation | Statement | Proof |
 |---|---|---|
 | Surreal numbers defined inline from Mathlib | [`Mathlib/InlineConwayRefinement.lean`](Mathlib/InlineConwayRefinement.lean) | [`Mathlib/InlineConwayRefinementProof.lean`](Mathlib/InlineConwayRefinementProof.lean) |
-| Generalised power series over saturated exponent groups, using Mathlib | [`Mathlib/HahnIntegerPartRefinement.lean`](Mathlib/HahnIntegerPartRefinement.lean) | [`Mathlib/HahnIntegerPartRefinementProof.lean`](Mathlib/HahnIntegerPartRefinementProof.lean) |
 | Surreal numbers from CombinatorialGames | [`CombinatorialGames/ConwayRefinement.lean`](CombinatorialGames/ConwayRefinement.lean) | [`CombinatorialGames/ConwayRefinementProof.lean`](CombinatorialGames/ConwayRefinementProof.lean) |
 
 ## Other main results
@@ -27,8 +26,9 @@ $$
 | GCDs and primality in $K((\mathbb R^{\le 0}))$ | [`Mathlib/HahnSeriesGCD.lean`](Mathlib/HahnSeriesGCD.lean) | [`Mathlib/HahnSeriesGCDProof.lean`](Mathlib/HahnSeriesGCDProof.lean) |
 | Polynomiality and refinement of complete Hahn germs | [`Mathlib/CompleteHahnGerm.lean`](Mathlib/CompleteHahnGerm.lean) | [`Mathlib/CompleteHahnGermProof.lean`](Mathlib/CompleteHahnGermProof.lean) |
 | Berarducci's germ ring is a polynomial ring and a UFD | [`Mathlib/GermPolynomialRing.lean`](Mathlib/GermPolynomialRing.lean) | [`Mathlib/GermPolynomialRingProof.lean`](Mathlib/GermPolynomialRingProof.lean) |
-| Algebraic independence of minimal homogeneous families in $\widehat{\mathrm P}$ | [`CombinatorialGames/PrincipalRVAlgebraicIndependence.lean`](CombinatorialGames/PrincipalRVAlgebraicIndependence.lean) | [`CombinatorialGames/PrincipalRVAlgebraicIndependenceProof.lean`](CombinatorialGames/PrincipalRVAlgebraicIndependenceProof.lean) |
 | Primality and unique irreducible factorisation of omnific integers | [`CombinatorialGames/Examples/OmnificFactorization.lean`](CombinatorialGames/Examples/OmnificFactorization.lean) | [`CombinatorialGames/Examples/OmnificFactorizationProof.lean`](CombinatorialGames/Examples/OmnificFactorizationProof.lean) |
+| Roots of every order of $\omega$ in the omnific integers | [`CombinatorialGames/Examples/OmegaRoots.lean`](CombinatorialGames/Examples/OmegaRoots.lean) | [`CombinatorialGames/Examples/OmegaRootsProof.lean`](CombinatorialGames/Examples/OmegaRootsProof.lean) |
+| Roots of every order of $t^{-1}$ in $\mathbb Q((\mathbb R^{\le 0}))$ | [`Mathlib/Examples/NegativeMonomialRoots.lean`](Mathlib/Examples/NegativeMonomialRoots.lean) | [`Mathlib/Examples/NegativeMonomialRootsProof.lean`](Mathlib/Examples/NegativeMonomialRootsProof.lean) |
 
 Reader-worthy examples live in the adjacent `Examples/` directories. Proof-only definitions and
 lemmas live under `Support/`.

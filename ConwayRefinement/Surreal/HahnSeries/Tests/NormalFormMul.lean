@@ -22,17 +22,6 @@ namespace Tests
 
 open SurrealHahnSeries
 
-/-- Integer casts use the public constant-singleton representation. -/
-example (n : ℤ) :
-    (n : SurrealHahnSeries) = single 0 (n : ℝ) :=
-  intCast_eq_single_zero n
-
-/-- Arbitrary Conway normal forms preserve multiplication by integer constants. -/
-example (n : ℤ) (x : Surreal) :
-    ((n : Surreal) * x).toHahnSeries =
-      single 0 (n : ℝ) * x.toHahnSeries :=
-  Surreal.toHahnSeries_intCast_mul n x
-
 /-- Arbitrary normal forms preserve multiplication by rational constants. -/
 example (q : ℚ) (x : SurrealHahnSeries) :
     (single 0 (q : ℝ) * x).toSurreal = (q : Surreal) * x.toSurreal :=
@@ -74,22 +63,10 @@ example (x y a b : SurrealHahnSeries) :
     mulOptionValue x y a b = a * y + x * b - a * b :=
   mulOptionValue_eq x y a b
 
-/-- Formal and Conway multiplication agree on the leading normal-form term. -/
-example (x y : SurrealHahnSeries) :
-    (x * y).toSurreal.leadingTerm = (x.toSurreal * y.toSurreal).leadingTerm :=
-  leadingTerm_toSurreal_mul x y
-
 /-- A nonzero product coefficient publicly yields a contributing pair of source exponents. -/
 example {x y : SurrealHahnSeries} {k : Surreal} (hk : k ∈ (x * y).support) :
     ∃ p ∈ x.support, ∃ q ∈ y.support, p + q = k :=
   exists_add_eq_of_mem_support_mul hk
-
-/-- Nonnegative support and integer-part constant coefficients are stable under multiplication. -/
-example {x y : SurrealHahnSeries}
-    (hx : x.support ⊆ Set.Ici 0) (hy : y.support ⊆ Set.Ici 0) :
-    (x * y).support ⊆ Set.Ici 0 ∧
-      (x * y).coeff 0 = x.coeff 0 * y.coeff 0 :=
-  ⟨support_mul_subset_Ici hx hy, coeff_zero_mul_of_support_subset_Ici hx hy⟩
 
 /-- Every left truncation of a product is dominated by a genuine left product option. -/
 example {x y t : SurrealHahnSeries} (ht : t ∈ truncLT (x * y)) :
@@ -102,16 +79,6 @@ example {x y t : SurrealHahnSeries} (ht : t ∈ truncGT (x * y)) :
     ∃ a ∈ truncLT x, ∃ b ∈ truncGT y,
       x * y < mulOptionValue x y a b ∧ mulOptionValue x y a b < t :=
   exists_mulOptionValue_between_of_mem_truncGT ht
-
-/-- The limit-by-limit step consumes multiplication only for strictly shorter recursive inputs. -/
-example {x y : SurrealHahnSeries}
-    (hx : IsSuccPrelimit x.length) (hy : IsSuccPrelimit y.length)
-    (hmul : ∀ a b : SurrealHahnSeries,
-      a.length ≤ x.length → b.length ≤ y.length →
-      (a.length < x.length ∨ b.length < y.length) →
-      (a * b).toSurreal = a.toSurreal * b.toSurreal) :
-    (x * y).toSurreal = x.toSurreal * y.toSurreal :=
-  toSurreal_mul_of_isSuccPrelimit hx hy hmul
 
 /-- The exact recursive limit step accepts the left and right length axes independently. -/
 example {x y : SurrealHahnSeries}

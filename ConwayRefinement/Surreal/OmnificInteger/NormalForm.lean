@@ -10,8 +10,9 @@ https://github.com/vihdzp/combinatorial-games/pull/317
 -/
 module
 
-public import ConwayRefinement.Surreal.HahnSeries.NormalFormAdd
 public import ConwayRefinement.Surreal.OmnificInteger.Basic
+public import ConwayRefinement.Surreal.HahnSeries.Transfer
+import ConwayRefinement.Surreal.HahnSeries.NormalFormAdd
 
 /-!
 # Conway normal forms of omnific integers
@@ -52,20 +53,6 @@ theorem IsOmnificInteger.lt_one_iff_nonpos {x : Surreal.{u}}
     (h : IsOmnificInteger x) : x < 1 ↔ x ≤ 0 := by
   rw [← not_iff_not]
   simpa only [not_le, not_lt] using h.one_le_iff_pos
-
-/-- An omnific integer strictly between negative one and one is zero. -/
-theorem IsOmnificInteger.eq_zero_of_mem_Ioo_neg_one_one {x : Surreal.{u}}
-    (hx : IsOmnificInteger x) (hbound : x ∈ Ioo (-1) 1) : x = 0 := by
-  have hxNonpos : x ≤ 0 := hx.lt_one_iff_nonpos.mp hbound.2
-  have hnegNonpos : -x ≤ 0 := hx.neg.lt_one_iff_nonpos.mp (by linarith [hbound.1])
-  linarith
-
-/-- Two omnific integers whose difference is strictly between negative one and one are equal. -/
-theorem IsOmnificInteger.eq_of_sub_mem_Ioo_neg_one_one {x y : Surreal.{u}}
-    (hx : IsOmnificInteger x) (hy : IsOmnificInteger y)
-    (hbound : x - y ∈ Ioo (-1) 1) : x = y := by
-  have hzero := (hx.sub hy).eq_zero_of_mem_Ioo_neg_one_one hbound
-  linarith
 
 /-- A real number is an omnific integer exactly when it is the image of an integer. -/
 @[simp]

@@ -6,37 +6,18 @@ Authors: Dan Abramov
 module
 
 import Mathlib.Algebra.Divisibility.Basic
-import Mathlib.Algebra.DirectSum.Ring
-import Mathlib.Algebra.Group.Subgroup.Lattice
-import Mathlib.Algebra.MonoidAlgebra.ToDirectSum
 import Mathlib.Algebra.MvPolynomial.Eval
-import Mathlib.Algebra.Order.Archimedean.Real.Basic
-import Mathlib.FieldTheory.AlgebraicClosure
-import Mathlib.LinearAlgebra.Basis.VectorSpace
-import Mathlib.LinearAlgebra.DirectSum.TensorProduct
 import Mathlib.LinearAlgebra.Dual.Lemmas
 import Mathlib.LinearAlgebra.Projection
-import Mathlib.RingTheory.Derivation.Basic
 import Mathlib.RingTheory.HahnSeries.Cardinal
-import Mathlib.RingTheory.Ideal.Prime
 import Mathlib.RingTheory.Ideal.Quotient.Operations
 import Mathlib.RingTheory.Ideal.Span
 import Mathlib.RingTheory.Localization.Basic
-import Mathlib.RingTheory.Localization.BaseChange
 import Mathlib.RingTheory.Localization.FractionRing
-import Mathlib.RingTheory.Valuation.Basic
-import Mathlib.RingTheory.Valuation.ExtendToLocalization
-import Mathlib.RingTheory.Valuation.Integers
-import Mathlib.RingTheory.TensorProduct.Maps
-import Mathlib.RingTheory.TensorProduct.MonoidAlgebra
-import Mathlib.Order.Bounds.OrderIso
-import Mathlib.Order.Filter.Germ.Basic
 import Mathlib.Order.Hom.Set
 import Mathlib.SetTheory.Ordinal.Arithmetic
 import Mathlib.SetTheory.Ordinal.Principal
 import Mathlib.SetTheory.Cardinal.Cofinality.Basic
-import Mathlib.SetTheory.ZFC.Class
-import Mathlib.SetTheory.Ordinal.Family
 import CombinatorialGames.NatOrdinal.Pow
 import CombinatorialGames.Surreal.HahnSeries.Basic
 import CombinatorialGames.Surreal.Ordinal
@@ -52,12 +33,6 @@ the module consists precisely of checked signature fixtures.
 set_option linter.hashCommand false
 
 universe u v w
-
-#check @FractionRing
-
-#check @algebraicClosure
-
-#check @minpoly.natDegree_eq_one_iff
 
 #check (@IsPrimal : {α : Type u} → [Semigroup α] → α → Prop)
 
@@ -76,25 +51,11 @@ universe u v w
 
 #check NatOrdinal.wpow_add
 
-#check Ordinal.isPrincipal_mul_iff_le_two_or_omega0_opow_opow
-
-#check Ordinal.log_opow
-
-#check Ordinal.opow_add
-
 #check StrictMonoOn.orderIso
 
 #check Ordinal.isSuccPrelimit_type_lt_iff
 
-#check Ordinal.lt_mul_iff_of_isSuccLimit
-
-#check OrderIso.isLUB_image'
-
-#check List.dropLast_append_getLast
-
 #check Ideal.span
-
-#check Ideal.IsPrime.mem_or_mem
 
 #check Ideal.mul_mem_right
 
@@ -102,137 +63,22 @@ universe u v w
 
 #check Ideal.Quotient.eq
 
-#check AddSubgroup.mem_sup
-
-#check Valuation
-
-#check Valuation.supp
-
-#check Valuation.extendToLocalization
-
 #check QuotientAddGroup.map
 #check QuotientAddGroup.lift
 
-#check DirectSum.map
-#check DirectSum.toModule
-
-#check Submonoid.IsLocalizationMap
-
 #check Localization.algEquiv
-
-#check IsLocalization.ringEquivOfRingEquiv
-
-#check IsLocalization.tensorProductEquivOfMapIncludeRight
-
-#check FractionRing
 
 #check IsLocalization.lift
 
-#check IsLocalization.lift_mk'_spec
-
 #check IsLocalization.ringHom_ext
 
-#check Algebra.TensorProduct.rightAlgebra
-
-#check IsLocalization.isDomain_localization
-
-#check Valuation.integer
-
-#check Valuation.ltIdeal
-
-#check DirectSum.GCommRing
-
-#check DirectSum.GSemiring
-
-#check DirectSum.GNonUnitalNonAssocSemiring.add_mul
-
-#check DirectSum.GNonUnitalNonAssocSemiring.mul_add
-
-#check LinearMap.mk₂
-
-#check LinearEquiv.cast
-
-#check AddEquiv.cast
-
-#check DirectSum.toAlgebra
-
-#check DirectSum.of_eq_of_gradedMonoid_eq
-
-#check Derivation.mk'
-
-#check Finset.set_biUnion_insert
-
-#check NatOrdinal.add_lt_wpow
-
-#check DirectSum.mul_eq_sum_support_ghas_mul
-
-#check AddMonoidAlgebra.toDirectSum
-
-#check AddMonoidAlgebra.toDirectSum_mul
-
-#check DirectSum.toAddMonoidAlgebra_toDirectSum
-
-#check AddMonoidAlgebra.scalarTensorEquiv
-
-#check AddMonoidAlgebra.scalarTensorEquiv_tmul
-
-#check AddMonoidAlgebra.scalarTensorEquiv_symm_single
-
-#check AddMonoidAlgebra.mapRingHom
-
-#check AddMonoidAlgebra.range_map
-
 #check Finset.max
-
-#check Con
-
-#check Con.mk'
-
-#check DirectSum.ofZeroRingHom
-
-#check TensorProduct.directSumLeft
-
-#check Filter.Germ
-
-#check Filter.Germ.map
-
-#check Filter.Germ.LiftPred
-
-#check Filter.Germ.inductionOn
-
-#check TensorProduct.map
-
-#check TensorProduct.lift
-
-#check LinearMap.rTensor
-
-#check LinearMap.leftInverse_comp_of_inj
-
-#check DirectSum.congrLinearEquiv
-
-#check Algebra.TensorProduct.productMap
-
-#check AlgEquiv.ofBijective
 
 #check Submodule.exists_isCompl
 
 #check Submodule.quotientEquivOfIsCompl
 
-#check Module.Free.chooseBasis
-
-#check Module.Projective.exists_dual_eq_one
-
 #check MvPolynomial.aeval
-
-#check RingHom.quotientKerEquivOfSurjective
-
-#check RingHom.mem_range
-
-#check Finsupp.ne_iff
-
-#check IsField.mul_inv_cancel
-
-#check csInf_mem
 
 #check NatOrdinal.of
 
@@ -330,15 +176,5 @@ universe u v w
   (@SurrealHahnSeries.type_support :
     ∀ x : SurrealHahnSeries.{u},
       Ordinal.type (α := x.support) (· > ·) = Ordinal.lift.{u + 1} x.length)
-
-#check (@ZFSet.small_coe : ∀ x : ZFSet.{u}, Small.{u} x)
-
-#check (@ZFSet.coeEquiv : ZFSet.{u} ≃ {s : Set ZFSet.{u} // Small.{u} s})
-
-#check (@ZFSet.range : {α : Type v} → [Small.{u} α] → (α → ZFSet.{u}) → ZFSet.{u})
-
-#check
-  (@not_injective_of_ordinal :
-    ∀ {α : Type v} [Small.{u} α] (f : Ordinal.{u} → α), ¬Function.Injective f)
 
 #check (@NatOrdinal.toSurreal : NatOrdinal.{u} ↪o Surreal.{u})

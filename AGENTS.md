@@ -29,15 +29,15 @@ development and its generated proof blueprint.
 ## Repository architecture
 
 Modules are organized by their mathematical objects. General mathematics lives under `Algebra/`,
-`Data/`, `FieldTheory/`, `LinearAlgebra/`, `Order/`, `RingTheory/`, `SetTheory/`, and `Topology/`.
-The main subject modules live under `HahnSeries/` and `Surreal/`; their subdirectories name the
-mathematical construction or conclusion, such as ordinal value, polynomial algebra, factorization,
-integer parts, and omnific integers. Source attribution belongs in module documentation and the
-source index, not in the directory name.
+`Order/`, `RingTheory/`, `SetTheory/`, and `Topology/`. The main subject modules live under
+`HahnSeries/` and `Surreal/`; their subdirectories name the mathematical construction or
+conclusion, such as germs, Cantor–Bendixson rank, convex subgroups, integer parts, and omnific
+integers. Source attribution belongs in module documentation and the source index, not in the
+directory name.
 
-Imports run from general mathematics to Hahn series to surreal numbers. `Examples/`, `Standalone/`,
-and local `Tests/` directories are leaves. `Tests/` contains compiled clients of nearby public APIs,
-while `Examples/` contains reader-worthy mathematics.
+Imports run from general mathematics to Hahn series to surreal numbers. `Standalone/`, including
+its `Examples/` directories, and local `Tests/` directories are leaves. `Tests/` contains compiled
+clients of nearby public APIs, while `Standalone/*/Examples/` contains reader-worthy mathematics.
 
 `lake exe layering` enforces these boundaries. `ConwayRefinement/` is a module root, not a namespace
 requirement; generic declarations belong in mathematical namespaces such as `HahnSeries`.

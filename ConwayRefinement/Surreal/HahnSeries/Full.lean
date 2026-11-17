@@ -5,10 +5,22 @@ Authors: Dan Abramov
 -/
 module
 
-public import Mathlib.RingTheory.HahnSeries.Multiplication
-public import ConwayRefinement.Surreal.HahnSeries.NormalFormMul
 
 import all CombinatorialGames.Surreal.HahnSeries.Basic
+public import ConwayRefinement.Surreal.HahnSeries.Transfer
+import ConwayRefinement.Surreal.HahnSeries.NormalFormAdd
+import ConwayRefinement.Surreal.HahnSeries.NormalFormMul
+
+/-!
+# Conway normal forms as Hahn series
+
+Every surreal number is the sum of its Conway normal form. Recording the normal form as a Hahn
+series in `t = ω⁻¹` with dual exponents gives the full Hahn-series embedding of the surreal numbers;
+negating exponents puts it in a Hahn field whose exponent group is `Surreal` itself.
+-/
+
+section
+
 
 /-!
 # Conway normal forms in the full Hahn field
@@ -64,27 +76,6 @@ theorem toFullHahnSeries_add (x y : Surreal.{u}) :
   rw [coeff_toFullHahnSeries, HahnSeries.coeff_add, coeff_toFullHahnSeries,
     coeff_toFullHahnSeries]
   exact congrFun (coeff_add x y) i.ofDual
-
-/-- The full Conway Hahn-series map preserves negation. -/
-@[simp]
-theorem toFullHahnSeries_neg (x : Surreal.{u}) :
-    (-x).toFullHahnSeries = -x.toFullHahnSeries := by
-  ext i
-  rw [coeff_toFullHahnSeries, HahnSeries.coeff_neg, coeff_toFullHahnSeries]
-  exact congrFun (coeff_neg x) i.ofDual
-
-/-- The full Conway Hahn-series map as an additive homomorphism. -/
-def toFullHahnSeriesAddMonoidHom :
-    Surreal.{u} →+ HahnSeries Surrealᵒᵈ ℝ where
-  toFun := toFullHahnSeries
-  map_zero' := toFullHahnSeries_zero
-  map_add' := toFullHahnSeries_add
-
-/-- Evaluation of the additive full Conway Hahn-series homomorphism. -/
-@[simp]
-theorem toFullHahnSeriesAddMonoidHom_apply (x : Surreal.{u}) :
-    toFullHahnSeriesAddMonoidHom x = x.toFullHahnSeries :=
-  (rfl)
 
 /-- The additive full Conway Hahn-series map is injective. -/
 theorem toFullHahnSeries_injective :
@@ -153,93 +144,42 @@ theorem toFullHahnSeries_wpow (x : Surreal.{u}) :
       exact fun h ↦ hi (by simpa using congrArg OrderDual.toDual h)
     simp [hi, hi']
 
-/-- A real scalar times a Conway monomial becomes the corresponding full Hahn monomial. -/
-theorem toFullHahnSeries_realCast_mul_wpow (r : ℝ) (i : Surreal.{u}) :
-    toFullHahnSeries ((r : Surreal) * ω^ i) =
-      HahnSeries.single (OrderDual.toDual i) r := by
-  have hcoeff : ((r : Surreal) * ω^ i).coeff = Pi.single i r := by
-    rw [← coeff_toHahnSeries]
-    have hnormal :
-        toHahnSeries ((r : Surreal) * ω^ i) = SurrealHahnSeries.single i r := by
-      rw [← SurrealHahnSeries.toSurreal_single i r,
-        SurrealHahnSeries.toHahnSeries_toSurreal]
-    rw [hnormal, SurrealHahnSeries.coeff_single]
-  ext j
-  rw [coeff_toFullHahnSeries, hcoeff, HahnSeries.coeff_single]
-  by_cases hj : j = OrderDual.toDual i
-  · subst j
-    simp
-  · have hj' : j.ofDual ≠ i := by
-      exact fun h ↦ hj (by simpa using congrArg OrderDual.toDual h)
-    simp [hj, hj']
+end Surreal
 
-/-- A surreal number with finite Conway support is the finite sum of its nonzero Conway
-monomials. -/
-theorem eq_sum_coeff_mul_wpow_of_support_finite {x : Surreal.{u}}
-    (hx : x.support.Finite) :
-    x = ∑ i ∈ hx.toFinset, (x.coeff i : Surreal) * ω^ i := by
-  apply toFullHahnSeries_injective
-  rw [← toFullHahnSeriesAddMonoidHom_apply x,
-    ← toFullHahnSeriesAddMonoidHom_apply (∑ i ∈ hx.toFinset,
-      (x.coeff i : Surreal) * ω^ i)]
-  rw [map_sum]
-  simp_rw [toFullHahnSeriesAddMonoidHom_apply,
-    toFullHahnSeries_realCast_mul_wpow]
-  ext j
-  rw [coeff_toFullHahnSeries, HahnSeries.coeff_sum]
-  by_cases hj : j.ofDual ∈ x.support
-  · rw [Finset.sum_eq_single j.ofDual]
-    · simp
-    · intro b hb hne
-      rw [HahnSeries.coeff_single_of_ne]
-      exact fun h ↦ hne (by simpa using (congrArg OrderDual.ofDual h).symm)
-    · exact fun hnot ↦ (hnot (hx.mem_toFinset.mpr hj)).elim
-  · rw [Finset.sum_eq_zero]
-    · exact notMem_support_iff.mp hj
-    · intro b hb
-      rw [HahnSeries.coeff_single_of_ne]
-      exact fun h ↦ hj (by
-        have hb' : b ∈ x.support := hx.mem_toFinset.mp hb
-        simpa [h] using hb')
+end
+end
 
-/-- The full Conway Hahn-series map preserves the product of two real scalar monomials. -/
-theorem toFullHahnSeries_mul_monomials (r s : ℝ) (i j : Surreal.{u}) :
-    toFullHahnSeries
-        (((r : Surreal) * ω^ i) * ((s : Surreal) * ω^ j)) =
-      toFullHahnSeries ((r : Surreal) * ω^ i) *
-        toFullHahnSeries ((s : Surreal) * ω^ j) := by
-  have hprod :
-      ((r : Surreal) * ω^ i) * ((s : Surreal) * ω^ j) =
-        ((r * s : ℝ) : Surreal) * ω^ (i + j) := by
-    rw [wpow_add, Real.toSurreal_mul]
-    ring
-  rw [hprod, toFullHahnSeries_realCast_mul_wpow,
-    toFullHahnSeries_realCast_mul_wpow,
-    toFullHahnSeries_realCast_mul_wpow, HahnSeries.single_mul_single]
-  rfl
+/-!
+## Conway normal forms with signed surreal exponents
 
-/-- The full Conway Hahn-series map preserves multiplication when both Conway supports are
-finite. -/
-theorem toFullHahnSeries_mul_of_support_finite {x y : Surreal.{u}}
-    (hx : x.support.Finite) (hy : y.support.Finite) :
-    toFullHahnSeries (x * y) = toFullHahnSeries x * toFullHahnSeries y := by
-  rw [eq_sum_coeff_mul_wpow_of_support_finite hx,
-    eq_sum_coeff_mul_wpow_of_support_finite hy]
-  let f (i : Surreal.{u}) := (x.coeff i : Surreal) * ω^ i
-  let g (j : Surreal.{u}) := (y.coeff j : Surreal) * ω^ j
-  change toFullHahnSeries ((∑ i ∈ hx.toFinset, f i) *
-      (∑ j ∈ hy.toFinset, g j)) =
-    toFullHahnSeries (∑ i ∈ hx.toFinset, f i) *
-      toFullHahnSeries (∑ j ∈ hy.toFinset, g j)
-  rw [Finset.sum_mul]
-  simp_rw [Finset.mul_sum]
-  rw [← toFullHahnSeriesAddMonoidHom_apply, map_sum]
-  simp_rw [toFullHahnSeriesAddMonoidHom_apply]
-  simp_rw [← toFullHahnSeriesAddMonoidHom_apply,
-    map_sum, toFullHahnSeriesAddMonoidHom_apply]
-  dsimp only [f, g]
-  simp_rw [toFullHahnSeries_mul_monomials]
-  rw [Finset.sum_mul]
-  simp_rw [Finset.mul_sum]
+The order dual in `Surreal.toFullHahnSeries` records the reversal from Conway's `ω` to
+LM24's `t = ω⁻¹`. Sending a dual exponent `i` to the ordinary surreal exponent `-i` makes
+that reversal explicit and places the normal form in a Hahn field whose exponent group is
+`Surreal` itself. This is the orientation in which the surreal Archimedean-stratum assumptions
+apply directly.
+-/
+
+section
+
+universe u
+
+public noncomputable section
+
+namespace Surreal
+
+/-- Negation identifies dual Conway exponents with signed ordinary surreal exponents. -/
+def dualExponentOrderAddMonoidIso : Surrealᵒᵈ ≃+o Surreal :=
+  { toFun := fun x ↦ -x.ofDual
+    invFun := fun x ↦ OrderDual.toDual (-x)
+    left_inv := by intro x; simp
+    right_inv := by intro x; simp
+    map_add' := by intro x y; simp [add_comm]
+    map_le_map_iff' := by
+      intro x y
+      change -x.ofDual ≤ -y.ofDual ↔ y.ofDual ≤ x.ofDual
+      exact neg_le_neg_iff }
 
 end Surreal
+
+end
+end

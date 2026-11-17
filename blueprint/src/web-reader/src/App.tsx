@@ -154,7 +154,7 @@ function ReaderBar({ route }: { route: Route }) {
 function FormalStatements({ data }: { data: BlueprintData }) {
   return <section className="formal-statements">
     <header className="phase-header"><h1>0. Formal statements</h1>
-      <p>Three standalone files make the result easier to audit.</p>
+      <p>Two standalone files make the result easier to audit.</p>
       <ul className="formal-intro-list">
         <li>Conway's statement using the surreal numbers from{' '}
           <a href="https://github.com/vihdzp/combinatorial-games" target="_blank"
@@ -162,9 +162,6 @@ function FormalStatements({ data }: { data: BlueprintData }) {
         <li>A{' '}<a href="https://github.com/leanprover-community/mathlib4" target="_blank"
           rel="noreferrer">Mathlib</a>-only construction of the needed surreal numbers, order,
           and arithmetic</li>
-        <li>A{' '}<a href="https://github.com/leanprover-community/mathlib4" target="_blank"
-          rel="noreferrer">Mathlib</a>-only refinement theorem for integer parts of generalised
-          power-series fields</li>
       </ul>
     </header>
     <section className="result-list">

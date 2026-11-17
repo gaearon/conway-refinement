@@ -6,8 +6,6 @@ Authors: Dan Abramov
 module
 
 public import CombinatorialGames.Surreal.Real
-public import Mathlib.Algebra.Algebra.Defs
-public import Mathlib.Algebra.Order.Module.Defs
 
 /-!
 # Surreal numbers as an ordered real vector space

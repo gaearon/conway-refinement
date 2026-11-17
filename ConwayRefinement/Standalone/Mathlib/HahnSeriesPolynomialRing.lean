@@ -17,8 +17,7 @@ characteristic zero there is a set of indeterminates `ι` for which
 
 `K_fin[X_i : i ∈ ι] ≅ K((ℝ^{≤0}))`.
 
-Both rings are defined below in ordinary Mathlib language; the statement does not mention the
-principal graded ring or a chosen generating system.
+Both rings are defined below in ordinary Mathlib language.
 -/
 
 open Cardinal

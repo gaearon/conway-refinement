@@ -5,13 +5,13 @@ Authors: Dan Abramov
 -/
 module
 
-public import Mathlib.Algebra.Order.Archimedean.Basic
 public import Mathlib.Data.Set.Countable
 public import Mathlib.Order.WellFoundedSet
 
 import Mathlib.Data.Real.Embedding
-import Mathlib.Topology.Order.Basic
-import Mathlib.Topology.Instances.Real.Lemmas
+public import Mathlib.Algebra.Order.Archimedean.Defs
+import Mathlib.Data.EReal.Operations
+import Mathlib.Topology.MetricSpace.Bounded
 
 /-!
 # Countability in Archimedean ordered groups

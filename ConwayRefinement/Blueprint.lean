@@ -11,19 +11,9 @@ namespace ConwayRefinement.Blueprint
 
 /-- Mathematical phases used by the generated proof map. -/
 meta def phases : Array String := #[
-  "Algebraic and ordinal preliminaries",
-  "Ordinal value and degree",
-  "Cantor–Bendixson ranks of supports",
-  "Algebraic independence in graded rings",
-  "Translated truncations",
-  "Limit ordinals in the degree induction",
-  "Principal RV-elements",
+  "Germs of translated truncations",
   "Polynomial presentations",
-  "Primality and factorisation for real exponents",
-  "Finitely many Archimedean classes",
-  "Refinement over Archimedean classes",
-  "A cut criterion for Cauchy completeness",
-  "Bounded generalised-power-series integer parts",
+  "Reduction along Archimedean classes",
   "Surreal numbers and omnific integers",
 ]
 

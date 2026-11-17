@@ -5,10 +5,7 @@ Authors: Dan Abramov
 -/
 module
 
-public import Mathlib.Algebra.Order.Module.Archimedean
 public import Mathlib.Algebra.Order.Module.HahnEmbedding
-public import Mathlib.Algebra.Order.Monoid.Prod
-public import Mathlib.Algebra.Order.Hom.Monoid
 
 /-!
 # Ordered splitting along an Archimedean class

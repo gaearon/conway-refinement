@@ -10,8 +10,10 @@ public import Mathlib.Algebra.Ring.Subring.Defs
 public import ConwayRefinement.Surreal.Round
 
 import CombinatorialGames.Tactic.GameCmp
-import Mathlib.Tactic.Abel
-import Mathlib.Tactic.Ring
+import CombinatorialGames.Tactic.Register
+import Mathlib.Analysis.Normed.Group.Basic
+import Mathlib.Data.EReal.Operations
+import Mathlib.Topology.MetricSpace.Bounded
 
 /-!
 # Omnific integers
@@ -175,17 +177,6 @@ private theorem IsOmnificGame.mul {x y : IGame.{u}} [IGame.Numeric x] [IGame.Num
     (hx : IsOmnificGame x) (hy : IsOmnificGame y) : IsOmnificGame (x * y) := by
   exact (IGame.Numeric.mul_congr hx hy).trans (cutGame_mul_cutGame_equiv hx hy)
 
-private theorem not_isOmnificGame_half : ¬IsOmnificGame (IGame.half : IGame.{u}) := by
-  intro hhalf
-  have hcut : cutGame (IGame.half : IGame.{u}) ≈ 0 :=
-    IGame.fits_zero_iff_equiv.mp (by
-      rw [IGame.Fits]
-      constructor <;> intro z hz <;>
-        simp only [cutGame, IGame.leftMoves_ofSets, IGame.rightMoves_ofSets,
-          Set.mem_singleton_iff] at hz <;>
-        subst z <;> game_cmp)
-  exact IGame.zero_lt_half.not_ge (hhalf.trans hcut).1
-
 end OmnificInteger
 
 /-- The singleton cut `{x - 1 | x + 1}` associated with a surreal number `x`. -/
@@ -315,11 +306,5 @@ theorem IsOmnificInteger.natCast (n : ℕ) :
 theorem IsOmnificInteger.intCast (n : ℤ) :
     IsOmnificInteger (n : Surreal.{u}) :=
   mem_omnificIntegers.mp (n : OmnificInteger.{u}).2
-
-/-- The surreal number `2⁻¹` is not an omnific integer. -/
-theorem two_inv_not_mem_omnificIntegers :
-    (2 : Surreal.{u})⁻¹ ∉ omnificIntegers := by
-  rw [← IGame.mk_half, mem_omnificIntegers, isOmnificInteger_mk_iff]
-  exact OmnificInteger.not_isOmnificGame_half
 
 end Surreal

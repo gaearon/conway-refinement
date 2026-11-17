@@ -5,11 +5,11 @@ Authors: Dan Abramov
 -/
 module
 
-public import ConwayRefinement.Algebra.Order.ArchimedeanQuotient
-public import Mathlib.Algebra.Order.Module.Archimedean
-public import Mathlib.Algebra.Order.Monoid.Prod
-public import Mathlib.LinearAlgebra.Basis.VectorSpace
+public import ConwayRefinement.Algebra.Order.ArchimedeanClass
 public import Mathlib.LinearAlgebra.Projection
+public import Mathlib.Algebra.Order.Module.Defs
+import Mathlib.Algebra.Order.Module.Archimedean
+import Mathlib.LinearAlgebra.Basis.VectorSpace
 
 /-!
 # Ordered splitting by a convex subspace
@@ -114,11 +114,17 @@ theorem quotientProdLinearEquiv_zero_left (p : P) :
     Submodule.coe_prodEquivOfIsCompl']
   simp [quotientLinearEquivComplement]
 
-noncomputable local instance quotientLinearOrder [P.toAddSubgroup.IsConvex] :
+/-- The quotient by a convex subspace, with the order induced from `G`. -/
+noncomputable instance convexQuotientLinearOrder [P.toAddSubgroup.IsConvex] :
     LinearOrder (G ⧸ P) :=
   ConvexQuotient.instLinearOrder (H := P.toAddSubgroup)
 
-local instance submoduleIsOrderedAddMonoid : IsOrderedAddMonoid P :=
+instance convexQuotientIsOrderedAddMonoid [P.toAddSubgroup.IsConvex] :
+    IsOrderedAddMonoid (G ⧸ P) :=
+  ConvexQuotient.instIsOrderedAddMonoid (H := P.toAddSubgroup)
+
+/-- A subspace of an ordered vector space, with the induced order. -/
+instance isOrderedAddMonoid : IsOrderedAddMonoid P :=
   AddSubgroup.instIsOrderedAddMonoid P.toAddSubgroup
 
 /-- A linearly ordered vector space is the lexicographic product of the quotient by a convex
@@ -161,11 +167,5 @@ variable (K : Type v) {G : Type u}
 variable [Field K] [LinearOrder K] [IsOrderedRing K] [Archimedean K]
 variable [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G]
 variable [Module K G] [PosSMulMono K G]
-
-/-- The ambient group split lexicographically into the quotient by its tail subspace and that
-subspace. Its additive subgroup is propositionally equal to `tailKernel T`. -/
-noncomputable def tailQuotientLexEquiv (T : Set (FiniteArchimedeanClass G)) :
-    ((G ⧸ (tailSubmodule K T).toAddSubgroup) ×ₗ tailSubmodule K T) ≃+o G :=
-  Submodule.quotientLexEquiv (tailSubmodule K T)
 
 end FiniteArchimedeanClass

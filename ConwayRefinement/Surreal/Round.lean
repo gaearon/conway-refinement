@@ -5,8 +5,8 @@ Authors: Violeta Hernández Palacios
 -/
 module
 
-public import CombinatorialGames.Surreal.Real
-public import ConwayRefinement.Surreal.HahnSeries.NormalFormSupport
+public import CombinatorialGames.Surreal.Birthday.Basic
+import ConwayRefinement.Surreal.HahnSeries.NormalFormSupport
 
 /-!
 # Rounding surreal numbers by a positive radius
@@ -193,22 +193,6 @@ theorem round_of_zero_mem {x r : Surreal} (h : 0 ∈ Ioo (x - r) (x + r)) : x.ro
   rw [← mk_zero, round_mk_of_pos hr, mk_eq_mk, ← fits_zero_iff_equiv]
   simpa [Fits]
 
-@[simp]
-theorem round_zero (r : Surreal) : round 0 r = 0 := by
-  obtain h | h := le_or_gt r 0
-  · rw [round_of_nonpos h]
-  · apply round_of_zero_mem
-    simpa
-
-@[simp]
-theorem round_neg {x r : Surreal} : (-x).round r = -x.round r := by
-  obtain h | h := le_or_gt r 0
-  · simp_rw [round_of_nonpos h]
-  cases x with | mk x
-  cases r with | mk r
-  simp only [← mk_neg, round_mk_of_pos h, neg_ofSets, neg_singleton,
-    sub_eq_add_neg, neg_add, neg_neg]
-
 theorem round_add_of_eq {x y r : Surreal} (hx : x.round r = x) (hy : y.round r = y) :
     (x + y).round r = x + y := by
   obtain h | h := le_or_gt r 0
@@ -223,19 +207,5 @@ theorem round_add_of_eq {x y r : Surreal} (hx : x.round r = x) (hy : y.round r =
     range_singleton, range_insert]
   dsimp
   congr <;> rw [hx, hy] <;> grind
-
-theorem round_mul_of_eq {x y r : Surreal} (h : 0 < r)
-    (hx : x.round r = x) (hy : y.round r = y) :
-    (x * y).round (r * r) = x * y := by
-  have h' : 0 < r * r := mul_self_pos.2 h.ne'
-  cases x with | mk x
-  cases y with | mk y
-  cases r with | mk r
-  conv_rhs => rw [← hx, ← hy]
-  simp only [← mk_mul, round_mk_of_pos h, round_mk_of_pos h'] at *
-  generalize_proofs at hx hy
-  simp only [ofSets_mul_ofSets, mk_ofSets, mulOption, singleton_prod_singleton,
-    union_singleton, image_insert_eq, image_singleton, range_singleton, range_insert]
-  congr <;> dsimp <;> rw [hx, hy] <;> grind
 
 end Surreal

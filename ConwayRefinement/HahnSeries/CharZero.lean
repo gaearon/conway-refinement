@@ -6,7 +6,6 @@ Authors: Dan Abramov
 module
 
 public import Mathlib.RingTheory.HahnSeries.Multiplication
-public import Mathlib.Algebra.CharZero.Defs
 
 /-!
 # Hahn series over a characteristic-zero base

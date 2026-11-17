@@ -6,12 +6,10 @@ Authors: Dan Abramov
 module
 
 public import Mathlib.Algebra.GCDMonoid.Basic
-public import Mathlib.Algebra.MvPolynomial.CommRing
 
-import ConwayRefinement.Blueprint
 import Mathlib.Algebra.MvPolynomial.NoZeroDivisors
-import Mathlib.RingTheory.Polynomial.Basic
 import Mathlib.RingTheory.Polynomial.Content
+public import Mathlib.Algebra.MvPolynomial.Basic
 
 /-!
 # Greatest common divisors in multivariate polynomial rings
@@ -162,24 +160,6 @@ private theorem existsGCD [NormalizedGCDMonoid R] (a b : MvPolynomial σ R) :
 
 /-- A polynomial ring in an arbitrary type of variables over a normalized GCD domain has
 greatest common divisors. -/
-@[blueprint "lem:multivariate-polynomial-gcd"
-  (phase := "Algebraic and ordinal preliminaries")
-  (title := "Greatest common divisors in multivariate polynomial rings")
-  (statement := /--
-    Let $R$ be a commutative domain admitting a normalized GCD structure, and
-    let $I$ be any type. Then $R[X_i:i\in I]$ admits greatest common divisors.
-  -/)
-  (proof := /--
-  A pair of polynomials involves only finitely many variables. Regard their
-  finite-variable ring as an iterated univariate polynomial ring and choose a
-  greatest common divisor there. View the full ring as the polynomial ring in
-  the complementary variables over this finite-variable ring. If at least one
-  of the original polynomials is non-zero, a common divisor of their constant
-  images is associated to a constant polynomial; its coefficient divides both
-  finite-variable polynomials and hence their greatest common divisor. The
-  case where both polynomials vanish is immediate. Thus the finite-variable
-  greatest common divisor remains one in the full polynomial ring.
-  -/)]
 theorem nonemptyGCDMonoid [Nonempty (NormalizedGCDMonoid R)] :
     Nonempty (GCDMonoid (MvPolynomial σ R)) := by
   classical

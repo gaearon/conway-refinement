@@ -5,7 +5,10 @@ Authors: Dan Abramov
 -/
 module
 
-public import ConwayRefinement.Surreal.OmnificInteger.NormalForm
+public import ConwayRefinement.Surreal.HahnSeries.Transfer
+public import ConwayRefinement.Surreal.OmnificInteger.Basic
+import ConwayRefinement.Surreal.HahnSeries.NormalFormAdd
+import ConwayRefinement.Surreal.OmnificInteger.NormalForm
 
 /-!
 # Checks for Conway normal forms of omnific integers
@@ -74,10 +77,5 @@ theorem wpow_neg_one_not_isOmnificInteger :
     rw [support_wpow]
     exact mem_singleton _)
   norm_num at hnonnegative
-
-/-- The unit gap makes two sufficiently close omnific integers equal. -/
-example {x y : Surreal.{u}} (hx : IsOmnificInteger x) (hy : IsOmnificInteger y)
-    (hbound : x - y ∈ Ioo (-1) 1) : x = y :=
-  hx.eq_of_sub_mem_Ioo_neg_one_one hy hbound
 
 end Tests

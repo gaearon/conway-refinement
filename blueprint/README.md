@@ -5,7 +5,8 @@ of the mathematical argument, not a second statement tree. It contains the minim
 from which a research mathematician can reconstruct the entire proof with reasonable
 research-level effort.
 
-`src/statements.tex` presents the three standalone formulations of the headline claim.
+`src/statements.tex` presents the two standalone formulations of the headline claim and the
+standalone statements of the main results on generalised power series.
 
 ## Selection
 
