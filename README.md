@@ -20,7 +20,7 @@ I couldn't "one-shot" the conjecture with AI, but this only got me more interest
 
 Over the course of the last month, I've spent all my free time on it, repeatedly maxed out my 20x Pro usage for [ChatGPT](https://chatgpt.com/) and [Claude](https://claude.ai/) to generate potential "ideas" and then steered the AI into writing [Lean](https://lean-lang.org/) to sort out which of these ideas "agree" with acceptable mathematics.
 
-This is probably why the first version of this proof ended up so long and confusing. The current version replaces most of it with a much shorter route (see [Changes since 1.0](#changes-since-10)). The proof is machine-checked by Lean, but it was found with AI assistance and has not been refereed.
+This is probably why this proof ended up so long and confusing.
 
 ## Why I think it's correct
 
@@ -83,26 +83,11 @@ Of course, you might not want to take the `Surreal` definition from Combinatoria
 
 The corresponding proof is in [`InlineConwayRefinementProof.lean`](ConwayRefinement/Standalone/Mathlib/InlineConwayRefinementProof.lean). It reports the same three axioms: `propext`, `Classical.choice`, and `Quot.sound`.
 
-The root-level [`Challenge.lean`](Challenge.lean) restates the Mathlib-only formulation with a single `sorry` in the form expected by the Palomar comparator, and [`Solution.lean`](Solution.lean) fills it in. CI checks that the two statements agree.
-
-These statement files are unchanged since the [`v1.0`](https://github.com/gaearon/conway-refinement/tree/v1.0) tag: the proof has been rewritten since then, but the claim has not.
-
 It is still quite possible that one or both of these statements do not correspond to Conway's conjecture in some small or big way, in which case this would not be a valid mathematical proof no matter what Lean says about it.
-
-## How the proof goes
-
-This section is written for readers who know the literature on factorisation in generalised power series. The [proof guide](https://gaearon.github.io/conway-refinement/) has the details, with every step tied to a Lean declaration.
-
-Conway normal form, with the signs of the exponents reversed, identifies $\mathbf{Oz}$ with $\mathbb Z+\mathbb R((\mathbf{No}^{<0}))_\kappa$, and for an integral domain the refinement property means that every element is primal (the domain is pre-Schreier). So the question is about generalised power series. The proof rests on four ideas.
-
-1. **Germs of translated truncations.** Let $K$ be a field of characteristic zero, $G$ an ordered abelian group that is Cauchy complete, and $J$ the ideal of series in $K((G^{\le 0}))$ whose support is bounded away from $0$. Following Berarducci, the germ of $b$ at $\gamma$ is the class modulo $J$ of the translated truncation $b^{|\gamma}=t^{-\gamma}b_{|\gamma}$. Germs satisfy Berarducci's convolution formula, and the Cantor–Bendixson rank of $0$ in the closure of the support drops when $b$ is replaced by its translated truncations at exponents just below $0$.
-2. **Transcendence.** If a subalgebra $S$ of the ring of germs is an integral domain and each element of $S$ is the germ of a series all of whose germs lie in $S$, then the germ of a series whose germs at negative exponents lie in $S$, but which is not itself in $S$, is transcendental over $S$. Adjoining such germs of minimal rank, one at a time, presents $K((G^{\le 0}))/J$ as a polynomial ring over $K$. The same recursion presents $K((\mathbb R^{\le 0}))$ as a polynomial ring over its subring of series with finite support, which makes it a GCD domain.
-3. **Reduction along Archimedean classes.** Regrouping the exponents along a convex subgroup $C$ writes $Z+R((G^{<0}))_\kappa$ as a $D+M$ construction over $R((C))_\kappa$, so primality reduces to primality of the regrouped series and of its restriction to $C$. Below the leading Archimedean class the regrouped series has real exponents and the GCD theorem applies; at a limit of Archimedean classes, primality in the ring of germs and restriction of supports to Archimedean balls give primality by transfinite induction.
-4. **Surreal exponents.** Conway's construction of a surreal number between two small sets gives the cofinality and Cauchy completeness that the reduction needs when $G=\mathbf{No}$.
 
 ## Navigating the proof
 
-While the above approach gave me some confidence in the validity of the proof, I am sure it can still be explained better. I've experimented with different ways to nudge the models into writing clearer mathematics, but it was difficult to get them to reliably write using standard terms, or to separate the core of the argument from bookkeeping or long detours that got fossilized in Lean.
+While the above approach gave me some confidence in the validity of the proof, I am sure it is needlessly complicated and poorly explained. I've experimented with different ways to nudge the models into writing clearer mathematics, but it was difficult to get them to reliably write using standard terms, or to separate the core of the argument from bookkeeping or long detours that got fossilized in Lean.
 
 Initially, I tried to generate a "paper". Eventually, I switched to [a proof guide website](https://gaearon.github.io/conway-refinement/), which is closer to what this project actually is. The website has AI-written descriptions of some Lean theorems that contribute to the top-level result. AI also chose which theorems to include. The tooling verifies that each numbered result actually corresponds to a checked piece of Lean code:
 
@@ -126,7 +111,7 @@ If the result is correct, it might eventually be useful to cite it. I don't thin
 
 ## Formalized results
 
-The proof guide has many intermediate steps. This is a shorter list of results and examples that I think are worth looking at. It includes every result from the guide's [Highlights page](https://gaearon.github.io/conway-refinement/#/highlights).
+The proof guide has a lot of intermediate steps. This is a shorter list of results and examples that I think are worth looking at. It includes every result from the guide's [Highlights page](https://gaearon.github.io/conway-refinement/#/highlights).
 
 Each standalone statement is paired with a proof file. Each map shows how the result depends on the rest of the proof. Only Lean declarations explicitly annotated for the proof guide appear in these maps.
 
@@ -567,16 +552,6 @@ However, when you deal with infinities, things don't always turn out as we expec
 
 Or at least so I would hope!
 
-## Changes since 1.0
-
-The first public version is tagged [`v1.0`](https://github.com/gaearon/conway-refinement/tree/v1.0). Its route went through associated graded rings of the series ring; the current route replaces that part with the transcendence argument for germs of translated truncations described above, and reduces along Archimedean classes with a single $D+M$ step. The repository shrank from about 144,000 to about 31,000 lines of Lean, and from 13,337 to 3,854 declarations (as counted by `lake exe axioms`).
-
-Some results proved in `v1.0` are not needed by the new route and were removed. They remain available at the tag:
-
-- algebraic independence of the minimal homogeneous generators of the principal RV algebra, a strictly stronger graded statement than the polynomial presentation of the ring of germs;
-- examples of prime omnific integers and prime series (degree-two, one-row, and random series);
-- the corollaries for saturated exponent groups.
-
 ## Discussion
 
 If you want to say or ask something, feel free to use Issues or Discussions.
@@ -604,7 +579,7 @@ scripts/blueprint.sh build
 
 For release, run `scripts/publish-blueprint.sh` from a clean commit.
 
-This runs the release gates and generates the PDF and the website.
+This runs the release gates and generates the PDF and the website. Release history is in [`CHANGELOG.md`](CHANGELOG.md).
 
 ## License
 
