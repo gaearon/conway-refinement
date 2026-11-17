@@ -157,16 +157,4 @@ theorem hasFourFactorRefinement_iff (S : Subring R) :
     exact ⟨⟨e, he⟩, ⟨f, hf⟩, ⟨g, hg⟩, ⟨h, hh⟩,
       Subtype.ext hA, Subtype.ext hB, Subtype.ext hC, Subtype.ext hD⟩
 
-/-- A decomposition subring refines every ambient product equality whose four entries lie in
-the subring. -/
-theorem exists_fourFactorRefinement_of_decompositionMonoid
-    (S : Subring R) [IsDomain S] [DecompositionMonoid S]
-    {a b c d : R} (ha : a ∈ S) (hb : b ∈ S) (hc : c ∈ S) (hd : d ∈ S)
-    (habcd : a * b = c * d) :
-    ∃ e f g h : R,
-      e ∈ S ∧ f ∈ S ∧ g ∈ S ∧ h ∈ S ∧
-        a = e * f ∧ b = g * h ∧ c = e * g ∧ d = f * h := by
-  exact (hasFourFactorRefinement_iff S).mp
-    hasFourFactorRefinement_of_decompositionMonoid a b c d ha hb hc hd habcd
-
 end Subring

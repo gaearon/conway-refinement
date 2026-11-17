@@ -16,7 +16,6 @@ $$
 | Formulation | Statement | Proof |
 |---|---|---|
 | Surreal numbers defined inline from Mathlib | [`Mathlib/InlineConwayRefinement.lean`](Mathlib/InlineConwayRefinement.lean) | [`Mathlib/InlineConwayRefinementProof.lean`](Mathlib/InlineConwayRefinementProof.lean) |
-| Generalised power series over saturated exponent groups, using Mathlib | [`Mathlib/HahnIntegerPartRefinement.lean`](Mathlib/HahnIntegerPartRefinement.lean) | [`Mathlib/HahnIntegerPartRefinementProof.lean`](Mathlib/HahnIntegerPartRefinementProof.lean) |
 | Surreal numbers from CombinatorialGames | [`CombinatorialGames/ConwayRefinement.lean`](CombinatorialGames/ConwayRefinement.lean) | [`CombinatorialGames/ConwayRefinementProof.lean`](CombinatorialGames/ConwayRefinementProof.lean) |
 
 ## Other main results

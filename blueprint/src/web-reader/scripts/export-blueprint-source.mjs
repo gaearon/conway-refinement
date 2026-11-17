@@ -47,18 +47,6 @@ const standaloneDeclarations = [
     proofSource: 'ConwayRefinement/Standalone/Mathlib/InlineConwayRefinementProof.lean',
     standalone: true,
   },
-  {
-    key: 'hahn',
-    title: 'Refinement over saturated exponent groups',
-    description: 'The Mathlib-only generalised-power-series statement.',
-    module: 'ConwayRefinement.Standalone.Mathlib.HahnIntegerPartRefinement',
-    name: 'ConwayRefinement.Standalone.Hahn.HahnIntegerPartRefinement',
-    source: 'ConwayRefinement/Standalone/Mathlib/HahnIntegerPartRefinement.lean',
-    proofModule: 'ConwayRefinement.Standalone.Mathlib.HahnIntegerPartRefinementProof',
-    proofName: 'ConwayRefinement.Standalone.Hahn.HahnIntegerPartRefinement.proof',
-    proofSource: 'ConwayRefinement/Standalone/Mathlib/HahnIntegerPartRefinementProof.lean',
-    standalone: true,
-  },
 ];
 
 const standaloneFiles = standaloneDeclarations.flatMap(declaration => [

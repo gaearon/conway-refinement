@@ -7,8 +7,8 @@ module
 
 public import ConwayRefinement.Standalone.CombinatorialGames.Examples.OmnificFactorization
 public import ConwayRefinement.Standalone.CombinatorialGames.Support.ConwayRefinementConsequences
-public import ConwayRefinement.Standalone.CombinatorialGames.Support.OmnificFiniteDegree
-public import ConwayRefinement.Surreal.OmnificInteger.Primality.OrdinaryIntegers
+public import ConwayRefinement.HahnSeries.CardinalTruncation
+public import ConwayRefinement.Surreal.HahnSeries.CardinalIntegerPart
 public import ConwayRefinement.Surreal.OmnificInteger.RefinementConjecture
 public import ConwayRefinement.Algebra.Divisibility.DenominatorIdeal
 
@@ -119,19 +119,5 @@ theorem toHahnSeries_normalFormRingEquiv (x : OmnificInteger.{u}) :
     (normalFormRingEquiv x : Surreal.{u}).toHahnSeries = x.1 := by
   rw [coe_normalFormRingEquiv]
   exact SurrealHahnSeries.toHahnSeries_toSurreal x.1
-
-theorem normalFormRingEquiv_not_isOrdinaryInteger
-    (x : OmnificInteger.{u}) (hx : ¬ IsOrdinaryInteger x) :
-    ¬ Surreal.OmnificInteger.IsOrdinaryInteger (normalFormRingEquiv x) := by
-  intro hordinary
-  apply hx
-  rw [Surreal.OmnificInteger.isOrdinaryInteger_iff] at hordinary
-  obtain ⟨z, hz⟩ := hordinary
-  have htarget : normalFormRingEquiv x = (z : Surreal.OmnificInteger.{u}) :=
-    Subtype.ext hz
-  have hsource : x = (z : OmnificInteger.{u}) := by
-    apply normalFormRingEquiv.injective
-    simpa using htarget
-  exact ⟨z, congrArg Subtype.val hsource⟩
 
 end ConwayRefinement.Standalone.Oz
