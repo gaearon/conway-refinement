@@ -35,6 +35,8 @@ presents an algebra as a polynomial ring once every proper subalgebra of the cho
 an integral domain because it is a polynomial ring, admits a transcendental element whose
 adjunction stays of that kind. With the transcendence lemma as this step, the ring of germs is a
 polynomial ring (`exists_algebraicIndependent_generators`, `exists_mvPolynomial_algEquiv`).
+`transcendental_germ` takes the absence of linear relations and the proportionality lemma as
+hypotheses, so that a concrete instance can supply its own statements of them.
 -/
 
 universe u w
@@ -102,12 +104,12 @@ theorem exists_algebraicIndependent_adjoin_eq_top {K Q : Type*} [Field K] [CommR
 
 namespace TruncationGerms
 
-variable {K Γ A Q : Type*} [Field K] [CharZero K]
+variable {K Γ A Q : Type*} [Field K]
   [AddCommGroup Γ] [LinearOrder Γ] [IsOrderedAddMonoid Γ]
   [CommRing A] [Algebra K A] [CommRing Q] [Nontrivial Q] [Algebra K Q]
-  (sys : TruncationGerms K Γ A Q)
+  (sys : TruncationGerms.{w} K Γ A Q)
 
-omit [CharZero K] [Nontrivial Q] in
+omit [Nontrivial Q] in
 /-- In a subalgebra that is an integral domain, a nonzero factor cancels from a vanishing
 product. -/
 private theorem eq_zero_of_mul_eq_zero (S : Subalgebra K Q) [IsDomain S] {a b : Q} (ha : a ∈ S)
@@ -117,14 +119,14 @@ private theorem eq_zero_of_mul_eq_zero (S : Subalgebra K Q) [IsDomain S] {a b : 
   · exact absurd (congrArg Subtype.val h1) ha0
   · exact congrArg Subtype.val h1
 
-omit [CharZero K] [Nontrivial Q] in
+omit [Nontrivial Q] in
 /-- The elements `s₀ + s₁ * x` with `s₀ s₁ ∈ S` are stable under multiplication by `S`. -/
 private theorem exists_mul_eq_add_mul (S : Subalgebra K Q) {x a n : Q} (ha : a ∈ S)
     (hn : ∃ s₀ ∈ S, ∃ s₁ ∈ S, n = s₀ + s₁ * x) : ∃ s₀ ∈ S, ∃ s₁ ∈ S, a * n = s₀ + s₁ * x := by
   obtain ⟨s₀, h₀, s₁, h₁, rfl⟩ := hn
   exact ⟨a * s₀, S.mul_mem ha h₀, a * s₁, S.mul_mem ha h₁, by ring⟩
 
-omit [CharZero K] [Nontrivial Q] in
+omit [Nontrivial Q] in
 /-- Let `S` be an integral domain and `x` an element such that no nonzero `a ∈ S` has `a * x ∈ S`.
 Then `S + S x` is a free `S`-module on `1, x`, so nonzero elements of `S` cancel from products
 with its elements. -/
@@ -248,9 +250,18 @@ theorem exists_germ_eq_smul_of_proportional (S : Subalgebra K Q) [IsDomain S] {x
         ⟨c • sys.germ V, S.smul_mem hvS c, 0, zero_mem S, by rw [zero_mul, add_zero]⟩ ?_
       rw [mul_comm, ← hcross, hc, mul_smul_comm, mul_smul_comm, mul_comm]
 
+end TruncationGerms
+
+namespace ConvolutionGerms
+
+variable {K Γ A Q : Type*} [Field K]
+  [AddCommGroup Γ] [LinearOrder Γ] [IsOrderedAddMonoid Γ]
+  [CommRing A] [Algebra K A] [CommRing Q] [Nontrivial Q] [Algebra K Q]
+  (sys : ConvolutionGerms K Γ A Q)
+
 /-- Adjoining the germ of `X` to `S` preserves the existence of representatives with germs in the
 subalgebra. -/
-private theorem hasRepresentativesWithGermsIn_adjoin (S : Subalgebra K Q)
+theorem hasRepresentativesWithGermsIn_adjoin (S : Subalgebra K Q)
     (hS : sys.HasRepresentativesWithGermsIn S) (X : A)
     (hX : ∀ ξ < 0, sys.germAt ξ X ∈ S) :
     sys.HasRepresentativesWithGermsIn (Algebra.adjoin K (insert (sys.germ X) (S : Set Q))) := by
@@ -285,69 +296,6 @@ private theorem hasRepresentativesWithGermsIn_adjoin (S : Subalgebra K Q)
     refine ⟨b * b', by rw [map_mul, hb, hb'], fun ξ => ?_⟩
     rw [sys.convolution b b' ξ]
     exact sys.finsum_convolution_mem Sx b b' ξ hbs hbs'
-
-/-- Let `S` be a subalgebra of the ring of germs whose elements are germs of series with all germs
-in `S`, and let `X` be a series whose germs at negative exponents lie in `S` but whose germ does
-not. Then no nonzero element of `S` multiplies the germ of `X` into `S`. -/
-theorem mul_germ_notMem (S : Subalgebra K Q) (hS : sys.HasRepresentativesWithGermsIn S)
-    (X : A) (hX : ∀ ξ < 0, sys.germAt ξ X ∈ S) (hx : sys.germ X ∉ S)
-    (a : Q) (ha : a ∈ S) (ha0 : a ≠ 0) : a * sys.germ X ∉ S := by
-  intro hax
-  set x := sys.germ X with hxdef
-  suffices H :
-      ∀ (o : Ordinal), ∀ a : Q,
-        a ∈ S → a ≠ 0 → a * x ∈ S → sys.rank a = o → False by
-    exact H _ a ha ha0 hax rfl
-  intro o
-  induction o using WellFoundedLT.induction with
-  | _ o IH =>
-    intro a ha ha0 hax ho
-    obtain ⟨A₀, hA₀g, hA₀s⟩ := hS a ha
-    obtain ⟨B, hBg, hBs⟩ := hS (-(a * x)) (neg_mem hax)
-    -- `W = A₀ X + B` has germ `0`.
-    have hgermW : sys.germ (A₀ * X + B) = 0 := by
-      rw [map_add, map_mul, hA₀g, hBg, ← hxdef]; ring
-    obtain ⟨ε, hε, hW0⟩ :=
-      sys.germAt_eventually_eq_zero (A₀ * X + B) ⟨0, by rw [map_zero, hgermW]⟩
-    -- For `ξ ∈ (ε, 0)`: `L ξ A₀ ∈ S` and `(L ξ A₀) * x ∈ S`.
-    have key : ∀ ξ, ε < ξ → ξ < 0 →
-        sys.germAt ξ A₀ ∈ S ∧ sys.germAt ξ A₀ * x ∈ S := by
-      intro ξ hξlo hξhi
-      refine ⟨hA₀s ξ, ?_⟩
-      have hc : sys.germAt ξ (A₀ * X) - sys.germAt ξ A₀ * x ∈ S :=
-        sys.offDiagonal_mem S hX A₀ hA₀s
-      have hWξ : sys.germAt ξ (A₀ * X) + sys.germAt ξ B = 0 := by
-        have := hW0 ξ hξlo hξhi
-        rwa [map_add] at this
-      have : sys.germAt ξ A₀ * x =
-          -(sys.germAt ξ B) - (sys.germAt ξ (A₀ * X) - sys.germAt ξ A₀ * x) := by
-        linear_combination hWξ
-      rw [this]
-      exact S.sub_mem (neg_mem (hBs ξ)) hc
-    by_cases hac : a ∈ Set.range (algebraMap K Q)
-    · -- `a` is constant: forces `x ∈ S`.
-      obtain ⟨k, hk⟩ := hac
-      have hk0 : k ≠ 0 := by rintro rfl; rw [map_zero] at hk; exact ha0 hk.symm
-      have hxmem : x ∈ S := by
-        have hxeq : x = k⁻¹ • (a * x) := by
-          rw [← hk, Algebra.smul_def, ← mul_assoc, ← map_mul, inv_mul_cancel₀ hk0,
-            map_one, one_mul]
-        rw [hxeq]; exact Subalgebra.smul_mem S hax k⁻¹
-      exact hx hxmem
-    · -- `a` is not constant: germs have strictly smaller rank, apply IH.
-      obtain ⟨ε', hε', hrank⟩ := sys.rank_germAt_lt A₀ (by rwa [hA₀g])
-      have hvanish : ∀ ξ, max ε ε' < ξ → ξ < 0 → sys.germAt ξ A₀ = 0 := by
-        intro ξ hξlo hξhi
-        have hξε : ε < ξ := lt_of_le_of_lt (le_max_left _ _) hξlo
-        have hξε' : ε' < ξ := lt_of_le_of_lt (le_max_right _ _) hξlo
-        obtain ⟨hmem, hmul⟩ := key ξ hξε hξhi
-        by_contra hne
-        have hr : sys.rank (sys.germAt ξ A₀) < o := by
-          rw [← ho, ← hA₀g]; exact hrank ξ hξε' hξhi
-        exact IH _ hr (sys.germAt ξ A₀) hmem hne hmul rfl
-      exact hac
-        (hA₀g ▸
-          sys.germ_mem_range_of_eventually A₀ ⟨max ε ε', max_lt hε hε', hvanish⟩)
 
 open Polynomial in
 /-- A truncated Taylor expansion of the germs of `A₀ * X ^ k`. There is a polynomial
@@ -476,20 +424,98 @@ private theorem expansion (S : Subalgebra K Q) (X : A)
         exact Finset.sum_congr rfl fun β hβ => hPck β hβ
       simp only [Nat.add_sub_cancel, coeff_add, Subalgebra.coe_add, hdiag, hRck, succ_nsmul]
 
+end ConvolutionGerms
+
+namespace TruncationGerms
+
+variable {K Γ A Q : Type*} [Field K] [CharZero K]
+  [AddCommGroup Γ] [LinearOrder Γ] [IsOrderedAddMonoid Γ]
+  [CommRing A] [Algebra K A] [CommRing Q] [Nontrivial Q] [Algebra K Q]
+  (sys : TruncationGerms.{w} K Γ A Q)
+
+omit [CharZero K] in
+/-- Let `S` be a subalgebra of the ring of germs whose elements are germs of series with all germs
+in `S`, and let `X` be a series whose germs at negative exponents lie in `S` but whose germ does
+not. Then no nonzero element of `S` multiplies the germ of `X` into `S`. -/
+theorem mul_germ_notMem (S : Subalgebra K Q) (hS : sys.HasRepresentativesWithGermsIn S)
+    (X : A) (hX : ∀ ξ < 0, sys.germAt ξ X ∈ S) (hx : sys.germ X ∉ S)
+    (a : Q) (ha : a ∈ S) (ha0 : a ≠ 0) : a * sys.germ X ∉ S := by
+  intro hax
+  set x := sys.germ X with hxdef
+  suffices H :
+      ∀ (o : Ordinal), ∀ a : Q,
+        a ∈ S → a ≠ 0 → a * x ∈ S → sys.rank a = o → False by
+    exact H _ a ha ha0 hax rfl
+  intro o
+  induction o using WellFoundedLT.induction with
+  | _ o IH =>
+    intro a ha ha0 hax ho
+    obtain ⟨A₀, hA₀g, hA₀s⟩ := hS a ha
+    obtain ⟨B, hBg, hBs⟩ := hS (-(a * x)) (neg_mem hax)
+    -- `W = A₀ X + B` has germ `0`.
+    have hgermW : sys.germ (A₀ * X + B) = 0 := by
+      rw [map_add, map_mul, hA₀g, hBg, ← hxdef]; ring
+    obtain ⟨ε, hε, hW0⟩ :=
+      sys.germAt_eventually_eq_zero (A₀ * X + B) ⟨0, by rw [map_zero, hgermW]⟩
+    -- For `ξ ∈ (ε, 0)`: `L ξ A₀ ∈ S` and `(L ξ A₀) * x ∈ S`.
+    have key : ∀ ξ, ε < ξ → ξ < 0 →
+        sys.germAt ξ A₀ ∈ S ∧ sys.germAt ξ A₀ * x ∈ S := by
+      intro ξ hξlo hξhi
+      refine ⟨hA₀s ξ, ?_⟩
+      have hc : sys.germAt ξ (A₀ * X) - sys.germAt ξ A₀ * x ∈ S :=
+        sys.offDiagonal_mem S hX A₀ hA₀s
+      have hWξ : sys.germAt ξ (A₀ * X) + sys.germAt ξ B = 0 := by
+        have := hW0 ξ hξlo hξhi
+        rwa [map_add] at this
+      have : sys.germAt ξ A₀ * x =
+          -(sys.germAt ξ B) - (sys.germAt ξ (A₀ * X) - sys.germAt ξ A₀ * x) := by
+        linear_combination hWξ
+      rw [this]
+      exact S.sub_mem (neg_mem (hBs ξ)) hc
+    by_cases hac : a ∈ Set.range (algebraMap K Q)
+    · -- `a` is constant: forces `x ∈ S`.
+      obtain ⟨k, hk⟩ := hac
+      have hk0 : k ≠ 0 := by rintro rfl; rw [map_zero] at hk; exact ha0 hk.symm
+      have hxmem : x ∈ S := by
+        have hxeq : x = k⁻¹ • (a * x) := by
+          rw [← hk, Algebra.smul_def, ← mul_assoc, ← map_mul, inv_mul_cancel₀ hk0,
+            map_one, one_mul]
+        rw [hxeq]; exact Subalgebra.smul_mem S hax k⁻¹
+      exact hx hxmem
+    · -- `a` is not constant: germs have strictly smaller rank, apply IH.
+      obtain ⟨ε', hε', hrank⟩ := sys.rank_germAt_lt A₀ (by rwa [hA₀g])
+      have hvanish : ∀ ξ, max ε ε' < ξ → ξ < 0 → sys.germAt ξ A₀ = 0 := by
+        intro ξ hξlo hξhi
+        have hξε : ε < ξ := lt_of_le_of_lt (le_max_left _ _) hξlo
+        have hξε' : ε' < ξ := lt_of_le_of_lt (le_max_right _ _) hξlo
+        obtain ⟨hmem, hmul⟩ := key ξ hξε hξhi
+        by_contra hne
+        have hr : sys.rank (sys.germAt ξ A₀) < o := by
+          rw [← ho, ← hA₀g]; exact hrank ξ hξε' hξhi
+        exact IH _ hr (sys.germAt ξ A₀) hmem hne hmul rfl
+      exact hac
+        (hA₀g ▸
+          sys.germ_mem_range_of_eventually A₀ ⟨max ε ε', max_lt hε hε', hvanish⟩)
+
 open Polynomial in
 /-- **Transcendence of a germ.** Let `S` be a subalgebra of the ring of germs that is an integral
 domain and has representatives whose germs lie in `S`, and let `X` be a series whose germs at
-negative exponents lie in `S` but whose germ `germ X` does not. Then `germ X` is transcendental
-over `S`, and `S[germ X]` again has representatives whose germs lie in it. -/
+negative exponents lie in `S`. Suppose that no nonzero element of `S` multiplies `germ X` into `S`,
+and that germs proportional near `0` with values in `S + S (germ X)` are constant multiples of each
+other. Then `germ X` is transcendental over `S`. -/
 theorem transcendental_germ (S : Subalgebra K Q) [IsDomain S]
     (hS : sys.HasRepresentativesWithGermsIn S) (X : A)
-    (hX : ∀ ξ < 0, sys.germAt ξ X ∈ S) (hx : sys.germ X ∉ S) :
-    Transcendental S (sys.germ X) ∧
-      sys.HasRepresentativesWithGermsIn (Algebra.adjoin K (insert (sys.germ X) (S : Set Q))) := by
+    (hX : ∀ ξ < 0, sys.germAt ξ X ∈ S)
+    (hlin : ∀ a ∈ S, a ≠ 0 → a * sys.germ X ∉ S)
+    (hprop : ∀ U V : A, sys.germ V ≠ 0 → (∀ ξ ≤ 0, sys.germAt ξ V ∈ S) →
+      (∀ ξ ≤ 0, ∃ s₀ ∈ S, ∃ s₁ ∈ S, sys.germAt ξ U = s₀ + s₁ * sys.germ X) →
+      (∃ ε < 0, ∀ ξ, ε < ξ → ξ < 0 →
+        sys.germ V * sys.germAt ξ U = sys.germ U * sys.germAt ξ V) →
+      ∃ c : K, sys.germ U = c • sys.germ V) :
+    Transcendental S (sys.germ X) := by
   set x := sys.germ X with hxdef
   haveI : CharZero Q := charZero_of_injective_algebraMap (algebraMap K Q).injective
   haveI : CharZero ↥S := charZero_of_injective_algebraMap (algebraMap K ↥S).injective
-  refine ⟨?_, sys.hasRepresentativesWithGermsIn_adjoin S hS X hX⟩
   rw [transcendental_iff]
   suffices H : ∀ (d : ℕ), ∀ p : Polynomial ↥S,
       p.natDegree = d → p ≠ 0 → aeval x p = 0 → False by
@@ -525,7 +551,7 @@ theorem transcendental_germ (S : Subalgebra K Q) [IsDomain S]
         have heq : (↑(p.coeff 1) : Q) * x = -↑(p.coeff 0) := by linear_combination hpeval
         rw [heq]; exact neg_mem (p.coeff 0).2
       have hc1ne : (↑(p.coeff 1) : Q) ≠ 0 := fun h => had_ne ((Subalgebra.coe_eq_zero S).mp h)
-      exact sys.mul_germ_notMem S hS X hX hx (↑(p.coeff 1)) (p.coeff 1).2 hc1ne hc1x
+      exact hlin (↑(p.coeff 1)) (p.coeff 1).2 hc1ne hc1x
     · -- `d ≥ 2`: derivative argument.
       obtain ⟨e, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (show d ≠ 0 by omega)
       set Y : A := ∑ k ∈ Finset.range (e + 2), Afun k * X ^ k with hY
@@ -631,8 +657,7 @@ theorem transcendental_germ (S : Subalgebra K Q) [IsDomain S]
           S.add_mem (S.mul_mem hn hoff) (hAs e ζ),
           (↑(e + 1) : Q) * sys.germAt ζ (Afun (e + 1)), S.mul_mem hn (hAs (e + 1) ζ), ?_⟩
         rw [hLZ ζ]; ring
-      obtain ⟨c, hc⟩ := sys.exists_germ_eq_smul_of_proportional S
-        (fun a ha ha0 => sys.mul_germ_notMem S hS X hX hx a ha ha0) Z (Afun (e + 1)) hV
+      obtain ⟨c, hc⟩ := hprop Z (Afun (e + 1)) hV
         (fun ξ _ => hAs (e + 1) ξ) hZN ⟨ε₀, hε₀, hrel⟩
       have hne : (e + 1 : ↥S) ≠ 0 := Nat.cast_add_one_ne_zero e
       set r : Polynomial ↥S :=
@@ -662,7 +687,10 @@ theorem exists_algebraicIndependent_generators :
     (fun _ hcn hchain hc => sys.hasRepresentativesWithGermsIn_adjoin_sUnion hcn hchain hc)
     fun S _ hS hne => by
       obtain ⟨X, hX, hx⟩ := sys.exists_germAt_mem_germ_notMem S hne
-      exact ⟨sys.germ X, sys.transcendental_germ S hS X hX hx⟩
+      have hlin := sys.mul_germ_notMem S hS X hX hx
+      exact ⟨sys.germ X, sys.transcendental_germ S hS X hX hlin
+          (sys.exists_germ_eq_smul_of_proportional S hlin),
+        sys.hasRepresentativesWithGermsIn_adjoin S hS X hX⟩
 
 end TruncationGerms
 

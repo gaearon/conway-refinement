@@ -297,13 +297,10 @@ def smallSupportIntegerPartSignedRingEquiv :
   (phase := "Surreal numbers and omnific integers")
   (title := "Conway normal form of omnific integers")
   (statement := /--
-    Let $\mathbf{No}$ be the surreal numbers of a universe $u$, $\kappa_u$ the
-    cardinal of that universe, and $\mathbf{Oz}\subseteq\mathbf{No}$ the
-    omnific integers.  Conway normal form, with the signs of the exponents
-    reversed, restricts to a ring isomorphism
+    Conway normal form, with the signs of the exponents reversed, restricts to a
+    ring isomorphism
     \[
-      \mathbf{Oz}\simeq
-      \mathbb Z+\mathbb R((\mathbf{No}^{<0}))_{\kappa_u}.
+      \mathbf{Oz}\simeq\mathbb Z+\mathbb R((\mathbf{No}^{<0}))_{\kappa_u}.
     \]
   -/)
   (proof := /--

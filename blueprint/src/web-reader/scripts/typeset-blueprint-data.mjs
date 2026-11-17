@@ -75,6 +75,7 @@ const data = JSON.parse(await readFile(dataUrl, 'utf8'));
 data.highlights.descriptionHtml = descriptionHtml(data.highlights.description);
 for (const phase of data.phases) {
   phase.descriptionHtml = descriptionHtml(phase.description);
+  phase.settingHtml = descriptionHtml(phase.setting);
 }
 for (const node of data.nodes) {
   node.titleHtml = titleHtml(node.title);

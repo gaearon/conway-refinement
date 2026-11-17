@@ -23,6 +23,9 @@ standalone statements of the main results on generalised power series.
   Titles never introduce terminology, narrate a proof, or depend on surrounding node labels.
 - A node statement and proof must match the Lean signature and proof route. A node states several
   conclusions only when the Lean declaration returns them together.
+- Each chapter has a standing setting in `phases.json`: the notation and assumptions fixed for the
+  chapter, rendered after its description. A statement may rely on the setting and states every
+  further hypothesis; setting plus statement must match the full Lean signature.
 
 ## Dependencies
 
@@ -69,8 +72,10 @@ Generated web and PDF artifacts are not committed.
 The Mermaid output has three synchronized scales: a phase overview, one detailed map for each
 phase with cross-phase dependencies compressed to boundary ports, and the complete theorem graph.
 Every theorem node is numbered as in the PDF and appears as a local node in exactly one phase map.
+Within a chapter, results appear in dependency order; ties are broken by the chapter's optional
+`order` list of labels in `phases.json`, then by project import depth, then by source position.
 Nodes and edges follow the Lean annotations automatically. The Highlights introduction and the
-ordered phase titles, slugs, and descriptions live in `phases.json`; the PDF uses that introduction
+ordered phase titles, slugs, descriptions, and settings live in `phases.json`; the PDF uses that introduction
 as its Overview, and each annotation carries the corresponding stable internal key.
 Generation rejects unknown or unused keys, drift from Lean's compile-time key mirror, backwards
 dependencies, and modules split between phases. The annotation label's `def:`, `thm:`, `lem:`,

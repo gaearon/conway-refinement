@@ -88,18 +88,18 @@ is primal. -/
   (phase := "Surreal numbers and omnific integers")
   (title := "Primality in $\\mathbb Z+\\mathbb R((\\mathbf{No}^{<0}))_\\kappa$")
   (statement := /--
-    Let $\mathbf{No}$ be the surreal numbers of a universe $u$ and $\kappa_u$
-    the cardinal of that universe.  Every element of
-    $\mathbb Z+\mathbb R((\mathbf{No}^{<0}))_{\kappa_u}$ is primal.
+    Every element of $\mathbb Z+\mathbb R((\mathbf{No}^{<0}))_{\kappa_u}$ is
+    primal.
   -/)
   (proof := /--
-    Apply \ref{thm:hahn-integer-part-primality} with $K=R=\mathbb R$,
-    $Z=\mathbb Z$, which is pre-Schreier, and $\kappa=\kappa_u$, an uncountable
-    regular cardinal.  Condition (1) is \ref{fact:surreal-archimedean-strata};
-    condition (2) holds by \ref{fact:surreal-archimedean-ball-cofinality};
-    condition (3) by \ref{lem:surreal-common-tail-cofinality}, since a set of
-    classes of cardinality less than $\kappa_u$ is a set of the universe; and
-    condition (4) by \ref{lem:surreal-common-tail-quotient-complete}.
+    Apply \ref{thm:hahn-integer-part-primality} with $G=\mathbf{No}$,
+    $K=R=\mathbb R$, $Z=\mathbb Z$ and $\kappa=\kappa_u$, an uncountable regular
+    cardinal.  Condition (A1)$_\sigma$ is \ref{fact:surreal-archimedean-strata};
+    (A2)$_\sigma$ is \ref{fact:surreal-archimedean-ball-cofinality}; (A3) holds
+    because $\mathbb Z$ is a unique factorisation domain.  For a set $T$ of fewer
+    than $\kappa_u$ classes, $T$ is a set of the universe $u$, so (B1)$_T$ is
+    \ref{lem:surreal-common-tail-cofinality} and (B2)$_T$ is
+    \ref{lem:surreal-common-tail-quotient-complete}.
   -/)]
 theorem signedSmallSupportIntegerPart_isPrimal
     (a : SignedSmallSupportIntegerPart.{u}) : IsPrimal a := by
@@ -136,8 +136,7 @@ theorem isPrimal (x : Surreal.OmnificInteger.{u}) : IsPrimal x :=
   (phase := "Surreal numbers and omnific integers")
   (title := "Irreducible omnific integers are prime")
   (statement := /--
-    Let $\mathbf{Oz}$ be the omnific integers of a fixed universe.  Every
-    irreducible element of $\mathbf{Oz}$ is prime in $\mathbf{Oz}$.
+    Every irreducible element of $\mathbf{Oz}$ is prime in $\mathbf{Oz}$.
   -/)
   (proof := /--
     By \ref{thm:signed-normal-form-omnific-integer-equivalence} and

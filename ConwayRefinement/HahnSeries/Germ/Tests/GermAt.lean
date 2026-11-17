@@ -41,9 +41,10 @@ theorem germAt_zero_single {γ : ℝ} (hγ : γ < 0) :
   rw [coe_single, HahnSeries.support_single_of_ne one_ne_zero, closure_singleton] at hmem
   exact hγ.ne (Set.mem_singleton_iff.mp hmem).symm
 
+omit [CharZero K] in
 /-- The monomial `t^γ` has constant germs everywhere. -/
 theorem single_mem_seriesWithConstantGerms {γ : ℝ} (hγ : γ ≤ 0) :
-    single γ (1 : K) hγ ∈ (seriesTruncationGerms K).seriesWithConstantGerms := by
+    single γ (1 : K) hγ ∈ (seriesGerms K).seriesWithConstantGerms := by
   rw [mem_seriesWithConstantGerms_iff, Nonpositive.mem_finiteSupportSubring_iff, coe_single]
   exact (Set.finite_singleton γ).subset HahnSeries.support_single_subset
 

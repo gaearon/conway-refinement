@@ -170,10 +170,10 @@ I also have a script that turns the proof map into the Mermaid diagrams below:
 %% Edge labels count visible result dependencies.
 flowchart TB
   p0["Germs of translated truncations<br/>8 results"]:::phase
-  p1["Polynomial presentations<br/>8 results"]:::phase
-  p2["Reduction along Archimedean classes<br/>11 results"]:::phase
+  p1["Polynomial presentations<br/>15 results"]:::phase
+  p2["Reduction along Archimedean classes<br/>13 results"]:::phase
   p3["Surreal numbers and omnific integers<br/>10 results"]:::phase
-  p0 -->|"8"| p1
+  p0 -->|"18"| p1
   p1 -->|"3"| p2
   p2 -->|"1"| p3
   click p0 "https://gaearon.github.io/conway-refinement/#/chapter/germs" "Open Germs of translated truncations"
@@ -206,7 +206,7 @@ flowchart TB
   end
   subgraph outputs["Used by other sections"]
     direction TB
-    out0["Polynomial presentations<br/>4 results used downstream"]:::boundary
+    out0["Polynomial presentations<br/>5 results used downstream"]:::boundary
   end
 
   n002 --> n003
@@ -221,6 +221,7 @@ flowchart TB
   n005 --> out0
   n006 --> out0
   n008 --> out0
+  n003 --> out0
   n007 --> out0
   click n001 "https://gaearon.github.io/conway-refinement/#/result/cantor-bendixson-value" "Open the statement for definition 1"
   click n002 "https://gaearon.github.io/conway-refinement/#/result/bounded-away-ideal" "Open the statement for definition 2"
@@ -252,44 +253,70 @@ flowchart TB
 flowchart TB
   subgraph inputs["Inputs from other sections"]
     direction TB
-    in0["Germs of translated truncations<br/>used by 3 results"]:::boundary
+    in0["Germs of translated truncations<br/>used by 8 results"]:::boundary
   end
   subgraph current["Polynomial presentations"]
     direction TB
-    n009["(9) Polynomial presentation of the ring of germs of series with small support"]:::theorem
-    n010["(10) Transcendence lemma"]:::lemma
-    n011["(11) Polynomial presentation of the ring of germs"]:::theorem
-    n012["(12) Primality of J"]:::theorem
-    n013["(13) Greatest common divisors of finite-support series"]:::fact
-    n014["(14) Series with constant germs"]:::lemma
-    n015["(15) Polynomial presentation of K((ℝ^{≤ 0}))"]:::theorem
-    n016["(16) Greatest common divisors in K((ℝ^{≤ 0}))"]:::theorem
+    n009["(9) Absence of linear relations"]:::lemma
+    n010["(10) Proportional germs"]:::lemma
+    n011["(11) Transcendence lemma"]:::lemma
+    n012["(12) Representatives after adjoining a germ"]:::lemma
+    n013["(13) Existence of a new germ"]:::lemma
+    n014["(14) Polynomial presentation of the ring of germs"]:::theorem
+    n015["(15) Primality of J"]:::theorem
+    n016["(16) Polynomial presentation of the ring of germs of series with small support"]:::theorem
+    n017["(17) Series with constant germs"]:::lemma
+    n018["(18) Truncations in a simple extension"]:::lemma
+    n019["(19) Transcendence of a series with transcendental germ"]:::lemma
+    n020["(20) Generation by truncations and representatives"]:::lemma
+    n021["(21) Polynomial presentation of K((ℝ^{≤ 0}))"]:::theorem
+    n022["(22) Greatest common divisors of finite-support series"]:::fact
+    n023["(23) Greatest common divisors in K((ℝ^{≤ 0}))"]:::theorem
   end
   subgraph outputs["Used by other sections"]
     direction TB
     out0["Reduction along Archimedean classes<br/>3 results used downstream"]:::boundary
   end
 
+  n009 --> n010
   n010 --> n011
-  n011 --> n012
-  n012 --> n015
+  n011 --> n014
+  n012 --> n014
+  n013 --> n014
   n014 --> n015
-  n013 --> n016
-  n015 --> n016
+  n015 --> n021
+  n017 --> n021
+  n018 --> n021
+  n019 --> n021
+  n020 --> n021
+  n021 --> n023
+  n022 --> n023
   in0 --> n009
-  in0 --> n010
-  in0 --> n014
-  n011 --> out0
+  in0 --> n012
+  in0 --> n013
+  in0 --> n016
+  in0 --> n017
+  in0 --> n018
+  in0 --> n019
+  in0 --> n020
+  n023 --> out0
   n016 --> out0
-  n009 --> out0
-  click n009 "https://gaearon.github.io/conway-refinement/#/result/bounded-hahn-germ-polynomial-algebra" "Open the statement for theorem 9"
-  click n010 "https://gaearon.github.io/conway-refinement/#/result/transcendence" "Open the statement for lemma 10"
-  click n011 "https://gaearon.github.io/conway-refinement/#/result/complete-hahn-germ-polynomial-algebra" "Open the statement for theorem 11"
-  click n012 "https://gaearon.github.io/conway-refinement/#/result/bounded-away-ideal-prime" "Open the statement for theorem 12"
-  click n013 "https://gaearon.github.io/conway-refinement/#/result/finite-support-hahn-gcd" "Open the statement for fact 13"
-  click n014 "https://gaearon.github.io/conway-refinement/#/result/constant-germs-finite-support" "Open the statement for lemma 14"
-  click n015 "https://gaearon.github.io/conway-refinement/#/result/hahn-series-polynomial-algebra" "Open the statement for theorem 15"
-  click n016 "https://gaearon.github.io/conway-refinement/#/result/hahn-series-gcd-domain" "Open the statement for theorem 16"
+  n014 --> out0
+  click n009 "https://gaearon.github.io/conway-refinement/#/result/no-linear-relation" "Open the statement for lemma 9"
+  click n010 "https://gaearon.github.io/conway-refinement/#/result/proportionality" "Open the statement for lemma 10"
+  click n011 "https://gaearon.github.io/conway-refinement/#/result/transcendence" "Open the statement for lemma 11"
+  click n012 "https://gaearon.github.io/conway-refinement/#/result/representatives-adjoin" "Open the statement for lemma 12"
+  click n013 "https://gaearon.github.io/conway-refinement/#/result/new-germ" "Open the statement for lemma 13"
+  click n014 "https://gaearon.github.io/conway-refinement/#/result/complete-hahn-germ-polynomial-algebra" "Open the statement for theorem 14"
+  click n015 "https://gaearon.github.io/conway-refinement/#/result/bounded-away-ideal-prime" "Open the statement for theorem 15"
+  click n016 "https://gaearon.github.io/conway-refinement/#/result/bounded-hahn-germ-polynomial-algebra" "Open the statement for theorem 16"
+  click n017 "https://gaearon.github.io/conway-refinement/#/result/constant-germs-finite-support" "Open the statement for lemma 17"
+  click n018 "https://gaearon.github.io/conway-refinement/#/result/truncations-of-simple-extension" "Open the statement for lemma 18"
+  click n019 "https://gaearon.github.io/conway-refinement/#/result/transcendental-series" "Open the statement for lemma 19"
+  click n020 "https://gaearon.github.io/conway-refinement/#/result/series-generation" "Open the statement for lemma 20"
+  click n021 "https://gaearon.github.io/conway-refinement/#/result/hahn-series-polynomial-algebra" "Open the statement for theorem 21"
+  click n022 "https://gaearon.github.io/conway-refinement/#/result/finite-support-hahn-gcd" "Open the statement for fact 22"
+  click n023 "https://gaearon.github.io/conway-refinement/#/result/hahn-series-gcd-domain" "Open the statement for theorem 23"
 
   classDef theorem fill:#fff3bf,stroke:#e67700,stroke-width:2px,color:#111827
   classDef definition fill:#f3f4f6,stroke:#4b5563,color:#111827
@@ -316,50 +343,55 @@ flowchart TB
   end
   subgraph current["Reduction along Archimedean classes"]
     direction TB
-    n017["(17) Primality in a D + M construction"]:::lemma
-    n018["(18) Primality via a quotient and retractions"]:::lemma
-    n019["(19) Restriction to a convex subgroup"]:::lemma
-    n020["(20) Divisibility from a convex restriction"]:::lemma
-    n021["(21) Factorisation by a convex restriction"]:::lemma
-    n022["(22) Refinement forces K = Frac(Z)"]:::theorem
-    n023["(23) Primality through regrouping along a convex subgroup"]:::lemma
-    n024["(24) Primality for finitely many Archimedean classes"]:::theorem
-    n025["(25) Factorisation at an Archimedean class of a quotient"]:::lemma
-    n026["(26) Primality at a limit of Archimedean classes"]:::theorem
-    n027["(27) Primality in Z + R((G^{&lt; 0}))_κ"]:::theorem
+    n024["(24) Primality in a D + M construction"]:::lemma
+    n025["(25) Restriction to a convex subgroup"]:::lemma
+    n026["(26) Divisibility from a convex restriction"]:::lemma
+    n027["(27) Factorisation by a convex restriction"]:::lemma
+    n028["(28) Primality through regrouping along a convex subgroup"]:::lemma
+    n029["(29) Fraction field of Z + R((C^{&lt; 0}))_κ"]:::lemma
+    n030["(30) Primality at the leading Archimedean class"]:::lemma
+    n031["(31) Primality for finitely many Archimedean classes"]:::theorem
+    n032["(32) Factorisation at an Archimedean class of a quotient"]:::lemma
+    n033["(33) Primality from germs and restrictions to balls"]:::lemma
+    n034["(34) Primality of the regrouping at a limit of Archimedean classes"]:::lemma
+    n035["(35) Primality in Z + R((G^{&lt; 0}))_κ"]:::theorem
+    n036["(36) Refinement forces R = Frac(Z)"]:::theorem
   end
   subgraph outputs["Used by other sections"]
     direction TB
     out0["Surreal numbers and omnific integers<br/>1 results used downstream"]:::boundary
   end
 
-  n017 --> n023
-  n019 --> n024
-  n020 --> n024
-  n023 --> n024
-  n021 --> n025
-  n018 --> n026
-  n019 --> n026
-  n020 --> n026
-  n023 --> n026
-  n025 --> n026
-  n024 --> n027
-  n026 --> n027
-  in0 --> n022
-  in0 --> n024
-  in0 --> n026
-  n027 --> out0
-  click n017 "https://gaearon.github.io/conway-refinement/#/result/primality-in-d-plus-m" "Open the statement for lemma 17"
-  click n018 "https://gaearon.github.io/conway-refinement/#/result/primality-from-germs-and-restrictions" "Open the statement for lemma 18"
-  click n019 "https://gaearon.github.io/conway-refinement/#/result/convex-restriction-ring-hom" "Open the statement for lemma 19"
-  click n020 "https://gaearon.github.io/conway-refinement/#/result/divisibility-from-convex-restriction" "Open the statement for lemma 20"
-  click n021 "https://gaearon.github.io/conway-refinement/#/result/factorisation-by-convex-restriction" "Open the statement for lemma 21"
-  click n022 "https://gaearon.github.io/conway-refinement/#/result/refinement-forces-coefficient-fraction-field" "Open the statement for theorem 22"
-  click n023 "https://gaearon.github.io/conway-refinement/#/result/primality-through-regrouping" "Open the statement for lemma 23"
-  click n024 "https://gaearon.github.io/conway-refinement/#/result/finite-support-classes-primality" "Open the statement for theorem 24"
-  click n025 "https://gaearon.github.io/conway-refinement/#/result/support-class-factorisation" "Open the statement for lemma 25"
-  click n026 "https://gaearon.github.io/conway-refinement/#/result/limit-tail-step" "Open the statement for theorem 26"
-  click n027 "https://gaearon.github.io/conway-refinement/#/result/hahn-integer-part-primality" "Open the statement for theorem 27"
+  n024 --> n028
+  n025 --> n030
+  n026 --> n030
+  n028 --> n030
+  n029 --> n030
+  n030 --> n031
+  n027 --> n032
+  n025 --> n033
+  n026 --> n033
+  n032 --> n034
+  n033 --> n034
+  n031 --> n035
+  n034 --> n035
+  in0 --> n030
+  in0 --> n033
+  in0 --> n036
+  n035 --> out0
+  click n024 "https://gaearon.github.io/conway-refinement/#/result/primality-in-d-plus-m" "Open the statement for lemma 24"
+  click n025 "https://gaearon.github.io/conway-refinement/#/result/convex-restriction-ring-hom" "Open the statement for lemma 25"
+  click n026 "https://gaearon.github.io/conway-refinement/#/result/divisibility-from-convex-restriction" "Open the statement for lemma 26"
+  click n027 "https://gaearon.github.io/conway-refinement/#/result/factorisation-by-convex-restriction" "Open the statement for lemma 27"
+  click n028 "https://gaearon.github.io/conway-refinement/#/result/primality-through-regrouping" "Open the statement for lemma 28"
+  click n029 "https://gaearon.github.io/conway-refinement/#/result/fraction-field-from-cofinality" "Open the statement for lemma 29"
+  click n030 "https://gaearon.github.io/conway-refinement/#/result/primality-at-leading-class" "Open the statement for lemma 30"
+  click n031 "https://gaearon.github.io/conway-refinement/#/result/finite-support-classes-primality" "Open the statement for theorem 31"
+  click n032 "https://gaearon.github.io/conway-refinement/#/result/support-class-factorisation" "Open the statement for lemma 32"
+  click n033 "https://gaearon.github.io/conway-refinement/#/result/primality-from-germs" "Open the statement for lemma 33"
+  click n034 "https://gaearon.github.io/conway-refinement/#/result/regrouped-primality-at-limit" "Open the statement for lemma 34"
+  click n035 "https://gaearon.github.io/conway-refinement/#/result/hahn-integer-part-primality" "Open the statement for theorem 35"
+  click n036 "https://gaearon.github.io/conway-refinement/#/result/refinement-forces-coefficient-fraction-field" "Open the statement for theorem 36"
 
   classDef theorem fill:#fff3bf,stroke:#e67700,stroke-width:2px,color:#111827
   classDef definition fill:#f3f4f6,stroke:#4b5563,color:#111827
@@ -386,39 +418,39 @@ flowchart TB
   end
   subgraph current["Surreal numbers and omnific integers"]
     direction TB
-    n028["(28) Condition (A1)_σ for the surreal numbers"]:::fact
-    n029["(29) Cofinality of surreal Archimedean balls"]:::fact
-    n030["(30) Cofinality of intersections of surreal Archimedean balls"]:::lemma
-    n031["(31) Filling small cuts in the surreal numbers"]:::theorem
-    n032["(32) Conway normal form of omnific integers"]:::theorem
-    n033["(33) A cut criterion for Cauchy completeness"]:::lemma
-    n034["(34) Cauchy completeness of surreal quotients"]:::lemma
-    n035["(35) Primality in ℤ + ℝ((No^{&lt; 0}))_κ"]:::theorem
-    n036["(36) Conway's refinement theorem for omnific integers"]:::theorem
-    n037["(37) Irreducible omnific integers are prime"]:::theorem
+    n037["(37) A cut criterion for Cauchy completeness"]:::lemma
+    n038["(38) Filling small cuts in the surreal numbers"]:::theorem
+    n039["(39) Condition (A1)_σ for the surreal numbers"]:::fact
+    n040["(40) Cofinality of surreal Archimedean balls"]:::fact
+    n041["(41) Cofinality of intersections of surreal Archimedean balls"]:::lemma
+    n042["(42) Cauchy completeness of surreal quotients"]:::lemma
+    n043["(43) Conway normal form of omnific integers"]:::theorem
+    n044["(44) Primality in ℤ + ℝ((No^{&lt; 0}))_κ"]:::theorem
+    n045["(45) Irreducible omnific integers are prime"]:::theorem
+    n046["(46) Conway's refinement theorem for omnific integers"]:::theorem
   end
 
-  n031 --> n034
-  n033 --> n034
-  n028 --> n035
-  n029 --> n035
-  n030 --> n035
-  n034 --> n035
-  n032 --> n036
-  n035 --> n036
-  n032 --> n037
-  n035 --> n037
-  in0 --> n035
-  click n028 "https://gaearon.github.io/conway-refinement/#/result/surreal-archimedean-strata" "Open the statement for fact 28"
-  click n029 "https://gaearon.github.io/conway-refinement/#/result/surreal-archimedean-ball-cofinality" "Open the statement for fact 29"
-  click n030 "https://gaearon.github.io/conway-refinement/#/result/surreal-common-tail-cofinality" "Open the statement for lemma 30"
-  click n031 "https://gaearon.github.io/conway-refinement/#/result/surreal-simplicity-small-cuts" "Open the statement for theorem 31"
-  click n032 "https://gaearon.github.io/conway-refinement/#/result/signed-normal-form-omnific-integer-equivalence" "Open the statement for theorem 32"
-  click n033 "https://gaearon.github.io/conway-refinement/#/result/complete-of-coinitial-scales-and-cut-filling" "Open the statement for lemma 33"
-  click n034 "https://gaearon.github.io/conway-refinement/#/result/surreal-common-tail-quotient-complete" "Open the statement for lemma 34"
-  click n035 "https://gaearon.github.io/conway-refinement/#/result/surreal-hahn-integer-part-primality" "Open the statement for theorem 35"
-  click n036 "https://gaearon.github.io/conway-refinement/#/result/conway-refinement" "Open the statement for theorem 36"
-  click n037 "https://gaearon.github.io/conway-refinement/#/result/omnific-factorisation" "Open the statement for theorem 37"
+  n037 --> n042
+  n038 --> n042
+  n039 --> n044
+  n040 --> n044
+  n041 --> n044
+  n042 --> n044
+  n043 --> n045
+  n044 --> n045
+  n043 --> n046
+  n044 --> n046
+  in0 --> n044
+  click n037 "https://gaearon.github.io/conway-refinement/#/result/complete-of-coinitial-scales-and-cut-filling" "Open the statement for lemma 37"
+  click n038 "https://gaearon.github.io/conway-refinement/#/result/surreal-simplicity-small-cuts" "Open the statement for theorem 38"
+  click n039 "https://gaearon.github.io/conway-refinement/#/result/surreal-archimedean-strata" "Open the statement for fact 39"
+  click n040 "https://gaearon.github.io/conway-refinement/#/result/surreal-archimedean-ball-cofinality" "Open the statement for fact 40"
+  click n041 "https://gaearon.github.io/conway-refinement/#/result/surreal-common-tail-cofinality" "Open the statement for lemma 41"
+  click n042 "https://gaearon.github.io/conway-refinement/#/result/surreal-common-tail-quotient-complete" "Open the statement for lemma 42"
+  click n043 "https://gaearon.github.io/conway-refinement/#/result/signed-normal-form-omnific-integer-equivalence" "Open the statement for theorem 43"
+  click n044 "https://gaearon.github.io/conway-refinement/#/result/surreal-hahn-integer-part-primality" "Open the statement for theorem 44"
+  click n045 "https://gaearon.github.io/conway-refinement/#/result/omnific-factorisation" "Open the statement for theorem 45"
+  click n046 "https://gaearon.github.io/conway-refinement/#/result/conway-refinement" "Open the statement for theorem 46"
 
   classDef theorem fill:#fff3bf,stroke:#e67700,stroke-width:2px,color:#111827
   classDef definition fill:#f3f4f6,stroke:#4b5563,color:#111827

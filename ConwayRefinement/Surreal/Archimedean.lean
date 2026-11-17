@@ -109,12 +109,10 @@ additive group. This is LM24, Proposition 2.4.3. -/
   (phase := "Surreal numbers and omnific integers")
   (title := "Condition (A1)$_\\sigma$ for the surreal numbers")
   (statement := /--
-    Let $\mathbf{No}$ be the surreal numbers of a fixed universe, regarded as
-    an ordered $\mathbb R$-vector space.  For every nonzero Archimedean class
-    $\sigma$ of $\mathbf{No}$ and every $\mathbb R$-linear complement $H_\sigma$
+    Regard $\mathbf{No}$ as an ordered $\mathbb R$-vector space.  For every nonzero
+    Archimedean class $\sigma$ and every $\mathbb R$-linear complement $H_\sigma$
     of $\mathbf{No}_{\prec\sigma}$ in $\mathbf{No}_{\preceq\sigma}$, there is an
-    isomorphism of ordered groups $H_\sigma\simeq\mathbb R$
-    [LM24, Prop. 2.4.3].
+    isomorphism of ordered groups $H_\sigma\simeq\mathbb R$ [LM24, Prop. 2.4.3].
   -/)
   (proof := /--
     Choose a positive $a\in H_\sigma$ and send $x\in H_\sigma$ to the standard
@@ -224,11 +222,9 @@ This is the universe-bounded form of LM24, Proposition 2.4.4. -/
   (phase := "Surreal numbers and omnific integers")
   (title := "Cofinality of surreal Archimedean balls")
   (statement := /--
-    Let $\mathbf{No}$ be the surreal numbers of a universe $u$ and $\kappa_u$
-    the cardinal of that universe.  For every nonzero Archimedean class
-    $\sigma$, the convex subgroup $\mathbf{No}_{\prec\sigma}$ has cofinality at
-    least $\kappa_u$.  This is [LM24, Prop. 2.4.4] for the surreal numbers of
-    one universe.
+    For every nonzero Archimedean class $\sigma$ of $\mathbf{No}$, the convex
+    subgroup $\mathbf{No}_{\prec\sigma}$ has cofinality at least $\kappa_u$.  This
+    is [LM24, Prop. 2.4.4] for the surreal numbers of one universe.
   -/)
   (proof := /--
     Let $a>0$ have class $\sigma$.  A subset of $\mathbf{No}_{\prec\sigma}$ of
@@ -260,10 +256,8 @@ least the surreal support cardinal. -/
   (phase := "Surreal numbers and omnific integers")
   (title := "Cofinality of intersections of surreal Archimedean balls")
   (statement := /--
-    Let $\mathbf{No}$ be the surreal numbers of a universe $u$ and $\kappa_u$
-    the cardinal of that universe.  Let $T$ be a set of nonzero Archimedean
-    classes of cardinality less than $\kappa_u$ with no least element in
-    magnitude.  Then $H_T=\bigcap_{\sigma\in T}\mathbf{No}_{\preceq\sigma}$ has
+    Let $T$ be a set of fewer than $\kappa_u$ nonzero Archimedean classes of
+    $\mathbf{No}$, without least element in magnitude.  Then $H_T$ has
     cofinality at least $\kappa_u$.
   -/)
   (proof := /--

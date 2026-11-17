@@ -8,25 +8,61 @@
       "key": "Germs of translated truncations",
       "slug": "germs",
       "title": "Germs of translated truncations",
-      "description": "Let $K$ be a field, $G$ a nontrivial ordered abelian group, and $J$ the ideal of series in $K((G^{\\le0}))$ whose support is bounded away from $0$. The germ of $b$ at $\\gamma$ is the class of the translated truncation $b^{|\\gamma}=t^{-\\gamma}b_{|\\gamma}$ modulo $J$ [Ber00, Def. 6.1].\n\nThis chapter proves the facts about germs that the next chapter needs. If $G$ is Cauchy complete, germs obey the convolution formula. The germs of $b^{|\\gamma}$ are the germs of $b$, shifted by $\\gamma$. The germ of $b$ at $\\gamma$ is nonzero exactly when $\\gamma$ is in the closure of the support. It is a constant exactly when the germs just below $\\gamma$ vanish.\n\nInductions use the Cantor--Bendixson rank of $0$ in the closed support. It depends only on the germ. If the germ is not a constant, the rank drops along the germs just below $0$."
+      "description": "This chapter proves the facts about germs that the next chapter needs. If $G$ is Cauchy complete, germs obey the convolution formula, which carries the main idea of the chapter. The germs of $b^{|\\gamma}$ are the germs of $b$, shifted by $\\gamma$. The germ of $b$ at $\\gamma$ is nonzero exactly when $\\gamma$ is in the closure of the support. It is a constant exactly when the germs just below $\\gamma$ vanish.\n\nInductions use the Cantor--Bendixson value of $0$ in the closed support. It depends only on the germ. If the germ is not a constant, the value drops along the germs just below $0$.",
+      "setting": "$K$ is a field and $G$ a nontrivial ordered abelian group, with its order topology and the associated group uniformity. For $b\\in K((G^{\\le0}))$ and $\\gamma\\in G$, $b_{|\\gamma}$ is the truncation of $b$ at $\\gamma$, the part of $b$ with exponents at most $\\gamma$, and $b^{|\\gamma}=t^{-\\gamma}b_{|\\gamma}$ is the translated truncation, again an element of $K((G^{\\le0}))$. $J$ is the ideal of series whose support is bounded away from $0$, $[b]$ is the class of $b$ in $K((G^{\\le0}))/J$, and $K$ is identified with its image there. The germ of $b$ at $\\gamma$ is $[b^{|\\gamma}]$, and $V_{\\mathrm{CB}}(b)$ is the Cantor--Bendixson value of $b$."
     },
     {
       "key": "Polynomial presentations",
       "slug": "polynomial-presentations",
       "title": "Polynomial presentations",
-      "description": "Let $S$ be a subalgebra of $K((G^{\\le0}))/J$ that is a domain, such that each element of $S$ is the germ of a series with all its germs in $S$. Let $X$ be a series whose germs below $0$ lie in $S$, but whose germ $x$ does not. The transcendence lemma says that $x$ is transcendental over $S$. The proof takes a relation of least degree and applies the germ maps to it, using the facts of the previous chapter. Characteristic zero reduces it to degree one, and an induction on the Cantor--Bendixson rank rules that out.\n\nAdjoining such germs one at a time shows that $K((G^{\\le0}))/J$ is a polynomial ring over $K$ when $G$ is Cauchy complete. So $J$ is prime. The same holds for series with support of cardinality less than $\\kappa$.\n\nFor real exponents, a series has only constant germs exactly when its support is finite. The same method then shows that $K((\\mathbb R^{\\le0}))$ is a polynomial ring over its subring of series with finite support. That subring is a GCD domain [LM24, Fact 2.5.2]. By Gauss's lemma, $K((\\mathbb R^{\\le0}))$ is a GCD domain too."
+      "description": "The key statement is the transcendence lemma: if $S\\subseteq[A_S]$ is a domain and $X$ has its germs below $0$ in $S$ but $x=[X]\\notin S$, then $x$ is transcendental over $S$. Its proof takes a relation of least degree and applies the germ maps to it. Two lemmas prepare it: $x$ satisfies no linear relation over $S$, and germs that are proportional near $0$ are proportional by a constant.\n\nAdjoining such germs one at a time shows that $Q$ is a polynomial ring over $K$ when $G$ is Cauchy complete. So $J$ is prime. The same holds for series with support of cardinality less than $\\kappa$.\n\nFor real exponents, a series has only constant germs exactly when its support is finite. The same method then shows that $K((\\mathbb R^{\\le0}))$ is a polynomial ring over its subring of series with finite support. That subring is a GCD domain [LM24, Fact 2.5.2]. By Gauss's lemma, $K((\\mathbb R^{\\le0}))$ is a GCD domain too.",
+      "setting": "$K$ is a field and $G$ a nontrivial ordered abelian group, with its order topology and the associated group uniformity. Write $A=K((G^{\\le0}))$ and $Q=A/J$. The germs of $b\\in A$ are the classes $[b^{|\\xi}]$, $\\xi\\in G$. For $a=[b]\\in Q$ put $\\operatorname{rk}(a)=V_{\\mathrm{CB}}(b)$, which depends only on $a$. For a $K$-subalgebra $S\\subseteq Q$, $A_S$ is the set of series all of whose germs lie in $S$, and $S\\subseteq[A_S]$ means that every element of $S$ is $[b]$ for some $b\\in A_S$. A $K$-subalgebra $R\\subseteq A$ is closed under the truncations $b\\mapsto b_{|\\eta}$ if $b_{|\\eta}\\in R$ for all $b\\in R$ and $\\eta\\in G$. $K(G^{\\le0})$ is the subring of series with finite support.\n\nHypothesis (H): $G$ is Cauchy complete, $S\\subseteq Q$ is a $K$-subalgebra with $S\\subseteq[A_S]$, $X\\in A$ satisfies $[X^{|\\xi}]\\in S$ for all $\\xi<0$, and $x=[X]$.",
+      "order": [
+        "lem:no-linear-relation",
+        "lem:proportionality",
+        "lem:transcendence",
+        "lem:representatives-adjoin",
+        "lem:new-germ",
+        "thm:complete-hahn-germ-polynomial-algebra",
+        "thm:bounded-away-ideal-prime",
+        "thm:bounded-hahn-germ-polynomial-algebra",
+        "lem:constant-germs-finite-support",
+        "lem:truncations-of-simple-extension",
+        "lem:transcendental-series",
+        "lem:series-generation",
+        "thm:hahn-series-polynomial-algebra",
+        "fact:finite-support-hahn-gcd",
+        "thm:hahn-series-gcd-domain"
+      ]
     },
     {
       "key": "Reduction along Archimedean classes",
       "slug": "archimedean-reduction",
       "title": "Reduction along Archimedean classes",
-      "description": "Let $Z$ be a pre-Schreier subring of a field $R$ of characteristic zero. This chapter proves that every element of $Z+R((G^{<0}))_\\kappa$ is primal under conditions on $G$. It uses two general criteria for primality. The first concerns a $D+M$ construction $\\pi^{-1}(S)$, where $\\pi:A\\to L$ is a homomorphism of $L$-algebras and $S$ a subring of $L$. The second deduces primality in a domain $T$ from primality in a quotient $T/J$, using ring endomorphisms that kill $J$ and preserve divisibility.\n\nLet $C$ be a convex subspace of $G$. Grouping exponents along $C$ turns $Z+R((G^{<0}))_\\kappa$ into a $D+M$ construction. Here $D=Z+R((C^{<0}))_\\kappa$ and $M$ consists of series over $R((C))_\\kappa$ with negative exponents in $G/C$. By the first criterion, a series is primal if its regrouping is primal and its restriction to $C$ is primal.\n\nThe proof is an induction on the Archimedean classes met by the support. If there are finitely many, take $C$ below the leading class. The regrouped series then has real exponents, so it is primal by the GCD theorem. If there are infinitely many, take $C$ below a limit of classes. If $G/C$ is Cauchy complete, every germ is primal, and the second criterion applies: here $T/J$ is a ring of germs, and the endomorphisms restrict supports to Archimedean balls.\n\nThe chapter ends with a converse: the refinement property forces $R$ to be the fraction field of $Z$."
+      "description": "This chapter proves that every element of $Z+R((G^{<0}))_\\kappa$ is primal under conditions on $G$. Regrouping exponents along a convex subgroup $C$ turns $Z+R((G^{<0}))_\\kappa$ into a $D+M$ construction with $D=Z+R((C^{<0}))_\\kappa$. So $x$ is primal if its regrouping $\\hat x$ and its restriction $x_{|C}$ are primal; this is the statement that carries the reduction.\n\nThe proof is an induction on the Archimedean classes met by the support. If there are finitely many, take $C$ below the leading class; the regrouped series has real exponents, so it is primal by the GCD theorem. If there are infinitely many, take $C$ below a limit of classes. Then the regrouped series is primal because its germ is primal, by the polynomial presentation of the ring of germs, and because restrictions to Archimedean balls split off factors with fewer classes.\n\nThe chapter ends with a converse: the refinement property forces $R$ to be the fraction field of $Z$.",
+      "setting": "$G$ is an ordered abelian group, $R$ a field, $Z\\subseteq R$ a subring, and $\\kappa>\\aleph_0$ a cardinal. $R((G))_\\kappa$ is the field of series whose support has cardinality less than $\\kappa$, and $Z+R((G^{<0}))_\\kappa$ its subring of series with nonpositive support and constant coefficient in $Z$. An element meets the Archimedean classes of the exponents in its support. For a convex subgroup $C$, $x_{|C}$ is the restriction of $x$ to $C$. For a nonzero Archimedean class $\\sigma$, $G_{\\prec\\sigma}$ and $G_{\\preceq\\sigma}$ are the convex subgroups of elements of class smaller than $\\sigma$, respectively at most $\\sigma$, in magnitude, and $H_\\sigma$ is a fixed complement of $G_{\\prec\\sigma}$ in $G_{\\preceq\\sigma}$. For a set $T$ of nonzero classes, $H_T=\\bigcap_{\\sigma\\in T}G_{\\preceq\\sigma}$.\n\nWhen $G$ is a vector space over a field and $C$ is a convex subspace, put $\\Gamma=G/C$, $L=R((C))_\\kappa$ and $D=Z+R((C^{<0}))_\\kappa$. Regrouping exponents along a complement of $C$ sends $x$ to $\\hat x\\in L((\\Gamma^{\\le0}))_\\kappa$, with constant coefficient $x_{|C}$; it identifies $Z+R((G^{<0}))_\\kappa$ with $D+L((\\Gamma^{<0}))_\\kappa$.\n\nConditions [LM24, Thm. 9.0.1]: (A1)$_\\sigma$: $H_\\sigma\\simeq\\mathbb R$ as ordered groups. (A2)$_\\sigma$: $\\operatorname{cf}(G_{\\prec\\sigma})\\ge\\kappa$, or $G_{\\prec\\sigma}=\\{0\\}$ and $R=\\operatorname{Frac}(Z)$. (A3): $Z$ is pre-Schreier. Further conditions, for a set $T$ of nonzero classes: (B1)$_T$: $\\operatorname{cf}(H_T)\\ge\\kappa$, or $H_T=\\{0\\}$ and $R=\\operatorname{Frac}(Z)$. (B2)$_T$: $G/H_T$ is Cauchy complete for its order topology and group uniformity.",
+      "order": [
+        "lem:primality-in-d-plus-m",
+        "lem:convex-restriction-ring-hom",
+        "lem:divisibility-from-convex-restriction",
+        "lem:factorisation-by-convex-restriction",
+        "lem:primality-through-regrouping",
+        "lem:fraction-field-from-cofinality",
+        "lem:primality-at-leading-class",
+        "thm:finite-support-classes-primality",
+        "lem:support-class-factorisation",
+        "lem:primality-from-germs",
+        "lem:regrouped-primality-at-limit",
+        "thm:hahn-integer-part-primality",
+        "thm:refinement-forces-coefficient-fraction-field"
+      ]
     },
     {
       "key": "Surreal numbers and omnific integers",
       "slug": "conway-refinement",
       "title": "Surreal numbers and omnific integers",
-      "description": "This chapter checks the conditions of the general theorem for surreal exponents.\n\nEach Archimedean complement in $\\mathbf{No}$ is isomorphic to $\\mathbb R$. Conway's construction of a number between two small sets gives the needed cofinalities. It also fills small cuts. A cut criterion turns this into Cauchy completeness of the quotients of $\\mathbf{No}$.\n\nSo every element of $\\mathbb Z+\\mathbb R((\\mathbf{No}^{<0}))_\\kappa$ is primal. Conway normal form identifies this ring with the omnific integers. Hence the omnific integers have the refinement property, and every irreducible omnific integer is prime."
+      "description": "This chapter checks the conditions of the general theorem for surreal exponents. Conway's construction of a number between two small sets carries the argument.\n\nEach Archimedean complement in $\\mathbf{No}$ is isomorphic to $\\mathbb R$. Conway's construction gives the needed cofinalities. It also fills small cuts, and a cut criterion turns this into Cauchy completeness of the quotients of $\\mathbf{No}$.\n\nSo every element of $\\mathbb Z+\\mathbb R((\\mathbf{No}^{<0}))_\\kappa$ is primal. Conway normal form identifies this ring with the omnific integers. Hence the omnific integers have the refinement property, and every irreducible omnific integer is prime.",
+      "setting": "$\\mathbf{No}$ is the field of surreal numbers of a fixed universe $u$, $\\kappa_u$ the cardinal of that universe, and $\\mathbf{Oz}\\subseteq\\mathbf{No}$ the ring of omnific integers. Archimedean classes, $\\mathbf{No}_{\\prec\\sigma}$, $\\mathbf{No}_{\\preceq\\sigma}$ and $H_T$ are as in the previous chapter, with $G=\\mathbf{No}$."
     }
   ]
 }

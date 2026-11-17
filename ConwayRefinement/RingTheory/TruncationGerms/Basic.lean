@@ -19,14 +19,16 @@ instance `K((G^{≤0}))/J`. For an exponent `γ`, the germ of `b ∈ A` at `γ` 
 translated truncation `b^{|γ} = t^{-γ} b_{|γ}`, where `b_{|γ}` is the truncation of `b` at `γ`
 (Berarducci 2000, Def. 6.1).
 
-A `TruncationGerms K Γ A Q` records the germ `germ : A →ₐ[K] Q` to a nontrivial ring of germs and
-the `K`-linear maps `germAt γ : A →ₗ[K] Q`, together with the properties of Berarducci's germs used
-below: the germ at `0` is the germ of the series, germs at positive exponents vanish, the germs of
-a product satisfy Berarducci's convolution formula (Berarducci 2000, Lemma 7.5), translated
-truncations exist, a germ is a constant exactly when the germs vanish on a left neighbourhood of
-`0`, a well-founded `rank` on germs drops along the germs of a non-constant germ, and series can be
-cut off below a negative exponent without changing the germ. The ring of germs is not assumed to be
-an integral domain; that it is one is a consequence (`TruncationGerms.isDomain`).
+The axioms are split by the facts they record, so that each consequence depends only on the facts
+it uses. `GermMaps` records the germ `germ : A →ₐ[K] Q` onto a nontrivial ring of germs and the
+`K`-linear maps `germAt γ : A →ₗ[K] Q`: the germ at `0` is the germ of the series, germs at positive
+exponents vanish, and constants have no other germs. `ConvolutionGerms` adds Berarducci's
+convolution formula (Berarducci 2000, Lemma 7.5). `ConstantGerms` adds translated truncations and
+the characterisation of constant germs: a germ is a constant exactly when the germs vanish on a left
+neighbourhood of `0`. `RankedGerms` adds a well-founded `rank` on germs that drops along the germs
+of a non-constant germ, and cutoffs below a negative exponent that keep the germ.
+`TruncationGerms` combines them. The ring of germs is not assumed to be an integral domain; that it
+is one is a consequence (`TruncationGerms.isDomain`).
 
 This file states the axioms, defines `HasRepresentativesWithGermsIn`, and proves the elementary
 consequences of the convolution formula. It also shows that a proper subalgebra of germs misses the
@@ -41,10 +43,11 @@ universe w
 
 public section
 
-/-- Berarducci's germs of generalised power series at exponents. `A` is a ring of generalised
-power series with exponents in `Γ`, `Q` its nontrivial ring of germs at `0`, `germ` the germ at `0`,
-and `germAt γ b` the germ at `0` of the translated truncation of `b` at `γ`. -/
-structure TruncationGerms (K Γ A Q : Type*) [Field K] [CharZero K]
+/-- Germ maps on a ring `A` of generalised power series with exponents in `Γ`: a surjective germ
+`germ : A →ₐ[K] Q` onto a nontrivial ring of germs and `K`-linear maps `germAt γ : A →ₗ[K] Q`, such
+that the germ at `0` is the germ, germs at positive exponents vanish, and constants have no germs at
+nonzero exponents. -/
+structure GermMaps (K Γ A Q : Type*) [Field K]
     [AddCommGroup Γ] [LinearOrder Γ] [IsOrderedAddMonoid Γ]
     [CommRing A] [Algebra K A] [CommRing Q] [Nontrivial Q] [Algebra K Q] where
   /-- The germ of a series at an exponent, a `K`-linear map to the ring of germs. -/
@@ -57,17 +60,30 @@ structure TruncationGerms (K Γ A Q : Type*) [Field K] [CharZero K]
   germAt_zero : ∀ b, germAt 0 b = germ b
   /-- The germ of a series at a positive exponent vanishes. -/
   germAt_of_pos : ∀ (b : A) (ξ : Γ), 0 < ξ → germAt ξ b = 0
+  /-- The germ of a scalar series at a nonzero exponent vanishes. -/
+  germAt_algebraMap : ∀ (k : K) (ξ : Γ), ξ ≠ 0 → germAt ξ (algebraMap K A k) = 0
+
+/-- Germ maps satisfying Berarducci's convolution formula for the germs of a product
+(Berarducci 2000, Lemma 7.5). -/
+structure ConvolutionGerms (K Γ A Q : Type*) [Field K]
+    [AddCommGroup Γ] [LinearOrder Γ] [IsOrderedAddMonoid Γ]
+    [CommRing A] [Algebra K A] [CommRing Q] [Nontrivial Q] [Algebra K Q]
+    extends GermMaps K Γ A Q where
   /-- The convolution fibre of two series at an exponent is finite. -/
   convolution_finite : ∀ (b c : A) (γ : Γ), {β : Γ | germAt β b ≠ 0 ∧ germAt (γ - β) c ≠ 0}.Finite
   /-- Berarducci's convolution formula for the germ of a product. -/
   convolution : ∀ (b c : A) (γ : Γ), germAt γ (b * c) = ∑ᶠ β, germAt β b * germAt (γ - β) c
+
+/-- Germ maps with translated truncations and the characterisation of constant germs: the germ of a
+series is a scalar exactly when its germs vanish on a left neighbourhood of `0`. -/
+structure ConstantGerms (K Γ A Q : Type*) [Field K]
+    [AddCommGroup Γ] [LinearOrder Γ] [IsOrderedAddMonoid Γ]
+    [CommRing A] [Algebra K A] [CommRing Q] [Nontrivial Q] [Algebra K Q]
+    extends GermMaps K Γ A Q where
   /-- For a nonpositive exponent `ξ`, there is a series whose germs at nonpositive exponents are the
   germs of `b` shifted by `ξ`: the translated truncation. -/
   exists_translatedTruncation :
     ∀ (b : A) (ξ : Γ), ξ ≤ 0 → ∃ b' : A, ∀ ζ ≤ 0, germAt ζ b' = germAt (ξ + ζ) b
-  /-- A complexity of germs with values in the ordinals, hence well-founded; for Hahn series, the
-  Cantor--Bendixson value of a representative. -/
-  rank : Q → Ordinal.{w}
   /-- The germ of `b` at `0` is a scalar exactly when the germs of `b` vanish on a left
   neighbourhood of `0`; this direction gives the vanishing. -/
   germAt_eventually_eq_zero : ∀ b : A, germ b ∈ Set.range (algebraMap K Q) →
@@ -75,28 +91,89 @@ structure TruncationGerms (K Γ A Q : Type*) [Field K] [CharZero K]
   /-- The converse: eventual vanishing of the germs forces the germ at `0` to be a scalar. -/
   germ_mem_range_of_eventually : ∀ b : A, (∃ ε < 0, ∀ ξ, ε < ξ → ξ < 0 → germAt ξ b = 0) →
     germ b ∈ Set.range (algebraMap K Q)
+
+/-- Germ maps with cutoffs and a well-founded rank that drops along the germs of a non-constant
+germ. -/
+structure RankedGerms (K Γ A Q : Type*) [Field K]
+    [AddCommGroup Γ] [LinearOrder Γ] [IsOrderedAddMonoid Γ]
+    [CommRing A] [Algebra K A] [CommRing Q] [Nontrivial Q] [Algebra K Q]
+    extends GermMaps K Γ A Q where
+  /-- A complexity of germs with values in the ordinals, hence well-founded; for Hahn series, the
+  Cantor--Bendixson value of a representative. -/
+  rank : Q → Ordinal.{w}
   /-- For a non-scalar germ, the rank strictly drops along the germ maps on a left neighbourhood of
   `0`. -/
   rank_germAt_lt : ∀ b : A, germ b ∉ Set.range (algebraMap K Q) →
     ∃ ε < 0, ∀ ξ, ε < ξ → ξ < 0 → rank (germAt ξ b) < rank (germ b)
-  /-- The germ of a scalar series at a nonzero exponent vanishes. -/
-  germAt_algebraMap : ∀ (k : K) (ξ : Γ), ξ ≠ 0 → germAt ξ (algebraMap K A k) = 0
   /-- Every series has a representative with the same germ at `0`, the same germs strictly above a
   negative cutoff `ε`, and vanishing germs at and below `ε`. -/
   exists_cutoff : ∀ (b : A) (ε : Γ), ε < 0 → ∃ b' : A, germ b' = germ b ∧
     (∀ ξ, ε < ξ → germAt ξ b' = germAt ξ b) ∧ (∀ ξ, ξ ≤ ε → germAt ξ b' = 0)
 
-namespace TruncationGerms
+/-- Berarducci's germs of generalised power series at exponents: germ maps satisfying the
+convolution formula, with translated truncations, cutoffs, and a rank. The ring of germs is not
+assumed to be an integral domain; that it is one is a consequence (`TruncationGerms.isDomain`). -/
+structure TruncationGerms (K Γ A Q : Type*) [Field K]
+    [AddCommGroup Γ] [LinearOrder Γ] [IsOrderedAddMonoid Γ]
+    [CommRing A] [Algebra K A] [CommRing Q] [Nontrivial Q] [Algebra K Q]
+    extends ConvolutionGerms K Γ A Q, ConstantGerms K Γ A Q, RankedGerms.{w} K Γ A Q
 
-variable {K Γ A Q : Type*} [Field K] [CharZero K]
+namespace GermMaps
+
+variable {K Γ A Q : Type*} [Field K]
   [AddCommGroup Γ] [LinearOrder Γ] [IsOrderedAddMonoid Γ]
   [CommRing A] [Algebra K A] [CommRing Q] [Nontrivial Q] [Algebra K Q]
-  (sys : TruncationGerms K Γ A Q)
+  (sys : GermMaps K Γ A Q)
 
 /-- A subalgebra of germs has representatives with germs in it when each of its elements is the germ
 of a series all of whose germs again lie in the subalgebra. -/
 @[expose] def HasRepresentativesWithGermsIn (S : Subalgebra K Q) : Prop :=
   ∀ a ∈ S, ∃ b : A, sys.germ b = a ∧ ∀ ξ, sys.germAt ξ b ∈ S
+
+/-- The bottom subalgebra (the scalars) has representatives with germs in it: a scalar is
+represented by the constant series, whose only nonzero germ sits at exponent `0`. -/
+theorem hasRepresentativesWithGermsIn_bot :
+    sys.HasRepresentativesWithGermsIn (⊥ : Subalgebra K Q) := by
+  intro a ha
+  rw [Algebra.mem_bot] at ha
+  obtain ⟨k, hk⟩ := ha
+  refine ⟨algebraMap K A k, ?_, fun ξ => ?_⟩
+  · rw [AlgHom.commutes]; exact hk
+  · rcases eq_or_ne ξ 0 with rfl | hξ
+    · rw [sys.germAt_zero, AlgHom.commutes]; exact Subalgebra.algebraMap_mem _ k
+    · rw [sys.germAt_algebraMap k ξ hξ]; exact zero_mem _
+
+/-- The union of a chain of sets generating subalgebras with representatives whose germs lie in
+them generates a subalgebra with the same property. -/
+theorem hasRepresentativesWithGermsIn_adjoin_sUnion {c : Set (Set Q)} (hcn : c.Nonempty)
+    (hchain : IsChain (· ⊆ ·) c)
+    (hc : ∀ T ∈ c, sys.HasRepresentativesWithGermsIn (Algebra.adjoin K T)) :
+    sys.HasRepresentativesWithGermsIn (Algebra.adjoin K (⋃₀ c)) := by
+  intro a ha
+  haveI : Nonempty ↥c := hcn.to_subtype
+  have hdir : Directed (· ≤ ·) fun s : c => Algebra.adjoin K (s : Set Q) := by
+    rintro ⟨s, hs⟩ ⟨t, ht⟩
+    rcases hchain.total hs ht with hst | hts
+    · exact ⟨⟨t, ht⟩, Algebra.adjoin_mono hst, le_rfl⟩
+    · exact ⟨⟨s, hs⟩, le_rfl, Algebra.adjoin_mono hts⟩
+  have hcoe : (↑(Algebra.adjoin K (⋃₀ c)) : Set Q) =
+      ⋃ s : c, (Algebra.adjoin K (s : Set Q) : Set Q) := by
+    rw [Set.sUnion_eq_iUnion, Algebra.adjoin_iUnion]
+    exact Subalgebra.coe_iSup_of_directed hdir
+  have ha' : a ∈ (↑(Algebra.adjoin K (⋃₀ c)) : Set Q) := ha
+  rw [hcoe, Set.mem_iUnion] at ha'
+  obtain ⟨s, has⟩ := ha'
+  obtain ⟨b, hbg, hbs⟩ := hc s s.2 a has
+  exact ⟨b, hbg, fun ξ => Algebra.adjoin_mono (Set.subset_sUnion_of_mem s.2) (hbs ξ)⟩
+
+end GermMaps
+
+namespace ConvolutionGerms
+
+variable {K Γ A Q : Type*} [Field K]
+  [AddCommGroup Γ] [LinearOrder Γ] [IsOrderedAddMonoid Γ]
+  [CommRing A] [Algebra K A] [CommRing Q] [Nontrivial Q] [Algebra K Q]
+  (sys : ConvolutionGerms K Γ A Q)
 
 /-- Isolate the diagonal term of the convolution: the remaining terms range over a finite set. -/
 theorem germAt_mul_diag (b c : A) (ξ : Γ) :
@@ -167,41 +244,14 @@ theorem offDiagonal_mem (S : Subalgebra K Q) {X : A} (hX : ∀ ξ < 0, sys.germA
       exact S.mul_mem (h0 β) (hX _ hlt0)
   · rw [sys.germAt_of_pos b β hβ0, zero_mul]; exact zero_mem S
 
-/-- The bottom subalgebra (the scalars) has representatives with germs in it: a scalar is
-represented by the constant series, whose only nonzero germ sits at exponent `0`. -/
-theorem hasRepresentativesWithGermsIn_bot :
-    sys.HasRepresentativesWithGermsIn (⊥ : Subalgebra K Q) := by
-  intro a ha
-  rw [Algebra.mem_bot] at ha
-  obtain ⟨k, hk⟩ := ha
-  refine ⟨algebraMap K A k, ?_, fun ξ => ?_⟩
-  · rw [AlgHom.commutes]; exact hk
-  · rcases eq_or_ne ξ 0 with rfl | hξ
-    · rw [sys.germAt_zero, AlgHom.commutes]; exact Subalgebra.algebraMap_mem _ k
-    · rw [sys.germAt_algebraMap k ξ hξ]; exact zero_mem _
+end ConvolutionGerms
 
-/-- The union of a chain of sets generating subalgebras with representatives whose germs lie in
-them generates a subalgebra with the same property. -/
-theorem hasRepresentativesWithGermsIn_adjoin_sUnion {c : Set (Set Q)} (hcn : c.Nonempty)
-    (hchain : IsChain (· ⊆ ·) c)
-    (hc : ∀ T ∈ c, sys.HasRepresentativesWithGermsIn (Algebra.adjoin K T)) :
-    sys.HasRepresentativesWithGermsIn (Algebra.adjoin K (⋃₀ c)) := by
-  intro a ha
-  haveI : Nonempty ↥c := hcn.to_subtype
-  have hdir : Directed (· ≤ ·) fun s : c => Algebra.adjoin K (s : Set Q) := by
-    rintro ⟨s, hs⟩ ⟨t, ht⟩
-    rcases hchain.total hs ht with hst | hts
-    · exact ⟨⟨t, ht⟩, Algebra.adjoin_mono hst, le_rfl⟩
-    · exact ⟨⟨s, hs⟩, le_rfl, Algebra.adjoin_mono hts⟩
-  have hcoe : (↑(Algebra.adjoin K (⋃₀ c)) : Set Q) =
-      ⋃ s : c, (Algebra.adjoin K (s : Set Q) : Set Q) := by
-    rw [Set.sUnion_eq_iUnion, Algebra.adjoin_iUnion]
-    exact Subalgebra.coe_iSup_of_directed hdir
-  have ha' : a ∈ (↑(Algebra.adjoin K (⋃₀ c)) : Set Q) := ha
-  rw [hcoe, Set.mem_iUnion] at ha'
-  obtain ⟨s, has⟩ := ha'
-  obtain ⟨b, hbg, hbs⟩ := hc s s.2 a has
-  exact ⟨b, hbg, fun ξ => Algebra.adjoin_mono (Set.subset_sUnion_of_mem s.2) (hbs ξ)⟩
+namespace RankedGerms
+
+variable {K Γ A Q : Type*} [Field K]
+  [AddCommGroup Γ] [LinearOrder Γ] [IsOrderedAddMonoid Γ]
+  [CommRing A] [Algebra K A] [CommRing Q] [Nontrivial Q] [Algebra K Q]
+  (sys : RankedGerms.{w} K Γ A Q)
 
 /-- A proper subalgebra `S` of the ring of germs misses the germ of a series whose germs at
 negative exponents lie in `S`: represent a germ outside `S` of minimal rank, and cut the
@@ -226,6 +276,15 @@ theorem exists_germAt_mem_germ_notMem (S : Subalgebra K Q) (hS : S ≠ ⊤) :
   · rw [hXvan ξ hξε]; exact zero_mem S
   · rw [hXeq ξ hεξ]
     exact hmin _ (by simpa [hX₀] using hdrop ξ hεξ hξ)
+
+end RankedGerms
+
+namespace TruncationGerms
+
+variable {K Γ A Q : Type*} [Field K]
+  [AddCommGroup Γ] [LinearOrder Γ] [IsOrderedAddMonoid Γ]
+  [CommRing A] [Algebra K A] [CommRing Q] [Nontrivial Q] [Algebra K Q]
+  (sys : TruncationGerms.{w} K Γ A Q)
 
 section Comap
 

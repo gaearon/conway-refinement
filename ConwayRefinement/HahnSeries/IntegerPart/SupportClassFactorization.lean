@@ -177,19 +177,12 @@ nonzero support classes of the complementary factor. -/
   (phase := "Reduction along Archimedean classes")
   (title := "Factorisation at an Archimedean class of a quotient")
   (statement := /--
-    Let $G$ be an ordered rational vector space, $R$ a field, $Z\subseteq R$ a
-    subring and $\kappa>\aleph_0$.  Let $T$ be a set of nonzero Archimedean
-    classes of $G$, let $H_T=\bigcap_{\sigma\in T}G_{\preceq\sigma}$, and let
-    $q$ be a nonzero Archimedean class of $G/H_T$.  Let
-    $b\in Z+R((G^{<0}))_\kappa$ be such that the image of
-    $\operatorname{supp}(b)$ in $G/H_T$ meets $q$ and the restriction $t$ of
-    $b$ to the inverse image of $(G/H_T)_{\preceq q}$ is nonzero.  Then
-    \[
-      b=tw,
-    \]
-    where $w\in Z+R((G^{<0}))_\kappa$ has constant coefficient $1$ and the set
-    of nonzero Archimedean classes met by $\operatorname{supp}(w)$ has strictly
-    smaller order type than that of $b$.
+    Let $G$ be an ordered $\mathbb Q$-vector space, $T$ a set of nonzero
+    Archimedean classes, and $q$ a nonzero class of $G/H_T$ met by the image of
+    $\operatorname{supp}(b)$, where $b\in Z+R((G^{<0}))_\kappa$.  Let $t$ be the
+    restriction of $b$ to the inverse image of $(G/H_T)_{\preceq q}$, and assume
+    $t\ne0$.  Then $b=tw$, where $w$ has constant coefficient $1$ and the set of
+    nonzero classes met by $w$ has smaller order type than that of $b$.
   -/)
   (proof := /--
     The inverse image of $(G/H_T)_{\preceq q}$ is a convex subgroup of $G$, so

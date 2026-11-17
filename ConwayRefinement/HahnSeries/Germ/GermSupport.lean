@@ -41,10 +41,8 @@ variable {G : Type u} {K : Type v} [AddCommGroup G] [LinearOrder G] [IsOrderedAd
   (phase := "Germs of translated truncations")
   (title := "Exponents with nonzero germ")
   (statement := /--
-    Let $K$ be a field and $G$ a nontrivial ordered abelian group with its order
-    topology and the associated group uniformity.  For
-    $b\in K((G^{\le0}))$ and $\gamma\in G$, the germ $[b^{|\gamma}]$ of $b$
-    at $\gamma$ is nonzero if and only if $\gamma$ lies in the closure of
+    For $b\in K((G^{\le0}))$ and $\gamma\in G$, the germ $[b^{|\gamma}]$ is
+    nonzero if and only if $\gamma$ lies in the closure of
     $\operatorname{supp}(b)$.
   -/)
   (proof := /--
@@ -83,15 +81,19 @@ theorem eq_zero_of_forall_germAt_eq_zero (b : Nonpositive G K) (h : ∀ γ, germ
   by_contra hδ
   exact (germAt_ne_zero_iff b δ).mpr (subset_closure hδ) (h δ)
 
-/-- The truncation `b_{|η}` of a nonpositive series, again a nonpositive series. -/
-private def truncation (η : G) (b : Nonpositive G K) : Nonpositive G K :=
+/-- The truncation `b_{|η}` of a nonpositive series, the part of `b` with exponents at most `η`. -/
+def truncation (η : G) (b : Nonpositive G K) : Nonpositive G K :=
   ⟨truncLE η (b : HahnSeries G K), by
     rw [mem_nonpositiveSubring]; exact (support_truncLE_subset η _).trans (support_subset b)⟩
 
+omit [UniformSpace G] [IsUniformAddGroup G] [OrderTopology G] [Nontrivial G] in
+@[simp]
+theorem coe_truncation (η : G) (b : Nonpositive G K) :
+    (truncation η b : HahnSeries G K) = truncLE η (b : HahnSeries G K) := (rfl)
+
 /-- The truncation of `b` at `η` keeps the germs at exponents `≤ η` and kills the others. -/
-theorem exists_germAt_truncation (b : Nonpositive G K) (η : G) :
-    ∃ b' : Nonpositive G K, ∀ ξ, germAt ξ b' = if ξ ≤ η then germAt ξ b else 0 := by
-  refine ⟨truncation η b, fun ξ => ?_⟩
+theorem germAt_truncation (b : Nonpositive G K) (η ξ : G) :
+    germAt ξ (truncation η b) = if ξ ≤ η then germAt ξ b else 0 := by
   split_ifs with hξ
   · rw [germAt_apply, germAt_apply]
     congr 1
@@ -110,6 +112,11 @@ theorem exists_germAt_truncation (b : Nonpositive G K) (η : G) :
       by_contra h
       exact hδ (if_neg h)
     exact hξ (closure_minimal hsub isClosed_Iic hmem)
+
+/-- The truncation of `b` at `η` keeps the germs at exponents `≤ η` and kills the others. -/
+theorem exists_germAt_truncation (b : Nonpositive G K) (η : G) :
+    ∃ b' : Nonpositive G K, ∀ ξ, germAt ξ b' = if ξ ≤ η then germAt ξ b else 0 :=
+  ⟨truncation η b, germAt_truncation b η⟩
 
 omit [UniformSpace G] [IsUniformAddGroup G] [OrderTopology G] in
 /-- Multiplication by the monomial `t^γ`, `γ ≤ 0`, translates germs by `γ`. -/
@@ -137,12 +144,9 @@ neighbourhood of `γ`. -/
   (phase := "Germs of translated truncations")
   (title := "Characterisation of constant germs")
   (statement := /--
-    Let $K$ be a field and $G$ a nontrivial ordered abelian group with its order
-    topology and the associated group uniformity.  For
-    $b\in K((G^{\le0}))$ and $\gamma\in G$, the germ $[b^{|\gamma}]$ lies in
-    the image of $K$ in $K((G^{\le0}))/J$ if and only if there is
-    $\varepsilon<0$ such that $[b^{|\gamma+\zeta}]=0$ for every
-    $\zeta\in(\varepsilon,0)$.
+    For $b\in K((G^{\le0}))$ and $\gamma\in G$, the germ $[b^{|\gamma}]$ lies in
+    $K$ if and only if there is $\varepsilon<0$ with $[b^{|\gamma+\zeta}]=0$ for
+    all $\zeta\in(\varepsilon,0)$.
   -/)
   (proof := /--
     By \ref{lem:germs-of-translated-truncation} the germs of $b^{|\gamma}$ at

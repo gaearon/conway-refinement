@@ -109,10 +109,31 @@ def read_nodes() -> dict[str, Node]:
         )
     names = {record["name"]: record["label"] for record in records}
     nodes: dict[str, Node] = {}
+    depth = module_import_depths()
+    for phase in PHASE_METADATA:
+        unknown = sorted(
+            set(phase.order)
+            - {record["label"] for record in records if record["phase"] == phase.key}
+        )
+        if unknown:
+            raise SystemExit(
+                f"blueprint: order of phase {phase.slug!r} lists labels outside it: "
+                + ", ".join(unknown)
+            )
+
+    def preferred(record: dict) -> int:
+        order = PHASE_BY_KEY[record["phase"]].order
+        return order.index(record["label"]) if record["label"] in order else len(order)
+
+    # Within a phase, ties in the dependency order are broken by the phase's explicit reading
+    # order, then by import depth (a module is read after the project modules it imports), and
+    # then by source position.
     ordered_records = sorted(
         records,
         key=lambda record: (
             PHASES.index(record["phase"]),
+            preferred(record),
+            depth.get(record["module"], 0),
             record["source"],
             record["range"]["start"]["line"],
             record["name"],
@@ -207,6 +228,33 @@ def project_imports() -> dict[str, frozenset[str]]:
             match.group(1) for match in import_pattern.finditer(source.read_text())
         )
     return imports
+
+
+def module_import_depths() -> dict[str, int]:
+    """Length of the longest chain of project imports below each module."""
+
+    imports = project_imports()
+    depths: dict[str, int] = {}
+
+    def depth(module: str, active: frozenset[str] = frozenset()) -> int:
+        if module in depths:
+            return depths[module]
+        if module in active:
+            return 0
+        result = 1 + max(
+            (
+                depth(child, active | {module})
+                for child in imports.get(module, ())
+                if child in imports
+            ),
+            default=-1,
+        )
+        depths[module] = result
+        return result
+
+    for module in imports:
+        depth(module)
+    return depths
 
 
 def later_phase_import_paths(
@@ -461,7 +509,14 @@ def render_content(nodes: dict[str, Node]) -> str:
         labels = by_section.get(phase.key)
         if not labels:
             continue
-        lines.extend([f"\\section{{{phase.title}}}", "", phase.description, ""])
+        lines.extend([
+            f"\\section{{{phase.title}}}",
+            "",
+            phase.description,
+            "",
+            f"\\paragraph{{Setting.}} {phase.setting}",
+            "",
+        ])
         for label in labels:
             node = nodes[label]
             declaration = tex_identifier(node.declarations[0])
