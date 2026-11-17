@@ -5,7 +5,7 @@ Authors: Dan Abramov
 -/
 module
 
-public import ConwayRefinement.HahnSeries.IntegerPart.Refinement.CompleteGermRefinement
+public import ConwayRefinement.HahnSeries.Germ.PolynomialRing
 public import ConwayRefinement.HahnSeries.TruncationIntegerPartPrimal
 public import ConwayRefinement.Algebra.Divisibility.Refinement
 public import Mathlib.Algebra.Order.Archimedean.Class
@@ -182,7 +182,7 @@ private theorem cofinalGermNonpositive_germ_not_isUnit :
 
 /-- There is a series with zero constant coefficient whose germ at zero is irreducible. -/
 @[blueprint "lem:irreducible-zero-constant-germ"
-  (phase := "Refinement over Archimedean classes")
+  (phase := "Transfinite induction on Archimedean classes")
   (title := "An irreducible germ with zero constant coefficient")
   (statement := /--
     Let $K$ be a field of characteristic zero and let $G$ be a nontrivial
@@ -251,7 +251,7 @@ theorem exists_irreducible_cantorBendixson_germ_with_constantCoeff_zero :
 
 /-- If `Z + K((G^{<0}))` has the refinement property, then `K` is the fraction field of `Z`. -/
 @[blueprint "thm:refinement-forces-coefficient-fraction-field"
-  (phase := "Refinement over Archimedean classes")
+  (phase := "Transfinite induction on Archimedean classes")
   (title := "Refinement forces $K=\\operatorname{Frac}(Z)$")
   (statement := /--
     Let $K$ be a field of characteristic zero and let $G$ satisfy the

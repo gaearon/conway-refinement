@@ -9,7 +9,6 @@ public import ConwayRefinement.Standalone.CombinatorialGames.Examples.OmnificFac
 public import ConwayRefinement.Standalone.CombinatorialGames.Support.ConwayRefinementConsequences
 public import ConwayRefinement.Standalone.CombinatorialGames.Support.OmnificFiniteDegree
 public import ConwayRefinement.Surreal.OmnificInteger.Primality.OrdinaryIntegers
-public import ConwayRefinement.HahnSeries.IntegerPart.Reduced
 public import ConwayRefinement.Surreal.OmnificInteger.RefinementConjecture
 public import ConwayRefinement.Algebra.Divisibility.DenominatorIdeal
 
@@ -126,61 +125,5 @@ theorem normalFormRingEquiv_not_isOrdinaryInteger
     apply normalFormRingEquiv.injective
     simpa using htarget
   exact ⟨z, congrArg Subtype.val hsource⟩
-
-theorem normalFormRingEquiv_isReduced
-    (x : OmnificInteger.{u}) (hx : IsReduced x) :
-    HahnSeries.Nonpositive.IsReduced
-      (normalFormRingEquiv x).toSignedNonpositiveHahn := by
-  obtain ⟨hx0, c, hclass⟩ := hx
-  have hy0 : normalFormRingEquiv x ≠ 0 :=
-    normalFormRingEquiv.map_eq_zero_iff.not.mpr hx0
-  refine HahnSeries.Nonpositive.isReduced_of_support_inter_support_sub_one_subset
-    ?_ c ?_
-  · intro hzero
-    apply hy0
-    apply Subtype.ext
-    apply Surreal.toSignedFullHahnSeries_injective
-    have hraw := congrArg (fun q : HahnSeries.Nonpositive Surreal ℝ ↦
-      (q : HahnSeries Surreal ℝ)) hzero
-    rw [Surreal.OmnificInteger.coe_toSignedNonpositiveHahn] at hraw
-    exact hraw.trans Surreal.toSignedFullHahnSeries_zero.symm
-  · intro g hg
-    have hgSource : g ∈
-        (normalFormRingEquiv x).1.toSignedFullHahnSeries.support := by
-      rw [← Surreal.OmnificInteger.coe_toSignedNonpositiveHahn]
-      exact hg.1
-    have hsub :
-        ((((normalFormRingEquiv x).toSignedNonpositiveHahn - 1 :
-          HahnSeries.Nonpositive Surreal ℝ)) : HahnSeries Surreal ℝ) =
-            ((normalFormRingEquiv x).1 - 1).toSignedFullHahnSeries := by
-      calc
-        _ = ((normalFormRingEquiv x).toSignedNonpositiveHahn :
-            HahnSeries Surreal ℝ) - 1 := rfl
-        _ = (normalFormRingEquiv x).1.toSignedFullHahnSeries - 1 := by
-          rw [Surreal.OmnificInteger.coe_toSignedNonpositiveHahn]
-        _ = ((normalFormRingEquiv x).1 - 1).toSignedFullHahnSeries := by
-          rw [Surreal.toSignedFullHahnSeries_sub]
-          congr 1
-          simpa using (Surreal.toSignedFullHahnSeries_realCast (1 : ℝ)).symm
-    have hgSub : g ∈
-        ((normalFormRingEquiv x).1 - 1).toSignedFullHahnSeries.support := by
-      rw [← hsub]
-      exact hg.2
-    have huSource : -g ∈ x.1.support := by
-      have hu : -g ∈ (normalFormRingEquiv x).1.support := by
-        simpa using (Surreal.mem_support_toSignedFullHahnSeries.mp hgSource)
-      rw [← toHahnSeries_normalFormRingEquiv x]
-      simpa using hu
-    have hnormalSub :
-        ((normalFormRingEquiv x).1 - 1).toHahnSeries = x.1 - 1 := by
-      rw [← Surreal.toHahnSeriesRingEquiv_apply, map_sub,
-        Surreal.toHahnSeriesRingEquiv_apply, toHahnSeries_normalFormRingEquiv,
-        map_one]
-    have huSub : -g ∈ (x.1 - 1).support := by
-      have hu : -g ∈ ((normalFormRingEquiv x).1 - 1).support := by
-        simpa using (Surreal.mem_support_toSignedFullHahnSeries.mp hgSub)
-      rw [← hnormalSub, Surreal.support_toHahnSeries]
-      exact hu
-    simpa using hclass ⟨huSource, huSub⟩
 
 end ConwayRefinement.Standalone.Oz

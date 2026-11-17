@@ -73,8 +73,8 @@ variable [Zero Γ]
 
 /-- Zero off the closed support, and `omega` to its Cantor–Bendixson rank at zero otherwise. -/
 @[blueprint "def:cantor-bendixson-value"
-  (phase := "Cantor–Bendixson ranks of supports")
-  (title := "The Cantor--Bendixson value at exponent zero")
+  (phase := "Germs of translated truncations")
+  (title := "Cantor--Bendixson value")
   (statement := /--
     Let $G$ be a linearly ordered set with zero and its order topology, let
     $R$ be a set with zero, and let $b\in R((G))$ be a generalised power

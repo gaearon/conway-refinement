@@ -35,7 +35,7 @@ variable {K : Type v} [Field K] [CharZero K]
 /-- The nonpositive real series ring over a characteristic-zero field is a GCD domain. The result
 is stated through `Nonempty` because `GCDMonoid` contains a choice of gcd operation. -/
 @[blueprint "thm:hahn-series-gcd-domain"
-  (phase := "Primality and factorisation for real exponents")
+  (phase := "Polynomial presentations")
   (title := "Greatest common divisors in $K((\\mathbb R^{\\le 0}))$")
   (statement := /--
     Let $K$ be a field of characteristic $0$.  The ring

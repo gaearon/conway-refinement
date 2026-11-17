@@ -9,8 +9,6 @@ public import ConwayRefinement.HahnSeries.CantorBendixson.Truncation
 public import ConwayRefinement.Topology.Order.PWOAdditionFiber
 public import Mathlib.RingTheory.HahnSeries.Multiplication
 
-import ConwayRefinement.Blueprint
-
 /-!
 # Finite convolution for translated Hahn truncations
 
@@ -123,36 +121,6 @@ variable [Ring R]
 
 /-- The translated product truncation differs from its finite convolution sum by a series of
 Cantor–Bendixson value zero. -/
-@[blueprint "lem:cantor-bendixson-convolution"
-  (phase := "Cantor–Bendixson ranks of supports")
-  (title := "Finite convolution of translated truncations")
-  (statement := /--
-    Let $R$ be a ring, let $G$ be a nontrivial ordered abelian group equipped
-    with a compatible additive uniformity and its order topology, and assume
-    that $G$ is Cauchy complete.  Let $b,d\in R((G))$.  For $\gamma\in G$,
-    let $F_\gamma$ be the
-    finite addition fiber
-    \[
-      F_\gamma=
-      \{(x,y)\in\operatorname{cl}(\operatorname{supp}(b))
-          \times\operatorname{cl}(\operatorname{supp}(d)):x+y=\gamma\}.
-    \]
-    Then
-    \[
-      V_{\mathrm{CB}}\!\left((bd)^{\vert\gamma}-
-        \sum_{(x,y)\in F_\gamma}b^{\vert x}d^{\vert y}
-      \right)=0.
-    \]
-  -/)
-  (proof := /--
-    Closed well-ordered supports have finite addition fibers.  In a
-    neighbourhood of $\gamma$, each coefficient of $bd$ is the finite sum of
-    the products of the corresponding truncations indexed by
-    $F_\gamma$.  After translating $\gamma$ to $0$, the difference between
-    the two displayed series vanishes on a neighbourhood of $0$, so $0$ is
-    not in the closure of its support, and by
-    \ref{def:cantor-bendixson-value} its value is zero.
-  -/)]
 theorem cantorBendixsonValue_convolution_error (b d : HahnSeries G R) (γ : G) :
     (translate (-γ) (truncLE γ (b * d)) -
       ∑ p ∈ b.closedSupportAddFiber d γ,

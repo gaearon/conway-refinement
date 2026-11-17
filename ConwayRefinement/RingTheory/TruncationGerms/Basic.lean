@@ -9,6 +9,8 @@ public import Mathlib.Algebra.BigOperators.Finprod
 public import Mathlib.RingTheory.Adjoin.Basic
 public import Mathlib.SetTheory.Ordinal.Basic
 
+import ConwayRefinement.Blueprint
+
 /-!
 # Germs of translated truncations: the axioms
 
@@ -41,6 +43,42 @@ public section
 /-- Berarducci's germs of generalised power series at exponents. `A` is a ring of generalised
 power series with exponents in `Γ`, `Q` its nontrivial ring of germs at `0`, `germ` the germ at `0`,
 and `germAt γ b` the germ at `0` of the translated truncation of `b` at `γ`. -/
+@[blueprint "def:germ-axioms"
+  (phase := "Polynomial presentations")
+  (title := "Axioms for germs of translated truncations")
+  (statement := /--
+    Let $K$ be a field of characteristic $0$, $\Gamma$ an ordered abelian
+    group, $A$ a commutative $K$-algebra and $Q$ a nontrivial commutative
+    $K$-algebra.  A system of germs consists of a surjective $K$-algebra
+    homomorphism $A\to Q$, $b\mapsto[b]$ (the germ at $0$), $K$-linear maps
+    $g_\gamma:A\to Q$ for $\gamma\in\Gamma$ (the germ at $\gamma$), and a map
+    $\operatorname{rk}:Q\to\mathbf{On}$, such that for all $b,c\in A$:
+    \begin{itemize}
+      \item (1) $g_0(b)=[b]$, and $g_\xi(b)=0$ for $\xi>0$;
+      \item (2) for every $\gamma$, only finitely many $\beta$ have
+        $g_\beta(b)\ne0$ and $g_{\gamma-\beta}(c)\ne0$, and
+        $g_\gamma(bc)=\sum_\beta g_\beta(b)\,g_{\gamma-\beta}(c)$;
+      \item (3) for every $\xi\le0$ there is $b'\in A$ with
+        $g_\zeta(b')=g_{\xi+\zeta}(b)$ for all $\zeta\le0$;
+      \item (4) $[b]$ lies in the image of $K$ if and only if there is
+        $\varepsilon<0$ with $g_\xi(b)=0$ for all $\xi\in(\varepsilon,0)$;
+      \item (5) if $[b]$ is not in the image of $K$, there is $\varepsilon<0$ with
+        $\operatorname{rk}(g_\xi(b))<\operatorname{rk}([b])$ for all
+        $\xi\in(\varepsilon,0)$;
+      \item (6) $g_\xi(k)=0$ for $k\in K$ and $\xi\ne0$;
+      \item (7) for every $\varepsilon<0$ there is $b'\in A$ with $[b']=[b]$,
+        $g_\xi(b')=g_\xi(b)$ for $\xi>\varepsilon$ and $g_\xi(b')=0$ for
+        $\xi\le\varepsilon$.
+    \end{itemize}
+    The ring $Q$ is not assumed to be an integral domain.
+  -/)
+  (proof := /--
+    The axioms abstract the germs of generalised power series: for
+    $A=K((G^{\le0}))$ and $Q=K((G^{\le0}))/J$, $g_\gamma(b)$ is the class of
+    the translated truncation $b^{|\gamma}$, axiom (2) is the convolution
+    formula, axiom (3) is witnessed by $b^{|\xi}$, and $\operatorname{rk}$ is
+    the Cantor--Bendixson value of a representative.
+  -/)]
 structure TruncationGerms (K Γ A Q : Type*) [Field K] [CharZero K]
     [AddCommGroup Γ] [LinearOrder Γ] [IsOrderedAddMonoid Γ]
     [CommRing A] [Algebra K A] [CommRing Q] [Nontrivial Q] [Algebra K Q] where
@@ -176,6 +214,80 @@ theorem hasRepresentativesWithGermsIn_bot :
   · rcases eq_or_ne ξ 0 with rfl | hξ
     · rw [sys.germAt_zero, AlgHom.commutes]; exact Subalgebra.algebraMap_mem _ k
     · rw [sys.germAt_algebraMap k ξ hξ]; exact zero_mem _
+
+section Comap
+
+variable {A' Q' : Type*} [CommRing A'] [Algebra K A'] [CommRing Q'] [Nontrivial Q'] [Algebra K Q']
+
+/-- **Pulling back a system of germs.** Let `φ : A' → A` be a `K`-algebra homomorphism and let
+`ι : Q' → Q` be an injective `K`-algebra homomorphism of germ rings. If a surjective germ map and
+germ maps on `A'` lift the germs of `A` along `φ` and `ι`, and translated truncations and cutoffs
+of elements of `A'` can be chosen in `A'`, then they form a system of germs on `A'`. -/
+def comap (φ : A' →ₐ[K] A) (ι : Q' →ₐ[K] Q) (hι : Function.Injective ι)
+    (germ' : A' →ₐ[K] Q') (hgerm' : Function.Surjective germ')
+    (hgerm : ∀ b, ι (germ' b) = sys.germ (φ b))
+    (germAt' : Γ → A' →ₗ[K] Q') (hgermAt : ∀ γ b, ι (germAt' γ b) = sys.germAt γ (φ b))
+    (htrans : ∀ (b : A') (ξ : Γ), ξ ≤ 0 →
+      ∃ b' : A', ∀ ζ ≤ 0, sys.germAt ζ (φ b') = sys.germAt (ξ + ζ) (φ b))
+    (hcut : ∀ (b : A') (ε : Γ), ε < 0 → ∃ b' : A', sys.germ (φ b') = sys.germ (φ b) ∧
+      (∀ ξ, ε < ξ → sys.germAt ξ (φ b') = sys.germAt ξ (φ b)) ∧
+        (∀ ξ, ξ ≤ ε → sys.germAt ξ (φ b') = 0)) :
+    TruncationGerms K Γ A' Q' where
+  germAt := germAt'
+  germ := germ'
+  germ_surjective := hgerm'
+  germAt_zero b := hι (by rw [hgermAt, hgerm, sys.germAt_zero])
+  germAt_of_pos b ξ hξ := hι (by rw [hgermAt, map_zero, sys.germAt_of_pos _ _ hξ])
+  convolution_finite b c γ := by
+    refine (sys.convolution_finite (φ b) (φ c) γ).subset fun β hβ ↦ ?_
+    simp only [Set.mem_setOf_eq, ← hgermAt] at hβ ⊢
+    exact ⟨(map_ne_zero_iff ι hι).mpr hβ.1, (map_ne_zero_iff ι hι).mpr hβ.2⟩
+  convolution b c γ := by
+    classical
+    apply hι
+    have hS := sys.convolution_finite (φ b) (φ c) γ
+    have hsub : Function.support (fun β ↦ germAt' β b * germAt' (γ - β) c) ⊆
+        (hS.toFinset : Set Γ) := fun β hβ ↦ by
+      rw [Set.Finite.coe_toFinset, Set.mem_setOf_eq, ← hgermAt, ← hgermAt]
+      exact ⟨(map_ne_zero_iff ι hι).mpr (left_ne_zero_of_mul hβ),
+        (map_ne_zero_iff ι hι).mpr (right_ne_zero_of_mul hβ)⟩
+    have hsub' : Function.support (fun β ↦ sys.germAt β (φ b) * sys.germAt (γ - β) (φ c)) ⊆
+        (hS.toFinset : Set Γ) := fun β hβ ↦ by
+      rw [Set.Finite.coe_toFinset]
+      exact ⟨left_ne_zero_of_mul hβ, right_ne_zero_of_mul hβ⟩
+    rw [hgermAt, map_mul, sys.convolution, finsum_eq_finsetSum_of_support_subset _ hsub,
+      finsum_eq_finsetSum_of_support_subset _ hsub', map_sum]
+    simp only [map_mul, hgermAt]
+  exists_translatedTruncation b ξ hξ := by
+    obtain ⟨b', hb'⟩ := htrans b ξ hξ
+    exact ⟨b', fun ζ hζ ↦ hι (by rw [hgermAt, hgermAt, hb' ζ hζ])⟩
+  rank q := sys.rank (ι q)
+  germAt_eventually_eq_zero b hb := by
+    obtain ⟨k, hk⟩ := hb
+    obtain ⟨ε, hε, h⟩ := sys.germAt_eventually_eq_zero (φ b)
+      ⟨k, by rw [← hgerm, ← hk, AlgHom.commutes]⟩
+    exact ⟨ε, hε, fun ξ h₁ h₂ ↦ hι (by rw [hgermAt, h ξ h₁ h₂, map_zero])⟩
+  germ_mem_range_of_eventually b hb := by
+    obtain ⟨ε, hε, h⟩ := hb
+    obtain ⟨k, hk⟩ := sys.germ_mem_range_of_eventually (φ b)
+      ⟨ε, hε, fun ξ h₁ h₂ ↦ by rw [← hgermAt, h ξ h₁ h₂, map_zero]⟩
+    exact ⟨k, hι (by rw [AlgHom.commutes, hk, hgerm])⟩
+  rank_germAt_lt b hb := by
+    have hb' : sys.germ (φ b) ∉ Set.range (algebraMap K Q) := by
+      rintro ⟨k, hk⟩
+      exact hb ⟨k, hι (by rw [AlgHom.commutes, hk, hgerm])⟩
+    obtain ⟨ε, hε, h⟩ := sys.rank_germAt_lt (φ b) hb'
+    exact ⟨ε, hε, fun ξ h₁ h₂ ↦ by
+      rw [hgermAt, hgerm]
+      exact h ξ h₁ h₂⟩
+  germAt_algebraMap k ξ hξ :=
+    hι (by rw [hgermAt, AlgHom.commutes, sys.germAt_algebraMap k ξ hξ, map_zero])
+  exists_cutoff b ε hε := by
+    obtain ⟨b', h₀, h₁, h₂⟩ := hcut b ε hε
+    exact ⟨b', hι (by rw [hgerm, hgerm, h₀]), fun ξ hξ ↦ hι (by rw [hgermAt, hgermAt, h₁ ξ hξ]),
+      fun ξ hξ ↦ hι (by rw [hgermAt, h₂ ξ hξ, map_zero])⟩
+
+end Comap
 
 end TruncationGerms
 

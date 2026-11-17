@@ -10,6 +10,7 @@ public import ConwayRefinement.Algebra.Divisibility.Refinement
 public import ConwayRefinement.Surreal.HahnSeries.CardinalIntegerPart
 public import ConwayRefinement.Surreal.OmnificInteger.RefinementConjecture
 public import ConwayRefinement.Surreal.RationalTailQuotient
+public import Mathlib.RingTheory.UniqueFactorizationDomain.Basic
 
 import ConwayRefinement.Algebra.Divisibility.PrimalPreimage
 import ConwayRefinement.Blueprint
@@ -20,7 +21,8 @@ import ConwayRefinement.Blueprint
 The signed Conway normal form identifies the omnific integers with the cardinal-bounded
 generalised-power-series integer part over the integer subring of the reals. Finite support-class
 primality and the common-tail theorem prove that this integer part is pre-Schreier. Transporting
-through signed normal form gives Conway's four-factor refinement theorem.
+through signed normal form gives Conway's four-factor refinement theorem. Consequently every
+irreducible omnific integer is prime, and factorisations into irreducibles are unique.
 -/
 
 open Cardinal FiniteArchimedeanClass
@@ -67,13 +69,10 @@ is primal. -/
 theorem signedSmallSupportIntegerPart_isPrimal
     (a : SignedSmallSupportIntegerPart.{u}) : IsPrimal a := by
   apply isPrimal_of_finite_classes_and_limit_tail_conditions Surreal.realIntegerSubring
-  · intro y hy
-    apply HahnSeries.Nonpositive.isPrimal_of_supportArchimedeanClasses_finite
+  · exact isPrimal_of_supportArchimedeanClasses_finite
       Surreal.realIntegerSubring Surreal.archimedeanStrata
       (fun c ↦ ⟨Surreal.stratumOrderAddMonoidIsoReal Surreal.archimedeanStrata c⟩)
-      (Surreal.assumptionA2AtFiniteClass Surreal.realIntegerSubring) y
-    rw [supportArchimedeanClasses_toNonpositiveRingHom]
-    exact hy
+      (Surreal.assumptionA2AtFiniteClass Surreal.realIntegerSubring)
   · intro T hTne hTlimit hTcard
     letI : Small.{u} T := small_of_card_lt_smallSupportCardinal hTcard
     letI : Nonempty T := Set.nonempty_coe_sort.mpr hTne
@@ -113,5 +112,35 @@ theorem conwayRefinement : ConwayRefinementConjecture.{u} := by
     signedSmallSupportIntegerPart_decompositionMonoid
   exact signedSmallSupportIntegerPartRingEquiv.toMulEquiv.hasFourFactorRefinement_iff.mpr
     hasFourFactorRefinement_of_decompositionMonoid
+
+/-- Every omnific integer is primal. -/
+theorem isPrimal (x : Surreal.OmnificInteger.{u}) : IsPrimal x :=
+  (RingEquiv.isPrimal_iff signedSmallSupportIntegerPartRingEquiv x).mp
+    (signedSmallSupportIntegerPart_isPrimal _)
+
+/-- Every irreducible omnific integer is prime. -/
+@[blueprint "thm:omnific-factorisation"
+  (phase := "Surreal numbers and omnific integers")
+  (title := "Irreducible omnific integers are prime")
+  (statement := /--
+    Every irreducible element of $\mathbf{Oz}$ is prime in $\mathbf{Oz}$.
+  -/)
+  (proof := /--
+    By \ref{thm:signed-normal-form-omnific-integer-equivalence} and
+    \ref{thm:surreal-hahn-integer-part-primality}, every element of
+    $\mathbf{Oz}$ is primal.  An irreducible primal element is prime.
+  -/)]
+theorem prime_of_irreducible {x : Surreal.OmnificInteger.{u}} (hirr : Irreducible x) :
+    Prime x :=
+  hirr.prime_of_isPrimal (isPrimal x)
+
+/-- Unique factorisation in the omnific integers: two factorisations of an omnific integer into
+irreducibles agree up to order and units. -/
+theorem factorization_unique {f g : Multiset Surreal.OmnificInteger.{u}}
+    (hf : ∀ x ∈ f, Irreducible x) (hg : ∀ x ∈ g, Irreducible x)
+    (hfg : Associated f.prod g.prod) :
+    Multiset.Rel Associated f g :=
+  prime_factors_unique (fun x hx ↦ prime_of_irreducible (hf x hx))
+    (fun x hx ↦ prime_of_irreducible (hg x hx)) hfg
 
 end Surreal.OmnificInteger

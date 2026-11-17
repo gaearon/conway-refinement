@@ -5,7 +5,7 @@ Authors: Dan Abramov
 -/
 module
 
-public import ConwayRefinement.HahnSeries.IntegerPart.Refinement.ConvexRestriction
+public import ConwayRefinement.HahnSeries.IntegerPart.ConvexRestriction
 
 /-!
 # Tests for restriction to a convex subgroup

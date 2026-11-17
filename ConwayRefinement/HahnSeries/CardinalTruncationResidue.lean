@@ -74,6 +74,13 @@ noncomputable instance : Algebra L (CardSuppLTNonpositive (G := G) (L := L) (κ 
 
 namespace CardSuppLTNonpositive
 
+/-- The scalar `r` is the constant series `r`. -/
+@[simp]
+theorem coe_algebraMap (r : L) :
+    ((algebraMap L (CardSuppLTNonpositive (G := G) (L := L) (κ := κ)) r : L⟦G⟧)) =
+      HahnSeries.C r :=
+  (rfl)
+
 /-- Coefficient at exponent zero as an algebra retraction on bounded nonpositive series. -/
 def constantCoeffAlgHom :
     CardSuppLTNonpositive (G := G) (L := L) (κ := κ) →ₐ[L] L where
@@ -130,7 +137,7 @@ theorem coe_truncationIntegerPartEquivResidueSubring (S : Subring L)
 
 /-- Primality in the bounded truncation integer part `S + L((G^{<0}))_κ` follows from primality
 in `L((G^{≤0}))_κ`, primality of the constant coefficient in `S`, and the fraction-field
-condition on `S`. -/
+condition on `S` when that coefficient is zero. -/
 theorem isPrimal_of_isPrimal_ambient (S : Subring L)
     (x : cardSuppLTTruncationIntegerPart (G := G) (R := L) (κ := κ) S)
     (hA : IsPrimal ((truncationIntegerPartEquivResidueSubring S x :
@@ -138,10 +145,9 @@ theorem isPrimal_of_isPrimal_ambient (S : Subring L)
         CardSuppLTNonpositive (G := G) (L := L) (κ := κ)))
     (hres : IsPrimal (⟨(x : L⟦G⟧).coeff 0,
       ((mem_cardSuppLTTruncationIntegerPart (Z := S)).mp x.2).2⟩ : S))
-    (hfrac : Subring.fracSubring S = ⊤) : IsPrimal x := by
+    (hfrac : (x : L⟦G⟧).coeff 0 = 0 → Subring.fracSubring S = ⊤) : IsPrimal x := by
   rw [← RingEquiv.isPrimal_iff (truncationIntegerPartEquivResidueSubring S)]
-  exact Subring.isPrimal_residueSubring_of_isPrimal_of_residue _ hA (fun _ ↦ hres)
-    (fun _ ↦ hfrac)
+  exact Subring.isPrimal_residueSubring_of_isPrimal_of_residue _ hA (fun _ ↦ hres) hfrac
 
 /-- An element of the bounded truncation integer part with nonzero constant coefficient that is
 primal there is primal in `L((G^{≤0}))_κ`. -/

@@ -7,6 +7,7 @@ module
 
 public import ConwayRefinement.HahnSeries.Germ.GermAt
 
+import ConwayRefinement.Blueprint
 import ConwayRefinement.HahnSeries.CantorBendixson.Truncation
 import ConwayRefinement.Topology.Order.PWOAddition
 
@@ -36,6 +37,26 @@ variable {G : Type u} {K : Type v} [AddCommGroup G] [LinearOrder G] [IsOrderedAd
 
 /-- The germ of `b` at `γ` is nonzero exactly when `γ` lies in the closure of the support of
 `b`. -/
+@[blueprint "lem:nonzero-germs"
+  (phase := "Germs of translated truncations")
+  (title := "Exponents with nonzero germ")
+  (statement := /--
+    Let $K$ be a field and $G$ a nontrivial ordered abelian group with its order
+    topology and the associated group uniformity.  For
+    $b\in K((G^{\le0}))$ and $\gamma\in G$, the germ $[b^{|\gamma}]$ of $b$
+    at $\gamma$ is nonzero if and only if $\gamma$ lies in the closure of
+    $\operatorname{supp}(b)$.
+  -/)
+  (proof := /--
+    For $d\in K((G^{\le0}))$, $d\in J$ exactly when $0$ is not in the closure
+    of $\operatorname{supp}(d)$, that is, when $V_{\mathrm{CB}}(d)=0$
+    (\ref{def:cantor-bendixson-value}).  Truncation at $\gamma$ does not change
+    the closed support near $\gamma$, and translation by $-\gamma$ moves
+    $\gamma$ to $0$; so $0$ lies in the closure of
+    $\operatorname{supp}(b^{|\gamma})$ exactly when $\gamma$ lies in the closure
+    of $\operatorname{supp}(b)$.  Apply this to the class of
+    \ref{def:germ-at}.
+  -/)]
 theorem germAt_ne_zero_iff (b : Nonpositive G K) (γ : G) :
     germAt γ b ≠ 0 ↔ γ ∈ closure (b : HahnSeries G K).support := by
   rw [Ne, germAt_apply, mk_eq_zero_iff_cantorBendixsonValue_eq_zero, coe_translatedTruncation,
@@ -112,6 +133,30 @@ theorem germAt_single_mul (γ : G) (hγ : γ ≤ 0) (b : Nonpositive G K) (ξ : 
 
 /-- The germ of `b` at `γ` is a constant exactly when the germs of `b` vanish on a left
 neighbourhood of `γ`. -/
+@[blueprint "lem:constant-germs"
+  (phase := "Germs of translated truncations")
+  (title := "Characterisation of constant germs")
+  (statement := /--
+    Let $K$ be a field and $G$ a nontrivial ordered abelian group with its order
+    topology and the associated group uniformity.  For
+    $b\in K((G^{\le0}))$ and $\gamma\in G$, the germ $[b^{|\gamma}]$ lies in
+    the image of $K$ in $K((G^{\le0}))/J$ if and only if there is
+    $\varepsilon<0$ such that $[b^{|\gamma+\zeta}]=0$ for every
+    $\zeta\in(\varepsilon,0)$.
+  -/)
+  (proof := /--
+    By \ref{lem:germs-of-translated-truncation} the germs of $b^{|\gamma}$ at
+    $\zeta\le0$ are the germs of $b$ at $\gamma+\zeta$, so it suffices to treat
+    $\gamma=0$.  If $b-k\in J$ for some $k\in K$, say with support in
+    $(-\infty,c]$, $c<0$, then for $\xi\in(c,0)$ the translated truncation
+    $(b-k)^{|\xi}=t^{-\xi}(b-k)$ has support bounded away from $0$ and
+    $k^{|\xi}=0$; so the germs of $b$ vanish on $(c,0)$.  Conversely, if the
+    germ at $\xi$ vanishes, then $V_{\mathrm{CB}}(b^{|\xi})=0$, so $0$ is not in
+    the support of $b^{|\xi}$ and the coefficient of $t^\xi$ in $b$ is $0$
+    (\ref{def:cantor-bendixson-value}).  If this holds for all
+    $\xi\in(\varepsilon,0)$, then $b$ minus its constant coefficient has support
+    in $(-\infty,\varepsilon]$ and lies in $J$.
+  -/)]
 theorem germAt_mem_range_algebraMap_iff (b : Nonpositive G K) (γ : G) :
     germAt γ b ∈ Set.range (algebraMap K (Nonpositive G K ⧸
         boundedAwayIdeal G K)) ↔

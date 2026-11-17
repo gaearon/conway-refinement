@@ -6,9 +6,10 @@ Authors: Dan Abramov
 module
 
 public import ConwayRefinement.HahnSeries.SupportArchimedeanClasses
+public import ConwayRefinement.HahnSeries.IntegerPart.ConvexRegrouping
 public import ConwayRefinement.HahnSeries.IntegerPart.FiniteClassPrimality
-public import ConwayRefinement.HahnSeries.IntegerPart.Refinement.SupportClassFactorization
-public import ConwayRefinement.HahnSeries.IntegerPart.Refinement.TailQuotientGerms
+public import ConwayRefinement.HahnSeries.IntegerPart.SupportClassFactorization
+public import ConwayRefinement.HahnSeries.IntegerPart.TailQuotientGerms
 public import ConwayRefinement.HahnSeries.CardinalTruncationDomainEmbedding
 public import ConwayRefinement.HahnSeries.CharZero
 public import ConwayRefinement.Algebra.Divisibility.PrimalPreimage
@@ -26,7 +27,7 @@ tail below `T₀`, `Γ = G ⧸ C`, `L = R((C))_κ` and `D = Z + R((C^{<0}))_κ`.
 along `C` identifies `Z + R((G^{<0}))_κ` with the `D + M` construction `D + L((Γ^{<0}))_κ` inside
 `L((Γ^{≤0}))_κ`. The constant term meets only finitely many classes, so it is primal in `D`, and
 the fraction-field hypothesis on `D` handles a zero constant term. Primality in
-`L((Γ^{≤0}))_κ` follows from refinement in its ring of germs, which is a polynomial ring when `Γ`
+`L((Γ^{≤0}))_κ` follows from primality in its ring of germs, which is a polynomial ring when `Γ`
 is Cauchy complete: restriction to the closed ball of a small quotient class met by the support
 refines every divisibility relation exactly, and the complementary factor has strictly smaller
 rank, hence is primal by induction.
@@ -42,165 +43,96 @@ universe u v w
 
 namespace HahnSeries.CardSuppLTTruncationIntegerPart
 
-section Regrouping
+section FiniteTail
 
-variable {G : Type u} {R : Type v} {K : Type w} {κ : Cardinal.{u}}
+variable {G : Type u} {R : Type v} {κ : Cardinal.{u}}
 variable [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G]
-variable [Field K] [Module K G] [Field R]
-variable [Fact (Cardinal.aleph0 < κ)] [Fact κ.IsRegular]
+variable [Field R] [Fact (ℵ₀ < κ)]
 
-open Classical in
-/-- Regrouping along a convex subspace `P` commutes with restriction to the preimage of a
-subgroup of `G ⧸ P`. -/
-theorem convexQuotientSplit_restrictToAddSubgroup_comap
-    (P : Submodule K G) [P.toAddSubgroup.IsConvex] (Z : Subring R)
-    (D : AddSubgroup (G ⧸ P))
-    (x : cardSuppLTTruncationIntegerPart (G := G) (R := R) (κ := κ) Z) :
-    cardSuppLTTruncationIntegerPartConvexQuotientSplitRingEquiv P Z
-        (restrictToAddSubgroup Z (D.comap P.mkQ.toAddMonoidHom) x) =
-      restrictToAddSubgroup (cardSuppLTTruncationIntegerPart (G := P) (R := R) (κ := κ) Z) D
-        (cardSuppLTTruncationIntegerPartConvexQuotientSplitRingEquiv P Z x) := by
-  let t := restrictToAddSubgroup Z (D.comap P.mkQ.toAddMonoidHom) x
-  apply Subtype.ext
-  apply Subtype.ext
-  ext z p
-  rw [coe_restrictToAddSubgroup (cardSuppLTTruncationIntegerPart (G := P) (R := R) (κ := κ) Z) D,
-    HahnSeries.coeff_filter]
-  have htcoeff := congrArg
-    (fun y : (R⟦P⟧)⟦G ⧸ P⟧ ↦ (y.coeff z).coeff p)
-    (boundedOuterCoefficientInclusion_split P t.1)
-  rw [boundedOuterCoefficientInclusion_coeff] at htcoeff
-  have hz : ((convexQuotientSplitRingEquiv P (t : R⟦G⟧)).coeff z).coeff p =
-      (if z ∈ D then (convexQuotientSplitRingEquiv P (x : R⟦G⟧)).coeff z else 0).coeff p := by
-    rw [coe_restrictToAddSubgroup, convexQuotientSplitRingEquiv_filter_comap,
-      HahnSeries.coeff_filter]
-  rw [coe_cardSuppLTTruncationIntegerPartConvexQuotientSplitRingEquiv P Z t]
-  refine htcoeff.trans (hz.trans ?_)
-  split_ifs
-  · have hxcoeff := congrArg
-      (fun y : (R⟦P⟧)⟦G ⧸ P⟧ ↦ (y.coeff z).coeff p)
-      (boundedOuterCoefficientInclusion_split P x.1)
-    rw [boundedOuterCoefficientInclusion_coeff] at hxcoeff
-    rw [coe_cardSuppLTTruncationIntegerPartConvexQuotientSplitRingEquiv P Z x]
-    exact hxcoeff.symm
-  · rfl
+/-- Finite-class primality in an ambient exponent group descends to every convex exponent
+subgroup. -/
+private theorem isPrimal_addSubgroup_of_ambient_finiteClasses
+    (Z : Subring R)
+    (hfinite : ∀ x : cardSuppLTTruncationIntegerPart (G := G) (R := R) (κ := κ) Z,
+      (ArchimedeanClass.mk '' (x : HahnSeries G R).support).Finite → IsPrimal x)
+    (P : AddSubgroup G) (hP : (P : Set G).OrdConnected)
+    (a : cardSuppLTTruncationIntegerPart (G := P) (R := R) (κ := κ) Z)
+    (ha : (ArchimedeanClass.mk '' (a : HahnSeries P R).support).Finite) : IsPrimal a := by
+  let inc : P →+ G := P.subtype
+  have hinci : Function.Injective inc := Subtype.val_injective
+  have hinco : ∀ x y : P, inc x ≤ inc y ↔ x ≤ y := fun _ _ ↦ Iff.rfl
+  let A := mapDomain inc hinci hinco Z a
+  have hAfinite : (ArchimedeanClass.mk '' (A : HahnSeries G R).support).Finite := by
+    have hsupport : (A : HahnSeries G R).support = inc '' (a : HahnSeries P R).support := by
+      rw [coe_mapDomain]
+      exact HahnSeries.support_embDomain _ _
+    rw [hsupport]
+    let e : P →+o G :=
+      { toFun := inc
+        map_zero' := map_zero inc
+        map_add' := map_add inc
+        monotone' := fun _ _ h ↦ h }
+    let ac : ArchimedeanClass P → ArchimedeanClass G := ArchimedeanClass.orderHom e
+    have heq : ArchimedeanClass.mk '' (inc '' (a : HahnSeries P R).support) =
+        ac '' (ArchimedeanClass.mk '' (a : HahnSeries P R).support) := by
+      ext c
+      constructor
+      · rintro ⟨_, ⟨p, hp, rfl⟩, rfl⟩
+        exact ⟨ArchimedeanClass.mk p, ⟨p, hp, rfl⟩,
+          ArchimedeanClass.orderHom_mk e p⟩
+      · rintro ⟨_, ⟨p, hp, rfl⟩, rfl⟩
+        exact ⟨inc p, ⟨p, hp, rfl⟩, (ArchimedeanClass.orderHom_mk e p).symm⟩
+    rw [heq]
+    exact ha.image ac
+  apply isPrimal_of_isPrimal_mapDomain inc hinci hinco Z
+  · have hrange : Set.range inc = (P : Set G) := by
+      ext x
+      constructor
+      · rintro ⟨p, rfl⟩
+        exact p.2
+      · exact fun hx ↦ ⟨⟨x, hx⟩, rfl⟩
+    rw [hrange]
+    exact hP
+  exact hfinite A hAfinite
 
-/-- In the `D + M` presentation inside bounded nonpositive series, regrouping turns restriction to
-the preimage of a quotient subgroup into restriction to that subgroup. -/
-theorem convexQuotientSplit_restrictToAddSubgroup_comap_ambient
-    (P : Submodule K G) [P.toAddSubgroup.IsConvex] (Z : Subring R)
-    (D : AddSubgroup (G ⧸ P))
-    (x : cardSuppLTTruncationIntegerPart (G := G) (R := R) (κ := κ) Z) :
-    ((CardSuppLTNonpositive.truncationIntegerPartEquivResidueSubring
-        (cardSuppLTTruncationIntegerPart (G := P) (R := R) (κ := κ) Z)
-        (cardSuppLTTruncationIntegerPartConvexQuotientSplitRingEquiv P Z
-          (restrictToAddSubgroup Z (D.comap P.mkQ.toAddMonoidHom) x)) :
-        Subring.residueSubring CardSuppLTNonpositive.constantCoeffAlgHom _) :
-          CardSuppLTNonpositive (G := G ⧸ P)
-            (L := CardSuppLTField (G := P) (R := R) (κ := κ)) (κ := κ)) =
-      restrictToAddSubgroup ⊤ D
-        ((CardSuppLTNonpositive.truncationIntegerPartEquivResidueSubring
-          (cardSuppLTTruncationIntegerPart (G := P) (R := R) (κ := κ) Z)
-          (cardSuppLTTruncationIntegerPartConvexQuotientSplitRingEquiv P Z x) :
-          Subring.residueSubring CardSuppLTNonpositive.constantCoeffAlgHom _) :
-            CardSuppLTNonpositive (G := G ⧸ P)
-              (L := CardSuppLTField (G := P) (R := R) (κ := κ)) (κ := κ)) := by
-  rw [convexQuotientSplit_restrictToAddSubgroup_comap]
-  apply Subtype.ext
-  apply Subtype.ext
-  simp only [CardSuppLTNonpositive.coe_truncationIntegerPartEquivResidueSubring,
-    coe_restrictToAddSubgroup]
-
-/-- Regrouping preserves a nonzero constant coefficient. -/
-theorem coeff_zero_convexQuotientSplit_ne_zero
-    (P : Submodule K G) [P.toAddSubgroup.IsConvex] (Z : Subring R)
+/-- The common-tail coefficient of a series is primal when its remaining support classes form
+a finite block and finite-class primality is known in the ambient exponent group. -/
+theorem isPrimal_restrictDomain_tailSubmodule_of_ambient_finiteClasses
+    [Module ℚ G] [PosSMulMono ℚ G]
+    (Z : Subring R)
+    (hfinite : ∀ y : cardSuppLTTruncationIntegerPart (G := G) (R := R) (κ := κ) Z,
+      (ArchimedeanClass.mk '' (y : HahnSeries G R).support).Finite → IsPrimal y)
+    (T₀ T₁ : Set (ArchimedeanClass G))
+    (hT₀gt : ∀ a ∈ T₀, ∃ b ∈ T₀, a < b) (hT₁ : T₁.Finite)
     (x : cardSuppLTTruncationIntegerPart (G := G) (R := R) (κ := κ) Z)
-    (hx : (x : R⟦G⟧).coeff 0 ≠ 0) :
-    ((cardSuppLTTruncationIntegerPartConvexQuotientSplitRingEquiv P Z x :
-      CardSuppLTField (G := G ⧸ P) (R := CardSuppLTField (G := P) (R := R) (κ := κ))
-        (κ := κ)) : (CardSuppLTField (G := P) (R := R) (κ := κ))⟦G ⧸ P⟧).coeff 0 ≠ 0 := by
-  intro h0
-  apply hx
-  rw [coe_cardSuppLTTruncationIntegerPartConvexQuotientSplitRingEquiv] at h0
-  have h := congrArg (fun y : (R⟦P⟧)⟦G ⧸ P⟧ ↦ (y.coeff 0).coeff 0)
-    (boundedOuterCoefficientInclusion_split P x.1)
-  simp only [boundedOuterCoefficientInclusion_coeff, convexQuotientSplitRingEquiv_coeff] at h
-  rw [h0, Submodule.quotientLexEquiv_apply] at h
-  change _ = (x : R⟦G⟧).coeff (Submodule.quotientProdLinearEquiv P (0, 0)) at h
-  rw [Submodule.quotientProdLinearEquiv_zero_left] at h
-  simpa using h.symm
+    (hxclasses : ArchimedeanClass.mk '' (x : HahnSeries G R).support ⊆ T₀ ∪ T₁) :
+    let P := FiniteArchimedeanClass.tailSubmodule ℚ
+      {c : FiniteArchimedeanClass G | c.1 ∈ T₀}
+    IsPrimal (restrictDomain P.toAddSubgroup.subtype Subtype.val_injective
+      (fun _ _ ↦ Iff.rfl) Z x) := by
+  let P := FiniteArchimedeanClass.tailSubmodule ℚ
+    {c : FiniteArchimedeanClass G | c.1 ∈ T₀}
+  apply isPrimal_addSubgroup_of_ambient_finiteClasses Z hfinite P.toAddSubgroup
+    (inferInstance : P.toAddSubgroup.IsConvex).ordConnected
+  have hfinite' :=
+    HahnSeries.supportArchimedeanClasses_coeff_zero_convexQuotientSplitRingEquiv_finite
+      (K := ℚ) T₀ T₁ hT₀gt hT₁ (x : HahnSeries G R) hxclasses
+  rw [HahnSeries.coeff_zero_convexQuotientSplitRingEquiv] at hfinite'
+  have hre : ((restrictDomain P.toAddSubgroup.subtype Subtype.val_injective
+      (fun _ _ ↦ Iff.rfl) Z x :
+      cardSuppLTTruncationIntegerPart (G := P) (R := R) (κ := κ) Z) : HahnSeries P R) =
+      HahnSeries.restrictDomain (HahnSeries.submoduleOrderEmbedding P)
+        (x : HahnSeries G R) := by
+    ext p
+    rw [coe_restrictDomain, HahnSeries.restrictDomain_coeff,
+      HahnSeries.restrictDomain_coeff]
+    congr 1
+    exact HahnSeries.submoduleOrderEmbedding_apply P p |>.symm
+  rw [hre]
+  exact hfinite'
 
-/-- Regrouping into the `D + M` presentation, as a ring homomorphism into bounded nonpositive
-series over the quotient. -/
-def regroupAmbient (P : Submodule K G) [P.toAddSubgroup.IsConvex] (Z : Subring R) :
-    cardSuppLTTruncationIntegerPart (G := G) (R := R) (κ := κ) Z →+*
-      CardSuppLTNonpositive (G := G ⧸ P)
-        (L := CardSuppLTField (G := P) (R := R) (κ := κ)) (κ := κ) :=
-  ((Subring.residueSubring CardSuppLTNonpositive.constantCoeffAlgHom
-      (cardSuppLTTruncationIntegerPart (G := P) (R := R) (κ := κ) Z)).subtype.comp
-    (CardSuppLTNonpositive.truncationIntegerPartEquivResidueSubring
-      (cardSuppLTTruncationIntegerPart (G := P) (R := R) (κ := κ) Z)).toRingHom).comp
-    (cardSuppLTTruncationIntegerPartConvexQuotientSplitRingEquiv P Z).toRingHom
+end FiniteTail
 
-theorem regroupAmbient_apply (P : Submodule K G) [P.toAddSubgroup.IsConvex] (Z : Subring R)
-    (x : cardSuppLTTruncationIntegerPart (G := G) (R := R) (κ := κ) Z) :
-    regroupAmbient P Z x =
-      ((CardSuppLTNonpositive.truncationIntegerPartEquivResidueSubring
-        (cardSuppLTTruncationIntegerPart (G := P) (R := R) (κ := κ) Z)
-        (cardSuppLTTruncationIntegerPartConvexQuotientSplitRingEquiv P Z x) :
-        Subring.residueSubring CardSuppLTNonpositive.constantCoeffAlgHom _) :
-          CardSuppLTNonpositive (G := G ⧸ P)
-            (L := CardSuppLTField (G := P) (R := R) (κ := κ)) (κ := κ)) :=
-  (rfl)
-
-theorem regroupAmbient_injective (P : Submodule K G) [P.toAddSubgroup.IsConvex]
-    (Z : Subring R) : Function.Injective (regroupAmbient (κ := κ) P Z) :=
-  (Subtype.val_injective.comp (RingEquiv.injective _)).comp (RingEquiv.injective _)
-
-/-- If `x = t w` where `t` is the restriction of `x` to the preimage of a subgroup `B` of
-`G ⧸ P`, then the regrouped series is its restriction to `B` times the regrouping of `w`. -/
-theorem regroupAmbient_eq_restrict_mul
-    (P : Submodule K G) [P.toAddSubgroup.IsConvex] (Z : Subring R)
-    (B : AddSubgroup (G ⧸ P))
-    (x t w : cardSuppLTTruncationIntegerPart (G := G) (R := R) (κ := κ) Z)
-    (ht : restrictToAddSubgroup Z (B.comap P.mkQ.toAddMonoidHom) x = t)
-    (hfac : x = t * w) :
-    regroupAmbient P Z x =
-      restrictToAddSubgroup ⊤ B (regroupAmbient P Z x) * regroupAmbient P Z w := by
-  have hρt : regroupAmbient P Z t = restrictToAddSubgroup ⊤ B (regroupAmbient P Z x) := by
-    rw [← ht]
-    exact convexQuotientSplit_restrictToAddSubgroup_comap_ambient P Z B x
-  rw [← hρt, ← map_mul, ← hfac]
-
-/-- A primal series with nonzero constant coefficient stays primal after regrouping into
-`L((Γ^{≤0}))_κ`. -/
-theorem isPrimal_regroupAmbient
-    (P : Submodule K G) [P.toAddSubgroup.IsConvex] (Z : Subring R)
-    (w : cardSuppLTTruncationIntegerPart (G := G) (R := R) (κ := κ) Z)
-    (hw : IsPrimal w) (hw0 : (w : R⟦G⟧).coeff 0 ≠ 0) :
-    IsPrimal (regroupAmbient P Z w) :=
-  CardSuppLTNonpositive.isPrimal_ambient_of_isPrimal _ _
-    ((RingEquiv.isPrimal_iff _ w).mpr hw) (coeff_zero_convexQuotientSplit_ne_zero P Z w hw0)
-
-/-- If `x ≠ 0` and `x = t w` where `t` is the restriction of `x` to the preimage of a subgroup
-`B` of `G ⧸ P` and `w` is primal with nonzero constant coefficient, then in `L((Γ^{≤0}))_κ` the
-regrouped series is its nonzero restriction to `B` times a primal factor. -/
-theorem restriction_mul_isPrimal_of_factorization
-    (P : Submodule K G) [P.toAddSubgroup.IsConvex] (Z : Subring R)
-    (B : AddSubgroup (G ⧸ P))
-    (x t w : cardSuppLTTruncationIntegerPart (G := G) (R := R) (κ := κ) Z)
-    (hx0 : x ≠ 0) (ht : restrictToAddSubgroup Z (B.comap P.mkQ.toAddMonoidHom) x = t)
-    (hfac : x = t * w) (hw : IsPrimal w) (hw0 : (w : R⟦G⟧).coeff 0 ≠ 0) :
-    restrictToAddSubgroup ⊤ B (regroupAmbient P Z x) ≠ 0 ∧
-      ∃ v, regroupAmbient P Z x = restrictToAddSubgroup ⊤ B (regroupAmbient P Z x) * v ∧
-        IsPrimal v := by
-  have hy := regroupAmbient_eq_restrict_mul P Z B x t w ht hfac
-  have hy0 : regroupAmbient P Z x ≠ 0 := fun h ↦
-    hx0 (regroupAmbient_injective P Z (h.trans (map_zero (regroupAmbient (κ := κ) P Z)).symm))
-  refine ⟨fun h0 ↦ hy0 ?_, _, hy, isPrimal_regroupAmbient P Z w hw hw0⟩
-  rw [hy, h0, zero_mul]
-
-end Regrouping
 
 
 open Classical in
@@ -310,7 +242,7 @@ private theorem isPrimal_regroupAmbient_of_limit_tail
     obtain ⟨y, hy⟩ := exists_ne (0 : FiniteArchimedeanClass.TailQuotient T)
     exact ⟨FiniteArchimedeanClass.mk y hy⟩
   refine CardSuppLTNonpositive.isPrimal_of_frequently_restriction_mul_isPrimal T
-    hT (limit_family_card_lt T₀ T₁ x hxclasses) ?_
+    hT ?_
   rw [Filter.frequently_atTop]
   intro q₀
   have hU : IsCofinal {q : FiniteArchimedeanClass (FiniteArchimedeanClass.TailQuotient T) |
@@ -340,7 +272,7 @@ common tail below `T₀` is Cauchy complete, the bounded Hahn field on that tail
 field of its bounded integer part, finite-class primality holds, and every series of smaller
 support-class order type is primal, then `x` is primal. -/
 @[blueprint "thm:limit-tail-step"
-  (phase := "Refinement over Archimedean classes")
+  (phase := "Transfinite induction on Archimedean classes")
   (title := "Primality at a limit of Archimedean classes")
   (statement := /--
     Let $G$ be an ordered rational vector space, $R$ a field of characteristic
@@ -357,14 +289,12 @@ support-class order type is primal, then `x` is primal. -/
     primal.
   -/)
   (proof := /--
-    Put $\Gamma=G/C$, $L=R((C))_\kappa$ and $D=Z+R((C^{<0}))_\kappa$.
-    Regrouping exponents along $C$ identifies $Z+R((G^{<0}))_\kappa$ with
-    $D+L((\Gamma^{<0}))_\kappa$, the inverse image of $D$ under the constant
-    coefficient on $T=L((\Gamma^{\le0}))_\kappa$.  The constant coefficient
-    of $x$ is the restriction of $x$ to $C$; it meets only classes of $T_1$, so
-    it is primal in $D$ by \ref{lem:convex-support-of-factors} and the
-    finite-class hypothesis.  By \ref{lem:primality-in-d-plus-m} it remains to
-    show that $x$ is primal in $T$.
+    Put $\Gamma=G/C$, $L=R((C))_\kappa$, $D=Z+R((C^{<0}))_\kappa$ and
+    $T=L((\Gamma^{\le0}))_\kappa$.  The restriction of $x$ to $C$ meets only
+    classes of $T_1$, so it is primal in $D$ by
+    \ref{lem:convex-support-of-factors} and the finite-class hypothesis.  By
+    \ref{lem:primality-through-regrouping} it remains to show that the
+    regrouping of $x$ along $C$ is primal in $T$.
 
     Apply \ref{lem:primality-from-germs-and-restrictions} in $T$ with $J$ the
     series bounded away from zero, and with the restrictions
@@ -372,9 +302,9 @@ support-class order type is primal, then `x` is primal. -/
     endomorphisms by \ref{lem:convex-restriction-ring-hom}.  Every element of
     $J$ is killed by $\rho_q$ for all sufficiently small $q$;
     \ref{lem:divisibility-from-convex-restriction} tests divisibility after
-    $\rho_q$; and \ref{thm:complete-tail-quotient-refinement} refines every
-    divisibility relation modulo $J$.  The classes of $\Gamma$ met by the
-    support of $x$ are arbitrarily small.  For such a class $q$,
+    $\rho_q$; and every element of $T/J$ is primal by
+    \ref{cor:bounded-hahn-germ-primality}, since $\Gamma$ is Cauchy complete.
+    The classes of $\Gamma$ met by the support of $x$ are arbitrarily small.  For such a class $q$,
     \ref{lem:support-class-factorisation} gives $x=tw$ with $t$ the
     restriction of $x$ to the inverse image of the closed ball of $q$, so that
     $t$ corresponds to $\rho_q(x)$, and with $w$ of constant coefficient $1$
@@ -411,18 +341,16 @@ theorem isPrimal_of_limit_tail
   by_cases hx0 : x = 0
   · rw [hx0]
     exact isPrimal_zero
-  have h := isPrimal_regroupAmbient_of_limit_tail Z T₀ T₁ hT₀gt x hxclasses hx0 ih
-  rw [regroupAmbient_apply] at h
-  rw [← RingEquiv.isPrimal_iff (cardSuppLTTruncationIntegerPartConvexQuotientSplitRingEquiv
-    (FiniteArchimedeanClass.tailSubmodule ℚ {c : FiniteArchimedeanClass G | c.1 ∈ T₀}) Z)]
-  exact CardSuppLTNonpositive.isPrimal_of_isPrimal_ambient _ _ h
-    (isPrimal_coeff_zero_convexQuotientSplitRingEquiv_of_ambient_finiteClasses
-      Z hfinite T₀ T₁ hT₀gt hT₁ x hxclasses.le) htailfrac
+  exact isPrimal_of_isPrimal_regroupAmbient _ Z x
+    (isPrimal_regroupAmbient_of_limit_tail Z T₀ T₁ hT₀gt x hxclasses hx0 ih)
+    (isPrimal_restrictDomain_tailSubmodule_of_ambient_finiteClasses
+      Z hfinite T₀ T₁ hT₀gt hT₁ x hxclasses.le)
+    (fun _ ↦ htailfrac)
 
 /-- The common-tail hypotheses extend finite-class primality to every cardinal-bounded Hahn
 integer-part series. -/
 @[blueprint "thm:limit-tail-primality"
-  (phase := "Refinement over Archimedean classes")
+  (phase := "Transfinite induction on Archimedean classes")
   (title := "Transfinite extension of finite-class primality")
   (statement := /--
     Let $G$ be an ordered rational vector space, $R$ a field of characteristic
@@ -507,7 +435,7 @@ theorem isPrimal_of_finite_classes_and_limit_tail_conditions
 common-tail hypotheses at limit families, make every element of the bounded Hahn integer part
 primal. -/
 @[blueprint "thm:hahn-integer-part-primality"
-  (phase := "Refinement over Archimedean classes")
+  (phase := "Transfinite induction on Archimedean classes")
   (title := "Primality under finite-class and common-tail hypotheses")
   (statement := /--
     Let $G$ be an ordered rational vector space, $R$ a field of characteristic
@@ -557,10 +485,8 @@ theorem isPrimal_of_finite_class_assumptions_and_limit_tail_conditions
       (G := G) (R := R) (κ := κ) Z) : IsPrimal a := by
   apply isPrimal_of_finite_classes_and_limit_tail_conditions Z
   · intro y hy
-    apply HahnSeries.Nonpositive.isPrimal_of_supportArchimedeanClasses_finite
-      Z s (fun c ↦ (LM24.assumptionA1AtFiniteClass_iff s c).mp (hA1 c)) hA2 y
-    rw [supportArchimedeanClasses_toNonpositiveRingHom]
-    exact hy
+    exact isPrimal_of_supportArchimedeanClasses_finite
+      Z s (fun c ↦ (LM24.assumptionA1AtFiniteClass_iff s c).mp (hA1 c)) hA2 y hy
   · exact hcomplete
   · exact htailfrac
 

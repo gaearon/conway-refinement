@@ -19,17 +19,27 @@ namespace IsPolynomialRing
 /-- The germ ring is a polynomial ring over its coefficient field. -/
 theorem proof (G : Type u) (K : Type v)
     [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G]
-    [NoMinOrder G] [Field K] :
+    [Nontrivial G] [Field K] :
     IsPolynomialRing G K := Support.isPolynomialRing G K
 
 end IsPolynomialRing
+
+namespace BoundedAwayIdealIsPrime
+
+/-- The ideal of series bounded away from zero is prime, the quotient being a polynomial ring. -/
+theorem proof (G : Type u) (K : Type v)
+    [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G]
+    [Nontrivial G] [Field K] :
+    BoundedAwayIdealIsPrime G K := Support.boundedAwayIdealIsPrime G K
+
+end BoundedAwayIdealIsPrime
 
 namespace HasRefinement
 
 /-- Polynomiality gives the four-factor refinement of germs. -/
 theorem proof (G : Type u) (K : Type v)
     [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G]
-    [NoMinOrder G] [Field K] :
+    [Nontrivial G] [Field K] :
     HasRefinement G K := Support.hasRefinement G K
 
 end HasRefinement

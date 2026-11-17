@@ -42,11 +42,8 @@ private def seriesAlgEquiv :
 @[simp] private theorem coe_seriesEquiv (x : NonpositiveSeries G K) :
     ((seriesAlgEquiv x : HahnSeries.Nonpositive G K) : HahnSeries G K) = x := rfl
 
-variable [NoMinOrder G]
-variable [UniformSpace G] [IsUniformAddGroup G] [OrderTopology G]
-variable [Nontrivial G] [CompleteSpace G] [CharZero K]
+variable [Nontrivial G]
 
-omit [UniformSpace G] [IsUniformAddGroup G] [OrderTopology G] [CompleteSpace G] [CharZero K] in
 private theorem boundedAwayIdeal_map_eq :
     (HahnSeries.Nonpositive.boundedAwayIdeal G K) =
       (BoundedAwayIdeal G K).map seriesAlgEquiv := by
@@ -64,9 +61,9 @@ private theorem boundedAwayIdeal_map_eq :
 /-- The internal Cantor–Bendixson construction gives the standalone polynomial presentation. -/
 theorem isPolynomialRing (G : Type u) (K : Type v)
     [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G]
-    [NoMinOrder G] [Field K] :
+    [Nontrivial G] [Field K] :
     IsPolynomialRing G K := by
-  intro _ _ _ _ _ _ _ _ _
+  intro _ _ _ _ _
   obtain ⟨ι, ⟨equiv⟩⟩ :=
     HahnSeries.Nonpositive.exists_mvPolynomial_algEquiv_germ (G := G) (K := K)
   let quotientEquiv : Germ G K ≃ₐ[K]
@@ -77,12 +74,23 @@ theorem isPolynomialRing (G : Type u) (K : Type v)
       seriesAlgEquiv boundedAwayIdeal_map_eq
   exact ⟨ι, ⟨equiv.trans quotientEquiv.symm⟩⟩
 
+/-- A polynomial presentation over a field is an integral domain, so the ideal is prime. -/
+theorem boundedAwayIdealIsPrime (G : Type u) (K : Type v)
+    [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G]
+    [Nontrivial G] [Field K] :
+    BoundedAwayIdealIsPrime G K := by
+  intro _ _ _ _ _
+  obtain ⟨ι, ⟨equiv⟩⟩ := isPolynomialRing G K
+  letI : IsDomain (Germ G K) :=
+    Function.Injective.isDomain equiv.symm.toRingHom equiv.symm.injective
+  exact (Ideal.Quotient.isDomain_iff_prime _).mp inferInstance
+
 /-- A polynomial presentation gives four-factor refinement. -/
 theorem hasRefinement (G : Type u) (K : Type v)
     [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G]
-    [NoMinOrder G] [Field K] :
+    [Nontrivial G] [Field K] :
     HasRefinement G K := by
-  intro _ _ _ _ _ _ _ _ _
+  intro _ _ _ _ _
   obtain ⟨ι, ⟨equiv⟩⟩ := isPolynomialRing G K
   letI : IsDomain (Germ G K) :=
     Function.Injective.isDomain equiv.symm.toRingHom equiv.symm.injective

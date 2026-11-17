@@ -7,6 +7,7 @@ module
 
 public import ConwayRefinement.RingTheory.TruncationGerms.Transcendence
 
+import ConwayRefinement.Blueprint
 import Mathlib.Algebra.Algebra.Subalgebra.Directed
 import Mathlib.Order.Zorn
 
@@ -48,6 +49,35 @@ public section
 generalised power series with nonpositive well-ordered support: extensionality in the germs,
 truncations, monomials that translate germs, and well-ordered germ supports that have greatest
 elements below each bound. -/
+@[blueprint "def:series-germ-axioms"
+  (phase := "Polynomial presentations")
+  (title := "Axioms for germs on a ring of series")
+  (statement := /--
+    A system of germs $(g_\gamma)$ on $A$ with values in $Q$
+    (\ref{def:germ-axioms}) is a system of germs on a ring of series if
+    moreover, for all $b\in A$:
+    \begin{itemize}
+      \item (8) if $g_\xi(b)=0$ for every $\xi$, then $b=0$;
+      \item (9) for every $\eta\in\Gamma$ there is $b_{|\eta}\in A$ with
+        $g_\xi(b_{|\eta})=g_\xi(b)$ for $\xi\le\eta$ and $g_\xi(b_{|\eta})=0$ for
+        $\xi>\eta$;
+      \item (10) for every $\gamma\le0$ there is $t^\gamma\in A$ with
+        $g_\xi(t^\gamma c)=g_{\xi-\gamma}(c)$ for all $c\in A$ and all $\xi$;
+      \item (11) the set $\{\xi:g_\xi(b)\ne0\}$ is well-founded, and each nonempty
+        intersection of it with a ray $(-\infty,\varepsilon]$ has a greatest
+        element.
+    \end{itemize}
+    For a $K$-subalgebra $S\subseteq Q$ write $A_S$ for the $K$-subalgebra of
+    series all of whose germs lie in $S$; thus $A_K$ consists of the series all
+    of whose germs are constants.  A $K$-subalgebra of $A$ is closed under
+    truncation if it contains $b_{|\eta}$ whenever it contains $b$.
+  -/)
+  (proof := /--
+    These axioms extend those of a system of germs by the properties of
+    $K((\mathbb R^{\le0}))$ that concern series rather than germs: a series is
+    determined by its germs, truncations and monomials act on germs as stated,
+    and the exponents with nonzero germ form the closure of the support.
+  -/)]
 structure SeriesTruncationGerms (K Γ A Q : Type*) [Field K] [CharZero K]
     [AddCommGroup Γ] [LinearOrder Γ] [IsOrderedAddMonoid Γ]
     [CommRing A] [Algebra K A] [CommRing Q] [Nontrivial Q] [Algebra K Q]
@@ -389,6 +419,32 @@ private theorem adjoin_insert_eq_restrictScalars (R : Subalgebra K A) (X : A) :
 
 /-- Adjoining to a truncation-closed subalgebra `R` a series `X` whose truncations at negative
 exponents lie in `R` gives a truncation-closed subalgebra. -/
+@[blueprint "lem:truncation-closed-adjunction"
+  (phase := "Polynomial presentations")
+  (title := "Closure under truncation of a simple extension")
+  (statement := /--
+    Let $(g_\gamma)$ be a system of germs on a ring of series $A$
+    (\ref{def:series-germ-axioms}).  Let $R\subseteq A$ be a $K$-subalgebra
+    closed under truncation, and let $X\in A$ with $X_{|\zeta}\in R$ for every
+    $\zeta<0$.  Then the $K$-subalgebra $R[X]$ is closed under truncation.
+  -/)
+  (proof := /--
+    The argument uses the convolution formula (axiom (2) of
+    \ref{def:germ-axioms}) and the axioms of \ref{def:series-germ-axioms}.
+    Write $E=R[X]$.  It suffices to show that if all truncations of $w$ lie in
+    $E$, then so do all truncations of $wX$; induction on $n$ then handles
+    $aX^n$ with $a\in R$, and these span $E$.  Fix $\eta$, and show
+    $(w_{|\beta}X)_{|\eta}\in E$ by well-founded induction on the exponents
+    $\beta$ at which $w$ has a nonzero germ.  If $\beta\le\eta$, then
+    $w_{|\beta}X$ has no germs above $\eta$ and equals its own truncation.  If
+    $\beta>\eta$, well-foundedness gives $\beta'\in[\eta,\beta)$ such that $X$
+    has no nonzero germ at exponents in $(\eta-\beta,\eta-\beta')$.  The series
+    $v=w_{|\beta}-w_{|\beta'}$ has germs only in $(\beta',\beta]$, and the
+    convolution formula gives $(vX)_{|\eta}=v\,X_{|\eta-\beta}\in E$ since
+    $\eta-\beta<0$.  The remaining term $(w_{|\beta'}X)_{|\eta}$ is covered by
+    the induction hypothesis, because $w_{|\beta'}=w_{|\zeta}$ for the greatest
+    $\zeta\le\beta'$ at which $w$ has a nonzero germ.
+  -/)]
 theorem isTruncationClosed_adjoin_insert {R : Subalgebra K A} (hR : sys.IsTruncationClosed R)
     (X : A) (hXlow : ∀ ζ : Γ, ζ < 0 → sys.truncation X ζ ∈ R) :
     sys.IsTruncationClosed (Algebra.adjoin K (insert X (R : Set A))) := by
@@ -421,6 +477,25 @@ theorem isTruncationClosed_adjoin_insert {R : Subalgebra K A} (hR : sys.IsTrunca
 /-- If `germ X` is transcendental over `S`, then `X` is transcendental over every subalgebra `R₀`
 over `seriesWithConstantGerms` whose elements have all their germs in `S`: the top germ of a
 polynomial relation for `X` over `R₀` is a polynomial relation for `germ X` over `S`. -/
+@[blueprint "lem:transcendence-of-series"
+  (phase := "Polynomial presentations")
+  (title := "Transcendence of a series with transcendental germ")
+  (statement := /--
+    Let $(g_\gamma)$ be a system of germs on a ring of series $A$
+    (\ref{def:series-germ-axioms}).  Let $S\subseteq Q$ be a $K$-subalgebra,
+    let $R_0\subseteq A$ be an $A_K$-subalgebra contained in $A_S$, and let
+    $X\in A$ be such that $[X]$ is transcendental over $S$.  Then $X$ is
+    transcendental over $R_0$.
+  -/)
+  (proof := /--
+    Let $\sum_kc_kX^k=0$ with $c_k\in R_0$ not all zero, and let $\eta$ be the
+    greatest exponent at which some $c_k$ has a nonzero germ; it exists by
+    axiom (11) of \ref{def:series-germ-axioms}.  No $c_k$ has germs above
+    $\eta$, so the convolution formula (axiom (2) of \ref{def:germ-axioms})
+    gives $g_\eta(c_kX^k)=g_\eta(c_k)\,[X]^k$.  Hence
+    $\sum_kg_\eta(c_k)\,[X]^k=0$ is a nontrivial polynomial relation for $[X]$
+    over $S$.
+  -/)]
 theorem transcendental_of_transcendental_germ {S : Subalgebra K Q}
     {R₀ : Subalgebra sys.seriesWithConstantGerms A}
     (hsub : (R₀ : Set A) ⊆ sys.seriesWithGermsIn S) {X : A}
@@ -481,6 +556,30 @@ theorem transcendental_of_transcendental_germ {S : Subalgebra K Q}
 
 /-- A truncation-closed subalgebra `R` with `seriesWithConstantGerms ≤ R`, such that every element
 of `S` is the germ of an element of `R`, contains `seriesWithGermsIn S`. -/
+@[blueprint "lem:generation"
+  (phase := "Polynomial presentations")
+  (title := "Generation by a subalgebra closed under truncation")
+  (statement := /--
+    Let $(g_\gamma)$ be a system of germs on a ring of series $A$
+    (\ref{def:series-germ-axioms}).  Let $S\subseteq Q$ be a $K$-subalgebra,
+    and let $R\subseteq A$ be a $K$-subalgebra that is closed under truncation,
+    contains $A_K$, and contains for every $a\in S$ some $r$ with $[r]=a$.
+    Then $A_S\subseteq R$.
+  -/)
+  (proof := /--
+    Let $b\in A_S$.  Show $b_{|\eta}\in R$ by well-founded induction on the
+    exponents $\eta$ at which $b$ has a nonzero germ.  Choose $r\in R$ with
+    $[r]=g_\eta(b)$ and put $c=t^\eta r$ (axiom (10) of
+    \ref{def:series-germ-axioms}); the monomial $t^\eta$ has constant germs,
+    so $c\in R$, and $c$ has no germs above $\eta$.  The difference
+    $d=b_{|\eta}-c$ has $g_\eta(d)=0$ and no germs above $\eta$; applying
+    axioms (3) and (4) of \ref{def:germ-axioms} to it shows that its germs
+    vanish on some $(\varepsilon,\eta]$, so $d=b_{|\varepsilon}-c_{|\varepsilon}$.  Here
+    $c_{|\varepsilon}\in R$ by closure under truncation, and
+    $b_{|\varepsilon}=b_{|\zeta}$ for the greatest $\zeta\le\varepsilon$ at
+    which $b$ has a nonzero germ, which lies in $R$ by induction.  Finally
+    $b=b_{|\eta}$ for the greatest $\eta$ at which $b$ has a nonzero germ.
+  -/)]
 theorem seriesWithGermsIn_le {S : Subalgebra K Q} {R : Subalgebra K A}
     (hR : sys.IsTruncationClosed R) (hBR : sys.seriesWithConstantGerms ≤ R)
     (hlift : ∀ a ∈ S, ∃ r ∈ R, sys.germ r = a) :
@@ -539,6 +638,29 @@ private theorem adjoin_eq_top_iff (B : Subalgebra K A) (𝒳 : Set A) :
 /-- **Polynomial presentation of the ring of series.** The ring of series `A` is a polynomial ring
 over its subalgebra `seriesWithConstantGerms` of series all of whose germs are constants: it has an
 algebraically independent generating set over that subalgebra. -/
+@[blueprint "thm:series-ring-generators"
+  (phase := "Polynomial presentations")
+  (title := "Algebraically independent generators of the ring of series")
+  (statement := /--
+    Let $(g_\gamma)$ be a system of germs on a ring of series $A$
+    (\ref{def:series-germ-axioms}).  There is a set $\mathcal X\subseteq A$,
+    algebraically independent over $A_K$, such that $A_K[\mathcal X]=A$.
+  -/)
+  (proof := /--
+    By Zorn's lemma choose a maximal set $\mathcal X$, algebraically independent
+    over $A_K$, such that $R=A_K[\mathcal X]$ is closed under truncation and
+    $R\subseteq A_S$ for $S=K[\{[X]:X\in\mathcal X\}]$.  By
+    \ref{lem:generation}, $R=A_S$.  Suppose $S\ne Q$.  As in the proof of
+    \ref{thm:germ-ring-generators}, a germ outside $S$ of minimal rank is $[X]$
+    for a series $X$ whose germs at negative exponents lie in $S$.  By
+    \ref{thm:germ-ring-generators} $Q$ is a polynomial ring over $K$, so $S$
+    is an integral domain, and the transcendence lemma makes $[X]$
+    transcendental over $S$.  By \ref{lem:transcendence-of-series}, $X$ is
+    transcendental over $R$.  For $\zeta<0$ all germs of $X_{|\zeta}$ lie in $S$,
+    so $X_{|\zeta}\in A_S=R$, and \ref{lem:truncation-closed-adjunction} shows
+    that $R[X]$ is closed under truncation.  Thus $\mathcal X\cup\{X\}$
+    contradicts maximality.  Hence $S=Q$ and $R=A_Q=A$.
+  -/)]
 theorem exists_algebraicIndependent_series_generators :
     ∃ 𝒳 : Set A, AlgebraicIndependent sys.seriesWithConstantGerms ((↑) : 𝒳 → A) ∧
       Algebra.adjoin sys.seriesWithConstantGerms 𝒳 = ⊤ := by

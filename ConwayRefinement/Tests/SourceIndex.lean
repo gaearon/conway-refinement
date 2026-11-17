@@ -7,10 +7,7 @@ module
 
 import ConwayRefinement.Algebra.Divisibility.PrimalPreimage
 import ConwayRefinement.HahnSeries.Germ.GermAt
-import ConwayRefinement.HahnSeries.IntegerPart.Reduced
 import ConwayRefinement.HahnSeries.Tests.FiniteSupportGCD
-import ConwayRefinement.HahnSeries.IntegerPart.Tests.CardinalLeadingClassPrimality
-import ConwayRefinement.HahnSeries.IntegerPart.Tests.Reduced
 import ConwayRefinement.Surreal.HahnSeries.Tests.CardinalIntegerPart
 import ConwayRefinement.HahnSeries.FiniteSupportGCDProof
 import ConwayRefinement.HahnSeries.FiniteSupportUnit
@@ -145,28 +142,9 @@ cofinality at least the cardinal bounding small Conway normal forms. -/
     Surreal.smallSupportCardinal.{u} ≤
       Order.cof ↥(FiniteArchimedeanClass.ball ℝ c))
 
-/- LM24, Definition 8.2.6. Reducedness is defined only for a nonzero series, and the witnessing
-Archimedean class may be the zero class. -/
-#check (@HahnSeries.Nonpositive.IsReduced.elim :
-  ∀ {G : Type u} {R : Type v}
-    [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G] [Ring R]
-    {b : HahnSeries.Nonpositive G R}, HahnSeries.Nonpositive.IsReduced b →
-      b ≠ 0 ∧ ∃ c : ArchimedeanClass G,
-        (b : R⟦G⟧).support ∩
-            ((b - 1 : HahnSeries.Nonpositive G R) : R⟦G⟧).support ⊆
-          {x | ArchimedeanClass.mk x = c})
-
-/- The zero Archimedean class is a genuine witness, while mixing zero with a nonzero class is
-not reduced. -/
-#check (Tests.reducedConstant_isReduced :
-  HahnSeries.Nonpositive.IsReduced Tests.reducedConstant)
-
-#check (Tests.nonreducedTwoClass_not_isReduced :
-  ¬HahnSeries.Nonpositive.IsReduced Tests.nonreducedTwoClass)
-
-/- LM24, Proposition 9.2.2 in the cardinal-bounded model used for surreal normal forms. Its
-underlying preimage lemma is used with a domain ambient ring and clears scalar denominators before
-applying primality in the residue subring. -/
+/- LM24, Lemma 9.2.1, as used for regrouped cardinal-bounded series. The preimage lemma is used
+with a domain ambient ring and clears scalar denominators before applying primality in the
+residue subring. -/
 #check (@Subring.isPrimal_residueSubring_iff :
   ∀ {L : Type u} {A : Type v} [Field L] [CommRing A] [Algebra L A]
     {π : A →ₐ[L] L} {S : Subring L} [IsDomain A] {b : A} (hb : π b ∈ S),
@@ -176,29 +154,5 @@ applying primality in the residue subring. -/
             IsPrimal
               (⟨b, Subring.le_fracSubring hb⟩ :
                 Subring.residueSubring π (Subring.fracSubring S))))
-
-#check (@Tests.cardinalProposition922 :
-  ∀ {K : Type u} {G : Type u} {R : Type v} {κ : Cardinal.{u}}
-    [DivisionRing K] [LinearOrder K] [IsOrderedRing K] [Archimedean K]
-    [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G]
-    [Module K G] [IsOrderedModule K G] [Field R]
-    [Fact (Cardinal.aleph0 < κ)] [Fact κ.IsRegular]
-    (s : HahnEmbedding.ArchimedeanStrata K G) (Z : Subring R)
-    (b : HahnSeries.cardSuppLTTruncationIntegerPart
-      (G := G) (R := R) (κ := κ) Z)
-    (_hb0 : HahnSeries.CardSuppLTTruncationIntegerPart.toNonpositiveRingHom Z b ≠ 0)
-    (horder : ((HahnSeries.CardSuppLTTruncationIntegerPart.toNonpositiveRingHom Z b :
-      HahnSeries.Nonpositive G R) : R⟦G⟧).order ≠ 0)
-    (_hbReduced : HahnSeries.Nonpositive.IsReduced
-      (HahnSeries.CardSuppLTTruncationIntegerPart.toNonpositiveRingHom Z b))
-    (_hA2 : LM24.AssumptionA2AtFiniteClass (K := K) κ Z
-      (HahnSeries.Nonpositive.leadingClass
-        (HahnSeries.CardSuppLTTruncationIntegerPart.toNonpositiveRingHom Z b) horder)),
-      IsPrimal b ↔
-        IsPrimal (HahnSeries.Nonpositive.splitTruncationCardSuppLT s
-          (HahnSeries.Nonpositive.leadingClass
-            (HahnSeries.CardSuppLTTruncationIntegerPart.toNonpositiveRingHom Z b) horder)
-          (HahnSeries.CardSuppLTTruncationIntegerPart.toNonpositiveRingHom Z b)
-          (HahnSeries.CardSuppLTTruncationIntegerPart.cardSupp_toNonpositiveRingHom_lt Z b)))
 
 end ExactSignatures

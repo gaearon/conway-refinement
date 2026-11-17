@@ -145,7 +145,7 @@ theorem Nonpositive.isPWO_nonzeroSupportArchimedeanClasses
 /-- If the nonzero support classes of one series lie strictly below a support class of another,
 their order type is strictly smaller. -/
 @[blueprint "lem:support-class-order-type-strict-decrease"
-  (phase := "Refinement over Archimedean classes")
+  (phase := "Transfinite induction on Archimedean classes")
   (title := "Strict decrease of support-class order type")
   (statement := /--
     Let $x,y\in K((G^{\le0}))$.  If $c$ is a nonzero Archimedean class met by

@@ -6,7 +6,7 @@ Authors: Dan Abramov
 module
 
 public import ConwayRefinement.HahnSeries.CardinalTruncation
-public import ConwayRefinement.HahnSeries.ArchimedeanSplitting
+public import Mathlib.Algebra.Order.Module.HahnEmbedding
 public import Mathlib.Algebra.Order.Module.Archimedean
 public import Mathlib.Data.Real.Embedding
 

@@ -6,7 +6,6 @@ Authors: Dan Abramov
 module
 
 public import Mathlib.Algebra.MvPolynomial.Equiv
-public import Mathlib.Algebra.Order.Archimedean.Class
 public import Mathlib.RingTheory.HahnSeries.Multiplication
 public import Mathlib.RingTheory.Ideal.Quotient.Operations
 public import Mathlib.Topology.Algebra.IsUniformGroup.Defs
@@ -14,13 +13,15 @@ public import Mathlib.Topology.Order.Basic
 public import Mathlib.Topology.UniformSpace.Cauchy
 
 /-!
-# Hahn germs over a Cauchy-complete exponent group
+# Germs of Hahn series over a Cauchy-complete exponent group
 
-Let `K((G^{≤ 0}))` be the ring of Hahn series supported in the nonpositive cone of `G`, and
-identify two series when they agree on some interval immediately below zero. If `G` is Cauchy
-complete for an order-compatible uniformity, dense, has no endpoints, and has no smallest nonzero
-Archimedean magnitude, then this germ ring is a polynomial algebra over `K`. Consequently it has
-four-factor refinement.
+Let `G` be a nontrivial ordered abelian group, `K` a field, and `K((G^{≤ 0}))` the ring of Hahn
+series supported in the nonpositive cone of `G`. Let `J` be the ideal of series whose support is
+bounded away from zero, so that two series have the same image in `K((G^{≤ 0}))/J` exactly when
+they agree on some interval immediately below zero. If `K` has characteristic zero and `G`, with
+its order topology and the associated group uniformity, is Cauchy complete, then this ring of
+germs is a polynomial algebra over `K`. Consequently `J` is a prime ideal, and the ring of germs
+has four-factor refinement.
 -/
 
 @[expose] public noncomputable section
@@ -31,7 +32,7 @@ universe u v
 
 variable (G : Type u) (K : Type v)
 variable [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G]
-variable [NoMinOrder G] [Field K]
+variable [Nontrivial G] [Field K]
 
 /-- The Hahn-series `K`-algebra `K((G^{≤ 0}))`. -/
 def NonpositiveSeries : Subalgebra K (HahnSeries G K) where
@@ -70,16 +71,17 @@ abbrev Germ := NonpositiveSeries G K ⧸ BoundedAwayIdeal G K
 
 /-- The germ ring is isomorphic to a polynomial algebra over `K`. -/
 abbrev IsPolynomialRing : Prop :=
-  ∀ [UniformSpace G] [IsUniformAddGroup G] [OrderTopology G]
-    [Nontrivial G] [CompleteSpace G] [DenselyOrdered G] [NoMaxOrder G]
-    [NoMaxOrder (FiniteArchimedeanClass G)] [CharZero K],
-      ∃ ι : Type (max (u + 1) v), Nonempty (MvPolynomial ι K ≃ₐ[K] Germ G K)
+  ∀ [UniformSpace G] [IsUniformAddGroup G] [OrderTopology G] [CompleteSpace G] [CharZero K],
+    ∃ ι : Type (max (u + 1) v), Nonempty (MvPolynomial ι K ≃ₐ[K] Germ G K)
+
+/-- The ideal of series whose support is bounded away from zero is prime. -/
+abbrev BoundedAwayIdealIsPrime : Prop :=
+  ∀ [UniformSpace G] [IsUniformAddGroup G] [OrderTopology G] [CompleteSpace G] [CharZero K],
+    (BoundedAwayIdeal G K).IsPrime
 
 /-- Every equation of four germs admits a four-factor refinement. -/
 abbrev HasRefinement : Prop :=
-  ∀ [UniformSpace G] [IsUniformAddGroup G] [OrderTopology G]
-    [Nontrivial G] [CompleteSpace G] [DenselyOrdered G] [NoMaxOrder G]
-    [NoMaxOrder (FiniteArchimedeanClass G)] [CharZero K],
+  ∀ [UniformSpace G] [IsUniformAddGroup G] [OrderTopology G] [CompleteSpace G] [CharZero K],
       ∀ a b c d : Germ G K, a * b = c * d →
         ∃ e f g h : Germ G K,
           a = e * f ∧ b = g * h ∧ c = e * g ∧ d = f * h
@@ -92,5 +94,6 @@ end ConwayRefinement.Standalone.CompleteHahnGerm
 Proof module: `CompleteHahnGermProof`.
 
 * `IsPolynomialRing` → `IsPolynomialRing.proof`
+* `BoundedAwayIdealIsPrime` → `BoundedAwayIdealIsPrime.proof`
 * `HasRefinement` → `HasRefinement.proof`
 -/

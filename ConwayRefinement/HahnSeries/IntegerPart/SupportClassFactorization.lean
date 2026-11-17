@@ -8,7 +8,7 @@ module
 public import ConwayRefinement.HahnSeries.LimitTailQuotient
 public import ConwayRefinement.HahnSeries.ConvexQuotientSplitting
 public import ConwayRefinement.HahnSeries.SupportArchimedeanClasses
-public import ConwayRefinement.HahnSeries.IntegerPart.Refinement.ConvexRestriction
+public import ConwayRefinement.HahnSeries.IntegerPart.ConvexRestriction
 public import ConwayRefinement.Algebra.Order.ArchimedeanBall
 
 import ConwayRefinement.Blueprint
@@ -39,7 +39,7 @@ variable [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G]
 /-- A quotient class met by the support bounds a strict initial segment of the original support
 classes. -/
 @[blueprint "lem:tail-quotient-class-bounds-support-classes"
-  (phase := "Refinement over Archimedean classes")
+  (phase := "Transfinite induction on Archimedean classes")
   (title := "Support classes beyond a quotient Archimedean ball")
   (statement := /--
     Let $T$ be a family of nonzero Archimedean classes of an ordered rational
@@ -194,7 +194,7 @@ open Classical in
 /-- Factoring at a tail-quotient class met by the support strictly lowers the order type of the
 nonzero support classes of the complementary factor. -/
 @[blueprint "lem:support-class-factorisation"
-  (phase := "Refinement over Archimedean classes")
+  (phase := "Transfinite induction on Archimedean classes")
   (title := "Factorisation at a quotient Archimedean class")
   (statement := /--
     Let $T$ be a set of nonzero Archimedean classes of an ordered rational

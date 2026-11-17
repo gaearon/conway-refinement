@@ -136,6 +136,32 @@ theorem constantCoeff_apply (x : Nonpositive Γ R) :
     constantCoeff x = (x : R⟦Γ⟧).coeff 0 :=
   (rfl)
 
+section Algebra
+
+variable {G : Type*} {L : Type*}
+variable [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G] [Field L]
+
+/-- Nonpositive Hahn series form an algebra over their coefficient field by constant series. -/
+instance : Algebra L (Nonpositive G L) where
+  algebraMap := C
+  smul r x := C r * x
+  commutes' _ _ := mul_comm _ _
+  smul_def' _ _ := rfl
+
+/-- The coefficient-field algebra map is the constant-series embedding. -/
+@[simp]
+theorem algebraMap_apply (r : L) :
+    algebraMap L (Nonpositive G L) r = C r := (rfl)
+
+/-- Scalar multiplication commutes with the coercion to Hahn series. -/
+@[simp, norm_cast]
+theorem coe_smul (r : L) (x : Nonpositive G L) :
+    ((r • x : Nonpositive G L) : L⟦G⟧) = r • (x : L⟦G⟧) := by
+  rw [Algebra.smul_def, algebraMap_apply, Subring.coe_mul, coe_C,
+    HahnSeries.C_mul_eq_smul]
+
+end Algebra
+
 end Nonpositive
 
 /-- The subring of nonpositive Hahn series whose coefficient at exponent zero lies in `Z`. -/

@@ -176,7 +176,7 @@ theorem dvd_iff_dvdNP (a b : (finiteSupportSubring : Subring (Nonpositive G K)))
 /-- LM24, Fact 2.5.2: every pair of finite-support nonpositive series has a greatest common
 divisor. -/
 @[blueprint "fact:finite-support-hahn-gcd"
-  (phase := "Primality and factorisation for real exponents")
+  (phase := "Polynomial presentations")
   (title := "Greatest common divisors of finite-support series")
   (statement := /--
     Let $G$ be a linearly ordered abelian group and $K$ a field.  For all $p,q$

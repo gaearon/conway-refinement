@@ -12,6 +12,7 @@ public import ConwayRefinement.RingTheory.TruncationGerms.Series
 public import Mathlib.Topology.Algebra.IsUniformGroup.Basic
 public import Mathlib.Topology.Instances.Real.Lemmas
 
+import ConwayRefinement.Blueprint
 import Mathlib.Topology.Order.Compact
 
 /-!
@@ -92,6 +93,27 @@ theorem support_finite_of_forall_germAt_mem_range (b : Nonpositive ℝ K)
 omit [CharZero K] in
 /-- A series with real exponents has a constant germ at every exponent exactly when it has finite
 support. -/
+@[blueprint "lem:constant-germs-finite-support"
+  (phase := "Polynomial presentations")
+  (title := "Series with constant germs")
+  (statement := /--
+    Let $K$ be a field.  A series $b\in K((\mathbb R^{\le0}))$ has a constant
+    germ $[b^{|\gamma}]\in K$ at every exponent $\gamma$ if and only if
+    $\operatorname{supp}(b)$ is finite.
+  -/)
+  (proof := /--
+    If the support is finite, then to the left of each $\gamma$ there is an
+    interval containing no point of the closed support, so by
+    \ref{lem:nonzero-germs} the germs at $\gamma+\zeta$ vanish for $\zeta<0$
+    close to $0$, and the germ at $\gamma$ is constant by
+    \ref{lem:constant-germs}.  Conversely, if every germ is constant, then by
+    \ref{lem:constant-germs} and \ref{lem:nonzero-germs} every
+    $\gamma\in\mathbb R$ has a left interval free of support points.  An
+    infinite support would be bounded, hence have an accumulation point
+    $\gamma$ in a compact interval; points of the support accumulate at
+    $\gamma$ neither from the left, by the gap, nor from the right, because the
+    support is well ordered.  So the support is finite.
+  -/)]
 theorem forall_germAt_mem_range_iff_support_finite (b : Nonpositive ℝ K) :
     (∀ ξ, germAt ξ b ∈ Set.range (algebraMap K (Nonpositive ℝ K ⧸
         boundedAwayIdeal ℝ K))) ↔
@@ -133,6 +155,31 @@ private theorem toSubring_seriesWithConstantGerms :
 
 /-- The nonpositive real series ring over a field of characteristic zero is a polynomial ring
 over its finite-support subring `K(ℝ^{≤0})`. -/
+@[blueprint "thm:hahn-series-polynomial-algebra"
+  (phase := "Polynomial presentations")
+  (title := "Polynomial presentation of $K((\\mathbb R^{\\le 0}))$")
+  (statement := /--
+    Let $K$ be a field of characteristic $0$ and $K(\mathbb R^{\le0})$ the
+    subring of $K((\mathbb R^{\le0}))$ consisting of the series with finite
+    support.  For some set $I$ there is a $K(\mathbb R^{\le0})$-algebra
+    isomorphism
+    \[
+      K(\mathbb R^{\le0})[X_i:i\in I]\simeq K((\mathbb R^{\le0})).
+    \]
+  -/)
+  (proof := /--
+    By \ref{prop:hahn-germs-axioms} the germs of $K((\mathbb R^{\le0}))$ form
+    a system of germs.  It is a system of germs on a ring of series: a series
+    all of whose germs vanish has empty closed support, the truncation
+    $b_{|\eta}$ keeps exactly the germs at exponents $\le\eta$, multiplication
+    by $t^\gamma$ translates germs by $\gamma$, and the exponents with nonzero
+    germ form the closure of the support, a closed well-ordered subset of
+    $\mathbb R$ whose intersection with any ray $(-\infty,\varepsilon]$ is
+    closed and bounded above, hence has a greatest element when nonempty.  By
+    \ref{lem:constant-germs-finite-support}, the series all of whose germs are
+    constants form $K(\mathbb R^{\le0})$.  Apply
+    \ref{thm:series-ring-generators}.
+  -/)]
 theorem exists_mvPolynomial_algEquiv_finiteSupportRing :
     ∃ ι : Type (max v w), Nonempty (MvPolynomial ι (FiniteSupportRing (G := ℝ) (K := K)) ≃ₐ[
       FiniteSupportRing (G := ℝ) (K := K)] Nonpositive ℝ K) := by

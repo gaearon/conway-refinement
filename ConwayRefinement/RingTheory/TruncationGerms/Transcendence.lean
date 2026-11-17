@@ -9,6 +9,7 @@ public import ConwayRefinement.RingTheory.TruncationGerms.Basic
 public import Mathlib.Algebra.MvPolynomial.Rename
 public import Mathlib.RingTheory.AlgebraicIndependent.Transcendental
 
+import ConwayRefinement.Blueprint
 import Mathlib.Algebra.Algebra.Subalgebra.Directed
 import Mathlib.Algebra.CharP.Algebra
 import Mathlib.Algebra.Polynomial.Derivative
@@ -107,6 +108,36 @@ nonzero germ whose germs at nonpositive exponents lie in `S`, and `U` a series w
 nonpositive exponents have the form `s₀ + s₁ * x` with `s₀ s₁ ∈ S`. If the germs of `U` and `V` at
 the exponents of a left neighbourhood of `0` are in the ratio `germ U : germ V`, then `germ U` is a
 constant multiple of `germ V`. -/
+@[blueprint "lem:proportionality"
+  (phase := "Polynomial presentations")
+  (title := "Proportionality lemma")
+  (statement := /--
+    Let $(g_\gamma)$ be a system of germs on $A$ with values in $Q$
+    (\ref{def:germ-axioms}).  Let $S\subseteq Q$ be a $K$-subalgebra that is an
+    integral domain, and let $x\in Q$ be such that $ax\notin S$ for every
+    nonzero $a\in S$.  Let $U,V\in A$ with $[V]\ne0$, with $g_\xi(V)\in S$ for
+    all $\xi\le0$, and with $g_\xi(U)\in S+Sx$ for all $\xi\le0$.  If there is
+    $\varepsilon<0$ such that
+    \[
+      [V]\,g_\xi(U)=[U]\,g_\xi(V)\qquad\text{for all }\xi\in(\varepsilon,0),
+    \]
+    then $[U]=c\,[V]$ for some $c\in K$.
+  -/)
+  (proof := /--
+    The hypothesis on $x$ makes $S+Sx$ a free $S$-module with basis $1,x$, so a
+    nonzero element of $S$ can be cancelled from an equation $vn=vn'$ with
+    $n,n'\in S+Sx$.  Induct on $\operatorname{rk}[V]$, using the axioms of
+    \ref{def:germ-axioms}.  If $[V]=k\in K^\times$, then $g_\xi(V)=0$ near $0$
+    by axiom (4), so the relation gives $g_\xi(U)=0$ near $0$ and $[U]\in K$.
+    Otherwise axiom (5) bounds the rank of $g_\xi(V)$ below
+    $\operatorname{rk}[V]$ near $0$, and axiom (4) provides such $\xi$ in
+    $(\varepsilon,0)$ with $g_\xi(V)\ne0$.  Let $U',V'$ be the translated
+    truncations at $\xi$ given by axiom (3).  For $\zeta<0$ close to $0$, the
+    relations at $\xi+\zeta$ and at $\xi$, after cancelling $[V]$ in $S+Sx$,
+    give $[V']\,g_\zeta(U')=[U']\,g_\zeta(V')$.  By induction
+    $g_\xi(U)=[U']=c\,[V']=c\,g_\xi(V)$, and cancelling $g_\xi(V)\ne0$ from the
+    relation at $\xi$ gives $[U]=c\,[V]$.
+  -/)]
 theorem exists_germ_eq_smul_of_proportional (S : Subalgebra K Q) [IsDomain S] {x : Q}
     (hx : ∀ a ∈ S, a ≠ 0 → a * x ∉ S) (U V : A) (hV : sys.germ V ≠ 0)
     (hVS : ∀ ξ ≤ 0, sys.germAt ξ V ∈ S)
@@ -242,10 +273,37 @@ private theorem hasRepresentativesWithGermsIn_adjoin (S : Subalgebra K Q)
     rw [sys.convolution b b' ξ]
     exact sys.finsum_convolution_mem Sx b b' ξ hbs hbs'
 
-/-- No nonzero element of `S` multiplies the germ of `X` back into `S`. -/
-private theorem mul_germ_notMem (S : Subalgebra K Q) (hS : sys.HasRepresentativesWithGermsIn S)
+/-- Let `S` be a subalgebra of the ring of germs whose elements are germs of series with all germs
+in `S`, and let `X` be a series whose germs at negative exponents lie in `S` but whose germ does
+not. Then no nonzero element of `S` multiplies the germ of `X` into `S`. -/
+@[blueprint "lem:no-linear-relations"
+  (phase := "Polynomial presentations")
+  (title := "Absence of linear relations")
+  (statement := /--
+    Let $(g_\gamma)$ be a system of germs on $A$ with values in $Q$
+    (\ref{def:germ-axioms}).  Let $S\subseteq Q$ be a $K$-subalgebra such that
+    every element of $S$ is $[b]$ for some $b\in A$ with $g_\xi(b)\in S$ for all
+    $\xi$.  Let $X\in A$ with $g_\xi(X)\in S$ for all $\xi<0$ and
+    $x=[X]\notin S$.  Then $ax\notin S$ for every nonzero $a\in S$.
+  -/)
+  (proof := /--
+    Suppose otherwise and take a counterexample $a$ of minimal rank.  Choose
+    $A_0$ representing $a$ and $B$ representing $-ax$, both with all germs in
+    $S$.  Then $[A_0X+B]=0$, so by axiom (4) of \ref{def:germ-axioms} the germs
+    of $A_0X+B$ vanish on some $(\varepsilon,0)$.  For $\xi$ in this interval,
+    the convolution formula (axiom (2)) gives
+    $g_\xi(A_0X)\in g_\xi(A_0)\,x+S$, because every other term pairs a germ of
+    $A_0$ with a germ of $X$ at a negative or positive exponent; hence
+    $g_\xi(A_0)\in S$ and $g_\xi(A_0)\,x\in S$.  If $a\in K$, then
+    $x=a^{-1}(ax)\in S$, a contradiction.  Otherwise axiom (5) gives
+    $\operatorname{rk}g_\xi(A_0)<\operatorname{rk}a$ for $\xi$ near $0$, so
+    minimality forces $g_\xi(A_0)=0$ near $0$, and axiom (4) puts $a$ in $K$
+    after all.
+  -/)]
+theorem mul_germ_notMem (S : Subalgebra K Q) (hS : sys.HasRepresentativesWithGermsIn S)
     (X : A) (hX : ∀ ξ < 0, sys.germAt ξ X ∈ S) (hx : sys.germ X ∉ S)
-    (a : Q) (ha : a ∈ S) (ha0 : a ≠ 0) (hax : a * sys.germ X ∈ S) : False := by
+    (a : Q) (ha : a ∈ S) (ha0 : a ≠ 0) : a * sys.germ X ∉ S := by
+  intro hax
   set x := sys.germ X with hxdef
   suffices H :
       ∀ (o : Ordinal), ∀ a : Q,
@@ -434,6 +492,39 @@ open Polynomial in
 domain and has representatives whose germs lie in `S`, and let `X` be a series whose germs at
 negative exponents lie in `S` but whose germ `germ X` does not. Then `germ X` is transcendental
 over `S`, and `S[germ X]` again has representatives whose germs lie in it. -/
+@[blueprint "lem:transcendence"
+  (phase := "Polynomial presentations")
+  (title := "Transcendence lemma")
+  (statement := /--
+    Let $(g_\gamma)$ be a system of germs on $A$ with values in $Q$
+    (\ref{def:germ-axioms}).  Let $S\subseteq Q$ be a $K$-subalgebra that is an
+    integral domain and such that every element of $S$ is $[b]$ for some
+    $b\in A$ with $g_\xi(b)\in S$ for all $\xi$.  Let $X\in A$ with
+    $g_\xi(X)\in S$ for all $\xi<0$ and $x=[X]\notin S$.  Then $x$ is
+    transcendental over $S$, and every element of the $K$-subalgebra $S[x]$ is
+    $[b]$ for some $b\in A$ with $g_\xi(b)\in S[x]$ for all $\xi$.
+  -/)
+  (proof := /--
+    The second assertion holds for $X$ and for representatives of elements of
+    $S$, and is preserved by sums and, through the convolution formula, by
+    products.  For the first, let $p\in S[T]$ be nonzero of minimal degree $d$
+    with $p(x)=0$.  Then $d\ge1$, and $d=1$ is excluded by
+    \ref{lem:no-linear-relations}.  Let $d\ge2$, lift the coefficients $p_k$ to
+    $A_k\in A$ with all germs in $S$, and put $Y=\sum_kA_kX^k$.  Then $[Y]=0$,
+    so $g_\xi(Y)=0$ for $\xi$ in some $(\varepsilon,0)$.  Expanding by the
+    convolution formula, for $\xi\le0$ one has $g_\xi(A_kX^k)=q_{k,\xi}(x)$ for
+    a polynomial $q_{k,\xi}\in S[T]$ of degree at most $k$ whose coefficient of
+    $T^k$ is $g_\xi(A_k)$ and whose coefficient of $T^{k-1}$ is
+    $k\,(g_\xi(A_kX)-g_\xi(A_k)\,x)$.  Put $q_\xi=\sum_kq_{k,\xi}$.  For
+    $\xi\in(\varepsilon,0)$ the polynomial $p_d\,q_\xi-g_\xi(A_d)\,p$ vanishes at
+    $x$ and has degree less than $d$, so it is $0$.  Its coefficient of
+    $T^{d-1}$ says that $Z=dA_dX+A_{d-1}$ satisfies
+    $[A_d]\,g_\xi(Z)=[Z]\,g_\xi(A_d)$ for $\xi\in(\varepsilon,0)$.  The germs of
+    $A_d$ lie in $S$ and those of $Z$ in $S+Sx$, so by
+    \ref{lem:proportionality} $[Z]=c\,p_d$ for some $c\in K$, that is,
+    $d\,p_d\,x+p_{d-1}-c\,p_d=0$.  As $K$ has characteristic $0$, $d\,p_d\ne0$,
+    and this relation of degree one contradicts minimality.
+  -/)]
 theorem transcendental_germ (S : Subalgebra K Q) [IsDomain S]
     (hS : sys.HasRepresentativesWithGermsIn S) (X : A)
     (hX : ∀ ξ < 0, sys.germAt ξ X ∈ S) (hx : sys.germ X ∉ S) :
@@ -585,7 +676,7 @@ theorem transcendental_germ (S : Subalgebra K Q) [IsDomain S]
           (↑(e + 1) : Q) * sys.germAt ζ (Afun (e + 1)), S.mul_mem hn (hAs (e + 1) ζ), ?_⟩
         rw [hLZ ζ]; ring
       obtain ⟨c, hc⟩ := sys.exists_germ_eq_smul_of_proportional S
-        (fun a ha ha0 hax => sys.mul_germ_notMem S hS X hX hx a ha ha0 hax) Z (Afun (e + 1)) hV
+        (fun a ha ha0 => sys.mul_germ_notMem S hS X hX hx a ha ha0) Z (Afun (e + 1)) hV
         (fun ξ _ => hAs (e + 1) ξ) hZN ⟨ε₀, hε₀, hrel⟩
       have hne : (e + 1 : ↥S) ≠ 0 := Nat.cast_add_one_ne_zero e
       set r : Polynomial ↥S :=
@@ -608,6 +699,30 @@ theorem transcendental_germ (S : Subalgebra K Q) [IsDomain S]
 include sys in
 /-- The ring of germs is a polynomial ring over `K`: it has an algebraically independent set of
 generators. -/
+@[blueprint "thm:germ-ring-generators"
+  (phase := "Polynomial presentations")
+  (title := "Algebraically independent generators of the ring of germs")
+  (statement := /--
+    Let $(g_\gamma)$ be a system of germs on $A$ with values in $Q$
+    (\ref{def:germ-axioms}).  There is a set $T\subseteq Q$, algebraically
+    independent over $K$, such that $K[T]=Q$.
+  -/)
+  (proof := /--
+    By Zorn's lemma choose a maximal set $T\subseteq Q$, algebraically
+    independent over $K$, such that every element of $K[T]$ is $[b]$ for some
+    $b\in A$ with all germs in $K[T]$; the empty set qualifies because a scalar
+    $k$ has $g_\xi(k)=0$ for $\xi\ne0$, and the union of a chain qualifies.
+    $K[T]$ is a polynomial ring, hence an integral domain.  Suppose
+    $K[T]\ne Q$ and choose $x\notin K[T]$ of minimal rank; then $x\notin K$.
+    Represent $x$ by $X_0$, choose $\varepsilon<0$ with
+    $\operatorname{rk}g_\xi(X_0)<\operatorname{rk}x$ for $\xi\in(\varepsilon,0)$
+    by axiom (5), and use axiom (7) to replace $X_0$ by a series $X$ with the
+    same germ, the same germs on $(\varepsilon,0)$, and no germs at or below
+    $\varepsilon$.  By minimality of $x$, all germs of $X$ at negative exponents
+    lie in $K[T]$.  By \ref{lem:transcendence}, $x$ is transcendental over
+    $K[T]$ and $K[T][x]$ again has the representative property, so
+    $T\cup\{x\}$ contradicts the maximality of $T$.
+  -/)]
 theorem exists_algebraicIndependent_generators :
     ∃ T : Set Q, AlgebraicIndependent K ((↑) : T → Q) ∧ Algebra.adjoin K T = ⊤ := by
   -- Run Zorn's lemma on algebraically independent sets whose adjoin is stable.

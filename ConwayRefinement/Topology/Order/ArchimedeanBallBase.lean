@@ -11,8 +11,6 @@ public import Mathlib.SetTheory.Cardinal.Order
 public import Mathlib.Order.Cofinal
 public import Mathlib.Topology.Order.Basic
 
-import ConwayRefinement.Blueprint
-
 /-!
 # A well-founded base of open Archimedean balls
 
@@ -181,26 +179,6 @@ theorem exists_cofinalBallBase_subset_Ioo (ε : G) (hε : 0 < ε) :
 
 /-- Open Archimedean balls admit a well-founded decreasing neighbourhood basis when the nonzero
 Archimedean classes have no smallest magnitude. -/
-@[blueprint "lem:well-founded-archimedean-ball-basis"
-  (phase := "Algebraic independence in graded rings")
-  (title := "Well-founded Archimedean-ball bases")
-  (statement := /--
-    Let $G$ be an ordered topological abelian group.  Suppose that the nonzero
-    Archimedean classes of $G$ have no least element in the magnitude order.
-    Then there are a well-founded linear order $I$ and a decreasing family
-    $(U_i)_{i\in I}$ of open order-convex additive subgroups of $G$ such that
-    every symmetric open interval about $0$ contains some $U_i$.
-  -/)
-  (proof := /--
-    Well-order the finite Archimedean classes arbitrarily and retain each
-    class that is larger in the Archimedean-class order than every earlier
-    class.  These record classes are cofinal, while their inherited order is
-    a subrelation of the chosen well-order and is therefore well-founded.
-    Associate to each record class its Archimedean ball.  The balls decrease
-    with the record classes and are order-convex.  The absence of a least
-    nonzero magnitude makes every ball open, and cofinality of the record
-    classes puts one inside every symmetric interval about $0$.
-  -/)]
 theorem exists_wellFounded_archimedeanBall_basis
     [NoMaxOrder (FiniteArchimedeanClass G)] :
     ∃ (ι : Type u) (_ : LinearOrder ι) (_ : WellFoundedLT ι)

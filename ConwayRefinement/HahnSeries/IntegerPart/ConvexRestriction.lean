@@ -7,7 +7,8 @@ module
 
 public import ConwayRefinement.HahnSeries.CardinalTruncation
 public import ConwayRefinement.HahnSeries.SubgroupSupport
-public import ConwayRefinement.HahnSeries.IntegerPart.ClassTruncation
+public import ConwayRefinement.HahnSeries.Nonpositive
+public import ConwayRefinement.HahnSeries.CardinalTruncationDomainEmbedding
 public import Mathlib.Algebra.Group.Subgroup.Order
 public import Mathlib.Algebra.Order.Archimedean.Class
 public import Mathlib.Order.Interval.Set.OrdConnected
@@ -31,6 +32,50 @@ restriction times a series of constant coefficient one supported away from `C`.
 public noncomputable section
 
 open scoped HahnSeries
+
+universe u
+
+namespace HahnSeries.Nonpositive
+
+variable {G R : Type*} [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G] [Ring R]
+
+/-- A coefficient restriction is multiplicative on nonpositive series when membership of a sum
+of two nonpositive exponents is equivalent to membership of both summands. -/
+theorem filter_mul_of_add_iff (p : G → Prop) [DecidablePred p]
+    (hpadd : ∀ {i j : G}, i ≤ 0 → j ≤ 0 → (p (i + j) ↔ p i ∧ p j))
+    (x y : Nonpositive G R) :
+    HahnSeries.filter p ((x * y : Nonpositive G R) : R⟦G⟧) =
+      HahnSeries.filter p (x : R⟦G⟧) * HahnSeries.filter p (y : R⟦G⟧) := by
+  change HahnSeries.filter p ((x : R⟦G⟧) * (y : R⟦G⟧)) = _
+  ext g
+  rw [HahnSeries.coeff_filter, HahnSeries.coeff_mul, HahnSeries.coeff_mul]
+  by_cases hg : p g
+  · rw [if_pos hg]
+    apply Finset.sum_congr
+    · ext ij
+      simp only [Finset.mem_addAntidiagonal, HahnSeries.support_filter]
+      constructor
+      · rintro ⟨hi, hj, hij⟩
+        have hp := (hpadd (support_subset x hi) (support_subset y hj)).mp (hij ▸ hg)
+        exact ⟨⟨hi, hp.1⟩, ⟨hj, hp.2⟩, hij⟩
+      · rintro ⟨⟨hi, _⟩, ⟨hj, _⟩, hij⟩
+        exact ⟨hi, hj, hij⟩
+    · intro ij hij
+      rw [HahnSeries.coeff_filter, HahnSeries.coeff_filter]
+      rw [Finset.mem_addAntidiagonal] at hij
+      rw [HahnSeries.support_filter, HahnSeries.support_filter] at hij
+      simp [hij.1.2, hij.2.1.2]
+  · rw [if_neg hg]
+    apply (Finset.sum_eq_zero fun ij hij ↦ ?_).symm
+    rw [Finset.mem_addAntidiagonal] at hij
+    rw [HahnSeries.support_filter] at hij
+    rw [HahnSeries.support_filter] at hij
+    have hpij := (hpadd (support_subset x hij.1.1) (support_subset y hij.2.1.1)).mpr
+      ⟨hij.1.2, hij.2.1.2⟩
+    rw [hij.2.2] at hpij
+    exact (hg hpij).elim
+
+end HahnSeries.Nonpositive
 
 namespace HahnSeries.ConvexRestriction
 
@@ -229,7 +274,7 @@ open Classical in
 /-- Restriction to a convex subgroup of the exponents, as a ring endomorphism of the bounded
 integer part. -/
 @[blueprint "lem:convex-restriction-ring-hom"
-  (phase := "Refinement over Archimedean classes")
+  (phase := "Transfinite induction on Archimedean classes")
   (title := "Restriction to a convex subgroup")
   (statement := /--
     Let $C$ be a convex subgroup of an ordered abelian group $G$.  Restriction
@@ -326,7 +371,7 @@ private theorem dvd_of_restriction_factorization
 /-- **Divisibility from a convex restriction.** A nonzero element fixed by restriction to a
 convex subgroup divides a series as soon as it divides the restriction of that series. -/
 @[blueprint "lem:divisibility-from-convex-restriction"
-  (phase := "Refinement over Archimedean classes")
+  (phase := "Transfinite induction on Archimedean classes")
   (title := "Divisibility from a convex restriction")
   (statement := /--
     Let $C$ be a convex subgroup of an ordered abelian group $G$, and let
@@ -361,7 +406,7 @@ exponent subgroup. The complementary factor remains bounded, has constant coeffi
 all its nonzero support exponents lie outside the subgroup in classes met by the original
 support. -/
 @[blueprint "lem:factorisation-by-convex-restriction"
-  (phase := "Refinement over Archimedean classes")
+  (phase := "Transfinite induction on Archimedean classes")
   (title := "Factorisation by a convex restriction")
   (statement := /--
     Let $C$ be a convex subgroup of an ordered abelian group $G$, and let
@@ -432,5 +477,56 @@ theorem exists_factorization_by_restriction
   · simpa only [w, hwraw] using hw0
   · simpa only [w, hwraw] using hwC
   · simpa only [w, hwraw] using hwocc
+
+/-- **Primality in a convex exponent subgroup.** If an injective additive order embedding has
+order-connected range, it carries primal elements of the bounded integer part to primal elements.
+-/
+theorem isPrimal_mapDomain_of_isPrimal {G H : Type u} {κ : Cardinal.{u}} [Fact (aleph0 < κ)]
+    [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G]
+    [AddCommGroup H] [LinearOrder H] [IsOrderedAddMonoid H]
+    (Z : Subring K) (f : G →+ H) (hfi : Function.Injective f)
+    (hf : ∀ g g' : G, f g ≤ f g' ↔ g ≤ g') (hrange : (Set.range f).OrdConnected)
+    {a : HahnSeries.cardSuppLTTruncationIntegerPart (G := G) (R := K) (κ := κ) Z}
+    (ha : IsPrimal a) : IsPrimal (mapDomain f hfi hf Z a) := by
+  classical
+  let M := mapDomain (κ := κ) f hfi hf Z
+  let res := restrictDomain (κ := κ) f hfi hf Z
+  have hC : ((f.range : AddSubgroup H) : Set H).OrdConnected := by
+    simpa only [AddMonoidHom.coe_range] using hrange
+  let ρ := restrictToAddSubgroupRingHom (κ := κ) Z hC
+  have hMinj : Function.Injective M := by
+    intro x y hxy
+    apply Subtype.ext
+    apply Subtype.ext
+    have h := congrArg (fun z : HahnSeries.cardSuppLTTruncationIntegerPart
+      (G := H) (R := K) (κ := κ) Z ↦ (z : K⟦H⟧)) hxy
+    simp only [M, coe_mapDomain] at h
+    exact HahnSeries.embDomain_injective h
+  have hρ (x) : ρ x = M (res x) := by
+    apply Subtype.ext
+    apply Subtype.ext
+    rw [restrictToAddSubgroupRingHom_apply, coe_restrictToAddSubgroup]
+    exact (coe_mapDomain_restrictDomain f hfi hf Z x).symm
+  have hρM (x) : ρ (M x) = M x := by
+    rw [hρ]
+    congr 1
+    exact restrictDomain_mapDomain f hfi hf Z x
+  rcases eq_or_ne a 0 with rfl | ha0
+  · rw [map_zero]
+    exact isPrimal_zero
+  intro x y ⟨q, hq⟩
+  have hdvd : a ∣ res x * res y := by
+    refine ⟨res q, hMinj ?_⟩
+    rw [map_mul, map_mul, ← hρ, ← hρ, ← hρ, ← map_mul, hq, map_mul, hρM]
+  obtain ⟨a₁, a₂, ⟨x', hx'⟩, ⟨y', hy'⟩, rfl⟩ := ha hdvd
+  have h₁ : a₁ ≠ 0 := left_ne_zero_of_mul ha0
+  have h₂ : a₂ ≠ 0 := right_ne_zero_of_mul ha0
+  refine ⟨M a₁, M a₂, ?_, ?_, map_mul M a₁ a₂⟩
+  · refine dvd_of_dvd_restrictToAddSubgroup Z hC (hρM a₁)
+      (fun h ↦ h₁ (hMinj (h.trans (map_zero M).symm))) ⟨M x', ?_⟩
+    rw [← restrictToAddSubgroupRingHom_apply Z hC, hρ, hx', map_mul]
+  · refine dvd_of_dvd_restrictToAddSubgroup Z hC (hρM a₂)
+      (fun h ↦ h₂ (hMinj (h.trans (map_zero M).symm))) ⟨M y', ?_⟩
+    rw [← restrictToAddSubgroupRingHom_apply Z hC, hρ, hy', map_mul]
 
 end HahnSeries.CardSuppLTTruncationIntegerPart

@@ -25,25 +25,6 @@ namespace HahnSeries.Nonpositive
 variable {G : Type u} {L : Type v}
 variable [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G] [Field L]
 
-/-- Nonpositive Hahn series form an algebra over their coefficient field by constant series. -/
-instance : Algebra L (Nonpositive G L) where
-  algebraMap := C
-  smul r x := C r * x
-  commutes' _ _ := mul_comm _ _
-  smul_def' _ _ := rfl
-
-/-- The coefficient-field algebra map is the constant-series embedding. -/
-@[simp]
-theorem algebraMap_apply (r : L) :
-    algebraMap L (Nonpositive G L) r = C r := (rfl)
-
-/-- Scalar multiplication commutes with the coercion to Hahn series. -/
-@[simp, norm_cast]
-theorem coe_smul (r : L) (x : Nonpositive G L) :
-    ((r • x : Nonpositive G L) : L⟦G⟧) = r • (x : L⟦G⟧) := by
-  rw [Algebra.smul_def, algebraMap_apply, Subring.coe_mul, coe_C,
-    HahnSeries.C_mul_eq_smul]
-
 /-- Coefficient at exponent zero as an algebra retraction of the constant-series embedding. -/
 def constantCoeffAlgHom : Nonpositive G L →ₐ[L] L where
   __ := constantCoeff

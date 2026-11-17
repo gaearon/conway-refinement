@@ -149,7 +149,7 @@ variable [IsDomain A]
 whose images are both zero. If `p` is primal in `π ⁻¹ S`, then `L` is the fraction field of
 `S`. -/
 @[blueprint "lem:primal-zero-residue-fraction-field"
-  (phase := "Algebraic and ordinal preliminaries")
+  (phase := "Finitely many Archimedean classes")
   (title := "A primal zero-residue element forces the fraction-field condition")
   (statement := /--
     Let $L$ be a field, let $A$ be a domain and an $L$-algebra, and let
@@ -574,7 +574,7 @@ theorem isPrimal_residueSubring_of_isPrimal_pre_fracSubring {b : A} (hb : π b �
 primal in `π ⁻¹ S`, provided its residue is primal in `S` when it is nonzero, and `L` is the
 fraction field of `S` when the residue is zero. -/
 @[blueprint "lem:primality-in-d-plus-m"
-  (phase := "Algebraic and ordinal preliminaries")
+  (phase := "Finitely many Archimedean classes")
   (title := "Primality in a $D+M$ construction")
   (statement := /--
     Let $L$ be a field, let $A$ be a domain and an $L$-algebra, and let

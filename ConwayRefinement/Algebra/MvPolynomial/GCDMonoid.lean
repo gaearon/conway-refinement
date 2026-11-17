@@ -163,7 +163,7 @@ private theorem existsGCD [NormalizedGCDMonoid R] (a b : MvPolynomial σ R) :
 /-- A polynomial ring in an arbitrary type of variables over a normalized GCD domain has
 greatest common divisors. -/
 @[blueprint "lem:multivariate-polynomial-gcd"
-  (phase := "Algebraic and ordinal preliminaries")
+  (phase := "Polynomial presentations")
   (title := "Greatest common divisors in multivariate polynomial rings")
   (statement := /--
     Let $R$ be a commutative domain admitting a normalized GCD structure, and

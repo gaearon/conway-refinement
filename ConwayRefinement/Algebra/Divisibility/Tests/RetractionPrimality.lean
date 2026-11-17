@@ -12,12 +12,13 @@ import Mathlib.Algebra.GCDMonoid.Basic
 import Mathlib.Algebra.EuclideanDomain.Int
 import Mathlib.Order.Filter.Basic
 import Mathlib.RingTheory.Int.Basic
+import Mathlib.RingTheory.Ideal.Quotient.Operations
 
 /-!
 # Tests for primality from retractions and in a `D + M` construction
 
 With the identity retraction and the zero ideal, primality from germs and restrictions reduces to
-refinement in the ring itself; the integers give a nondegenerate client. A second client forwards
+primality in the ring itself; the integers give a nondegenerate client. A second client forwards
 the hypotheses of primality in a `D + M` construction.
 -/
 
@@ -32,9 +33,8 @@ theorem int_isPrimal_of_retractions {f : ℤ} (hf : f ≠ 0) : IsPrimal f := by
     (fun _ ↦ RingHom.id ℤ) (fun _ _ ↦ rfl) (fun j hj ↦ ?_) (fun _ _ _ _ _ h ↦ h) ?_ ?_
   · rw [Ideal.mem_bot] at hj
     simp [hj]
-  · intro g x y hg
-    obtain ⟨a, b, ⟨q₁, rfl⟩, ⟨q₂, rfl⟩, rfl⟩ := DecompositionMonoid.primal g hg
-    exact ⟨a, b, q₁, q₂, by simp, by simp, by simp⟩
+  · intro q
+    exact (RingEquiv.isPrimal_iff (RingEquiv.quotientBot ℤ) q).mp (DecompositionMonoid.primal _)
   · rw [Filter.frequently_top]
     exact ⟨(), hf, 1, by simp, isUnit_one.isPrimal⟩
 

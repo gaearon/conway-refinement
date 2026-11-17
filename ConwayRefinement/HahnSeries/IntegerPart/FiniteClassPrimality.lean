@@ -5,21 +5,25 @@ Authors: Dan Abramov
 -/
 module
 
-public import ConwayRefinement.HahnSeries.IntegerPart.ReducedPrimality
-public import ConwayRefinement.HahnSeries.IntegerPart.CardinalFiniteClassReduction
-public import ConwayRefinement.HahnSeries.IntegerPart.FiniteClassReduction
-public import ConwayRefinement.HahnSeries.ConvexQuotientSplitting
-public import ConwayRefinement.HahnSeries.CardinalTruncationDomainEmbedding
+public import ConwayRefinement.HahnSeries.IntegerPart.Assumptions
+public import ConwayRefinement.HahnSeries.IntegerPart.ConvexRegrouping
+public import ConwayRefinement.HahnSeries.CharZero
+public import ConwayRefinement.Algebra.Order.ArchimedeanBall
 public import Mathlib.Data.Set.Card
 
-import ConwayRefinement.HahnSeries.CardinalTruncationResidue
+import ConwayRefinement.HahnSeries.SupportArchimedeanClasses
 import ConwayRefinement.Blueprint
 
 /-!
-# Primality for finite support-class sets
+# Primality for finitely many Archimedean support classes
 
-Under LM24 conditions `(A1)`--`(A3)`, every cardinal-bounded Hahn integer-part series whose
-support meets only finitely many Archimedean classes is primal.
+Let `σ` be the leading Archimedean class met by the support of `x ∈ Z + R((G^{<0}))_κ`, that is,
+the class of its order. Regroup along the strict inner ball `C = G_{≺σ}`. The support of the
+regrouped series lies in the image of the closed ball `G_{⪯σ}` in `G ⧸ C`, which the chosen stratum
+`H_σ ≃ ℝ` identifies with `ℝ`. Every series over `ℝ` is primal, and primality in a convex exponent
+subgroup passes to the ambient ring, so the regrouped series is primal. Its constant coefficient is
+the restriction of `x` to `C`, which meets strictly fewer classes. Assumption `(A2)_σ` supplies the
+fraction-field condition, and primality through regrouping completes the induction.
 -/
 
 public noncomputable section
@@ -27,88 +31,154 @@ public noncomputable section
 open Cardinal FiniteArchimedeanClass
 open scoped HahnSeries
 
-namespace HahnSeries.Nonpositive
+universe u v w
 
-variable {K G R : Type*} {κ : Cardinal}
+namespace FiniteArchimedeanClass
+
+variable (K : Type w) {G : Type u}
 variable [DivisionRing K] [LinearOrder K] [IsOrderedRing K] [Archimedean K]
 variable [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G]
 variable [Module K G] [IsOrderedModule K G]
+
+theorem lt_mk_of_mem_ball {c : FiniteArchimedeanClass G} {g : G} (hg : g ∈ ball K c) :
+    c.1 < ArchimedeanClass.mk g := by
+  by_cases hg0 : g = 0
+  · subst hg0
+    rw [ArchimedeanClass.mk_zero]
+    exact lt_top_iff_ne_top.mpr c.2
+  · exact (FiniteArchimedeanClass.mem_ball_iff K).mp hg hg0
+
+theorem mem_ball_of_lt_mk {c : FiniteArchimedeanClass G} {g : G}
+    (hg : c.1 < ArchimedeanClass.mk g) : g ∈ ball K c :=
+  (FiniteArchimedeanClass.mem_ball_iff K).mpr fun _ ↦ hg
+
+/-- The open Archimedean ball is a convex subgroup. -/
+instance ball_isConvex (c : FiniteArchimedeanClass G) : (ball K c).toAddSubgroup.IsConvex where
+  ordConnected := ⟨fun _ hg _ hh _ hk ↦ mem_ball_of_lt_mk K <|
+    (lt_min (lt_mk_of_mem_ball K hg) (lt_mk_of_mem_ball K hh)).trans_le
+      (ArchimedeanClass.min_le_mk_of_le_of_le hk.1 hk.2)⟩
+
+end FiniteArchimedeanClass
+
+namespace HahnEmbedding.ArchimedeanStrata
+
+variable {K : Type w} {G : Type u}
+variable [Field K] [LinearOrder K] [IsOrderedRing K] [Archimedean K]
+variable [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G]
+variable [Module K G] [IsOrderedModule K G]
+variable (u : HahnEmbedding.ArchimedeanStrata K G) (c : FiniteArchimedeanClass G)
+
+/-- The stratum at `c`, mapped to the quotient by the strict inner ball. -/
+def stratumToQuotient : u.stratum c →+ G ⧸ ball K c :=
+  (ball K c).mkQ.toAddMonoidHom.comp (u.stratum c).subtype.toAddMonoidHom
+
+theorem stratumToQuotient_apply (s : u.stratum c) :
+    u.stratumToQuotient c s = (ball K c).mkQ s :=
+  (rfl)
+
+/-- The projection of a stratum to the quotient by the inner ball is an order embedding. -/
+theorem stratumToQuotient_le_iff (s t : u.stratum c) :
+    u.stratumToQuotient c s ≤ u.stratumToQuotient c t ↔ s ≤ t := by
+  change ((s : G) : G ⧸ (ball K c).toAddSubgroup) ≤ ((t : G) : G ⧸ (ball K c).toAddSubgroup) ↔ _
+  rw [ConvexQuotient.mk_le_mk_iff]
+  refine ⟨fun h ↦ h.elim id fun hmem ↦ ?_, Or.inl⟩
+  have h0 := (Submodule.disjoint_def.mp (u.disjoint_ball_stratum c)) _ hmem
+    ((u.stratum c).sub_mem t.2 s.2)
+  exact (sub_eq_zero.mp h0).ge
+
+theorem stratumToQuotient_injective : Function.Injective (u.stratumToQuotient c) :=
+  fun s t h ↦ le_antisymm ((u.stratumToQuotient_le_iff c s t).mp h.le)
+    ((u.stratumToQuotient_le_iff c t s).mp h.ge)
+
+/-- The closed ball at `c` maps into the image of the stratum. -/
+theorem mkQ_mem_range_stratumToQuotient {g : G} (hg : g ∈ closedBall K c) :
+    (ball K c).mkQ g ∈ Set.range (u.stratumToQuotient c) := by
+  rw [← u.ball_sup_stratum_eq c] at hg
+  obtain ⟨b, hb, s, hs, rfl⟩ := Submodule.mem_sup.mp hg
+  refine ⟨⟨s, hs⟩, ?_⟩
+  rw [stratumToQuotient_apply, Submodule.mkQ_apply, Submodule.mkQ_apply,
+    Submodule.Quotient.eq]
+  simpa using (ball K c).neg_mem hb
+
+/-- The image of the stratum in the quotient by the inner ball is order-connected. -/
+theorem ordConnected_range_stratumToQuotient :
+    (Set.range (u.stratumToQuotient c)).OrdConnected := by
+  have hcb : ∀ s : u.stratum c, (s : G) ∈ closedBall K c := fun s ↦ by
+    rw [← u.ball_sup_stratum_eq c]
+    exact Submodule.mem_sup_right s.2
+  refine ⟨?_⟩
+  rintro _ ⟨s, rfl⟩ _ ⟨t, rfl⟩ γ ⟨hsγ, hγt⟩
+  obtain ⟨g, rfl⟩ := Submodule.Quotient.mk_surjective (ball K c) γ
+  change ((s : G) : G ⧸ (ball K c).toAddSubgroup) ≤ ((g : G) : G ⧸ (ball K c).toAddSubgroup)
+    at hsγ
+  change ((g : G) : G ⧸ (ball K c).toAddSubgroup) ≤ ((t : G) : G ⧸ (ball K c).toAddSubgroup)
+    at hγt
+  rw [ConvexQuotient.mk_le_mk_iff] at hsγ hγt
+  apply u.mkQ_mem_range_stratumToQuotient c
+  have hball : (ball K c : Set G) ⊆ closedBall K c := fun _ h ↦ (ball_lt_closedBall (K := K)).le h
+  rcases hsγ with hsg | hsg
+  · rcases hγt with hgt | hgt
+    · exact (closedBall_ordConnected c).out (hcb s) (hcb t) ⟨hsg, hgt⟩
+    · simpa using (closedBall K c).sub_mem (hcb t) (hball hgt)
+  · simpa using (closedBall K c).add_mem (hball hsg) (hcb s)
+
+end HahnEmbedding.ArchimedeanStrata
+
+namespace HahnSeries.CardSuppLTTruncationIntegerPart
+
+variable {K : Type w} {G : Type u} {R : Type v} {κ : Cardinal.{u}}
+variable [Field K] [LinearOrder K] [IsOrderedRing K] [Archimedean K]
+variable [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G]
+variable [Module K G] [IsOrderedModule K G]
 variable [Field R] [Fact (ℵ₀ < κ)]
-variable (Z : Subring R)
 
-/-- If order-zero elements and reduced elements with nonzero order are primal, every bounded
-integer-part element meeting only finitely many Archimedean classes is primal. -/
-theorem isPrimal_of_supportArchimedeanClasses_finite_of_reduced [CharZero R]
-    (u : HahnEmbedding.ArchimedeanStrata K G)
-    (hzero : ∀ y : cardSuppLTTruncationIntegerPart (G := G) (R := R) (κ := κ) Z,
-      ((CardSuppLTTruncationIntegerPart.toNonpositiveRingHom Z y :
-        Nonpositive G R) : R⟦G⟧).order = 0 → IsPrimal y)
-    (hreduced : ∀ y : cardSuppLTTruncationIntegerPart (G := G) (R := R) (κ := κ) Z,
-      ((CardSuppLTTruncationIntegerPart.toNonpositiveRingHom Z y :
-        Nonpositive G R) : R⟦G⟧).order ≠ 0 →
-      IsReduced (CardSuppLTTruncationIntegerPart.toNonpositiveRingHom Z y) → IsPrimal y)
+/-- **Primality at the leading Archimedean class.** If the restriction of a series to the strict
+inner ball of the class of its order is primal, then so is the series. -/
+theorem isPrimal_of_isPrimal_restrict_leadingClass [CharZero R] [Fact κ.IsRegular]
+    (u : HahnEmbedding.ArchimedeanStrata K G) (Z : Subring R)
     (x : cardSuppLTTruncationIntegerPart (G := G) (R := R) (κ := κ) Z)
-    (hfinite : (supportArchimedeanClasses
-      (CardSuppLTTruncationIntegerPart.toNonpositiveRingHom Z x)).Finite) : IsPrimal x := by
-  let classes := fun y : cardSuppLTTruncationIntegerPart
-      (G := G) (R := R) (κ := κ) Z ↦
-    supportArchimedeanClasses (CardSuppLTTruncationIntegerPart.toNonpositiveRingHom Z y)
-  have hind : ∀ n : ℕ, ∀ y : cardSuppLTTruncationIntegerPart
-      (G := G) (R := R) (κ := κ) Z,
-      (classes y).ncard = n → (classes y).Finite → IsPrimal y := by
-    intro n
-    induction n using Nat.strong_induction_on with
-    | h n ih =>
-        intro y hn hyFinite
-        let yN := CardSuppLTTruncationIntegerPart.toNonpositiveRingHom Z y
-        by_cases horder : (yN : R⟦G⟧).order = 0
-        · exact hzero y horder
-        have hyN0 : yN ≠ 0 := by
-          intro hyzero
-          apply horder
-          rw [hyzero, Subring.coe_zero, HahnSeries.order_zero]
-        let c := leadingClass yN horder
-        have hT : T (K := K) c yN = yN := T_leadingClass yN horder
-        by_cases htau : tau (K := K) c yN = 0
-        · exact hreduced y horder
-            ((isReduced_iff_tau_leadingClass_eq_zero_or_one yN hyN0 horder).mpr
-              (Or.inl htau))
-        let r := rhoIntegerPart u c Z y hT htau
-        let t := tauIntegerPart (K := K) c Z y
-        have hfac : r * t = y := rhoIntegerPart_mul_tauIntegerPart u c Z y hT htau
-        have hrReduced : IsReduced
-            (CardSuppLTTruncationIntegerPart.toNonpositiveRingHom Z r) := by
-          rw [toNonpositive_rhoIntegerPart u c Z y hT htau]
-          exact isReduced_rho_leadingClass_of_tau_ne_zero u yN hyN0 horder htau
-        have hrPrimal : IsPrimal r := by
-          by_cases hrOrder : ((CardSuppLTTruncationIntegerPart.toNonpositiveRingHom Z r :
-            Nonpositive G R) : R⟦G⟧).order = 0
-          · exact hzero r hrOrder
-          · exact hreduced r hrOrder hrReduced
-        have htClasses : classes t =
-            supportArchimedeanClasses (tau (K := K) c yN) := by
-          apply congrArg supportArchimedeanClasses
-          exact toNonpositive_tauIntegerPart c Z y
-        have htFinite : (classes t).Finite := by
-          rw [htClasses]
-          exact hyFinite.subset (supportArchimedeanClasses_tau_subset c yN)
-        have htCount : (classes t).ncard < n := by
-          rw [htClasses, ← hn]
-          exact Set.ncard_lt_ncard
-            (supportArchimedeanClasses_tau_ssubset yN hyN0 horder) hyFinite
-        have htPrimal : IsPrimal t := ih (classes t).ncard htCount t rfl htFinite
-        rw [← hfac]
-        exact hrPrimal.mul htPrimal
-  exact hind (classes x).ncard x rfl hfinite
+    (horder : (x : R⟦G⟧).order ≠ 0)
+    (hA1 : Nonempty (u.stratum (FiniteArchimedeanClass.mk _ horder) ≃+o ℝ))
+    (hA2 : LM24.AssumptionA2AtFiniteClass (K := K) κ Z (FiniteArchimedeanClass.mk _ horder))
+    (hres : IsPrimal (restrictToAddSubgroup Z
+      (ball K (FiniteArchimedeanClass.mk _ horder)).toAddSubgroup x)) :
+    IsPrimal x := by
+  classical
+  set c := FiniteArchimedeanClass.mk _ horder with hc
+  have hxmem := (mem_cardSuppLTTruncationIntegerPart (Z := Z)).mp x.2
+  have hsupp : ∀ g ∈ (x : R⟦G⟧).support, g ∈ closedBall K c := fun g hg ↦
+    (FiniteArchimedeanClass.mem_closedBall_iff K).mpr fun _ ↦
+      ArchimedeanClass.mk_le_mk_of_le_of_nonpos
+        (HahnSeries.order_le_of_coeff_ne_zero ((HahnSeries.mem_support _ _).mp hg)) (hxmem.1 hg)
+  refine isPrimal_of_isPrimal_regroupAmbient (ball K c) Z x ?_
+    (isPrimal_restrictDomain_of_isPrimal_restrictToAddSubgroup Z _
+      AddSubgroup.IsConvex.ordConnected x hres)
+    (fun _ ↦ LM24.fracSubring_cardSuppLTTruncationIntegerPart_eq_top_of_assumptionA2AtFiniteClass
+      Z c hA2)
+  let φ := u.stratumToQuotient c
+  have hw : ((regroupAmbient (κ := κ) (ball K c) Z x :
+      CardSuppLTNonpositive (G := G ⧸ ball K c)
+        (L := CardSuppLTField (G := ball K c) (R := R) (κ := κ)) (κ := κ)) :
+        (CardSuppLTField (G := ball K c) (R := R) (κ := κ))⟦G ⧸ ball K c⟧).support ⊆
+      Set.range φ := by
+    rw [regroupAmbient_apply, CardSuppLTNonpositive.coe_truncationIntegerPartEquivResidueSubring,
+      support_cardSuppLTTruncationIntegerPartConvexQuotientSplitRingEquiv,
+      support_convexQuotientSplitRingEquiv]
+    rintro _ ⟨g, hg, rfl⟩
+    exact u.mkQ_mem_range_stratumToQuotient c (hsupp g hg)
+  rw [← mapDomain_restrictDomain φ (u.stratumToQuotient_injective c)
+    (u.stratumToQuotient_le_iff c) ⊤ _ hw]
+  exact isPrimal_mapDomain_of_isPrimal ⊤ φ (u.stratumToQuotient_injective c)
+    (u.stratumToQuotient_le_iff c) (u.ordConnected_range_stratumToQuotient c)
+    (CardSuppLTNonpositive.isPrimal_of_orderIso_real hA1.some _)
 
-
-/-- The finite-class part of the Hahn integer ring is pre-Schreier under the corresponding
-Archimedean hypotheses and the pre-Schreier condition on the coefficient subring. -/
+/-- Under LM24 assumptions `(A1)_σ`--`(A3)`, every series meeting only finitely many Archimedean
+classes is primal. -/
 @[blueprint "thm:finite-support-classes-primality"
   (phase := "Finitely many Archimedean classes")
   (title := "Primality for finitely many Archimedean support classes")
   (statement := /--
-    Let $K$ be an Archimedean ordered division ring, $G$ an ordered $K$-vector
+    Let $K$ be an Archimedean ordered field, $G$ an ordered $K$-vector
     space, $R$ a field of characteristic zero, $\kappa>\aleph_0$ a regular
     cardinal, and $Z\subseteq R$ a pre-Schreier subring.  At every nonzero
     Archimedean class $\sigma$, choose an additive complement $H_\sigma$ to
@@ -120,164 +190,56 @@ Archimedean hypotheses and the pre-Schreier condition on the coefficient subring
     classes is primal.
   -/)
   (proof := /--
-    Induct on the number of Archimedean classes met by the support.  At the
-    leading class, split the series into its reduced factor and its strict
-    lower-class factor.  The reduced factor is primal by
-    \ref{cor:reduced-hahn-integer-part-primal}; the other factor meets strictly
-    fewer classes and is primal by induction.  A product of primal elements is
-    primal.
+    Induct on the number of Archimedean classes met by the support of $x$.  If
+    the order of $x$ is $0$, then $x$ is a constant of $Z$ and is primal
+    because $Z$ is pre-Schreier.  Otherwise let $\sigma$ be the class of the
+    order of $x$ and regroup along $C=G_{\prec\sigma}$.  The support of $x$
+    lies in $G_{\preceq\sigma}$, whose image in $G/C$ is the image of
+    $H_\sigma\simeq\mathbb R$; this image is convex.  Every element of
+    $L((\mathbb R^{\le0}))$ is primal by \ref{thm:hahn-series-primality}, and
+    primality in a convex exponent subgroup passes to the ambient ring, so
+    the regrouped series is primal.  The restriction $x_{\vert C}$ meets only
+    classes of $x$ other than $\sigma$, so it is primal by induction, and
+    $(A2)_\sigma$ makes $R((C))_\kappa$ the fraction field of
+    $Z+R((C^{<0}))_\kappa$.  Conclude by
+    \ref{lem:primality-through-regrouping}.
   -/)]
 theorem isPrimal_of_supportArchimedeanClasses_finite [CharZero R]
-    [Fact κ.IsRegular] [DecompositionMonoid Z]
+    [Fact κ.IsRegular] (Z : Subring R) [DecompositionMonoid Z]
     (u : HahnEmbedding.ArchimedeanStrata K G)
     (hA1 : ∀ c : FiniteArchimedeanClass G, Nonempty (u.stratum c ≃+o ℝ))
     (hA2 : ∀ c : FiniteArchimedeanClass G,
       LM24.AssumptionA2AtFiniteClass (K := K) κ Z c)
     (x : cardSuppLTTruncationIntegerPart (G := G) (R := R) (κ := κ) Z)
-    (hfinite : (supportArchimedeanClasses
-      (CardSuppLTTruncationIntegerPart.toNonpositiveRingHom Z x)).Finite) : IsPrimal x := by
-  apply isPrimal_of_supportArchimedeanClasses_finite_of_reduced Z u
-  · exact CardSuppLTTruncationIntegerPart.isPrimal_of_order_eq_zero Z
-  · intro y hyOrder hyReduced
-    have hy0 : CardSuppLTTruncationIntegerPart.toNonpositiveRingHom Z y ≠ 0 := by
-      intro hyzero
-      apply hyOrder
-      rw [hyzero, Subring.coe_zero, HahnSeries.order_zero]
-    let c := leadingClass (CardSuppLTTruncationIntegerPart.toNonpositiveRingHom Z y) hyOrder
-    exact isPrimal_of_isReduced_of_leadingClass_orderIso_real
-      u Z y hy0 hyOrder hyReduced (hA2 c)
-      (Classical.choice (hA1 c))
-  · exact hfinite
-
-end HahnSeries.Nonpositive
-
-namespace HahnSeries.CardSuppLTTruncationIntegerPart
-
-open Cardinal
-
-variable {G R : Type*} {κ : Cardinal}
-variable [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G]
-variable [Field R] [Fact (ℵ₀ < κ)]
-
-/-- Viewing a bounded Hahn integer-part series as nonpositive does not change the
-Archimedean classes met by its support. -/
-theorem supportArchimedeanClasses_toNonpositiveRingHom
-    (Z : Subring R)
-    (x : cardSuppLTTruncationIntegerPart (G := G) (R := R) (κ := κ) Z) :
-    HahnSeries.Nonpositive.supportArchimedeanClasses (toNonpositiveRingHom Z x) =
-      ArchimedeanClass.mk '' (x : HahnSeries G R).support := by
-  ext c
-  rw [HahnSeries.Nonpositive.mem_supportArchimedeanClasses]
-  constructor
-  · rintro ⟨g, hg, rfl⟩
-    exact ⟨g, by simpa only [coe_toNonpositiveRingHom] using hg, rfl⟩
-  · rintro ⟨g, hg, rfl⟩
-    exact ⟨g, by simpa only [coe_toNonpositiveRingHom] using hg, rfl⟩
-
-/-- Finite-class primality in an ambient exponent group descends to every convex exponent
-subgroup. -/
-private theorem isPrimal_addSubgroup_of_ambient_finiteClasses
-    (Z : Subring R)
-    (hfinite : ∀ x : cardSuppLTTruncationIntegerPart (G := G) (R := R) (κ := κ) Z,
-      (ArchimedeanClass.mk '' (x : HahnSeries G R).support).Finite → IsPrimal x)
-    (P : AddSubgroup G) (hP : (P : Set G).OrdConnected)
-    (a : cardSuppLTTruncationIntegerPart (G := P) (R := R) (κ := κ) Z)
-    (ha : (ArchimedeanClass.mk '' (a : HahnSeries P R).support).Finite) : IsPrimal a := by
-  let inc : P →+ G := P.subtype
-  have hinci : Function.Injective inc := Subtype.val_injective
-  have hinco : ∀ x y : P, inc x ≤ inc y ↔ x ≤ y := fun _ _ ↦ Iff.rfl
-  let A := mapDomain inc hinci hinco Z a
-  have hAfinite : (ArchimedeanClass.mk '' (A : HahnSeries G R).support).Finite := by
-    have hsupport : (A : HahnSeries G R).support = inc '' (a : HahnSeries P R).support := by
-      rw [coe_mapDomain]
-      exact HahnSeries.support_embDomain _ _
-    rw [hsupport]
-    let e : P →+o G :=
-      { toFun := inc
-        map_zero' := map_zero inc
-        map_add' := map_add inc
-        monotone' := fun _ _ h ↦ h }
-    let ac : ArchimedeanClass P → ArchimedeanClass G := ArchimedeanClass.orderHom e
-    have heq : ArchimedeanClass.mk '' (inc '' (a : HahnSeries P R).support) =
-        ac '' (ArchimedeanClass.mk '' (a : HahnSeries P R).support) := by
-      ext c
-      constructor
-      · rintro ⟨_, ⟨p, hp, rfl⟩, rfl⟩
-        exact ⟨ArchimedeanClass.mk p, ⟨p, hp, rfl⟩,
-          ArchimedeanClass.orderHom_mk e p⟩
-      · rintro ⟨_, ⟨p, hp, rfl⟩, rfl⟩
-        exact ⟨inc p, ⟨p, hp, rfl⟩, (ArchimedeanClass.orderHom_mk e p).symm⟩
-    rw [heq]
-    exact ha.image ac
-  apply isPrimal_of_isPrimal_mapDomain inc hinci hinco Z
-  · have hrange : Set.range inc = (P : Set G) := by
-      ext x
-      constructor
-      · rintro ⟨p, rfl⟩
-        exact p.2
-      · exact fun hx ↦ ⟨⟨x, hx⟩, rfl⟩
-    rw [hrange]
-    exact hP
-  exact hfinite A hAfinite
-
-/-- The common-tail coefficient of a series is primal when its remaining support classes form
-a finite block and finite-class primality is known in the ambient exponent group. -/
-theorem isPrimal_restrictDomain_tailSubmodule_of_ambient_finiteClasses
-    [Module ℚ G] [PosSMulMono ℚ G]
-    (Z : Subring R)
-    (hfinite : ∀ y : cardSuppLTTruncationIntegerPart (G := G) (R := R) (κ := κ) Z,
-      (ArchimedeanClass.mk '' (y : HahnSeries G R).support).Finite → IsPrimal y)
-    (T₀ T₁ : Set (ArchimedeanClass G))
-    (hT₀gt : ∀ a ∈ T₀, ∃ b ∈ T₀, a < b) (hT₁ : T₁.Finite)
-    (x : cardSuppLTTruncationIntegerPart (G := G) (R := R) (κ := κ) Z)
-    (hxclasses : ArchimedeanClass.mk '' (x : HahnSeries G R).support ⊆ T₀ ∪ T₁) :
-    let P := FiniteArchimedeanClass.tailSubmodule ℚ
-      {c : FiniteArchimedeanClass G | c.1 ∈ T₀}
-    IsPrimal (restrictDomain P.toAddSubgroup.subtype Subtype.val_injective
-      (fun _ _ ↦ Iff.rfl) Z x) := by
-  let P := FiniteArchimedeanClass.tailSubmodule ℚ
-    {c : FiniteArchimedeanClass G | c.1 ∈ T₀}
-  apply isPrimal_addSubgroup_of_ambient_finiteClasses Z hfinite P.toAddSubgroup
-    (inferInstance : P.toAddSubgroup.IsConvex).ordConnected
-  have hfinite' :=
-    HahnSeries.supportArchimedeanClasses_coeff_zero_convexQuotientSplitRingEquiv_finite
-      (K := ℚ) T₀ T₁ hT₀gt hT₁ (x : HahnSeries G R) hxclasses
-  rw [HahnSeries.coeff_zero_convexQuotientSplitRingEquiv] at hfinite'
-  have hre : ((restrictDomain P.toAddSubgroup.subtype Subtype.val_injective
-      (fun _ _ ↦ Iff.rfl) Z x :
-      cardSuppLTTruncationIntegerPart (G := P) (R := R) (κ := κ) Z) : HahnSeries P R) =
-      HahnSeries.restrictDomain (HahnSeries.submoduleOrderEmbedding P)
-        (x : HahnSeries G R) := by
-    ext p
-    rw [coe_restrictDomain, HahnSeries.restrictDomain_coeff,
-      HahnSeries.restrictDomain_coeff]
-    congr 1
-    exact HahnSeries.submoduleOrderEmbedding_apply P p |>.symm
-  rw [hre]
-  exact hfinite'
-
-/-- The constant coefficient after regrouping along the common tail is primal when finite-class
-primality holds in the ambient exponent group. -/
-theorem isPrimal_coeff_zero_convexQuotientSplitRingEquiv_of_ambient_finiteClasses
-    [Module ℚ G] [PosSMulMono ℚ G] [Fact κ.IsRegular]
-    (Z : Subring R)
-    (hfinite : ∀ y : cardSuppLTTruncationIntegerPart (G := G) (R := R) (κ := κ) Z,
-      (ArchimedeanClass.mk '' (y : HahnSeries G R).support).Finite → IsPrimal y)
-    (T₀ T₁ : Set (ArchimedeanClass G))
-    (hT₀gt : ∀ a ∈ T₀, ∃ b ∈ T₀, a < b) (hT₁ : T₁.Finite)
-    (x : cardSuppLTTruncationIntegerPart (G := G) (R := R) (κ := κ) Z)
-    (hxclasses : ArchimedeanClass.mk '' (x : HahnSeries G R).support ⊆ T₀ ∪ T₁) :
-    let T : Set (FiniteArchimedeanClass G) := {c | c.1 ∈ T₀}
-    let P := FiniteArchimedeanClass.tailSubmodule ℚ T
-    let S := cardSuppLTTruncationIntegerPart (G := P) (R := R) (κ := κ) Z
-    let E := cardSuppLTTruncationIntegerPartConvexQuotientSplitRingEquiv
-      (R := R) (κ := κ) P Z
-    IsPrimal (⟨(E x : (CardSuppLTField (G := P) (R := R) (κ := κ))⟦
-      G ⧸ P⟧).coeff 0,
-      ((mem_cardSuppLTTruncationIntegerPart (Z := S)).mp (E x).2).2⟩ : S) := by
-  dsimp only
-  rw [CardSuppLTTruncationIntegerPart.coeff_zero_convexQuotientSplitRingEquiv]
-  exact isPrimal_restrictDomain_tailSubmodule_of_ambient_finiteClasses
-    Z hfinite T₀ T₁ hT₀gt hT₁ x hxclasses
+    (hfinite : (ArchimedeanClass.mk '' (x : R⟦G⟧).support).Finite) : IsPrimal x := by
+  classical
+  let classes := fun y : cardSuppLTTruncationIntegerPart (G := G) (R := R) (κ := κ) Z ↦
+    ArchimedeanClass.mk '' (y : R⟦G⟧).support
+  suffices h : ∀ n : ℕ, ∀ y, (classes y).ncard = n → (classes y).Finite → IsPrimal y from
+    h _ x rfl hfinite
+  intro n
+  induction n using Nat.strong_induction_on with
+  | h n ih =>
+    intro y hn hyfinite
+    by_cases horder : (y : R⟦G⟧).order = 0
+    · exact isPrimal_of_order_eq_zero Z y (by simpa only [coe_toNonpositiveRingHom] using horder)
+    set c := FiniteArchimedeanClass.mk _ horder
+    have hy0 : (y : R⟦G⟧) ≠ 0 := fun h ↦ horder (by rw [h, HahnSeries.order_zero])
+    have hcy : c.1 ∈ classes y :=
+      ⟨_, (HahnSeries.mem_support _ _).mpr (HahnSeries.coeff_order_eq_zero.not.mpr hy0), rfl⟩
+    let r := restrictToAddSubgroup Z (ball K c).toAddSubgroup y
+    have hsub : classes r ⊆ classes y := by
+      rintro _ ⟨g, hg, rfl⟩
+      rw [coe_restrictToAddSubgroup, HahnSeries.support_filter] at hg
+      exact ⟨g, hg.1, rfl⟩
+    have hcr : c.1 ∉ classes r := by
+      rintro ⟨g, hg, hgc⟩
+      rw [coe_restrictToAddSubgroup, HahnSeries.support_filter] at hg
+      exact (FiniteArchimedeanClass.lt_mk_of_mem_ball K hg.2).ne hgc.symm
+    have hlt : (classes r).ncard < n :=
+      hn ▸ Set.ncard_lt_ncard (Set.ssubset_iff_subset_ne.mpr
+        ⟨hsub, fun h ↦ hcr (h ▸ hcy)⟩) hyfinite
+    exact isPrimal_of_isPrimal_restrict_leadingClass u Z y horder (hA1 c) (hA2 c)
+      (ih _ hlt r rfl (hyfinite.subset hsub))
 
 end HahnSeries.CardSuppLTTruncationIntegerPart

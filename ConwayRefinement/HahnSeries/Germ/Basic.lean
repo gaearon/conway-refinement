@@ -8,6 +8,8 @@ public import ConwayRefinement.HahnSeries.CantorBendixson.Truncation
 public import ConwayRefinement.HahnSeries.Nonpositive
 public import Mathlib.RingTheory.Ideal.Quotient.Basic
 
+import ConwayRefinement.Blueprint
+
 /-!
 # The ideal of series bounded away from zero
 
@@ -31,6 +33,26 @@ variable {G : Type u} {R : Type v} [AddCommGroup G] [LinearOrder G] [IsOrderedAd
 
 variable (G R) in
 /-- The ideal `J` of nonpositive series whose support is bounded away from zero. -/
+@[blueprint "def:bounded-away-ideal"
+  (phase := "Germs of translated truncations")
+  (title := "The ideal $J$")
+  (statement := /--
+    Let $G$ be a nontrivial ordered abelian group and $R$ a commutative ring.
+    Let $J\subseteq R((G^{\le0}))$ be the set of series $b$ for which there is
+    $c<0$ with $\operatorname{supp}(b)\subseteq(-\infty,c]$, that is, the series
+    whose support is bounded away from $0$.  Then $J$ is an ideal of
+    $R((G^{\le0}))$.  For $G=\mathbb R$ this is the ideal $J$ of
+    [Ber00, Def. 5.1].
+  -/)
+  (proof := /--
+    The zero series has empty support, and $G$ has a negative element because
+    it is nontrivial.  If $\operatorname{supp}(b)\subseteq(-\infty,c]$ and
+    $\operatorname{supp}(d)\subseteq(-\infty,c']$, then
+    $\operatorname{supp}(b+d)\subseteq(-\infty,\max(c,c')]$.  For
+    $a\in R((G^{\le0}))$, $\operatorname{supp}(ab)\subseteq
+    \operatorname{supp}(a)+\operatorname{supp}(b)\subseteq(-\infty,c]$
+    because $\operatorname{supp}(a)\subseteq(-\infty,0]$.
+  -/)]
 def boundedAwayIdeal : Ideal (Nonpositive G R) where
   carrier := {b | ∃ c < (0 : G), (b : HahnSeries G R).support ⊆ Iic c}
   zero_mem' := by

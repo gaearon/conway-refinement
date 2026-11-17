@@ -41,7 +41,7 @@ instance decompositionMonoid : DecompositionMonoid (Nonpositive ℝ K) := by
 
 /-- Every series is primal in `K((ℝ^{≤0}))`. -/
 @[blueprint "thm:hahn-series-primality"
-  (phase := "Primality and factorisation for real exponents")
+  (phase := "Polynomial presentations")
   (title := "Primality of generalised power series")
   (statement := /--
     Let $K$ be a field of characteristic $0$.  Every element of
@@ -57,7 +57,7 @@ theorem isPrimal (a : Nonpositive ℝ K) : IsPrimal a :=
 
 /-- Every irreducible series is prime in `K((ℝ^{≤0}))`. -/
 @[blueprint "cor:hahn-series-irreducible-is-prime"
-  (phase := "Primality and factorisation for real exponents")
+  (phase := "Polynomial presentations")
   (title := "Irreducible series are prime")
   (statement := /--
     Let $K$ be a field of characteristic $0$.  Every irreducible element of
