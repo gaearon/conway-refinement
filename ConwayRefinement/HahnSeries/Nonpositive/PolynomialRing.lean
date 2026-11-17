@@ -196,7 +196,7 @@ series whose truncations at negative exponents lie in `R`. Then `R[X]` is closed
 truncations. -/
 @[blueprint "lem:truncations-of-simple-extension"
   (phase := "Polynomial presentations")
-  (title := "Closure under truncation of a simple extension")
+  (title := "Truncations in a simple extension")
   (statement := /--
     Let $G=\mathbb R$.  Let $R\subseteq A$ be a $K$-subalgebra closed under the
     truncations $b\mapsto b_{|\eta}$, and $X\in A$ with $X_{|\zeta}\in R$ for

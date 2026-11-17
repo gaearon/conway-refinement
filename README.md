@@ -266,7 +266,7 @@ flowchart TB
     n015["(15) Primality of J"]:::theorem
     n016["(16) Polynomial presentation of the ring of germs of series with small support"]:::theorem
     n017["(17) Series with constant germs"]:::lemma
-    n018["(18) Closure under truncation of a simple extension"]:::lemma
+    n018["(18) Truncations in a simple extension"]:::lemma
     n019["(19) Transcendence of a series with transcendental germ"]:::lemma
     n020["(20) Generation by truncations and representatives"]:::lemma
     n021["(21) Polynomial presentation of K((ℝ^{≤ 0}))"]:::theorem
@@ -355,7 +355,7 @@ flowchart TB
     n033["(33) Primality from germs and restrictions to balls"]:::lemma
     n034["(34) Primality of the regrouping at a limit of Archimedean classes"]:::lemma
     n035["(35) Primality in Z + R((G^{&lt; 0}))_κ"]:::theorem
-    n036["(36) Refinement forces K = Frac(Z)"]:::theorem
+    n036["(36) Refinement forces R = Frac(Z)"]:::theorem
   end
   subgraph outputs["Used by other sections"]
     direction TB

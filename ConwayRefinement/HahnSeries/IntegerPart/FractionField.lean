@@ -237,7 +237,7 @@ theorem exists_irreducible_cantorBendixson_germ_with_constantCoeff_zero :
 /-- If `Z + K((G^{<0}))` has the refinement property, then `K` is the fraction field of `Z`. -/
 @[blueprint "thm:refinement-forces-coefficient-fraction-field"
   (phase := "Reduction along Archimedean classes")
-  (title := "Refinement forces $K=\\operatorname{Frac}(Z)$")
+  (title := "Refinement forces $R=\\operatorname{Frac}(Z)$")
   (statement := /--
     Let $R$ have characteristic $0$, and let $G$ be nontrivial and Cauchy
     complete, with no least nonzero Archimedean class in magnitude.  If

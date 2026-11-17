@@ -224,11 +224,11 @@ regrouping of `x` along the common tail is primal in `L((Γ^{≤0}))_κ`. -/
   (statement := /--
     Let $G$ be an ordered $\mathbb Q$-vector space, $R$ of characteristic $0$,
     and $\kappa$ regular.  Let $0\ne x\in Z+R((G^{<0}))_\kappa$ meet exactly the
-    classes $T_0\cup T_1$, with $T_1$ finite and $T_0$ containing a nonzero
-    class and without least element in magnitude, and assume (B2)$_{T_0}$.
-    Suppose every element whose set of nonzero classes has smaller order type
-    than that of $x$ is primal.  Then the regrouping $\hat x$ of $x$ along
-    $H_{T_0}$ is primal in $L((\Gamma^{\le0}))_\kappa$.
+    classes $T_0\cup T_1$, where $T_0$ contains a nonzero class and has no least
+    element in magnitude, and assume (B2)$_{T_0}$.  Suppose every element whose
+    set of nonzero classes has smaller order type than that of $x$ is primal.
+    Then the regrouping $\hat x$ of $x$ along $H_{T_0}$ is primal in
+    $L((\Gamma^{\le0}))_\kappa$.
   -/)
   (proof := /--
     Here $\Gamma=G/H_{T_0}$ and $L=R((H_{T_0}))_\kappa$.  We apply
