@@ -66,30 +66,6 @@ theorem cantorBendixsonRank_eq (b : HahnSeries Γ R) (x : Γ) :
 variable [Zero Γ]
 
 /-- Zero off the closed support, and `omega` to its Cantor–Bendixson rank at zero otherwise. -/
-@[blueprint "def:cantor-bendixson-value"
-  (phase := "Germs of translated truncations")
-  (title := "Cantor--Bendixson value")
-  (statement := /--
-    For $b\in K((G))$ let $C$ be its closed support. Define
-    \[
-      V_{\mathrm{CB}}(b)=
-      \begin{cases}
-      \omega^{\operatorname{rk}_C(0)},&0\in C,\\
-      0,&0\notin C.
-      \end{cases}
-    \]
-    (The definition makes sense for coefficients in any set with a zero and exponents in any
-    linearly ordered set with a zero.)
-  -/)
-  (proof := /--
-    We check that $\operatorname{rk}_C(0)$ is defined. The set $C$ is well ordered. Indeed, points
-    of $\operatorname{supp}(b)$ do not accumulate at any point from above, since the points of the
-    support above a given point have a least element. So if $x_0>x_1>\cdots$ lay in $C$, we could
-    choose $s_n\in\operatorname{supp}(b)$ with $x_{n+1}<s_n\le x_n$, and $(s_n)$ would be a strictly
-    decreasing sequence in $\operatorname{supp}(b)$. In a well-ordered set every nonempty subset has
-    a point isolated in it, namely its least element. So the derived sets $C^{(r)}$ decrease
-    strictly until they are empty, and every point of $C$ has a rank.
-  -/)]
 def cantorBendixsonValue (b : HahnSeries Γ R) : Ordinal.{u} := by
   classical
   exact if 0 ∈ b.closedSupport then Ordinal.omega0 ^ b.cantorBendixsonRank 0 else 0
@@ -113,11 +89,9 @@ theorem cantorBendixsonValue_eq_zero_iff (b : HahnSeries Γ R) :
     exact (Ordinal.opow_pos _ Ordinal.omega0_pos).ne' hv
   · exact b.cantorBendixsonValue_of_notMem
 
-/-- For nonpositive supports, value zero is equivalent to a strictly negative support bound. -/
-theorem cantorBendixsonValue_eq_zero_iff_support_bounded_lt [NoMinOrder Γ]
-    (b : HahnSeries Γ R) (hb : b.support ⊆ Iic 0) :
-    b.cantorBendixsonValue = 0 ↔ ∃ c < (0 : Γ), b.support ⊆ Iic c := by
-  rw [cantorBendixsonValue_eq_zero_iff]
+/-- A nonpositive support avoids a neighbourhood of zero exactly when it has a negative bound. -/
+theorem zero_notMem_closure_support_iff [NoMinOrder Γ] (b : HahnSeries Γ R)
+    (hb : b.support ⊆ Iic 0) : 0 ∉ closure b.support ↔ ∃ c < (0 : Γ), b.support ⊆ Iic c := by
   constructor
   · intro hn
     have hnh : (closure b.support)ᶜ ∈ 𝓝[≤] (0 : Γ) :=
@@ -129,5 +103,11 @@ theorem cantorBendixsonValue_eq_zero_iff_support_bounded_lt [NoMinOrder Γ]
     exact hcut ⟨hcx, hb hx⟩ (subset_closure hx)
   · rintro ⟨c, hc, hbound⟩ hmem
     exact (not_le_of_gt hc) (closure_minimal hbound isClosed_Iic hmem)
+
+/-- For nonpositive supports, value zero is equivalent to a strictly negative support bound. -/
+theorem cantorBendixsonValue_eq_zero_iff_support_bounded_lt [NoMinOrder Γ]
+    (b : HahnSeries Γ R) (hb : b.support ⊆ Iic 0) :
+    b.cantorBendixsonValue = 0 ↔ ∃ c < (0 : Γ), b.support ⊆ Iic c :=
+  b.cantorBendixsonValue_eq_zero_iff.trans (b.zero_notMem_closure_support_iff hb)
 
 end HahnSeries

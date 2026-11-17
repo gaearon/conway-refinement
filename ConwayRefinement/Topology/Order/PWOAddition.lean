@@ -5,6 +5,8 @@ Authors: Dan Abramov
 -/
 module
 
+import ConwayRefinement.Blueprint
+
 public import Mathlib.Topology.Maps.Proper.Basic
 public import Mathlib.Topology.Algebra.IsUniformGroup.Defs
 public import Mathlib.Topology.Order.Basic
@@ -62,6 +64,20 @@ private theorem Set.IsPWO.exists_mem_Ioc_of_mem_closure {α : Type*}
   exact (not_lt_of_ge (hv.min_le hne ⟨hbs, habove b hbs hb.1⟩)) hb.2
 
 /-- The ambient closure of a well-ordered subset of a linearly ordered space is well ordered. -/
+@[blueprint "lem:well-ordered-closure"
+  (phase := "Germs of translated truncations")
+  (title := "Closure of a well-ordered set")
+  (statement := /--
+    In a linearly ordered set with its order topology, the closure of a well-ordered subset
+    is well ordered.
+  -/)
+  (proof := /--
+    Let $B$ be well ordered, $x\in\operatorname{cl}(B)$, and $y<x$. Then $(y,x]$ meets $B$.
+    Indeed, if any points of $B$ lie above $x$, they have a least member $m$, and $(y,m)$ is a
+    neighbourhood of $x$. If there are none, use $(y,\infty)$. A strictly decreasing sequence
+    $x_0>x_1>\cdots$ in $\operatorname{cl}(B)$ would therefore give points $b_n\in B$ with
+    $x_{n+1}<b_n\le x_n$, a strictly decreasing sequence in $B$.
+  -/)]
 theorem Set.IsPWO.closure {α : Type*} [LinearOrder α] [TopologicalSpace α]
     [OrderTopology α] {s : Set α} (hs : s.IsPWO) : (closure s).IsPWO := by
   rw [Set.isPWO_iff_isWF, Set.isWF_iff_no_descending_seq]

@@ -328,15 +328,15 @@ over its finite-support subring `K(ℝ^{≤0})`. -/
     in $E$; so $S\subseteq[E]$, and \ref{lem:series-generation} gives $E=A(S)$. In particular
     $S\subseteq[A(S)]$.
 
-    Suppose that $S\ne Q$. By \ref{lem:new-germ} there is $X\in A$ whose germs at negative exponents
-    lie in $S$, with $x=[X]\notin S$. By \ref{thm:bounded-away-ideal-prime}, $Q$ is a domain, hence
-    so is $S$. As $\mathbb R$ is Cauchy complete, (H) holds, and \ref{lem:transcendence} makes $x$
-    transcendental over $S$. By \ref{lem:transcendental-series}, applied with $E_0=E$, $X$ is
-    transcendental over $E$. For $\zeta<0$ all germs of $X_{|\zeta}$ lie in $S$, so
-    $X_{|\zeta}\in A(S)=E$, and by \ref{lem:truncations-of-simple-extension} $E[X]$ is closed under
-    truncation. By \ref{lem:convolution-formula} the series whose germs lie in $S[x]$ form a
-    subalgebra, which contains $E$ and $X$; so $E[X]\subseteq A(S[x])$. Thus $\mathcal X\cup\{X\}$
-    contradicts the maximality of $\mathcal X$.
+    Suppose that $S\ne Q$. By \ref{lem:new-germ} with $P=Q$, there is $X\in A$ whose germs at
+    negative exponents lie in $S$, with $x=[X]\notin S$. Completeness of $\mathbb R$ gives (H).
+    Thus $x$ is transcendental over $S$ by \ref{lem:transcendence}. Applying
+    \ref{lem:transcendental-series} with $E_0=E$ gives transcendence of $X$ over $E$.
+    For $\zeta<0$ all germs of $X_{|\zeta}$
+    lie in $S$, so $X_{|\zeta}\in A(S)=E$. By \ref{lem:truncations-of-simple-extension} $E[X]$
+    is closed under truncation. By \ref{lem:convolution-formula} the series with germs in $S[x]$
+    form a subalgebra containing $E$ and $X$. Hence $E[X]\subseteq A(S[x])$, and
+    $\mathcal X\cup\{X\}$ contradicts the maximality of $\mathcal X$.
 
     Hence $S=Q$ and $E=A(Q)=A$, and evaluation at $\mathcal X$ is an isomorphism
     $A(K)[Y_X:X\in\mathcal X]\simeq A$ of $A(K)$-algebras.

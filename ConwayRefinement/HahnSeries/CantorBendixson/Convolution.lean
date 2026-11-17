@@ -122,13 +122,13 @@ section Ring
 
 variable [Ring R]
 
-/-- The translated product truncation differs from its finite convolution sum by a series of
-Cantor–Bendixson value zero. -/
-theorem cantorBendixsonValue_convolution_error (b d : HahnSeries G R) (γ : G) :
-    (translate (-γ) (truncLE γ (b * d)) -
+/-- The difference between a translated product truncation and its finite convolution sum has
+support disjoint from a neighbourhood of zero. -/
+theorem zero_notMem_closure_support_convolution_error (b d : HahnSeries G R) (γ : G) :
+    0 ∉ closure (translate (-γ) (truncLE γ (b * d)) -
       ∑ p ∈ b.closedSupportAddFiber d γ,
         translate (-p.1) (truncLE p.1 b) *
-          translate (-p.2) (truncLE p.2 d)).cantorBendixsonValue = 0 := by
+          translate (-p.2) (truncLE p.2 d)).support := by
   classical
   let S : HahnSeries G R :=
     ∑ p ∈ b.closedSupportAddFiber d γ, truncLE p.1 b * truncLE p.2 d
@@ -154,7 +154,6 @@ theorem cantorBendixsonValue_convolution_error (b d : HahnSeries G R) (γ : G) :
       exact add_le_add hx.2 hy.2
     exact (not_le_of_gt hz) hle
   rw [hs, ← map_sub]
-  apply cantorBendixsonValue_of_notMem
   rw [mem_closure_iff_frequently, Filter.not_frequently]
   have ht : Tendsto (fun z : G ↦ γ + z) (𝓝 0) (𝓝 γ) := by
     simpa only [Homeomorph.coe_addLeft, add_zero] using
@@ -172,6 +171,15 @@ theorem cantorBendixsonValue_convolution_error (b d : HahnSeries G R) (γ : G) :
       coeff_sum _
     rw [hcoef, sub_self]
   · rw [if_neg hzγ, hS _ (lt_of_not_ge hzγ), sub_self]
+
+/-- The translated product truncation differs from its finite convolution sum by a series of
+Cantor–Bendixson value zero. -/
+theorem cantorBendixsonValue_convolution_error (b d : HahnSeries G R) (γ : G) :
+    (translate (-γ) (truncLE γ (b * d)) -
+      ∑ p ∈ b.closedSupportAddFiber d γ,
+        translate (-p.1) (truncLE p.1 b) *
+          translate (-p.2) (truncLE p.2 d)).cantorBendixsonValue = 0 :=
+  cantorBendixsonValue_of_notMem _ (b.zero_notMem_closure_support_convolution_error d γ)
 
 end Ring
 

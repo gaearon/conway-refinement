@@ -131,25 +131,19 @@ theorem constantCoeff_ne_zero_of_isUnit_mk [Nontrivial R] {b : Nonpositive G R}
 
 variable [TopologicalSpace G] [OrderTopology G]
 
+/-- A nonpositive series represents zero in the ring of germs exactly when zero is outside its
+closed support. -/
+theorem mk_eq_zero_iff_zero_notMem_closure (b : Nonpositive G R) :
+    Ideal.Quotient.mk (boundedAwayIdeal G R) b = 0 ↔ 0 ∉ closure (b : HahnSeries G R).support := by
+  rw [Ideal.Quotient.eq_zero_iff_mem, mem_boundedAwayIdeal,
+    (b : HahnSeries G R).zero_notMem_closure_support_iff (support_subset b)]
+
 /-- A series lies in `J` exactly when its Cantor–Bendixson value vanishes. -/
 theorem mem_boundedAwayIdeal_iff_cantorBendixsonValue_eq_zero (b : Nonpositive G R) :
     b ∈ boundedAwayIdeal G R ↔ (b : HahnSeries G R).cantorBendixsonValue = 0 :=
   (cantorBendixsonValue_eq_zero_iff_support_bounded_lt _ (support_subset b)).symm
 
 /-- Series congruent modulo `J` have the same Cantor–Bendixson value. -/
-@[blueprint "lem:cantor-bendixson-value-class"
-  (phase := "Germs of translated truncations")
-  (title := "Invariance of the Cantor--Bendixson value modulo $J$")
-  (statement := /--
-    Let $b,d\in K((G^{\le0}))$ with $b-d\in J$. Then $V_{\mathrm{CB}}(b)=V_{\mathrm{CB}}(d)$.
-  -/)
-  (proof := /--
-    By \ref{def:bounded-away-ideal}, $\operatorname{supp}(b-d)\subseteq(-\infty,c]$ for some $c<0$.
-    Then $b$ and $d$ have the same coefficients on the open neighbourhood $(c,\infty)$ of $0$, so
-    their closed supports agree on it. Whether $0$ lies in a closed set, and the Cantor--Bendixson
-    rank of $0$ in it, depend only on the set near $0$. So \ref{def:cantor-bendixson-value} gives
-    the same value for $b$ and $d$.
-  -/)]
 theorem cantorBendixsonValue_eq_of_sub_mem {b d : Nonpositive G R}
     (h : b - d ∈ boundedAwayIdeal G R) :
     (b : HahnSeries G R).cantorBendixsonValue = (d : HahnSeries G R).cantorBendixsonValue := by

@@ -5,7 +5,7 @@ Authors: Dan Abramov
 -/
 module
 
-public import Mathlib.SetTheory.Ordinal.Basic
+public import Mathlib.Order.WellFoundedSet
 
 public import Mathlib.Algebra.Algebra.Subalgebra.Lattice
 import Mathlib.Algebra.Algebra.Subalgebra.Directed
@@ -13,7 +13,7 @@ import Mathlib.Algebra.Algebra.Subalgebra.Directed
 /-!
 # Germs of translated truncations: the axioms
 
-Let `A` be a ring of generalised power series over a field `K` of characteristic zero with exponents
+Let `A` be a ring of generalised power series over a field `K` with exponents
 in an ordered abelian group `Γ`, for instance `K((G^{≤0}))`, and let `Q` be its ring of germs, for
 instance `K((G^{≤0}))/J`. For an exponent `γ`, the germ of `b ∈ A` at `γ` is the germ of the
 translated truncation `b^{|γ} = t^{-γ} b_{|γ}`, where `b_{|γ}` is the truncation of `b` at `γ`
@@ -25,21 +25,17 @@ it uses. `GermMaps` records the germ `germ : A →ₐ[K] Q` onto a nontrivial ri
 exponents vanish, and constants have no other germs. `ConvolutionGerms` adds Berarducci's
 convolution formula (Berarducci 2000, Lemma 7.5). `ConstantGerms` adds translated truncations and
 the characterisation of constant germs: a germ is a constant exactly when the germs vanish on a left
-neighbourhood of `0`. `RankedGerms` adds a well-founded `rank` on germs that drops along the germs
-of a non-constant germ, and cutoffs below a negative exponent that keep the germ.
-`TruncationGerms` combines them. The ring of germs is not assumed to be an integral domain; that it
-is one is a consequence (`TruncationGerms.isDomain`).
+neighbourhood of `0`. In `TruncationGerms` the exponents with nonzero germ form a well-ordered
+set. This will allow the first nonzero germ above a given bound to serve as a nonzero scalar.
 
 This file states the axioms, defines `HasRepresentativesWithGermsIn`, and proves the elementary
 consequences of the convolution formula. It also shows that a proper subalgebra of germs misses the
-germ of a series whose germs at negative exponents lie in it (`exists_germAt_mem_germ_notMem`).
+germ of a series whose germs at negative exponents lie in it (`exists_germAt_mem_germ_mem_notMem`).
 `ConwayRefinement.RingTheory.TruncationGerms.Transcendence` proves the transcendence lemma and
 shows that `Q` is a polynomial ring over `K`; `ConwayRefinement.RingTheory.TruncationGerms.Series`
 shows, under further axioms and given the transcendence lemma, that `A` is a polynomial ring over
 the series all of whose germs are constants.
 -/
-
-universe w
 
 public section
 
@@ -92,31 +88,14 @@ structure ConstantGerms (K Γ A Q : Type*) [Field K]
   germ_mem_range_of_eventually : ∀ b : A, (∃ ε < 0, ∀ ξ, ε < ξ → ξ < 0 → germAt ξ b = 0) →
     germ b ∈ Set.range (algebraMap K Q)
 
-/-- Germ maps with cutoffs and a well-founded rank that drops along the germs of a non-constant
-germ. -/
-structure RankedGerms (K Γ A Q : Type*) [Field K]
-    [AddCommGroup Γ] [LinearOrder Γ] [IsOrderedAddMonoid Γ]
-    [CommRing A] [Algebra K A] [CommRing Q] [Nontrivial Q] [Algebra K Q]
-    extends GermMaps K Γ A Q where
-  /-- A complexity of germs with values in the ordinals, hence well-founded; for Hahn series, the
-  Cantor--Bendixson value of a representative. -/
-  rank : Q → Ordinal.{w}
-  /-- For a non-scalar germ, the rank strictly drops along the germ maps on a left neighbourhood of
-  `0`. -/
-  rank_germAt_lt : ∀ b : A, germ b ∉ Set.range (algebraMap K Q) →
-    ∃ ε < 0, ∀ ξ, ε < ξ → ξ < 0 → rank (germAt ξ b) < rank (germ b)
-  /-- Every series has a representative with the same germ at `0`, the same germs strictly above a
-  negative cutoff `ε`, and vanishing germs at and below `ε`. -/
-  exists_cutoff : ∀ (b : A) (ε : Γ), ε < 0 → ∃ b' : A, germ b' = germ b ∧
-    (∀ ξ, ε < ξ → germAt ξ b' = germAt ξ b) ∧ (∀ ξ, ξ ≤ ε → germAt ξ b' = 0)
-
-/-- Berarducci's germs of generalised power series at exponents: germ maps satisfying the
-convolution formula, with translated truncations, cutoffs, and a rank. The ring of germs is not
-assumed to be an integral domain; that it is one is a consequence (`TruncationGerms.isDomain`). -/
+/-- Germ maps satisfying the convolution formula and the characterisation of constant germs,
+with a well-ordered set of exponents at which each series has nonzero germ. -/
 structure TruncationGerms (K Γ A Q : Type*) [Field K]
     [AddCommGroup Γ] [LinearOrder Γ] [IsOrderedAddMonoid Γ]
     [CommRing A] [Algebra K A] [CommRing Q] [Nontrivial Q] [Algebra K Q]
-    extends ConvolutionGerms K Γ A Q, ConstantGerms K Γ A Q, RankedGerms.{w} K Γ A Q
+    extends ConvolutionGerms K Γ A Q, ConstantGerms K Γ A Q where
+  /-- The exponents at which a series has nonzero germ are well ordered. -/
+  germSupport_isWF : ∀ b : A, {ξ | germAt ξ b ≠ 0}.IsWF
 
 namespace GermMaps
 
@@ -129,6 +108,13 @@ variable {K Γ A Q : Type*} [Field K]
 of a series all of whose germs again lie in the subalgebra. -/
 @[expose] def HasRepresentativesWithGermsIn (S : Subalgebra K Q) : Prop :=
   ∀ a ∈ S, ∃ b : A, sys.germ b = a ∧ ∀ ξ, sys.germAt ξ b ∈ S
+
+/-- Every germ admits a representative with germs in the full ring. -/
+theorem hasRepresentativesWithGermsIn_top :
+    sys.HasRepresentativesWithGermsIn (⊤ : Subalgebra K Q) := by
+  intro a _
+  obtain ⟨b, hb⟩ := sys.germ_surjective a
+  exact ⟨b, hb, fun _ ↦ trivial⟩
 
 /-- The bottom subalgebra (the scalars) has representatives with germs in it: a scalar is
 represented by the constant series, whose only nonzero germ sits at exponent `0`. -/
@@ -165,6 +151,26 @@ theorem hasRepresentativesWithGermsIn_adjoin_sUnion {c : Set (Set Q)} (hcn : c.N
   obtain ⟨s, has⟩ := ha'
   obtain ⟨b, hbg, hbs⟩ := hc s s.2 a has
   exact ⟨b, hbg, fun ξ => Algebra.adjoin_mono (Set.subset_sUnion_of_mem s.2) (hbs ξ)⟩
+
+/-- Between two subalgebras, translating to the first germ outside the smaller one gives a germ
+in the larger one whose representative has all negative-exponent germs in the smaller one. -/
+theorem exists_germAt_mem_germ_mem_notMem (hwf : ∀ b : A, {ξ | sys.germAt ξ b ≠ 0}.IsWF)
+    (htrans : ∀ (b : A) (ξ : Γ), ξ ≤ 0 →
+      ∃ b' : A, ∀ ζ ≤ 0, sys.germAt ζ b' = sys.germAt (ξ + ζ) b)
+    {P S : Subalgebra K Q} (hP : sys.HasRepresentativesWithGermsIn P) (hSP : S < P) :
+    ∃ X : A, (∀ ξ < 0, sys.germAt ξ X ∈ S) ∧ sys.germ X ∈ P ∧ sys.germ X ∉ S := by
+  obtain ⟨g, hgP, hgS⟩ := SetLike.exists_of_lt hSP
+  obtain ⟨b, hb, hall⟩ := hP g hgP
+  let D : Set Γ := {ξ | sys.germAt ξ b ∉ S}
+  have hD : D.IsWF := (hwf b).subset fun _ hi hzero ↦ hi (hzero ▸ S.zero_mem)
+  have h0 : (0 : Γ) ∈ D := by simpa [D, sys.germAt_zero, hb] using hgS
+  let ξ := hD.min ⟨0, h0⟩
+  obtain ⟨X, hX⟩ := htrans b ξ (hD.min_le _ h0)
+  have hx : sys.germ X = sys.germAt ξ b := by simpa [sys.germAt_zero] using hX 0 le_rfl
+  refine ⟨X, fun ζ hζ ↦ ?_, hx ▸ hall ξ, hx ▸ hD.min_mem _⟩
+  rw [hX ζ hζ.le]
+  by_contra h
+  exact (not_lt_of_ge (hD.min_le _ h)) (show ξ + ζ < ξ by simpa using hζ)
 
 end GermMaps
 
@@ -246,121 +252,82 @@ theorem offDiagonal_mem (S : Subalgebra K Q) {X : A} (hX : ∀ ξ < 0, sys.germA
 
 end ConvolutionGerms
 
-namespace RankedGerms
+namespace ConstantGerms
 
 variable {K Γ A Q : Type*} [Field K]
   [AddCommGroup Γ] [LinearOrder Γ] [IsOrderedAddMonoid Γ]
   [CommRing A] [Algebra K A] [CommRing Q] [Nontrivial Q] [Algebra K Q]
-  (sys : RankedGerms.{w} K Γ A Q)
+  (sys : ConstantGerms K Γ A Q)
+  (hwf : ∀ b : A, {ξ | sys.germAt ξ b ≠ 0}.IsWF)
 
-/-- A proper subalgebra `S` of the ring of germs misses the germ of a series whose germs at
-negative exponents lie in `S`: represent a germ outside `S` of minimal rank, and cut the
-representative off below the exponents at which the rank drops. -/
-theorem exists_germAt_mem_germ_notMem (S : Subalgebra K Q) (hS : S ≠ ⊤) :
-    ∃ X : A, (∀ ξ < 0, sys.germAt ξ X ∈ S) ∧ sys.germ X ∉ S := by
-  obtain ⟨g₀, hg₀⟩ : ∃ g : Q, g ∉ S := by
-    by_contra h
-    exact hS (Algebra.eq_top_iff.mpr fun x => not_not.mp fun hx => h ⟨x, hx⟩)
-  have hwf : WellFounded fun a b : Q => sys.rank a < sys.rank b :=
-    InvImage.wf sys.rank Ordinal.lt_wf
-  obtain ⟨x, hxnotS, hxmin⟩ := hwf.has_min {g : Q | g ∉ S} ⟨g₀, hg₀⟩
-  have hmin : ∀ y : Q, sys.rank y < sys.rank x → y ∈ S := fun y hy => by
-    by_contra hyS; exact hxmin y hyS hy
-  have hxnc : x ∉ Set.range (algebraMap K Q) := by
-    rintro ⟨k, rfl⟩; exact hxnotS (Subalgebra.algebraMap_mem S k)
-  obtain ⟨X₀, hX₀⟩ := sys.germ_surjective x
-  obtain ⟨ε, hε, hdrop⟩ := sys.rank_germAt_lt X₀ (by rw [hX₀]; exact hxnc)
-  obtain ⟨X, hXg, hXeq, hXvan⟩ := sys.exists_cutoff X₀ ε hε
-  refine ⟨X, fun ξ hξ => ?_, by rw [hXg, hX₀]; exact hxnotS⟩
-  rcases le_or_gt ξ ε with hξε | hεξ
-  · rw [hXvan ξ hξε]; exact zero_mem S
-  · rw [hXeq ξ hεξ]
-    exact hmin _ (by simpa [hX₀] using hdrop ξ hεξ hξ)
+/-- If the germs vanish on an interval immediately below a nonpositive exponent, the germ at
+that exponent is a scalar. -/
+theorem germAt_mem_range_of_gap (b : A) {ε ξ : Γ} (hlo : ε < ξ) (hhi : ξ ≤ 0)
+    (hgap : ∀ t, ε < t → t < ξ → sys.germAt t b = 0) :
+    sys.germAt ξ b ∈ Set.range (algebraMap K Q) := by
+  obtain ⟨B, hB⟩ := sys.exists_translatedTruncation b ξ hhi
+  have hBg : sys.germ B = sys.germAt ξ b := by simpa [sys.germAt_zero] using hB 0 le_rfl
+  rw [← hBg]
+  refine sys.germ_mem_range_of_eventually B ⟨ε - ξ, sub_neg.mpr hlo, fun ζ hζ hneg ↦ ?_⟩
+  rw [hB ζ hneg.le]
+  exact hgap _ (by simpa [add_comm] using sub_lt_iff_lt_add.mp hζ) (by simpa using hneg)
 
-end RankedGerms
+include hwf in
+/-- Every nonzero germ has a nonzero scalar germ above each negative cutoff, possibly at zero. -/
+theorem exists_germAt_eq_scalar (b : A) (hb : sys.germ b ≠ 0) {ε : Γ} (hε : ε < 0) :
+    ∃ ξ, ε < ξ ∧ ξ ≤ 0 ∧ ∃ k : K, k ≠ 0 ∧ sys.germAt ξ b = algebraMap K Q k := by
+  let D : Set Γ := {ξ | ε < ξ ∧ sys.germAt ξ b ≠ 0}
+  have hD : D.IsWF := (hwf b).subset fun _ h ↦ h.2
+  have h0 : (0 : Γ) ∈ D := ⟨hε, by rwa [sys.germAt_zero]⟩
+  let ξ := hD.min ⟨0, h0⟩
+  obtain ⟨hεξ, hξb⟩ := hD.min_mem ⟨0, h0⟩
+  have hξ : ξ ≤ 0 := hD.min_le _ h0
+  obtain ⟨k, hk⟩ := sys.germAt_mem_range_of_gap b hεξ hξ fun t hεt ht ↦ by
+    by_contra hn
+    exact (not_lt_of_ge (hD.min_le _ ⟨hεt, hn⟩)) ht
+  refine ⟨ξ, hεξ, hξ, k, ?_, hk.symm⟩
+  rintro rfl
+  exact hξb (hk.symm.trans (map_zero _))
 
-namespace TruncationGerms
+include hwf in
+/-- Two germs proportional to their germs at all nearby negative exponents differ by a scalar
+factor if the second germ is nonzero. -/
+theorem exists_germ_eq_smul_of_proportional (U V : A) (hV : sys.germ V ≠ 0)
+    (h : ∃ ε < 0, ∀ ξ, ε < ξ → ξ < 0 →
+      sys.germ V * sys.germAt ξ U = sys.germ U * sys.germAt ξ V) :
+    ∃ c : K, sys.germ U = c • sys.germ V := by
+  obtain ⟨ε, hε, hrel⟩ := h
+  let D : Set Γ := {ξ | ε < ξ ∧ (sys.germAt ξ U ≠ 0 ∨ sys.germAt ξ V ≠ 0)}
+  have hD : D.IsWF := ((hwf U).union (hwf V)).subset fun _ h ↦ h.2
+  have h0 : (0 : Γ) ∈ D := ⟨hε, Or.inr (by rwa [sys.germAt_zero])⟩
+  let ξ := hD.min ⟨0, h0⟩
+  obtain ⟨hlo, hne⟩ := hD.min_mem ⟨0, h0⟩
+  have hhi : ξ ≤ 0 := hD.min_le _ h0
+  have hgap (B : A) (hB : ∀ t, sys.germAt t B ≠ 0 → sys.germAt t U ≠ 0 ∨ sys.germAt t V ≠ 0) :
+      sys.germAt ξ B ∈ Set.range (algebraMap K Q) := by
+    apply sys.germAt_mem_range_of_gap B hlo hhi
+    intro t hεt ht
+    by_contra hn
+    exact (not_lt_of_ge (hD.min_le _ ⟨hεt, hB _ hn⟩)) ht
+  obtain ⟨u, hu⟩ := hgap U (fun _ ↦ Or.inl)
+  obtain ⟨v, hv⟩ := hgap V (fun _ ↦ Or.inr)
+  have hξ : sys.germ V * sys.germAt ξ U = sys.germ U * sys.germAt ξ V := by
+    rcases hhi.lt_or_eq with hlt | heq
+    · exact hrel ξ hlo hlt
+    · simp [heq, sys.germAt_zero, mul_comm]
+  have he : u • sys.germ V = v • sys.germ U := by
+    simpa only [Algebra.smul_def, hu, hv, mul_comm] using hξ
+  have hv0 : v ≠ 0 := by
+    rintro rfl
+    rw [zero_smul] at he
+    have hu0 : u = 0 := by
+      by_contra h
+      exact hV (by simpa [inv_smul_smul₀ h] using congrArg (u⁻¹ • ·) he)
+    subst u
+    simp only [map_zero] at hu hv
+    exact hne.elim (· hu.symm) (· hv.symm)
+  exact ⟨v⁻¹ * u, by rw [mul_smul, he, inv_smul_smul₀ hv0]⟩
 
-variable {K Γ A Q : Type*} [Field K]
-  [AddCommGroup Γ] [LinearOrder Γ] [IsOrderedAddMonoid Γ]
-  [CommRing A] [Algebra K A] [CommRing Q] [Nontrivial Q] [Algebra K Q]
-  (sys : TruncationGerms.{w} K Γ A Q)
-
-section Comap
-
-variable {A' Q' : Type*} [CommRing A'] [Algebra K A'] [CommRing Q'] [Nontrivial Q'] [Algebra K Q']
-
-/-- **Pulling back germ maps.** Let `φ : A' → A` be a `K`-algebra homomorphism and let
-`ι : Q' → Q` be an injective `K`-algebra homomorphism of germ rings. If a surjective germ map and
-germ maps on `A'` lift the germs of `A` along `φ` and `ι`, and translated truncations and cutoffs
-of elements of `A'` can be chosen in `A'`, then the germ maps on `A'` satisfy the axioms of
-`TruncationGerms`. -/
-def comap (φ : A' →ₐ[K] A) (ι : Q' →ₐ[K] Q) (hι : Function.Injective ι)
-    (germ' : A' →ₐ[K] Q') (hgerm' : Function.Surjective germ')
-    (hgerm : ∀ b, ι (germ' b) = sys.germ (φ b))
-    (germAt' : Γ → A' →ₗ[K] Q') (hgermAt : ∀ γ b, ι (germAt' γ b) = sys.germAt γ (φ b))
-    (htrans : ∀ (b : A') (ξ : Γ), ξ ≤ 0 →
-      ∃ b' : A', ∀ ζ ≤ 0, sys.germAt ζ (φ b') = sys.germAt (ξ + ζ) (φ b))
-    (hcut : ∀ (b : A') (ε : Γ), ε < 0 → ∃ b' : A', sys.germ (φ b') = sys.germ (φ b) ∧
-      (∀ ξ, ε < ξ → sys.germAt ξ (φ b') = sys.germAt ξ (φ b)) ∧
-        (∀ ξ, ξ ≤ ε → sys.germAt ξ (φ b') = 0)) :
-    TruncationGerms K Γ A' Q' where
-  germAt := germAt'
-  germ := germ'
-  germ_surjective := hgerm'
-  germAt_zero b := hι (by rw [hgermAt, hgerm, sys.germAt_zero])
-  germAt_of_pos b ξ hξ := hι (by rw [hgermAt, map_zero, sys.germAt_of_pos _ _ hξ])
-  convolution_finite b c γ := by
-    refine (sys.convolution_finite (φ b) (φ c) γ).subset fun β hβ ↦ ?_
-    simp only [Set.mem_setOf_eq, ← hgermAt] at hβ ⊢
-    exact ⟨(map_ne_zero_iff ι hι).mpr hβ.1, (map_ne_zero_iff ι hι).mpr hβ.2⟩
-  convolution b c γ := by
-    classical
-    apply hι
-    have hS := sys.convolution_finite (φ b) (φ c) γ
-    have hsub : Function.support (fun β ↦ germAt' β b * germAt' (γ - β) c) ⊆
-        (hS.toFinset : Set Γ) := fun β hβ ↦ by
-      rw [Set.Finite.coe_toFinset, Set.mem_setOf_eq, ← hgermAt, ← hgermAt]
-      exact ⟨(map_ne_zero_iff ι hι).mpr (left_ne_zero_of_mul hβ),
-        (map_ne_zero_iff ι hι).mpr (right_ne_zero_of_mul hβ)⟩
-    have hsub' : Function.support (fun β ↦ sys.germAt β (φ b) * sys.germAt (γ - β) (φ c)) ⊆
-        (hS.toFinset : Set Γ) := fun β hβ ↦ by
-      rw [Set.Finite.coe_toFinset]
-      exact ⟨left_ne_zero_of_mul hβ, right_ne_zero_of_mul hβ⟩
-    rw [hgermAt, map_mul, sys.convolution, finsum_eq_finsetSum_of_support_subset _ hsub,
-      finsum_eq_finsetSum_of_support_subset _ hsub', map_sum]
-    simp only [map_mul, hgermAt]
-  exists_translatedTruncation b ξ hξ := by
-    obtain ⟨b', hb'⟩ := htrans b ξ hξ
-    exact ⟨b', fun ζ hζ ↦ hι (by rw [hgermAt, hgermAt, hb' ζ hζ])⟩
-  rank q := sys.rank (ι q)
-  germAt_eventually_eq_zero b hb := by
-    obtain ⟨k, hk⟩ := hb
-    obtain ⟨ε, hε, h⟩ := sys.germAt_eventually_eq_zero (φ b)
-      ⟨k, by rw [← hgerm, ← hk, AlgHom.commutes]⟩
-    exact ⟨ε, hε, fun ξ h₁ h₂ ↦ hι (by rw [hgermAt, h ξ h₁ h₂, map_zero])⟩
-  germ_mem_range_of_eventually b hb := by
-    obtain ⟨ε, hε, h⟩ := hb
-    obtain ⟨k, hk⟩ := sys.germ_mem_range_of_eventually (φ b)
-      ⟨ε, hε, fun ξ h₁ h₂ ↦ by rw [← hgermAt, h ξ h₁ h₂, map_zero]⟩
-    exact ⟨k, hι (by rw [AlgHom.commutes, hk, hgerm])⟩
-  rank_germAt_lt b hb := by
-    have hb' : sys.germ (φ b) ∉ Set.range (algebraMap K Q) := by
-      rintro ⟨k, hk⟩
-      exact hb ⟨k, hι (by rw [AlgHom.commutes, hk, hgerm])⟩
-    obtain ⟨ε, hε, h⟩ := sys.rank_germAt_lt (φ b) hb'
-    exact ⟨ε, hε, fun ξ h₁ h₂ ↦ by
-      rw [hgermAt, hgerm]
-      exact h ξ h₁ h₂⟩
-  germAt_algebraMap k ξ hξ :=
-    hι (by rw [hgermAt, AlgHom.commutes, sys.germAt_algebraMap k ξ hξ, map_zero])
-  exists_cutoff b ε hε := by
-    obtain ⟨b', h₀, h₁, h₂⟩ := hcut b ε hε
-    exact ⟨b', hι (by rw [hgerm, hgerm, h₀]), fun ξ hξ ↦ hι (by rw [hgermAt, hgermAt, h₁ ξ hξ]),
-      fun ξ hξ ↦ hι (by rw [hgermAt, h₂ ξ hξ, map_zero])⟩
-
-end Comap
-
-end TruncationGerms
+end ConstantGerms
 
 end

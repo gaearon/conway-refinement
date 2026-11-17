@@ -33,6 +33,21 @@ theorem germAt_single_self {γ : ℝ} (hγ : γ ≤ 0) :
     germAt γ (single γ (1 : K) hγ) = 1 := by
   rw [← mul_one (single γ (1 : K) hγ), germAt_single_mul, sub_self, germAt_zero, map_one]
 
+omit [CharZero K] in
+/-- Above any negative cutoff, the constant series one has its only nonzero germ at zero. -/
+theorem nonzero_germs_one_above {ε : ℝ} (hε : ε < 0) :
+    {ξ : ℝ | ε < ξ ∧ germAt ξ (1 : Nonpositive ℝ K) ≠ 0} = {0} := by
+  ext ξ
+  constructor
+  · rintro ⟨_, h⟩
+    by_contra hξ
+    apply h
+    rw [show (1 : Nonpositive ℝ K) = algebraMap K _ 1 by rw [map_one]]
+    exact germAt_algebraMap 1 hξ
+  · rintro (rfl : ξ = 0)
+    exact ⟨hε, by rw [germAt_zero, map_one]; exact one_ne_zero⟩
+
+omit [CharZero K] in
 /-- The germ of `t^γ` at `0` vanishes when `γ < 0`. -/
 theorem germAt_zero_single {γ : ℝ} (hγ : γ < 0) :
     germAt 0 (single γ (1 : K) hγ.le) = 0 := by

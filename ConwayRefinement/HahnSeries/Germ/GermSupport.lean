@@ -8,14 +8,13 @@ module
 public import ConwayRefinement.HahnSeries.Germ.GermAt
 
 import ConwayRefinement.Blueprint
-import ConwayRefinement.HahnSeries.CantorBendixson.Truncation
 import ConwayRefinement.Topology.Order.PWOAddition
 
 /-!
 # The exponents at which a series has a nonzero germ
 
-Let `G` be a nontrivial ordered abelian group whose additive uniformity is Cauchy complete and `K` a
-field of characteristic zero. The germ of a nonpositive series `b` at `γ` is nonzero exactly when
+Let `G` be a nontrivial ordered abelian group with its order topology and `K` a field.
+The germ of a nonpositive series `b` at `γ` is nonzero exactly when
 `γ` lies in the closure of the support of `b` (`germAt_ne_zero_iff`). Consequently the set of such
 exponents is well-founded, a series is determined by its germs, truncations keep the germs at
 exponents up to the cutoff and kill the others, and multiplication by a monomial `t^γ` translates
@@ -34,32 +33,6 @@ namespace HahnSeries.Nonpositive
 
 variable {G : Type u} {K : Type v} [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G]
   [UniformSpace G] [IsUniformAddGroup G] [OrderTopology G] [Nontrivial G] [Field K]
-
-/-- The germ of `b` at `γ` is nonzero exactly when `γ` lies in the closure of the support of
-`b`. -/
-@[blueprint "lem:nonzero-germs"
-  (phase := "Germs of translated truncations")
-  (title := "Exponents with nonzero germ")
-  (statement := /--
-    For $b\in K((G^{\le0}))$ and $\gamma\in G$, the germ $[b^{|\gamma}]$ is
-    nonzero if and only if $\gamma$ lies in the closure of
-    $\operatorname{supp}(b)$.
-  -/)
-  (proof := /--
-    For $d\in K((G^{\le0}))$, $d\in J$ exactly when $0$ is not in the closed support of $d$, that
-    is, when $V_{\mathrm{CB}}(d)=0$ (\ref{def:cantor-bendixson-value}). The points of
-    $\operatorname{supp}(b)$ above $\gamma$, if any, have a least element, so the closed supports of
-    $b_{|\gamma}$ and $b$ agree near $\gamma$; translation by $-\gamma$ moves $\gamma$ to $0$. So
-    $0$ lies in the closed support of $b^{|\gamma}$ exactly when $\gamma$ lies in the closed support
-    of $b$. Apply this to the class of \ref{def:germ-at}.
-  -/)]
-theorem germAt_ne_zero_iff (b : Nonpositive G K) (γ : G) :
-    germAt γ b ≠ 0 ↔ γ ∈ closure (b : HahnSeries G K).support := by
-  rw [Ne, germAt_apply, mk_eq_zero_iff_cantorBendixsonValue_eq_zero, coe_translatedTruncation,
-    cantorBendixsonValue_translated_truncLE, ← mem_closedSupport]
-  split_ifs with h
-  · exact ⟨fun _ => h, fun _ => (Ordinal.opow_pos _ Ordinal.omega0_pos).ne'⟩
-  · exact ⟨fun h' => absurd rfl h', fun h' => absurd h' h⟩
 
 /-- The set of exponents at which a series has a nonzero germ is the closure of its support. -/
 theorem setOf_germAt_ne_zero (b : Nonpositive G K) :
@@ -149,15 +122,13 @@ neighbourhood of `γ`. -/
   (proof := /--
     By \ref{lem:germs-of-translated-truncation} the germs of $b^{|\gamma}$ at $\zeta\le0$ are the
     germs of $b$ at $\gamma+\zeta$, for every $\gamma\in G$, so it suffices to treat $\gamma=0$.
-    (For $\gamma>0$ both sides hold: $b^{|\gamma}=t^{-\gamma}b$ has support in $(-\infty,-\gamma]$,
-    so the germs of $b$ at positive exponents vanish.) If $b-k\in J$ for some $k\in K$, say with
-    support in $(-\infty,c]$, $c<0$, then for $\xi\in(c,0)$ the translated truncation
-    $(b-k)^{|\xi}=t^{-\xi}(b-k)$ has support bounded away from $0$ and $k^{|\xi}=0$; so the germs of
-    $b$ vanish on $(c,0)$. Conversely, if the germ of $b$ at $\xi<0$ vanishes, then
-    $V_{\mathrm{CB}}(b^{|\xi})=0$, so $0$ is not in the support of $b^{|\xi}$, and the coefficient
-    of $t^\xi$ in $b$ is $0$ (\ref{def:cantor-bendixson-value}). If this holds for all
-    $\xi\in(\varepsilon,0)$, then $b$ minus its constant coefficient has support in
-    $(-\infty,\varepsilon]$ and lies in $J$.
+    If $b-k\in J$ for $k\in K$, its support and hence its closed support lie in
+    $(-\infty,c]$ for some $c<0$. By \ref{lem:nonzero-germs} its germs vanish on $(c,0)$.
+    The constant series $k$ also has zero germ there, so the germs of $b$ vanish on $(c,0)$.
+    Conversely, if the germ at $\xi<0$ vanishes, then $b^{|\xi}\in J$. Its coefficient at $0$,
+    the coefficient of $t^\xi$ in $b$, is therefore $0$. If this holds throughout
+    $(\varepsilon,0)$, subtracting the constant coefficient of $b$ leaves support in
+    $(-\infty,\varepsilon]$, so the difference lies in $J$.
   -/)]
 theorem germAt_mem_range_algebraMap_iff (b : Nonpositive G K) (γ : G) :
     germAt γ b ∈ Set.range (algebraMap K (Nonpositive G K ⧸

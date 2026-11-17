@@ -59,11 +59,14 @@ theorem Set.IsPWO.eventually_exists_add_dominator {B C : Set G}
     finite.
 
     Addition $B\times C\to G$ is a closed map. Let $\mathcal U$ be an ultrafilter on $B\times C$
-    whose image under addition converges. As $B\times C$ is partially well ordered, $\mathcal U$
-    contains the set of pairs above some $a\in B\times C$. For pairs $p,q\ge a$, the number
-    $|p_1-q_1|$ is at most the larger of $(p_1+p_2)-(a_1+a_2)$ and $(q_1+q_2)-(a_1+a_2)$, and
-    similarly for the second coordinates. So $\mathcal U$ is Cauchy, and it converges in the closed
-    subset $B\times C$ of the complete space $G\times G$. Thus addition is proper, hence closed.
+    whose image under addition converges. For each $\varepsilon>0$, take $V\in\mathcal U$ such
+    that the sums of any two pairs in $V$ differ by less than $\varepsilon$ in absolute value.
+    Every pair in $V$ lies above one of its finitely many minimal pairs. Thus for some $a\in V$
+    the pairs $p\in V$ above $a$ form a member of $\mathcal U$. For each such $p$, both coordinate
+    differences $p_i-a_i$ lie between $0$ and $(p_1+p_2)-(a_1+a_2)<\varepsilon$. Any two of
+    these pairs therefore differ by less than $\varepsilon$ in each coordinate. So $\mathcal U$
+    is Cauchy and converges in the closed subset $B\times C$ of the complete space $G\times G$.
+    Thus addition is proper, hence closed.
 
     Existence. For $(\xi,\zeta)\in F$, the points of $B$ above $\xi$, if any, have a least element,
     so the points of $B$ near $\xi$ are at most $\xi$; likewise for $C$ near $\zeta$. So the set of
