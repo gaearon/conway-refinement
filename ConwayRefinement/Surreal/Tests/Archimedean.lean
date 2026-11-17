@@ -13,11 +13,11 @@ import Mathlib.Tactic.NormNum.GCD
 import Mathlib.Tactic.Positivity.Finset
 
 /-!
-# API checks for LM24 assumptions `(A1)_σ` and `(A2)_σ` on surreal strata
+# API checks for surreal Archimedean balls
 
-This separately compiled client consumes the arbitrary-stratum and fixed-strata forms without
-unfolding the standard-part or cofinality constructions. It exercises both assumptions at a
-nonzero class and at the zero class.
+This separately compiled client consumes the cardinal and cofinality interface without unfolding
+the cut constructions, and checks that the open ball below the class of `1` is nontrivial, so that
+the cofinality alternative, not the zero-group alternative, is the one in force.
 -/
 
 public noncomputable section
@@ -56,7 +56,7 @@ theorem surrealPositiveInfinitesimal_pos :
   Surreal.wpow_pos _
 
 /-- The open surreal ball below the class of `1` is nondegenerate. This separates the cofinality
-branch of `(A2)_σ` from its zero-inner-group branch. -/
+alternative of the ball condition from its zero-group alternative. -/
 theorem surrealUnitClass_ball_nontrivial :
     ¬Subsingleton ↥(FiniteArchimedeanClass.ball ℝ surrealUnitClass) := by
   intro h

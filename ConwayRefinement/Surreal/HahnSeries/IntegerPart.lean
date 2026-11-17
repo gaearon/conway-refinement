@@ -111,7 +111,7 @@ Every Conway normal form has support smaller than the universe cardinal bounding
 coefficient is an integer defines a small Conway normal form, hence an omnific integer.
 
 This gives a ring equivalence between Conway's cut-defined omnific integers and the bounded Hahn
-truncation integer part used by the set-sized form of LM24, Proposition 9.2.2.
+integer part `ℤ + ℝ((No^{<0}))_κ`.
 -/
 
 section

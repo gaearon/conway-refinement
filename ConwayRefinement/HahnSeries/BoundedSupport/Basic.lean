@@ -13,17 +13,17 @@ import ConwayRefinement.Order.Archimedean
 import Mathlib.Data.Rat.Floor
 
 /-!
-# Cardinal-bounded Hahn truncation integer parts
+# Bounded Hahn series and their integer parts
 
-This file models the support-cardinality bound in the Hahn fields `K((G))_κ` used by LM24.
-It intersects the nonpositive-support and constant-coefficient conditions with Mathlib's subfield
-of series having fewer than `κ` terms.
+For a cardinal `κ > ℵ₀`, the series in `R((G))` with fewer than `κ` support exponents form a
+subfield `R((G))_κ` (Mathlib's `HahnSeries.cardSuppLTSubfield`). For a subring `Z ⊆ R`, the
+bounded integer part `Z + R((G^{<0}))_κ` consists of its series with nonpositive support and
+constant coefficient in `Z`; these are the rings studied by L'Innocente and Mantova (LM24).
 
-The fraction-subring lemmas isolate the two nonzero-class alternatives in LM24, assumption
-`(A2)_σ`. If `κ ≤ cof(G)`, a support of cardinality less than `κ` is not cofinal, so a
-monomial shift supplies a denominator in the truncation integer part. If `G = {0}`, the same
-conclusion follows exactly when the coefficient subring has fraction subring equal to the whole
-coefficient field.
+The fraction-field lemmas treat the two alternatives of LM24, assumption `(A2)`. If
+`κ ≤ cof(G)`, a support of cardinality less than `κ` is not cofinal, so a monomial shift supplies a
+denominator in the integer part. If `G = 0`, the same conclusion follows when `R` is the fraction
+field of `Z`.
 -/
 
 universe u v

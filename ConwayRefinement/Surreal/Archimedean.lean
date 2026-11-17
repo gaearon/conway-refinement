@@ -129,7 +129,7 @@ noncomputable def stratumOrderAddMonoidIsoReal : u.stratum c ≃+o ℝ :=
 noncomputable def archimedeanStrata : HahnEmbedding.ArchimedeanStrata ℝ Surreal :=
   Classical.choice inferInstance
 
-/-! ### Assumption `(A2)_σ` -/
+/-! ### Cofinality of Archimedean balls -/
 
 universe u v
 

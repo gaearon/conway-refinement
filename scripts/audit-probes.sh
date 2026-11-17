@@ -321,7 +321,7 @@ rm -f -- "$audit_probe"
 audit_probe=""
 
 # Documentation: repository status in a published-source module comment.
-audit_probe=ConwayRefinement/HahnSeries/Primality/ProbeDocumentation.lean
+audit_probe=ConwayRefinement/HahnSeries/Nonpositive/ProbeDocumentation.lean
 audit_require_absent "$audit_probe"
 printf '%s\n' 'module' '' '/-! This statement is source-unverified. -/' > "$audit_probe"
 audit_expect_rejection documentation ProbeDocumentation.lean lake exe documentation
@@ -392,7 +392,7 @@ audit_probe=""
 audit_probe=ConwayRefinement/Standalone/Mathlib/Probe.lean
 audit_require_absent "$audit_probe"
 printf '%s\n' 'module' '' \
-  'import ConwayRefinement.Standalone.Mathlib.Support.OrderedAddGroup' > "$audit_probe"
+  'import ConwayRefinement.Standalone.Mathlib.Support.SeriesConsequences' > "$audit_probe"
 lake build ConwayRefinement.Standalone.Mathlib.Probe
 audit_expect_rejection standalone-mathlib Standalone.Mathlib.Probe lake exe standalone-mathlib
 rm -f -- "$audit_probe"
@@ -401,7 +401,7 @@ audit_probe=""
 # Standalone Mathlib: proof plumbing under Support is intentionally outside the statement audit.
 audit_probe=ConwayRefinement/Standalone/Mathlib/Support/Probe.lean
 audit_require_absent "$audit_probe"
-printf '%s\n' 'module' '' 'import ConwayRefinement.HahnSeries.OrderType' > "$audit_probe"
+printf '%s\n' 'module' '' 'import ConwayRefinement.HahnSeries.Truncation' > "$audit_probe"
 lake build ConwayRefinement.Standalone.Mathlib.Support.Probe
 lake exe standalone-mathlib > "$audit_logs/standalone-mathlib-support.log" 2>&1
 rm -f -- "$audit_probe"
@@ -410,7 +410,7 @@ audit_probe=""
 # Standalone CombinatorialGames: a statement reaching into the development.
 audit_probe=ConwayRefinement/Standalone/CombinatorialGames/Probe.lean
 audit_require_absent "$audit_probe"
-printf '%s\n' 'module' '' 'import ConwayRefinement.HahnSeries.OrderType' > "$audit_probe"
+printf '%s\n' 'module' '' 'import ConwayRefinement.HahnSeries.Truncation' > "$audit_probe"
 lake build ConwayRefinement.Standalone.CombinatorialGames.Probe
 audit_expect_rejection standalone-combinatorial-games Standalone.CombinatorialGames.Probe \
   lake exe standalone-combinatorial-games
@@ -431,7 +431,7 @@ audit_probe=""
 # Standalone CombinatorialGames: proof plumbing under Support may import the main proof.
 audit_probe=ConwayRefinement/Standalone/CombinatorialGames/Support/Probe.lean
 audit_require_absent "$audit_probe"
-printf '%s\n' 'module' '' 'import ConwayRefinement.HahnSeries.OrderType' > "$audit_probe"
+printf '%s\n' 'module' '' 'import ConwayRefinement.HahnSeries.Truncation' > "$audit_probe"
 lake build ConwayRefinement.Standalone.CombinatorialGames.Support.Probe
 lake exe standalone-combinatorial-games \
   > "$audit_logs/standalone-combinatorial-games-support.log" 2>&1

@@ -26,7 +26,6 @@ $$
 | GCDs and primality in $K((\mathbb R^{\le 0}))$ | [`Mathlib/HahnSeriesGCD.lean`](Mathlib/HahnSeriesGCD.lean) | [`Mathlib/HahnSeriesGCDProof.lean`](Mathlib/HahnSeriesGCDProof.lean) |
 | Polynomiality and refinement of complete Hahn germs | [`Mathlib/CompleteHahnGerm.lean`](Mathlib/CompleteHahnGerm.lean) | [`Mathlib/CompleteHahnGermProof.lean`](Mathlib/CompleteHahnGermProof.lean) |
 | Berarducci's germ ring is a polynomial ring and a UFD | [`Mathlib/GermPolynomialRing.lean`](Mathlib/GermPolynomialRing.lean) | [`Mathlib/GermPolynomialRingProof.lean`](Mathlib/GermPolynomialRingProof.lean) |
-| Algebraic independence of minimal homogeneous families in $\widehat{\mathrm P}$ | [`CombinatorialGames/PrincipalRVAlgebraicIndependence.lean`](CombinatorialGames/PrincipalRVAlgebraicIndependence.lean) | [`CombinatorialGames/PrincipalRVAlgebraicIndependenceProof.lean`](CombinatorialGames/PrincipalRVAlgebraicIndependenceProof.lean) |
 | Primality and unique irreducible factorisation of omnific integers | [`CombinatorialGames/Examples/OmnificFactorization.lean`](CombinatorialGames/Examples/OmnificFactorization.lean) | [`CombinatorialGames/Examples/OmnificFactorizationProof.lean`](CombinatorialGames/Examples/OmnificFactorizationProof.lean) |
 
 Reader-worthy examples live in the adjacent `Examples/` directories. Proof-only definitions and

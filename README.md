@@ -128,18 +128,15 @@ Each statement file in this table imports only Mathlib. Its paired proof connect
 
 | Result | Links |
 |---|---|
-| Four-factor refinement in saturated Hahn integer parts with integer constants | [statement](ConwayRefinement/Standalone/Mathlib/HahnIntegerPartRefinement.lean), [proof](ConwayRefinement/Standalone/Mathlib/HahnIntegerPartRefinementProof.lean), [map](https://gaearon.github.io/conway-refinement/#/map/integer-hahn-refinement-of-saturation) |
 | Polynomial presentation and four-factor refinement of Hahn germ rings over Cauchy-complete exponent groups | [statement](ConwayRefinement/Standalone/Mathlib/CompleteHahnGerm.lean), [proof](ConwayRefinement/Standalone/Mathlib/CompleteHahnGermProof.lean), [map](https://gaearon.github.io/conway-refinement/#/map/complete-hahn-germ-refinement) |
 | Polynomial presentation of $K((\mathbb R^{\le 0}))$ over its finite-support subring | [statement](ConwayRefinement/Standalone/Mathlib/HahnSeriesPolynomialRing.lean), [proof](ConwayRefinement/Standalone/Mathlib/HahnSeriesPolynomialRingProof.lean), [map](https://gaearon.github.io/conway-refinement/#/map/hahn-series-polynomial-algebra) |
 | GCDs, every series primal, irreducibles prime, and uniqueness of irreducible factorisations in $K((\mathbb R^{\le 0}))$ | [statement](ConwayRefinement/Standalone/Mathlib/HahnSeriesGCD.lean), [proof](ConwayRefinement/Standalone/Mathlib/HahnSeriesGCDProof.lean), [map](https://gaearon.github.io/conway-refinement/#/map/hahn-series-gcd-domain) |
 | Berarducci's germ ring is a polynomial ring and a UFD | [statement](ConwayRefinement/Standalone/Mathlib/GermPolynomialRing.lean), [proof](ConwayRefinement/Standalone/Mathlib/GermPolynomialRingProof.lean), [map](https://gaearon.github.io/conway-refinement/#/map/ordinal-value-quotient) |
-| An explicit degree-two prime in $K((\mathbb R^{\le 0}))$ | [statement](ConwayRefinement/Standalone/Mathlib/Examples/DegreeTwoPrime.lean), [proof](ConwayRefinement/Standalone/Mathlib/Examples/DegreeTwoPrimeProof.lean), [map](https://gaearon.github.io/conway-refinement/#/map/degree-two-series-prime) |
 
 ### A standalone statement over Mathlib and CombinatorialGames
 
 | Result | Links |
 |---|---|
-| Minimal homogeneous families in $\widehat{\mathrm P}$ are algebraically independent | [statement](ConwayRefinement/Standalone/CombinatorialGames/PrincipalRVAlgebraicIndependence.lean), [proof](ConwayRefinement/Standalone/CombinatorialGames/PrincipalRVAlgebraicIndependenceProof.lean), [map](https://gaearon.github.io/conway-refinement/#/map/polynomial) |
 
 ### Other results and examples
 
@@ -147,10 +144,7 @@ These also have short statement and proof files, but their statements use code f
 
 | Result | Links |
 |---|---|
-| General conditions guaranteeing Conway's four-factor property for certain rings of infinite series | [statement](ConwayRefinement/Standalone/Mathlib/Examples/HahnIntegerPartRefinementCriterion.lean), [proof](ConwayRefinement/Standalone/Mathlib/Examples/HahnIntegerPartRefinementCriterionProof.lean), [map](https://gaearon.github.io/conway-refinement/#/map/hahn-integer-part-refinement) |
 | Normal-form identification, every omnific integer primal, irreducibles prime, and uniqueness of irreducible factorisations in $\mathbf{Oz}$ | [statement](ConwayRefinement/Standalone/CombinatorialGames/Examples/OmnificFactorization.lean), [proof](ConwayRefinement/Standalone/CombinatorialGames/Examples/OmnificFactorizationProof.lean), [map](https://gaearon.github.io/conway-refinement/#/map/omnific-factorisation) |
-| An explicit degree-two prime in $\mathbf{Oz}$, with a coefficient-doubled foil of the same support order type that factors nontrivially | [statement](ConwayRefinement/Standalone/CombinatorialGames/Examples/DegreeTwoPrime.lean), [proof](ConwayRefinement/Standalone/CombinatorialGames/Examples/DegreeTwoPrimeProof.lean), [map](https://gaearon.github.io/conway-refinement/#/map/explicit-omnific-prime) |
-| Conway's one-row prime in $\mathbf{Oz}$ | [statement](ConwayRefinement/Standalone/CombinatorialGames/Examples/OneRowPrime.lean), [proof](ConwayRefinement/Standalone/CombinatorialGames/Examples/OneRowPrimeProof.lean), [map](https://gaearon.github.io/conway-refinement/#/map/omnific-factorisation) |
 
 Conway's one-row prime is a concrete example of the general theorem about omnific integers above, so both link to the same proof map.
 
@@ -160,9 +154,6 @@ These results don't have separate standalone statement files, but AI chose them 
 
 | Result | Links |
 |---|---|
-| Multiplicativity of the Cantor–Bendixson value | [source](ConwayRefinement/HahnSeries/Germ/AlgebraicIndependence/CantorBendixsonValueMultiplicativity.lean), [map](https://gaearon.github.io/conway-refinement/#/map/cantor-bendixson-value-multiplicative) |
-| Algebraic independence in the Cantor–Bendixson associated graded ring | [source](ConwayRefinement/HahnSeries/Germ/AlgebraicIndependence/AlgebraicIndependence.lean), [map](https://gaearon.github.io/conway-refinement/#/map/cantor-bendixson-minimal-generators-independent) |
-| Random series of finite Cantor degree, and their lower-order perturbations, are prime | [source](ConwayRefinement/HahnSeries/Primality/Random.lean), [map](https://gaearon.github.io/conway-refinement/#/map/random-series-prime) |
 | Refinement of $Z+K((G^{<0}))$ forces $K=\mathrm{Frac}(Z)$ | [source](ConwayRefinement/HahnSeries/IntegerPart/FractionField.lean), [map](https://gaearon.github.io/conway-refinement/#/map/refinement-forces-coefficient-fraction-field) |
 
 Please open an issue if any of these are wrong or could be clearer.

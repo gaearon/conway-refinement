@@ -85,7 +85,7 @@ end
 Let `K((ℝ^{≤0}))` be the series ring over a field `K` of characteristic zero and `K(ℝ^{≤0})` its
 subring of series with finite support [LM24, Not. 2.1.5], written `K_fin` below. The polynomial
 presentation identifies `K((ℝ^{≤0}))` with an arbitrary-variable polynomial ring over `K_fin`.
-The GCD-domain structure established in `ConwayRefinement.HahnSeries.Primality.GCDMonoid` therefore
+The GCD-domain structure established above therefore
 gives Mathlib's `DecompositionMonoid` structure on the series ring. Thus every series is primal,
 every irreducible series is prime, and factorisations into irreducibles are unique up to order
 and units.

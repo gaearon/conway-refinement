@@ -16,7 +16,8 @@ import Mathlib.Algebra.Module.Torsion.Field
 
 A family of finite Archimedean classes determines a common convex rational subspace. Its quotient
 is ordered by representatives and carries its order topology and right uniformity. These are the
-explicit Hahn exponent quotients used in the limit hypothesis of the standalone Conway theorem.
+exponent groups whose Cauchy completeness is assumed in the primality theorem for bounded Hahn
+integer parts.
 -/
 
 open Set

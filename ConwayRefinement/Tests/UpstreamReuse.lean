@@ -51,19 +51,9 @@ universe u v w
 
 #check NatOrdinal.wpow_add
 
-#check Ordinal.isPrincipal_mul_iff_le_two_or_omega0_opow_opow
-
-#check Ordinal.log_opow
-
-#check Ordinal.opow_add
-
 #check StrictMonoOn.orderIso
 
 #check Ordinal.isSuccPrelimit_type_lt_iff
-
-#check Ordinal.lt_mul_iff_of_isSuccLimit
-
-#check List.dropLast_append_getLast
 
 #check Ideal.span
 
@@ -81,10 +71,6 @@ universe u v w
 #check IsLocalization.lift
 
 #check IsLocalization.ringHom_ext
-
-#check Finset.set_biUnion_insert
-
-#check NatOrdinal.add_lt_wpow
 
 #check Finset.max
 

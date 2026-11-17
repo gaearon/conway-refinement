@@ -200,8 +200,8 @@ An ordered additive equivalence of exponent groups induces a ring equivalence of
 nonpositive Hahn-series rings. Since the exponent types may live in different universes, support
 order types are compared after lifting both ordinals to a common universe.
 
-This is the exponent-domain transport needed when LM24 assumption `(A1)_σ` identifies an
-Archimedean stratum with the additive ordered group of real numbers.
+It is used when an Archimedean stratum is identified with the ordered additive group of real
+numbers.
 -/
 
 section

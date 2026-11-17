@@ -18,13 +18,14 @@ import Mathlib.Data.Set.Card
 /-!
 # Primality for finitely many Archimedean support classes
 
-Let `σ` be the leading Archimedean class met by the support of `x ∈ Z + R((G^{<0}))_κ`, that is,
-the class of its order. Regroup along the strict inner ball `C = G_{≺σ}`. The support of the
-regrouped series lies in the image of the closed ball `G_{⪯σ}` in `G ⧸ C`, which the chosen stratum
-`H_σ ≃ ℝ` identifies with `ℝ`. Every series over `ℝ` is primal, and primality in a convex exponent
-subgroup passes to the ambient ring, so the regrouped series is primal. Its constant coefficient is
-the restriction of `x` to `C`, which meets strictly fewer classes. Assumption `(A2)_σ` supplies the
-fraction-field condition, and primality through regrouping completes the induction.
+Let `σ` be the leading Archimedean class met by the support of `x ∈ Z + R((G^{<0}))_κ`, that is, the
+class of its order. Regroup along the strict inner ball `C = G_{≺σ}`. The support of the regrouped
+series lies in the image of the closed ball `G_{⪯σ}` in `G ⧸ C`, which the chosen stratum `H_σ ≃ ℝ`
+identifies with `ℝ`. Every series over `ℝ` is primal, and primality in a convex exponent subgroup
+passes to the ambient ring, so the regrouped series is primal. Its constant coefficient is the
+restriction of `x` to `C`, which meets strictly fewer classes. The cofinality condition on `C`
+(assumption `(A2)` of LM24) supplies the fraction-field condition, and primality through regrouping
+completes the induction.
 -/
 
 public noncomputable section
