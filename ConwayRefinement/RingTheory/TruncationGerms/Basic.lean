@@ -44,14 +44,15 @@ power series with exponents in `Γ`, `Q` its nontrivial ring of germs at `0`, `g
 and `germAt γ b` the germ at `0` of the translated truncation of `b` at `γ`. -/
 @[blueprint "def:germ-axioms"
   (phase := "Polynomial presentations")
-  (title := "Axioms for germs of translated truncations")
+  (title := "Properties of germs used in the transcendence argument")
   (statement := /--
     Let $K$ be a field of characteristic $0$, $\Gamma$ an ordered abelian
     group, $A$ a commutative $K$-algebra and $Q$ a nontrivial commutative
-    $K$-algebra.  A system of germs consists of a surjective $K$-algebra
-    homomorphism $A\to Q$, $b\mapsto[b]$ (the germ at $0$), $K$-linear maps
-    $g_\gamma:A\to Q$ for $\gamma\in\Gamma$ (the germ at $\gamma$), and a map
-    $\operatorname{rk}:Q\to\mathbf{On}$, such that for all $b,c\in A$:
+    $K$-algebra.  Consider a surjective $K$-algebra homomorphism $A\to Q$,
+    $b\mapsto[b]$ (the germ at $0$), $K$-linear maps $g_\gamma:A\to Q$ for
+    $\gamma\in\Gamma$ (the germ at $\gamma$), and a map
+    $\operatorname{rk}:Q\to\mathbf{On}$.  The following properties are used,
+    for all $b,c\in A$:
     \begin{itemize}
       \item (1) $g_0(b)=[b]$, and $g_\xi(b)=0$ for $\xi>0$;
       \item (2) for every $\gamma$, only finitely many $\beta$ have
@@ -218,10 +219,11 @@ section Comap
 
 variable {A' Q' : Type*} [CommRing A'] [Algebra K A'] [CommRing Q'] [Nontrivial Q'] [Algebra K Q']
 
-/-- **Pulling back a system of germs.** Let `φ : A' → A` be a `K`-algebra homomorphism and let
+/-- **Pulling back germ maps.** Let `φ : A' → A` be a `K`-algebra homomorphism and let
 `ι : Q' → Q` be an injective `K`-algebra homomorphism of germ rings. If a surjective germ map and
 germ maps on `A'` lift the germs of `A` along `φ` and `ι`, and translated truncations and cutoffs
-of elements of `A'` can be chosen in `A'`, then they form a system of germs on `A'`. -/
+of elements of `A'` can be chosen in `A'`, then the germ maps on `A'` satisfy the axioms of
+`TruncationGerms`. -/
 def comap (φ : A' →ₐ[K] A) (ι : Q' →ₐ[K] Q) (hι : Function.Injective ι)
     (germ' : A' →ₐ[K] Q') (hgerm' : Function.Surjective germ')
     (hgerm : ∀ b, ι (germ' b) = sys.germ (φ b))

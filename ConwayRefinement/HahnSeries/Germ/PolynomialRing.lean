@@ -53,16 +53,15 @@ variable (G K) in
 `TruncationGerms` on `K((G^{≤0}))`, with values in the ring of germs `K((G^{≤0}))/J`. -/
 @[blueprint "prop:hahn-germs-axioms"
   (phase := "Polynomial presentations")
-  (title := "The germs of $K((G^{\\le 0}))$ form a system of germs")
+  (title := "Germs of generalised power series satisfy the axioms")
   (statement := /--
     Let $K$ be a field of characteristic $0$ and $G$ a nontrivial ordered
     abelian group with its order topology and the associated group uniformity,
     and assume that $G$ is Cauchy complete.  The quotient map
     $K((G^{\le0}))\to K((G^{\le0}))/J$, the germs
     $g_\gamma(b)=[b^{|\gamma}]$ for $\gamma\in G$, and the rank
-    $\operatorname{rk}([b])=V_{\mathrm{CB}}(b)$ form a system of germs on
-    $K((G^{\le0}))$ with values in $K((G^{\le0}))/J$ in the sense of
-    \ref{def:germ-axioms}.
+    $\operatorname{rk}([b])=V_{\mathrm{CB}}(b)$ satisfy (1)--(7) of
+    \ref{def:germ-axioms} with $A=K((G^{\le0}))$ and $Q=K((G^{\le0}))/J$.
   -/)
   (proof := /--
     We check the axioms of \ref{def:germ-axioms}.  The rank is well defined
@@ -133,8 +132,8 @@ bounded away from zero is a polynomial algebra over `K`. -/
     \]
   -/)
   (proof := /--
-    By \ref{prop:hahn-germs-axioms}, the germs of $K((G^{\le0}))$ form a system
-    of germs with values in $K((G^{\le0}))/J$.  By
+    By \ref{prop:hahn-germs-axioms}, the germ maps on $K((G^{\le0}))$ with
+    values in $K((G^{\le0}))/J$ satisfy (1)--(7).  By
     \ref{thm:germ-ring-generators}, $K((G^{\le0}))/J$ has a set $T$ of
     generators that is algebraically independent over $K$, and evaluation at
     $T$ is an isomorphism $K[X_t:t\in T]\simeq K((G^{\le0}))/J$.

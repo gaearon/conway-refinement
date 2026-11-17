@@ -227,7 +227,8 @@ This is the universe-bounded form of LM24, Proposition 2.4.4. -/
     Let $\mathbf{No}$ be the surreal numbers of a universe $u$ and $\kappa_u$
     the cardinal of that universe.  For every nonzero Archimedean class
     $\sigma$, the convex subgroup $\mathbf{No}_{\prec\sigma}$ has cofinality at
-    least $\kappa_u$ [LM24, Prop. 2.4.4].
+    least $\kappa_u$.  This is [LM24, Prop. 2.4.4] for the surreal numbers of
+    one universe.
   -/)
   (proof := /--
     Let $a>0$ have class $\sigma$.  A subset of $\mathbf{No}_{\prec\sigma}$ of

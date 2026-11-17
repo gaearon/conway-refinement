@@ -169,8 +169,8 @@ over its finite-support subring `K(ℝ^{≤0})`. -/
     \]
   -/)
   (proof := /--
-    By \ref{prop:hahn-germs-axioms} the germs of $K((\mathbb R^{\le0}))$ form
-    a system of germs.  It is a system of germs on a ring of series: a series
+    By \ref{prop:hahn-germs-axioms} the germ maps on $K((\mathbb R^{\le0}))$
+    satisfy (1)--(7).  They also satisfy (8)--(11): a series
     all of whose germs vanish has empty closed support, the truncation
     $b_{|\eta}$ keeps exactly the germs at exponents $\le\eta$, multiplication
     by $t^\gamma$ translates germs by $\gamma$, and the exponents with nonzero

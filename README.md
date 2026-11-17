@@ -295,9 +295,9 @@ flowchart TB
     direction TB
     n011["(11) Greatest common divisors of finite-support series"]:::fact
     n012["(12) Series with constant germs"]:::lemma
-    n013["(13) Axioms for germs of translated truncations"]:::definition
-    n014["(14) The germs of K((G^{≤ 0})) form a system of germs"]:::proposition
-    n015["(15) Axioms for germs on a ring of series"]:::definition
+    n013["(13) Properties of germs used in the transcendence argument"]:::definition
+    n014["(14) Germs of generalised power series satisfy the axioms"]:::proposition
+    n015["(15) Further properties for a ring of series"]:::definition
     n016["(16) Closure under truncation of a simple extension"]:::lemma
     n017["(17) Transcendence of a series with transcendental germ"]:::lemma
     n018["(18) Generation by a subalgebra closed under truncation"]:::lemma

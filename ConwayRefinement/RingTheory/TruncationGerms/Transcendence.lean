@@ -111,8 +111,8 @@ constant multiple of `germ V`. -/
   (phase := "Polynomial presentations")
   (title := "Proportionality lemma")
   (statement := /--
-    Let $(g_\gamma)$ be a system of germs on $A$ with values in $Q$
-    (\ref{def:germ-axioms}).  Let $S\subseteq Q$ be a $K$-subalgebra that is an
+    Let $A$, $Q$, $(g_\gamma)$ and $\operatorname{rk}$ satisfy (1)--(7) of
+    \ref{def:germ-axioms}.  Let $S\subseteq Q$ be a $K$-subalgebra that is an
     integral domain, and let $x\in Q$ be such that $ax\notin S$ for every
     nonzero $a\in S$.  Let $U,V\in A$ with $[V]\ne0$, with $g_\xi(V)\in S$ for
     all $\xi\le0$, and with $g_\xi(U)\in S+Sx$ for all $\xi\le0$.  If there is
@@ -279,8 +279,8 @@ not. Then no nonzero element of `S` multiplies the germ of `X` into `S`. -/
   (phase := "Polynomial presentations")
   (title := "Absence of linear relations")
   (statement := /--
-    Let $(g_\gamma)$ be a system of germs on $A$ with values in $Q$
-    (\ref{def:germ-axioms}).  Let $S\subseteq Q$ be a $K$-subalgebra such that
+    Let $A$, $Q$, $(g_\gamma)$ and $\operatorname{rk}$ satisfy (1)--(7) of
+    \ref{def:germ-axioms}.  Let $S\subseteq Q$ be a $K$-subalgebra such that
     every element of $S$ is $[b]$ for some $b\in A$ with $g_\xi(b)\in S$ for all
     $\xi$.  Let $X\in A$ with $g_\xi(X)\in S$ for all $\xi<0$ and
     $x=[X]\notin S$.  Then $ax\notin S$ for every nonzero $a\in S$.
@@ -292,8 +292,10 @@ not. Then no nonzero element of `S` multiplies the germ of `X` into `S`. -/
     of $A_0X+B$ vanish on some $(\varepsilon,0)$.  For $\xi$ in this interval,
     the convolution formula (axiom (2)) gives
     $g_\xi(A_0X)\in g_\xi(A_0)\,x+S$, because every other term pairs a germ of
-    $A_0$ with a germ of $X$ at a negative or positive exponent; hence
-    $g_\xi(A_0)\in S$ and $g_\xi(A_0)\,x\in S$.  If $a\in K$, then
+    $A_0$ with a germ of $X$ at a negative or positive exponent.  Since
+    $g_\xi(A_0X)+g_\xi(B)=0$ and $g_\xi(B)\in S$, it follows that
+    $g_\xi(A_0)\,x\in S$; also $g_\xi(A_0)\in S$ by the choice of $A_0$.
+    If $a\in K$, then
     $x=a^{-1}(ax)\in S$, a contradiction.  Otherwise axiom (5) gives
     $\operatorname{rk}g_\xi(A_0)<\operatorname{rk}a$ for $\xi$ near $0$, so
     minimality forces $g_\xi(A_0)=0$ near $0$, and axiom (4) puts $a$ in $K$
@@ -495,8 +497,8 @@ over `S`, and `S[germ X]` again has representatives whose germs lie in it. -/
   (phase := "Polynomial presentations")
   (title := "Transcendence lemma")
   (statement := /--
-    Let $(g_\gamma)$ be a system of germs on $A$ with values in $Q$
-    (\ref{def:germ-axioms}).  Let $S\subseteq Q$ be a $K$-subalgebra that is an
+    Let $A$, $Q$, $(g_\gamma)$ and $\operatorname{rk}$ satisfy (1)--(7) of
+    \ref{def:germ-axioms}.  Let $S\subseteq Q$ be a $K$-subalgebra that is an
     integral domain and such that every element of $S$ is $[b]$ for some
     $b\in A$ with $g_\xi(b)\in S$ for all $\xi$.  Let $X\in A$ with
     $g_\xi(X)\in S$ for all $\xi<0$ and $x=[X]\notin S$.  Then $x$ is
@@ -703,8 +705,8 @@ generators. -/
   (phase := "Polynomial presentations")
   (title := "Algebraically independent generators of the ring of germs")
   (statement := /--
-    Let $(g_\gamma)$ be a system of germs on $A$ with values in $Q$
-    (\ref{def:germ-axioms}).  There is a set $T\subseteq Q$, algebraically
+    Let $A$, $Q$, $(g_\gamma)$ and $\operatorname{rk}$ satisfy (1)--(7) of
+    \ref{def:germ-axioms}.  There is a set $T\subseteq Q$, algebraically
     independent over $K$, such that $K[T]=Q$.
   -/)
   (proof := /--

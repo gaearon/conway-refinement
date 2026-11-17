@@ -18,8 +18,9 @@ import ConwayRefinement.RingTheory.TruncationGerms.Transcendence
 Let `κ > ℵ₀` and let `K((G^{≤0}))_κ` be the ring of nonpositive series with fewer than `κ` support
 exponents. Translated truncation and cutoff below a negative exponent do not enlarge supports, so
 they preserve this ring, and the ideal `J_κ` of series whose support is bounded away from zero is
-the trace of `J`. The germs of translated truncations therefore pull back to a system of germs on
-`K((G^{≤0}))_κ` with values in `K((G^{≤0}))_κ / J_κ`, which embeds in `K((G^{≤0}))/J`. When `G` is
+the trace of `J`. The germs of translated truncations therefore pull back to germ maps on
+`K((G^{≤0}))_κ` with values in `K((G^{≤0}))_κ / J_κ`, which embeds in `K((G^{≤0}))/J`, and these
+germ maps satisfy the axioms of `TruncationGerms`. When `G` is
 Cauchy complete, `K((G^{≤0}))_κ / J_κ` is a polynomial ring over `K`, so every germ is primal.
 -/
 
@@ -152,7 +153,8 @@ variable [UniformSpace G] [IsUniformAddGroup G] [OrderTopology G] [CompleteSpace
   [CharZero K]
 
 variable (G K κ) in
-/-- The germs of translated truncations form a system of germs on `K((G^{≤0}))_κ`. -/
+/-- The germs of translated truncations on `K((G^{≤0}))_κ` satisfy the axioms of
+`TruncationGerms`. -/
 def truncationGerms : TruncationGerms K G (CardSuppLTNonpositive (G := G) (L := K) (κ := κ))
     (CardSuppLTNonpositive (G := G) (L := K) (κ := κ) ⧸ boundedAwayIdeal G K κ) :=
   (Nonpositive.truncationGerms G K).comap (toNonpositiveAlgHom G K κ) (germEmbedding G K κ)
@@ -195,11 +197,11 @@ nonpositive series is a polynomial algebra over `K`. -/
     Translated truncations, and cutoffs below a negative exponent, do not
     enlarge supports, so they preserve $K((G^{\le0}))_\kappa$; and
     $K((G^{\le0}))_\kappa/J_\kappa$ embeds in $K((G^{\le0}))/J$ compatibly with
-    the germ maps.  Every axiom of a system of germs is an identity or a
+    the germ maps.  Each of the properties (1)--(7) is an identity or a
     vanishing statement in the ring of germs whose witnesses are translated
-    truncations or cutoffs, so the germs $[b^{|\gamma}]$ form a system of germs
-    on $K((G^{\le0}))_\kappa$ with values in $K((G^{\le0}))_\kappa/J_\kappa$,
-    by restriction from \ref{prop:hahn-germs-axioms}.  Apply
+    truncations or cutoffs.  So the germ maps $b\mapsto[b^{|\gamma}]$ on
+    $K((G^{\le0}))_\kappa$ with values in $K((G^{\le0}))_\kappa/J_\kappa$
+    satisfy (1)--(7), by restriction from \ref{prop:hahn-germs-axioms}.  Apply
     \ref{thm:germ-ring-generators}.
   -/)]
 theorem exists_mvPolynomial_algEquiv_germ :

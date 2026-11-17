@@ -377,7 +377,7 @@ private theorem germAt_mul_eq_sum_closedSupportAddFiber (b c : Nonpositive G K) 
       [(bc)^{|\gamma}]=\sum_{\beta\in G}[b^{|\beta}]\,[c^{|\gamma-\beta}],
     \]
     where the sum is the sum of its finitely many nonzero terms (and $0$ if
-    there were infinitely many) [Ber00, Lem. 7.5].
+    there were infinitely many).  For $G=\mathbb R$ this is [Ber00, Lem. 7.5].
   -/)
   (proof := /--
     Let $B$ and $C$ be the closures of the supports of $b$ and $c$; they are

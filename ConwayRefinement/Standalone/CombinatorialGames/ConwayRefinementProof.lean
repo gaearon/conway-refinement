@@ -37,7 +37,8 @@ refinement. -/
     \[
       a=ef,\qquad b=gh,\qquad c=eg,\qquad d=fh.
     \]
-    This is Conway's refinement conjecture [LM24, Conj. 1.1.1(2)].
+    This is Conway's refinement conjecture [Con76, p. 46], stated as
+    [LM24, Conj. 1.1.1(2)].
   -/)
   (proof := /--
     A surreal number satisfies $x=\{x-1\mid x+1\}$ exactly when it lies in the

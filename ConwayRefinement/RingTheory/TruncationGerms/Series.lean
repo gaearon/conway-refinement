@@ -56,11 +56,11 @@ truncations, monomials that translate germs, and well-ordered germ supports that
 elements below each bound. -/
 @[blueprint "def:series-germ-axioms"
   (phase := "Polynomial presentations")
-  (title := "Axioms for germs on a ring of series")
+  (title := "Further properties for a ring of series")
   (statement := /--
-    A system of germs $(g_\gamma)$ on $A$ with values in $Q$
-    (\ref{def:germ-axioms}) is a system of germs on a ring of series if
-    moreover, for all $b\in A$:
+    Let $A$, $Q$, $(g_\gamma)$ and $\operatorname{rk}$ satisfy (1)--(7) of
+    \ref{def:germ-axioms}.  The following further properties are used, for
+    all $b\in A$:
     \begin{itemize}
       \item (8) if $g_\xi(b)=0$ for every $\xi$, then $b=0$;
       \item (9) for every $\eta\in\Gamma$ there is $b_{|\eta}\in A$ with
@@ -78,7 +78,7 @@ elements below each bound. -/
     truncation if it contains $b_{|\eta}$ whenever it contains $b$.
   -/)
   (proof := /--
-    These axioms extend those of a system of germs by the properties of
+    These properties extend (1)--(7) by the properties of
     $K((\mathbb R^{\le0}))$ that concern series rather than germs: a series is
     determined by its germs, truncations and monomials act on germs as stated,
     and the exponents with nonzero germ form the closure of the support.
@@ -428,8 +428,8 @@ exponents lie in `R` gives a truncation-closed subalgebra. -/
   (phase := "Polynomial presentations")
   (title := "Closure under truncation of a simple extension")
   (statement := /--
-    Let $(g_\gamma)$ be a system of germs on a ring of series $A$
-    (\ref{def:series-germ-axioms}).  Let $R\subseteq A$ be a $K$-subalgebra
+    Let $A$, $Q$, $(g_\gamma)$ and $\operatorname{rk}$ satisfy (1)--(11) of
+    \ref{def:series-germ-axioms}.  Let $R\subseteq A$ be a $K$-subalgebra
     closed under truncation, and let $X\in A$ with $X_{|\zeta}\in R$ for every
     $\zeta<0$.  Then the $K$-subalgebra $R[X]$ is closed under truncation.
   -/)
@@ -486,8 +486,8 @@ polynomial relation for `X` over `R₀` is a polynomial relation for `germ X` ov
   (phase := "Polynomial presentations")
   (title := "Transcendence of a series with transcendental germ")
   (statement := /--
-    Let $(g_\gamma)$ be a system of germs on a ring of series $A$
-    (\ref{def:series-germ-axioms}).  Let $S\subseteq Q$ be a $K$-subalgebra,
+    Let $A$, $Q$, $(g_\gamma)$ and $\operatorname{rk}$ satisfy (1)--(11) of
+    \ref{def:series-germ-axioms}.  Let $S\subseteq Q$ be a $K$-subalgebra,
     let $R_0\subseteq A$ be an $A_K$-subalgebra contained in $A_S$, and let
     $X\in A$ be such that $[X]$ is transcendental over $S$.  Then $X$ is
     transcendental over $R_0$.
@@ -565,8 +565,8 @@ of `S` is the germ of an element of `R`, contains `seriesWithGermsIn S`. -/
   (phase := "Polynomial presentations")
   (title := "Generation by a subalgebra closed under truncation")
   (statement := /--
-    Let $(g_\gamma)$ be a system of germs on a ring of series $A$
-    (\ref{def:series-germ-axioms}).  Let $S\subseteq Q$ be a $K$-subalgebra,
+    Let $A$, $Q$, $(g_\gamma)$ and $\operatorname{rk}$ satisfy (1)--(11) of
+    \ref{def:series-germ-axioms}.  Let $S\subseteq Q$ be a $K$-subalgebra,
     and let $R\subseteq A$ be a $K$-subalgebra that is closed under truncation,
     contains $A_K$, and contains for every $a\in S$ some $r$ with $[r]=a$.
     Then $A_S\subseteq R$.
@@ -647,8 +647,8 @@ algebraically independent generating set over that subalgebra. -/
   (phase := "Polynomial presentations")
   (title := "Algebraically independent generators of the ring of series")
   (statement := /--
-    Let $(g_\gamma)$ be a system of germs on a ring of series $A$
-    (\ref{def:series-germ-axioms}).  There is a set $\mathcal X\subseteq A$,
+    Let $A$, $Q$, $(g_\gamma)$ and $\operatorname{rk}$ satisfy (1)--(11) of
+    \ref{def:series-germ-axioms}.  There is a set $\mathcal X\subseteq A$,
     algebraically independent over $A_K$, such that $A_K[\mathcal X]=A$.
   -/)
   (proof := /--
