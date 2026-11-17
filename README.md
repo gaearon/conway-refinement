@@ -128,11 +128,11 @@ Each statement file in this table imports only Mathlib. Its paired proof connect
 
 | Result | Links |
 |---|---|
-| For every Cauchy-complete ordered abelian group $G$, the ring of germs $K((G^{\le 0}))/J$ is a polynomial ring over $K$; hence $J$ is prime and germs have four-factor refinement | [statement](ConwayRefinement/Standalone/Mathlib/CompleteHahnGerm.lean), [proof](ConwayRefinement/Standalone/Mathlib/CompleteHahnGermProof.lean), [map](https://gaearon.github.io/conway-refinement/#/map/complete-hahn-germ-polynomial-algebra) |
+| Polynomial presentation and four-factor refinement of Hahn germ rings over Cauchy-complete exponent groups | [statement](ConwayRefinement/Standalone/Mathlib/CompleteHahnGerm.lean), [proof](ConwayRefinement/Standalone/Mathlib/CompleteHahnGermProof.lean), [map](https://gaearon.github.io/conway-refinement/#/map/complete-hahn-germ-polynomial-algebra) |
 | Polynomial presentation of $K((\mathbb R^{\le 0}))$ over its finite-support subring | [statement](ConwayRefinement/Standalone/Mathlib/HahnSeriesPolynomialRing.lean), [proof](ConwayRefinement/Standalone/Mathlib/HahnSeriesPolynomialRingProof.lean), [map](https://gaearon.github.io/conway-refinement/#/map/hahn-series-polynomial-algebra) |
-| $K((\mathbb R^{\le 0}))$ is a GCD domain: every series is primal, irreducibles are prime, and irreducible factorisations are unique | [statement](ConwayRefinement/Standalone/Mathlib/HahnSeriesGCD.lean), [proof](ConwayRefinement/Standalone/Mathlib/HahnSeriesGCDProof.lean), [map](https://gaearon.github.io/conway-refinement/#/map/hahn-series-gcd-domain) |
-| Berarducci's ring of germs $K((\mathbb R^{\le 0}))/J$ is a polynomial ring and a unique factorisation domain (Berarducci's conjecture as stated in [LM17, Conjecture 1.5]) | [statement](ConwayRefinement/Standalone/Mathlib/GermPolynomialRing.lean), [proof](ConwayRefinement/Standalone/Mathlib/GermPolynomialRingProof.lean), [map](https://gaearon.github.io/conway-refinement/#/map/complete-hahn-germ-polynomial-algebra) |
-| In $\mathbb Q((\mathbb R^{\le 0}))$ the monomial $t^{-1}$ has an $n$-th root for every $n\ge 1$, so factorisations into nonunits can be arbitrarily long | [statement](ConwayRefinement/Standalone/Mathlib/Examples/NegativeMonomialRoots.lean), [proof](ConwayRefinement/Standalone/Mathlib/Examples/NegativeMonomialRootsProof.lean) |
+| GCDs, every series primal, irreducibles prime, and uniqueness of irreducible factorisations in $K((\mathbb R^{\le 0}))$ | [statement](ConwayRefinement/Standalone/Mathlib/HahnSeriesGCD.lean), [proof](ConwayRefinement/Standalone/Mathlib/HahnSeriesGCDProof.lean), [map](https://gaearon.github.io/conway-refinement/#/map/hahn-series-gcd-domain) |
+| Berarducci's germ ring is a polynomial ring and a UFD | [statement](ConwayRefinement/Standalone/Mathlib/GermPolynomialRing.lean), [proof](ConwayRefinement/Standalone/Mathlib/GermPolynomialRingProof.lean), [map](https://gaearon.github.io/conway-refinement/#/map/complete-hahn-germ-polynomial-algebra) |
+| $t^{-1}$ has roots of every order in $\mathbb Q((\mathbb R^{\le 0}))$ | [statement](ConwayRefinement/Standalone/Mathlib/Examples/NegativeMonomialRoots.lean), [proof](ConwayRefinement/Standalone/Mathlib/Examples/NegativeMonomialRootsProof.lean) |
 
 ### Other results and examples
 
@@ -141,7 +141,7 @@ These also have short statement and proof files, but their statements use code f
 | Result | Links |
 |---|---|
 | Normal-form identification, every omnific integer primal, irreducibles prime, and uniqueness of irreducible factorisations in $\mathbf{Oz}$ | [statement](ConwayRefinement/Standalone/CombinatorialGames/Examples/OmnificFactorization.lean), [proof](ConwayRefinement/Standalone/CombinatorialGames/Examples/OmnificFactorizationProof.lean), [map](https://gaearon.github.io/conway-refinement/#/map/omnific-factorisation) |
-| $\omega$ has an $n$-th root in $\mathbf{Oz}$ for every $n\ge 1$, so an omnific integer can have factorisations into arbitrarily many nonunits | [statement](ConwayRefinement/Standalone/CombinatorialGames/Examples/OmegaRoots.lean), [proof](ConwayRefinement/Standalone/CombinatorialGames/Examples/OmegaRootsProof.lean) |
+| $\omega$ has roots of every order in $\mathbf{Oz}$ | [statement](ConwayRefinement/Standalone/CombinatorialGames/Examples/OmegaRoots.lean), [proof](ConwayRefinement/Standalone/CombinatorialGames/Examples/OmegaRootsProof.lean) |
 
 ### Results without separate statement files
 
@@ -149,9 +149,9 @@ These results don't have separate standalone statement files, but AI chose them 
 
 | Result | Links |
 |---|---|
-| Transcendence lemma for germs of translated truncations | [source](ConwayRefinement/RingTheory/TruncationGerms/Transcendence.lean), [map](https://gaearon.github.io/conway-refinement/#/map/transcendence) |
-| The ideal $J$ is prime for every Cauchy-complete exponent group, as a corollary of the polynomial presentation (for $G=\mathbb R$ this is Berarducci's theorem [Ber00, Cor. 9.8]) | [source](ConwayRefinement/HahnSeries/Germ/PolynomialRing.lean), [map](https://gaearon.github.io/conway-refinement/#/map/bounded-away-ideal-prime) |
-| Every element of $Z+R((G^{<0}))_\kappa$ is primal, for $Z$ pre-Schreier, under conditions (A1)–(A3) of [LM24, Thm. 9.0.1] together with cofinality and Cauchy completeness at limits of Archimedean classes | [source](ConwayRefinement/HahnSeries/IntegerPart/Primality.lean), [map](https://gaearon.github.io/conway-refinement/#/map/hahn-integer-part-primality) |
+| Transcendence lemma for germs | [source](ConwayRefinement/RingTheory/TruncationGerms/Transcendence.lean), [map](https://gaearon.github.io/conway-refinement/#/map/transcendence) |
+| The ideal $J$ is prime | [source](ConwayRefinement/HahnSeries/Germ/PolynomialRing.lean), [map](https://gaearon.github.io/conway-refinement/#/map/bounded-away-ideal-prime) |
+| Primality in $Z+R((G^{<0}))_\kappa$ | [source](ConwayRefinement/HahnSeries/IntegerPart/Primality.lean), [map](https://gaearon.github.io/conway-refinement/#/map/hahn-integer-part-primality) |
 | Refinement of $Z+K((G^{<0}))$ forces $K=\mathrm{Frac}(Z)$ | [source](ConwayRefinement/HahnSeries/IntegerPart/FractionField.lean), [map](https://gaearon.github.io/conway-refinement/#/map/refinement-forces-coefficient-fraction-field) |
 
 Please open an issue if any of these are wrong or could be clearer.
