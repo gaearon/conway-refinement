@@ -58,20 +58,6 @@ which the reflected order still separates, fill the cut upstairs, and push the f
 
 For a quotient of an ordered group by a convex subgroup the hypotheses hold, so the quotient fills
 cuts as soon as the group does — which for the surreals is the simplicity theorem at sets. -/
-@[blueprint "lem:cut-filling-order-reflecting-surjection"
-  (phase := "A cut criterion for Cauchy completeness")
-  (title := "Cut filling under monotone order-reflecting surjections")
-  (statement := /--
-    Let $f\colon G\twoheadrightarrow C$ be a monotone surjection of preordered
-    sets that reflects strict inequalities.  If every cut between two
-    $I$-indexed families in $G$ can be filled, then the same is true in $C$.
-  -/)
-  (proof := /--
-    Choose preimages in $G$ of the two families in $C$.  Reflection of strict
-    inequalities keeps the lifted families separated.  Fill their cut in
-    $G$, then apply $f$; monotonicity places the image between the two original
-    families.
-  -/)]
 theorem FillsCuts.of_surjective {ι : Type w} {G : Type u} {C : Type*} [Preorder G] [Preorder C]
     {f : G → C} (hsurj : Function.Surjective f) (hmono : Monotone f)
     (hreflect : ∀ a b : G, f a < f b → a < b) (hG : FillsCuts ι G) : FillsCuts ι C := by
@@ -98,19 +84,16 @@ complete.
 Only cuts indexed by the same `ι` as the coinitial family are used, so for a quotient of the
 surreals by a convex subgroup this asks for the simplicity theorem at sets, not at classes. -/
 @[blueprint "lem:complete-of-coinitial-scales-and-cut-filling"
-  (phase := "A cut criterion for Cauchy completeness")
+  (phase := "Surreal numbers and omnific integers")
   (title := "A cut criterion for Cauchy completeness")
   (statement := /--
-    Let $G$ be an ordered abelian group whose order topology is induced by a
-    compatible additive uniformity, and let $I$ be nonempty.  Suppose there
-    are elements $\varepsilon_i>0$ such that, for every $c>0$, some $i\in I$
-    satisfies
-    \[
-      \varepsilon_i+\varepsilon_i\le c.
-    \]
-    Suppose also that whenever $L_i<R_j$ for all $i,j\in I$, there is
-    $z\in G$ with $L_i\le z\le R_j$ for all $i,j$.  Then $G$ is Cauchy
-    complete.
+    Let $G$ be an ordered abelian group with its order topology and the
+    associated group uniformity, and let $I$ be a nonempty set.  Suppose there
+    are elements $\varepsilon_i>0$, $i\in I$, such that for every $c>0$ some
+    $i\in I$ satisfies $2\varepsilon_i\le c$.  Suppose also that for all
+    families $(l_i)_{i\in I}$ and $(r_i)_{i\in I}$ with $l_i<r_j$ for all
+    $i,j\in I$ there is $z\in G$ with $l_i\le z\le r_j$ for all $i,j$.  Then $G$
+    is Cauchy complete.
   -/)
   (proof := /--
     For a Cauchy filter and each $i$, choose a set of diameter less than

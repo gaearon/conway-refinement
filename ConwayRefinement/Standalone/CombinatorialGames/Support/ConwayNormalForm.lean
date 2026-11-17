@@ -14,7 +14,6 @@ public import ConwayRefinement.Algebra.Divisibility.DenominatorIdeal
 
 import ConwayRefinement.Surreal.OmnificInteger.NormalForm
 import ConwayRefinement.Surreal.HahnSeries.NormalFormMul
-import ConwayRefinement.Blueprint
 
 /-!
 # Conway cuts and the normal-form presentation of omnific integers
@@ -39,19 +38,6 @@ theorem isConwayOmnificInteger_iff_mem {x : Surreal.{u}} :
     Surreal.omnificIntegerCut_eq]
 
 /-- The cut-defined and subring formulations of Conway's refinement conjecture are equivalent. -/
-@[blueprint "thm:conway-cut-subring-equivalence"
-  (phase := "Surreal numbers and omnific integers")
-  (title := "Equivalence of the cut and subring formulations of Conway's refinement conjecture")
-  (statement := /--
-    Conway's refinement conjecture for cut-defined omnific integers is
-    equivalent to the refinement property of the omnific-integer subring of
-    the surreal numbers.
-  -/)
-  (proof := /--
-    The cut predicate for omnific integers is equivalent to membership in the
-    omnific-integer subring. Substitute this equivalence into the two
-    four-factor statements; their equations and quantifiers are identical.
-  -/)]
 theorem conwayConjecture_iff_native : ConwayConjecture.{u} ↔ ConwayRefinementConjecture.{u} := by
   rw [conwayConjecture_iff, conwayRefinementConjecture_def, ← hasFourFactorRefinement_def]
   simpa only [isConwayOmnificInteger_iff_mem] using

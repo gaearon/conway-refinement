@@ -125,28 +125,6 @@ variable [IsDomain A]
 /-- Suppose `p` is nonzero, has image zero under `π`, and cannot be factored into two elements
 whose images are both zero. If `p` is primal in `π ⁻¹ S`, then `L` is the fraction field of
 `S`. -/
-@[blueprint "lem:primal-zero-residue-fraction-field"
-  (phase := "Finitely many Archimedean classes")
-  (title := "A primal zero-residue element forces the fraction-field condition")
-  (statement := /--
-    Let $L$ be a field, let $A$ be a domain and an $L$-algebra, and let
-    $\pi:A\to L$ be an $L$-algebra retraction.  Let $S\subseteq L$ be a
-    subring.  Suppose that $p\in A$ is nonzero, $\pi(p)=0$, and every
-    factorisation $p=ab$ has $\pi(a)\ne0$ or $\pi(b)\ne0$.  If $p$ is
-    primal in $\pi^{-1}(S)$, then $L$ is the fraction field of $S$.
-  -/)
-  (proof := /--
-    Fix $x\in L^\times$.  In $\pi^{-1}(S)$, primality of $p$ applied to
-    \[
-      (xp)(x^{-1}p)=p^2
-    \]
-    gives a factorisation $p=p_1p_2$ with $p_1\mid xp$ and
-    $p_2\mid x^{-1}p$.  At least one of $\pi(p_1)$ and $\pi(p_2)$ is
-    nonzero.  Cancelling $p$ from the corresponding divisibility equation
-    expresses $x$ as a quotient of two nonzero residues of elements of
-    $\pi^{-1}(S)$.  Both residues lie in $S$, so $x\in\operatorname{Frac}(S)$.
-    The case $x=0$ is immediate.
-  -/)]
 theorem fracSubring_eq_top_of_isPrimal_of_residue_eq_zero
     {p : A} (hpπ : π p = 0) (hp0 : p ≠ 0)
     (hfactor : ∀ a b : A, p = a * b → π a ≠ 0 ∨ π b ≠ 0)
@@ -448,15 +426,17 @@ theorem isPrimal_residueSubring_of_isPrimal_pre_fracSubring {b : A} (hb : π b �
 primal in `π ⁻¹ S`, provided its residue is primal in `S` when it is nonzero, and `L` is the
 fraction field of `S` when the residue is zero. -/
 @[blueprint "lem:primality-in-d-plus-m"
-  (phase := "Finitely many Archimedean classes")
+  (phase := "Two primality criteria")
   (title := "Primality in a $D+M$ construction")
   (statement := /--
-    Let $L$ be a field, let $A$ be a domain and an $L$-algebra, and let
-    $\pi:A\to L$ be an $L$-algebra retraction, so that $A=L+M$ with
+    Let $L$ be a field, $A$ an integral domain that is an $L$-algebra, and
+    $\pi:A\to L$ a homomorphism of $L$-algebras, so that $A=L+M$ with
     $M=\ker\pi$.  Let $S\subseteq L$ be a subring and let
     $b\in\pi^{-1}(S)=S+M$.  Suppose that $b$ is primal in $A$, that $\pi(b)$
-    is primal in $S$ if $\pi(b)\ne0$, and that $L$ is the fraction field of
-    $S$ if $\pi(b)=0$.  Then $b$ is primal in $\pi^{-1}(S)$.
+    is primal in $S$ if $\pi(b)\ne0$, and that $L=\operatorname{Frac}(S)$ if
+    $\pi(b)=0$.  Then $b$ is primal in $\pi^{-1}(S)$.  This is a special case,
+    for $A$ an integral domain, of the sufficiency direction of the transfer
+    lemma [LM24, Lem. 9.2.1].
   -/)
   (proof := /--
     Let $b\mid cd$ in $\pi^{-1}(S)$ and refine in $A$: $b=b_1b_2$, $b_1\mid c$,

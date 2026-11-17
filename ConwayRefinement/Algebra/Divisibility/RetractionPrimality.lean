@@ -76,30 +76,31 @@ that each retraction `ρ i` is idempotent and kills every element of `J` for all
 and that divisibility by a nonzero element fixed by `ρ i` can be tested after `ρ i`. Then `f` is
 primal as soon as, for `i` frequently, `ρ i f ≠ 0` and `f = ρ i f * w` with `w` primal. -/
 @[blueprint "lem:primality-from-germs-and-restrictions"
-  (phase := "Transfinite induction on Archimedean classes")
-  (title := "Primality from germs and restrictions")
+  (phase := "Two primality criteria")
+  (title := "Primality via a quotient and retractions")
   (statement := /--
-    Let $T$ be a domain, $J\subseteq T$ an ideal such that every element of
-    $T/J$ is primal, and $(\rho_i)_{i\in I}$ a family of idempotent ring
-    endomorphisms of $T$ indexed along a filter on $I$.  Assume that every
-    element of $J$ is killed by $\rho_i$ for all sufficiently late $i$, and
-    that whenever $q=\rho_i(q)\ne0$ and $q\mid\rho_i(x)$, also $q\mid x$.  If
-    for arbitrarily late $i$ one has $\rho_i(f)\ne0$ and $f=\rho_i(f)\,w$
-    with $w$ primal, then $f$ is primal in $T$.
+    Let $T$ be an integral domain and $J\subseteq T$ an ideal such that every
+    element of $T/J$ is primal.  Let $(\rho_i)_{i\in I}$ be idempotent ring
+    endomorphisms of $T$ and $\mathcal F$ a filter on $I$.  Assume that for
+    every $j\in J$ one has $\rho_i(j)=0$ for $\mathcal F$-almost all $i$, and
+    that for all $i$ and $q,x\in T$, if $\rho_i(q)=q\ne0$ and $q\mid\rho_i(x)$,
+    then $q\mid x$.  Let $f\in T$ be such that, for $\mathcal F$-frequently many
+    $i$, one has $\rho_i(f)\ne0$ and $f=\rho_i(f)\,w$ for some primal $w\in T$.
+    Then $f$ is primal in $T$.
   -/)
   (proof := /--
-    Let $f\mid xy$.  Primality of the class of $f$ in $T/J$, with
-    representatives of the factors and cofactors, gives $p_1,p_2,q_1,q_2\in T$
-    with $f\equiv p_1p_2$, $x\equiv p_1q_1$, $y\equiv p_2q_2\pmod J$.  The
-    three differences lie in $J$, so for all sufficiently late $i$ they are
-    killed by $\rho_i$; pick such an $i$ with $\rho_i(f)\ne0$ and
-    $f=\rho_i(f)w$, $w$ primal.  Then $\rho_i(f)=g_1g_2$,
-    $\rho_i(x)=g_1\rho_i(q_1)$ and $\rho_i(y)=g_2\rho_i(q_2)$ with
-    $g_k=\rho_i(p_k)$.  Both $g_k$ are nonzero and fixed by $\rho_i$, so
-    $g_1\mid x$ and $g_2\mid y$.  Write $x=g_1x'$, $y=g_2y'$.  Cancelling
-    $g_1g_2\ne0$ from $g_1g_2wz=g_1g_2x'y'$ gives $w\mid x'y'$, hence
-    $w=w_1w_2$ with $w_1\mid x'$ and $w_2\mid y'$.  Then
-    $f=(g_1w_1)(g_2w_2)$ with $g_1w_1\mid x$ and $g_2w_2\mid y$.
+    Let $xy=fz$.  Since the class of $f$ is primal in $T/J$, there are
+    $p_1,p_2,q_1,q_2\in T$ with $f\equiv p_1p_2$, $x\equiv p_1q_1$ and
+    $y\equiv p_2q_2$ modulo $J$.  The three differences are killed by
+    $\rho_i$ for almost all $i$, so there is an $i$ at which they are killed,
+    $\rho_i(f)\ne0$, and $f=\rho_i(f)w$ with $w$ primal.  With
+    $g_k=\rho_i(p_k)$ this gives $\rho_i(f)=g_1g_2$,
+    $\rho_i(x)=g_1\rho_i(q_1)$ and $\rho_i(y)=g_2\rho_i(q_2)$.  Both $g_k$ are
+    nonzero and fixed by $\rho_i$, so $g_1\mid x$ and $g_2\mid y$; write
+    $x=g_1x'$ and $y=g_2y'$.  Cancelling $g_1g_2\ne0$ from
+    $g_1g_2x'y'=fz=g_1g_2wz$ gives $w\mid x'y'$, hence $w=w_1w_2$ with
+    $w_1\mid x'$ and $w_2\mid y'$.  Then $f=(g_1w_1)(g_2w_2)$ with
+    $g_1w_1\mid x$ and $g_2w_2\mid y$.
   -/)]
 theorem isPrimal_of_frequently_retraction_mul_isPrimal [IsDomain T]
     (J : Ideal T) (F : Filter ι) (ρ : ι → T →+* T)

@@ -85,23 +85,20 @@ private theorem small_of_card_lt_smallSupportCardinal
 is primal. -/
 @[blueprint "thm:surreal-hahn-integer-part-primality"
   (phase := "Surreal numbers and omnific integers")
-  (title := "Primality of the surreal Hahn integer part")
+  (title := "Primality in $\\mathbb Z+\\mathbb R((\\mathbf{No}^{<0}))_\\kappa$")
   (statement := /--
-    Every element of
-    \[
-      \mathbb Z+\mathbb R((\mathbf{No}_u^{<0}))_{\kappa_u}
-    \]
-    is primal, where $\kappa_u$ is the universe cardinal.
+    Let $\mathbf{No}$ be the surreal numbers of a universe $u$ and $\kappa_u$
+    the cardinal of that universe.  Every element of
+    $\mathbb Z+\mathbb R((\mathbf{No}^{<0}))_{\kappa_u}$ is primal.
   -/)
   (proof := /--
-    Apply \ref{thm:hahn-integer-part-primality} with $K=\mathbb R$ and
-    $Z=\mathbb Z$, which is pre-Schreier.  The strata are isomorphic to
-    $\mathbb R$ by \ref{fact:surreal-archimedean-strata}; strict balls have
-    cofinality at least $\kappa_u$ by
-    \ref{fact:surreal-archimedean-ball-cofinality}, and common tails of small
-    limit families by \ref{lem:surreal-common-tail-cofinality}; the quotients
-    by these tails are Cauchy complete by
-    \ref{lem:surreal-common-tail-quotient-complete}.
+    Apply \ref{thm:hahn-integer-part-primality} with $K=R=\mathbb R$,
+    $Z=\mathbb Z$, which is pre-Schreier, and $\kappa=\kappa_u$, an uncountable
+    regular cardinal.  Condition (1) is \ref{fact:surreal-archimedean-strata};
+    condition (2) holds by \ref{fact:surreal-archimedean-ball-cofinality};
+    condition (3) by \ref{lem:surreal-common-tail-cofinality}, since a set of
+    classes of cardinality less than $\kappa_u$ is a set of the universe; and
+    condition (4) by \ref{lem:surreal-common-tail-quotient-complete}.
   -/)]
 theorem signedSmallSupportIntegerPart_isPrimal
     (a : SignedSmallSupportIntegerPart.{u}) : IsPrimal a := by
@@ -121,24 +118,6 @@ theorem signedSmallSupportIntegerPart_decompositionMonoid :
   ⟨signedSmallSupportIntegerPart_isPrimal⟩
 
 /-- The omnific-integer subring has the four-factor refinement property. -/
-@[blueprint "thm:omnific-integer-refinement-property"
-  (phase := "Surreal numbers and omnific integers")
-  (title := "Refinement property of $\\mathbf{Oz}_u$")
-  (statement := /--
-    If $a,b,c,d\in\mathbf{Oz}$ and $ab=cd$, then there are
-    $e,f,g,h\in\mathbf{Oz}$ such that
-    \[
-      a=ef,\qquad b=gh,\qquad c=eg,\qquad d=fh.
-    \]
-  -/)
-  (proof := /--
-    By \ref{thm:signed-normal-form-omnific-integer-equivalence},
-    $\mathbf{Oz}_u$ is isomorphic to its bounded generalised-power-series
-    integer part.
-    By \ref{thm:surreal-hahn-integer-part-primality}, that integer part is
-    pre-Schreier and therefore has four-factor refinement.  Transport the
-    refinement back through signed normal form.
-  -/)]
 theorem conwayRefinement : ConwayRefinementConjecture.{u} := by
   rw [conwayRefinementConjecture_def, ← hasFourFactorRefinement_def]
   letI : DecompositionMonoid SignedSmallSupportIntegerPart.{u} :=
@@ -156,7 +135,8 @@ theorem isPrimal (x : Surreal.OmnificInteger.{u}) : IsPrimal x :=
   (phase := "Surreal numbers and omnific integers")
   (title := "Irreducible omnific integers are prime")
   (statement := /--
-    Every irreducible element of $\mathbf{Oz}$ is prime in $\mathbf{Oz}$.
+    Let $\mathbf{Oz}$ be the omnific integers of a fixed universe.  Every
+    irreducible element of $\mathbf{Oz}$ is prime in $\mathbf{Oz}$.
   -/)
   (proof := /--
     By \ref{thm:signed-normal-form-omnific-integer-equivalence} and

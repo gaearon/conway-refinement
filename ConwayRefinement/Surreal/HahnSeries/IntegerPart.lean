@@ -295,20 +295,25 @@ def smallSupportIntegerPartSignedRingEquiv :
 /-- The signed-exponent Conway/Hahn ring equivalence for universe-bounded omnific integers. -/
 @[blueprint "thm:signed-normal-form-omnific-integer-equivalence"
   (phase := "Surreal numbers and omnific integers")
-  (title := "The signed normal-form isomorphism for omnific integers")
+  (title := "Conway normal form of omnific integers")
   (statement := /--
-    For every universe $u$, signed Conway normal form restricts to a ring
-    isomorphism
+    Let $\mathbf{No}$ be the surreal numbers of a universe $u$, $\kappa_u$ the
+    cardinal of that universe, and $\mathbf{Oz}\subseteq\mathbf{No}$ the
+    omnific integers.  Conway normal form, with the signs of the exponents
+    reversed, restricts to a ring isomorphism
     \[
-      \mathbf{Oz}_u\simeq
-      \mathbb Z+\mathbb R((\mathbf{No}_u^{<0}))_{\kappa_u},
+      \mathbf{Oz}\simeq
+      \mathbb Z+\mathbb R((\mathbf{No}^{<0}))_{\kappa_u}.
     \]
-    where $\kappa_u$ is the universe cardinal.
   -/)
   (proof := /--
-    Restrict Conway normal form to the omnific integers, then negate the
-    exponents so that nonnegative Conway exponents become nonpositive
-    exponents in the variable $t=\omega^{-1}$.
+    Conway normal form is a ring isomorphism from $\mathbf{No}$ onto the series
+    with real coefficients, exponents in $\mathbf{No}$ and reverse well-ordered
+    support of cardinality less than $\kappa_u$, and an omnific integer is a
+    surreal number whose normal form has only nonnegative exponents and an
+    integer constant term [Con76].  Writing $\omega^{y}=t^{-y}$ turns these into
+    series in $t=\omega^{-1}$ with well-ordered nonpositive support and constant
+    coefficient in $\mathbb Z$.
   -/)]
 def signedSmallSupportIntegerPartRingEquiv :
     Surreal.OmnificInteger.{u} ≃+* SignedSmallSupportIntegerPart.{u} :=

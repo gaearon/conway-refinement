@@ -270,10 +270,11 @@ open Classical in
 /-- Restriction to a convex subgroup of the exponents, as a ring endomorphism of the bounded
 integer part. -/
 @[blueprint "lem:convex-restriction-ring-hom"
-  (phase := "Transfinite induction on Archimedean classes")
+  (phase := "Reduction along Archimedean classes")
   (title := "Restriction to a convex subgroup")
   (statement := /--
-    Let $C$ be a convex subgroup of an ordered abelian group $G$.  Restriction
+    Let $G$ be an ordered abelian group, $C\subseteq G$ a convex subgroup,
+    $K$ a field, $Z\subseteq K$ a subring and $\kappa>\aleph_0$.  Restriction
     $x\mapsto x_{\vert C}$ of the support to $C$ is a ring endomorphism of
     $Z+K((G^{<0}))_\kappa$.
   -/)
@@ -367,20 +368,22 @@ private theorem dvd_of_restriction_factorization
 /-- **Divisibility from a convex restriction.** A nonzero element fixed by restriction to a
 convex subgroup divides a series as soon as it divides the restriction of that series. -/
 @[blueprint "lem:divisibility-from-convex-restriction"
-  (phase := "Transfinite induction on Archimedean classes")
+  (phase := "Reduction along Archimedean classes")
   (title := "Divisibility from a convex restriction")
   (statement := /--
-    Let $C$ be a convex subgroup of an ordered abelian group $G$, and let
+    Let $G$ be an ordered abelian group, $C\subseteq G$ a convex subgroup,
+    $K$ a field, $Z\subseteq K$ a subring and $\kappa>\aleph_0$, and let
     $q,x\in Z+K((G^{<0}))_\kappa$.  If $q\ne0$, $q_{\vert C}=q$ and
     $q\mid x_{\vert C}$, then $q\mid x$ in $Z+K((G^{<0}))_\kappa$.
   -/)
   (proof := /--
-    Write $x_{\vert C}=qw$ and divide $x$ by $q$ in the bounded Hahn field.
-    The inverse of $q$ is supported in $C$, so the quotient is $w$ plus
-    $q^{-1}(x-x_{\vert C})$, whose exponents are sums of an element of $C$ and
-    a nonpositive exponent outside $C$.  Convexity keeps every such sum
-    strictly negative.  Hence the quotient has nonpositive support and the
-    constant coefficient of $w$, so it lies in $Z+K((G^{<0}))_\kappa$.
+    Write $x_{\vert C}=qw$ and divide $x$ by $q$ in the field
+    $K((G))_\kappa$.  The inverse of $q$ is supported in $C$, so the quotient
+    is $w+q^{-1}(x-x_{\vert C})$, and the exponents of the second term are sums
+    of an element of $C$ and a nonpositive exponent outside $C$.  Convexity
+    keeps every such sum strictly negative.  Hence the quotient has
+    nonpositive support and the constant coefficient of $w$, so it lies in
+    $Z+K((G^{<0}))_\kappa$.
   -/)]
 theorem dvd_of_dvd_restrictToAddSubgroup
     (Z : Subring K) {C : AddSubgroup G} (hC : (C : Set G).OrdConnected)
@@ -402,25 +405,26 @@ exponent subgroup. The complementary factor remains bounded, has constant coeffi
 all its nonzero support exponents lie outside the subgroup in classes met by the original
 support. -/
 @[blueprint "lem:factorisation-by-convex-restriction"
-  (phase := "Transfinite induction on Archimedean classes")
+  (phase := "Reduction along Archimedean classes")
   (title := "Factorisation by a convex restriction")
   (statement := /--
-    Let $C$ be a convex subgroup of an ordered abelian group $G$, and let
-    $b\in Z+K((G^{<0}))_\kappa$ have nonzero restriction $t=b_{\vert C}$.
-    Then
+    Let $G$ be an ordered abelian group, $C\subseteq G$ a convex subgroup,
+    $K$ a field, $Z\subseteq K$ a subring and $\kappa>\aleph_0$.  Let
+    $b\in Z+K((G^{<0}))_\kappa$ have nonzero restriction $t=b_{\vert C}$.  Then
     \[
       b=tw
     \]
-    for some $w\in Z+K((G^{<0}))_\kappa$ with constant coefficient $1$.
-    Every nonzero exponent in $\operatorname{supp}(w)$ lies outside $C$, and
-    its Archimedean class is met by $\operatorname{supp}(b)$.
+    for some $w\in Z+K((G^{<0}))_\kappa$ with constant coefficient $1$ such
+    that every nonzero exponent in $\operatorname{supp}(w)$ lies outside $C$
+    and has an Archimedean class met by $\operatorname{supp}(b)$.
   -/)
   (proof := /--
-    Divide $b$ by its nonzero restriction $t$ in the bounded Hahn field.  The
-    quotient has constant coefficient $1$.  Convexity separates the discarded
-    support from $C$; the Hahn inverse expansion shows that each class appearing
-    in the quotient already appears in the support of $b$.  Thus the quotient
-    remains in the bounded Hahn integer part and has the stated support.
+    Divide $b$ by $t$ in the field $K((G))_\kappa$; the quotient $w$ has
+    constant coefficient $1$.  Write $b=t+r$ with $\operatorname{supp}(r)$
+    disjoint from $C$; then $w=1+t^{-1}r$.  By convexity every exponent of
+    $t^{-1}r$ is the sum of an exponent of $r$ and an element of $C$, which is
+    negative, lies outside $C$, and has the Archimedean class of that exponent
+    of $r$.  Hence $w\in Z+K((G^{<0}))_\kappa$ and has the stated support.
   -/)]
 theorem exists_factorization_by_restriction
     (Z : Subring K) {C : AddSubgroup G} (hC : (C : Set G).OrdConnected)

@@ -544,14 +544,20 @@ private unsafe def extract (moduleName : Name) (requestedNames : Array Name) (ti
     let some declarationStart := declarationStart? item.commandSyntax
       | if selectAll then continue
         else throw <| IO.userError s!"{name}: unsupported command {item.commandSyntax.getKind}"
-    let some body := declarationBody? item.commandSyntax
-      | if selectAll then continue
-        else throw <| IO.userError s!"{name}: declaration has no body"
-    let some bodyStart := body.getPos? (canonicalOnly := true)
-      | throw <| IO.userError s!"{name}: body has no source start"
-    let some bodyEnd := body.getTailPos? (canonicalOnly := true)
-      | throw <| IO.userError s!"{name}: body has no source end"
-    let tacticProof := body.isOfKind ``Parser.Term.byTactic
+    -- A structure or inductive declaration has no body: its whole command is the statement.
+    let (bodyStart, bodyEnd, tacticProof, hasBody) ←
+      match declarationBody? item.commandSyntax with
+      | some body =>
+        let some bodyStart := body.getPos? (canonicalOnly := true)
+          | throw <| IO.userError s!"{name}: body has no source start"
+        let some bodyEnd := body.getTailPos? (canonicalOnly := true)
+          | throw <| IO.userError s!"{name}: body has no source end"
+        pure (bodyStart, bodyEnd, body.isOfKind ``Parser.Term.byTactic, true)
+      | none =>
+        if selectAll then continue
+        let some declarationEnd := item.commandSyntax.getTailPos? (canonicalOnly := true)
+          | throw <| IO.userError s!"{name}: command has no source end"
+        pure (declarationEnd, declarationEnd, false, false)
     selectedItems := selectedItems.push {
       name := name.toString
       displayName := (declarationDisplayName? item.commandSyntax).getD name |>.toString
@@ -563,7 +569,8 @@ private unsafe def extract (moduleName : Name) (requestedNames : Array Name) (ti
       bodyEnd := bodyEnd.byteIdx
       tacticProof
     }
-    requestedRanges := requestedRanges.push ⟨bodyStart, bodyEnd, tacticProof⟩
+    if hasBody then
+      requestedRanges := requestedRanges.push ⟨bodyStart, bodyEnd, tacticProof⟩
   let mut termGoals := #[]
   let mut tacticStates := #[]
   let mut goalConstants := #[]

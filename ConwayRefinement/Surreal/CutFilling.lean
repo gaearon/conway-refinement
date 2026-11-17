@@ -37,21 +37,20 @@ namespace Surreal
 first below every member of the second are strictly separated by a surreal. -/
 @[blueprint "thm:surreal-simplicity-small-cuts"
   (phase := "Surreal numbers and omnific integers")
-  (title := "The simplicity theorem for small cuts")
+  (title := "Filling small cuts in the surreal numbers")
   (statement := /--
-    Let $L,R\subseteq\mathbf{No}_u$ be small sets.  If $l<r$ for every
-    $l\in L$ and $r\in R$, then there is $x\in\mathbf{No}_u$ such
-    that
+    Let $\mathbf{No}$ be the surreal numbers of a universe $u$, and let
+    $L,R\subseteq\mathbf{No}$ be sets of the universe $u$.  If $l<r$ for every
+    $l\in L$ and $r\in R$, then there is $x\in\mathbf{No}$ such that
     \[
       l<x<r
     \]
     for every $l\in L$ and $r\in R$.
   -/)
   (proof := /--
-    Form the surreal $\{L\mid R\}$.  The separation hypothesis makes this a
-    valid Conway cut, and the simplicity theorem places it strictly above
-    every left option and strictly below every right option.  Smallness keeps
-    both option sets in the same universe.
+    Form the surreal number $\{L\mid R\}$ [Con76].  The separation hypothesis
+    makes it a valid cut, and every left option is less than it and every
+    right option greater.
   -/)]
 theorem exists_between_small_sets (L R : Set Surreal.{u})
     [Small.{u} L] [Small.{u} R] (hLR : ∀ l ∈ L, ∀ r ∈ R, l < r) :

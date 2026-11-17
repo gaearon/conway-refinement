@@ -8,7 +8,6 @@ module
 public import ConwayRefinement.HahnSeries.Truncation
 public import ConwayRefinement.HahnSeries.Nonpositive.Basic
 
-import ConwayRefinement.Blueprint
 import Mathlib.Algebra.Field.IsField
 import Mathlib.Data.Rat.Floor
 
@@ -181,27 +180,6 @@ variable [LinearOrder G] [AddCommGroup G] [IsOrderedAddMonoid G] [Field K]
 
 /-- Nonzero nonpositive factors of a series supported in a convex exponent subgroup are
 themselves supported in that subgroup. -/
-@[blueprint "lem:convex-support-of-factors"
-  (phase := "Finitely many Archimedean classes")
-  (title := "Convexity of the supports of factors")
-  (statement := /--
-    Let $H$ be a convex subgroup of a linearly ordered abelian group $G$.  If
-    $a,b\in K((G^{\le0}))$ are nonzero and
-    $\operatorname{supp}(ab)\subseteq H$, then
-    \[
-      \operatorname{supp}(a)\subseteq H,
-      \qquad
-      \operatorname{supp}(b)\subseteq H.
-    \]
-  -/)
-  (proof := /--
-    The least support exponents satisfy
-    $\min\operatorname{supp}(ab)=\min\operatorname{supp}(a)+
-    \min\operatorname{supp}(b)$.  This sum and zero lie in $H$, while both
-    summands are nonpositive, so convexity puts each least exponent in $H$.
-    Every later support exponent lies between its least exponent and zero and
-    therefore also belongs to $H$.
-  -/)]
 theorem support_subset_convex_of_mul_support_subset
     {H : AddSubgroup G} (hH : (H : Set G).OrdConnected)
     {a b : Nonpositive G K} (ha0 : a ≠ 0) (hb0 : b ≠ 0)

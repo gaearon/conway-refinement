@@ -7,7 +7,6 @@ module
 
 public import ConwayRefinement.HahnSeries.Nonpositive.Basic
 
-import ConwayRefinement.Blueprint
 public import Mathlib.Algebra.Order.Archimedean.Defs
 import ConwayRefinement.Order.Archimedean
 import Mathlib.Data.Rat.Floor
@@ -135,23 +134,6 @@ end CardSuppLTTruncationIntegerPart
 
 /-- If `κ ≤ cof(G)`, the `κ`-bounded truncation integer part has the whole bounded Hahn
 field as its fraction subring. -/
-@[blueprint "thm:bounded-hahn-integer-part-fraction-field"
-  (phase := "Finitely many Archimedean classes")
-  (title := "Fraction fields of bounded Hahn integer parts")
-  (statement := /--
-    Let $G$ be an ordered abelian group, let $K$ be a field, and let
-    $\kappa>\aleph_0$.  If $\kappa\le\operatorname{cof}(G)$, then the bounded
-    Hahn field $K((G))_\kappa$ is the fraction field of
-    $Z+K((G^{<0}))_\kappa$ for every subring $Z\subseteq K$.
-  -/)
-  (proof := /--
-    The support of a series in $K((G))_\kappa$ has cardinality less than
-    $\kappa$, so it is not cofinal in $G$.  Choose an upper bound $x$ for the
-    support and put $u=\max\{x,0\}$.  Multiplication by $t^{-u}$ moves the
-    support strictly below zero and gives constant coefficient zero.  Thus
-    both $t^{-u}$ and $t^{-u}b$ belong to the bounded Hahn integer part, and
-    $b=(t^{-u}b)/t^{-u}$.
-  -/)]
 theorem fracSubring_cardSuppLTTruncationIntegerPart_eq_top_of_le_cof (Z : Subring R)
     (hcof : κ ≤ Order.cof G) :
     Subring.fracSubring

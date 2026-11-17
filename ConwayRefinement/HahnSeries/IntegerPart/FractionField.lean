@@ -184,25 +184,6 @@ private theorem cofinalGermNonpositive_germ_not_isUnit :
     constantCoeff_cofinalGermNonpositive
 
 /-- There is a series with zero constant coefficient whose germ at zero is irreducible. -/
-@[blueprint "lem:irreducible-zero-constant-germ"
-  (phase := "Transfinite induction on Archimedean classes")
-  (title := "An irreducible germ with zero constant coefficient")
-  (statement := /--
-    Let $K$ be a field of characteristic zero and let $G$ be a nontrivial
-    ordered abelian group with no least nonzero Archimedean magnitude.
-    Assume that $G$ is Cauchy complete for its additive uniformity.
-    Then some series $p\in K((G^{\le0}))$ has constant coefficient zero and
-    irreducible image in the germ ring at zero.
-  -/)
-  (proof := /--
-    Choose a well-ordered support cofinal at $0$ that meets a cofinal family
-    of nonzero Archimedean classes.  The resulting series has a nonzero,
-    nonunit germ. Hence \ref{thm:complete-hahn-germ-polynomial-algebra} has
-    a nonempty index set. Choose a
-    polynomial variable $X_i$ and a series $p$ representing it.  Subtracting
-    the constant coefficient $r$ of $p$ gives a representative with constant
-    coefficient zero and germ corresponding to $X_i-r$, which is irreducible.
-  -/)]
 theorem exists_irreducible_cantorBendixson_germ_with_constantCoeff_zero :
     ∃ p : Nonpositive G K,
       constantCoeff p = 0 ∧
@@ -254,26 +235,32 @@ theorem exists_irreducible_cantorBendixson_germ_with_constantCoeff_zero :
 
 /-- If `Z + K((G^{<0}))` has the refinement property, then `K` is the fraction field of `Z`. -/
 @[blueprint "thm:refinement-forces-coefficient-fraction-field"
-  (phase := "Transfinite induction on Archimedean classes")
+  (phase := "Reduction along Archimedean classes")
   (title := "Refinement forces $K=\\operatorname{Frac}(Z)$")
   (statement := /--
-    Let $K$ be a field of characteristic zero and let $G$ satisfy the
-    hypotheses of \ref{lem:irreducible-zero-constant-germ}.  If
-    \[
-      Z+K((G^{<0}))
-    \]
-    has the refinement property for a subring $Z\subseteq K$, then
-    $K=\operatorname{Frac}(Z)$.
+    Let $K$ be a field of characteristic zero, $Z\subseteq K$ a subring, and
+    $G$ a nontrivial ordered abelian group with no least nonzero Archimedean
+    class in magnitude which, with its order topology and the associated group
+    uniformity, is Cauchy complete.  If $Z+K((G^{<0}))$ has the refinement
+    property, then $K=\operatorname{Frac}(Z)$.
   -/)
   (proof := /--
-    Identify the integer part with the inverse image of $Z$ under the
-    constant-coefficient map.  By
-    \ref{lem:irreducible-zero-constant-germ}, it contains a series $p$ whose
-    constant coefficient is zero and whose germ is irreducible.  Every
-    representative of a unit germ has nonzero constant coefficient, and the
-    refinement property makes $p$ primal.  The scalar argument in
-    \ref{lem:primal-zero-residue-fraction-field} therefore gives
-    $K=\operatorname{Frac}(Z)$.
+    Units of the ring of germs $K((G^{\le0}))/J$ have representatives with
+    nonzero constant coefficient.  Since $G$ has no least nonzero Archimedean
+    class, there is a series with constant coefficient $0$ whose support is a
+    well-ordered set of negative exponents with supremum $0$; its germ is
+    nonzero and not a unit.  So the polynomial ring of
+    \ref{thm:complete-hahn-germ-polynomial-algebra} is not $K$ and has a
+    variable $X_i$.  Let $p$ represent $X_i$ and let $r$ be its constant
+    coefficient.  Then $p_0=p-r$ has constant coefficient $0$ and the
+    irreducible germ $X_i-r$, and the refinement property makes $p_0$ primal
+    in $Z+K((G^{<0}))$.  For $x\in K^\times$, primality applied to
+    $p_0\mid(xp_0)(x^{-1}p_0)$ gives $p_0=p_1p_2$ with $xp_0=p_1a$ and
+    $x^{-1}p_0=p_2c$.  One of the germs of $p_1,p_2$ is a unit, say that of
+    $p_1$, so $p_1$ has nonzero constant coefficient.  Cancelling $p_2$ gives
+    $c=x^{-1}p_1$, so $x$ is the quotient of the constant coefficients of
+    $p_1$ and $c$, which are nonzero elements of $Z$; symmetrically if the germ
+    of $p_2$ is a unit.
   -/)]
 theorem fracSubring_eq_top_of_hasFourFactorRefinement_truncationIntegerPart
     (Z : Subring K) (h : HasFourFactorRefinement (truncationIntegerPart G Z)) :

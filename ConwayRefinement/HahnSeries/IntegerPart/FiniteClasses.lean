@@ -180,34 +180,46 @@ series meeting only finitely many Archimedean classes is primal: every Archimede
 order-isomorphic to `ℝ`, every strict ball has cofinality at least `κ` or is zero with `R` the
 fraction field of `Z`, and `Z` is pre-Schreier. -/
 @[blueprint "thm:finite-support-classes-primality"
-  (phase := "Finitely many Archimedean classes")
-  (title := "Primality for finitely many Archimedean support classes")
+  (phase := "Reduction along Archimedean classes")
+  (title := "Primality for finitely many Archimedean classes")
   (statement := /--
     Let $K$ be an Archimedean ordered field, $G$ an ordered $K$-vector
     space, $R$ a field of characteristic zero, $\kappa>\aleph_0$ a regular
-    cardinal, and $Z\subseteq R$ a pre-Schreier subring.  At every nonzero
-    Archimedean class $\sigma$, choose an additive complement $H_\sigma$ to
-    $G_{\prec\sigma}$ in $G_{\preceq\sigma}$ that is order additively
-    isomorphic to $\mathbb R$.  Assume that $G_{\prec\sigma}$ either has
-    cofinality at least $\kappa$, or is zero and every element of $R$ is a
-    fraction of elements of $Z$.  Every element of
-    $Z+R((G^{<0}))_\kappa$ whose support meets only finitely many Archimedean
-    classes is primal.
+    cardinal, and $Z\subseteq R$ a pre-Schreier subring.  For each nonzero
+    Archimedean class $\sigma$ of $G$ fix a complement $H_\sigma$ of
+    $G_{\prec\sigma}$ in $G_{\preceq\sigma}$, and assume:
+    \begin{itemize}
+      \item each $H_\sigma$ is isomorphic to $\mathbb R$ as an ordered group;
+      \item each $G_{\prec\sigma}$ has cofinality at least $\kappa$, or
+        $G_{\prec\sigma}=\{0\}$ and $R=\operatorname{Frac}(Z)$.
+    \end{itemize}
+    Then every element of $Z+R((G^{<0}))_\kappa$ whose support meets only
+    finitely many Archimedean classes is primal.  At each $\sigma$ the two
+    assumptions are conditions (A1)$_\sigma$ and (A2)$_\sigma$ of
+    [LM24, Thm. 9.0.1], and that $Z$ is pre-Schreier is condition (A3).
   -/)
   (proof := /--
     Induct on the number of Archimedean classes met by the support of $x$.  If
     the order of $x$ is $0$, then $x$ is a constant of $Z$ and is primal
     because $Z$ is pre-Schreier.  Otherwise let $\sigma$ be the class of the
-    order of $x$ and regroup along $C=G_{\prec\sigma}$.  The support of $x$
-    lies in $G_{\preceq\sigma}$, whose image in $G/C$ is the image of
-    $H_\sigma\simeq\mathbb R$; this image is convex.  Every element of
-    $L((\mathbb R^{\le0}))$ is primal by \ref{thm:hahn-series-primality}, and
-    primality in a convex exponent subgroup passes to the ambient ring, so
-    the regrouped series is primal.  The restriction $x_{\vert C}$ meets only
-    classes of $x$ other than $\sigma$, so it is primal by induction, and
-    $(A2)_\sigma$ makes $R((C))_\kappa$ the fraction field of
-    $Z+R((C^{<0}))_\kappa$.  Conclude by
-    \ref{lem:primality-through-regrouping}.
+    order of $x$, put $C=G_{\prec\sigma}$, and use
+    \ref{lem:primality-through-regrouping}.  The restriction $x_{\vert C}$ meets
+    fewer classes, so it is primal in $Z+R((G^{<0}))_\kappa$ by induction;
+    since restriction to $C$ is a ring endomorphism
+    (\ref{lem:convex-restriction-ring-hom}) after which divisibility by a
+    series supported in $C$ can be tested
+    (\ref{lem:divisibility-from-convex-restriction}), it is also primal in
+    $D=Z+R((C^{<0}))_\kappa$.  If $C$ has cofinality at least $\kappa$, a
+    support of cardinality less than $\kappa$ is bounded above in $C$, so a
+    monomial clears denominators and $R((C))_\kappa=\operatorname{Frac}(D)$
+    [LM24, Prop. 2.4.5]; if $C=\{0\}$ this is $R=\operatorname{Frac}(Z)$.  The
+    support of $x$ lies in $G_{\preceq\sigma}$, whose image in $G/C$ is the
+    convex subgroup $H_\sigma\simeq\mathbb R$.  With $L=R((C))_\kappa$, the ring
+    $L((\mathbb R^{\le0}))$ is a GCD domain by \ref{thm:hahn-series-gcd-domain},
+    hence pre-Schreier, and it equals $L((\mathbb R^{\le0}))_\kappa$ because
+    well-ordered subsets of $\mathbb R$ are countable.  Primality passes from
+    series with exponents in a convex subgroup to the ambient ring by the same
+    two properties of restriction, so the regrouping of $x$ is primal.
   -/)]
 theorem isPrimal_of_supportArchimedeanClasses_finite [CharZero R]
     [Fact κ.IsRegular] (Z : Subring R) [DecompositionMonoid Z]

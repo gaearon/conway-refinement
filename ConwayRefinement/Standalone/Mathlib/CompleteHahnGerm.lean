@@ -21,7 +21,8 @@ bounded away from zero, so that two series have the same image in `K((G^{≤ 0})
 they agree on some interval immediately below zero. If `K` has characteristic zero and `G`, with
 its order topology and the associated group uniformity, is Cauchy complete, then this ring of
 germs is a polynomial algebra over `K`. Consequently `J` is a prime ideal, and the ring of germs
-has four-factor refinement.
+has four-factor refinement. For `G = ℝ` the primality of `J` is Berarducci's theorem
+(Berarducci 2000, Cor. 9.8).
 -/
 
 @[expose] public noncomputable section

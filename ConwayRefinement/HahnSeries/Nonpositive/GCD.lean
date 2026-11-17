@@ -57,13 +57,17 @@ is stated through `Nonempty` because `GCDMonoid` contains a choice of gcd operat
     exponents is a GCD domain.
   -/)
   (proof := /--
-    By \ref{thm:hahn-series-polynomial-algebra},
-    $K((\mathbb R^{\le 0}))$ is a polynomial ring over the finite-support
-    subring $K(\mathbb R^{\le 0})$. By \ref{fact:finite-support-hahn-gcd},
-    the coefficient ring is a GCD domain. Normalising each nonzero greatest
-    common divisor by the coefficient of $t^{\sup(p)}$ supplies the hypothesis
-    required by \ref{lem:multivariate-polynomial-gcd}. Transport the
-    resulting gcd operation across the isomorphism.
+    By \ref{thm:hahn-series-polynomial-algebra}, $K((\mathbb R^{\le 0}))$ is
+    a polynomial ring over the finite-support subring $K(\mathbb R^{\le 0})$,
+    which is a GCD domain by \ref{fact:finite-support-hahn-gcd}.  Normalise
+    each nonzero greatest common divisor in $K(\mathbb R^{\le0})$ to have
+    coefficient $1$ at its greatest exponent.  Gauss's lemma makes a
+    polynomial ring over a GCD domain in finitely many variables a GCD domain;
+    two polynomials involve only finitely many variables, and a greatest common
+    divisor in the polynomial ring in those variables remains one in the full
+    polynomial ring, because a common divisor of two polynomials that are not
+    both $0$ involves no further variables.  Transport the gcd across the
+    isomorphism.
   -/)
   (highlight)]
 theorem nonemptyGCDMonoid : Nonempty (GCDMonoid (Nonpositive ℝ K)) := by
@@ -110,33 +114,10 @@ instance decompositionMonoid : DecompositionMonoid (Nonpositive ℝ K) := by
   infer_instance
 
 /-- Every series is primal in `K((ℝ^{≤0}))`. -/
-@[blueprint "thm:hahn-series-primality"
-  (phase := "Polynomial presentations")
-  (title := "Primality of generalised power series")
-  (statement := /--
-    Let $K$ be a field of characteristic $0$.  Every element of
-    $K((\mathbb R^{\le 0}))$ is primal in $K((\mathbb R^{\le 0}))$.
-  -/)
-  (proof := /--
-    By \ref{thm:hahn-series-gcd-domain}, the series ring is a GCD domain.  Every
-    GCD domain is pre-Schreier [LM24, Fact 2.5.1], and every element of a
-    pre-Schreier domain is primal [LM24, §2.5].
-  -/)]
 theorem isPrimal (a : Nonpositive ℝ K) : IsPrimal a :=
   DecompositionMonoid.primal a
 
 /-- Every irreducible series is prime in `K((ℝ^{≤0}))`. -/
-@[blueprint "cor:hahn-series-irreducible-is-prime"
-  (phase := "Polynomial presentations")
-  (title := "Irreducible series are prime")
-  (statement := /--
-    Let $K$ be a field of characteristic $0$.  Every irreducible element of
-    $K((\mathbb R^{\le 0}))$ is prime in $K((\mathbb R^{\le 0}))$.
-  -/)
-  (proof := /--
-    Every series is primal by \ref{thm:hahn-series-primality}, and an irreducible
-    primal element is prime.
-  -/)]
 theorem prime_of_irreducible {a : Nonpositive ℝ K} (ha : Irreducible a) : Prime a :=
   ha.prime_of_isPrimal (isPrimal a)
 

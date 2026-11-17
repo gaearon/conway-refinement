@@ -270,21 +270,25 @@ variable [Fact (Cardinal.aleph0 < κ)] [Fact κ.IsRegular]
 along a convex subspace `C` is primal in `L((Γ^{≤0}))_κ`, its restriction to `C` is primal in
 `D = Z + R((C^{<0}))_κ`, and `L` is the fraction field of `D` when that restriction is zero. -/
 @[blueprint "lem:primality-through-regrouping"
-  (phase := "Finitely many Archimedean classes")
+  (phase := "Reduction along Archimedean classes")
   (title := "Primality through regrouping along a convex subgroup")
   (statement := /--
-    Let $C$ be a convex subspace of the ordered vector space $G$, put
-    $\Gamma=G/C$, $L=R((C))_\kappa$, $D=Z+R((C^{<0}))_\kappa$ and
-    $T=L((\Gamma^{\le0}))_\kappa$, where $\kappa>\aleph_0$ is regular.  Let
-    $x\in Z+R((G^{<0}))_\kappa$ and let $\hat x\in T$ be its regrouping
-    along $C$.  If $\hat x$ is primal in $T$, the restriction $x_{\vert C}$
-    is primal in $D$, and $L$ is the fraction field of $D$ when
-    $x_{\vert C}=0$, then $x$ is primal in $Z+R((G^{<0}))_\kappa$.
+    Let $K$ be a field, $G$ an ordered abelian group that is a $K$-vector
+    space, $C\subseteq G$ a convex $K$-subspace, $R$ a field, $Z\subseteq R$ a
+    subring, and $\kappa>\aleph_0$ a regular cardinal.  Put $\Gamma=G/C$,
+    $L=R((C))_\kappa$, $D=Z+R((C^{<0}))_\kappa$ and
+    $T=L((\Gamma^{\le0}))_\kappa$.  Let $x\in Z+R((G^{<0}))_\kappa$, let
+    $\hat x\in T$ be its regrouping along $C$, and let $x_{\vert C}\in D$ be
+    its restriction to $C$.  If $\hat x$ is primal in $T$, $x_{\vert C}$ is
+    primal in $D$, and $L=\operatorname{Frac}(D)$ in case $x_{\vert C}=0$, then
+    $x$ is primal in $Z+R((G^{<0}))_\kappa$.
   -/)
   (proof := /--
-    Regrouping identifies $Z+R((G^{<0}))_\kappa$ with the inverse image
-    $D+L((\Gamma^{<0}))_\kappa$ of $D$ under the constant coefficient
-    $\pi:T\to L$, and $\pi(\hat x)=x_{\vert C}$.  Apply
+    A $K$-linear complement of $C$ identifies $G$ with $C\times\Gamma$, ordered
+    lexicographically with the $\Gamma$-coordinate first, and regrouping
+    exponents along this decomposition identifies $Z+R((G^{<0}))_\kappa$ with
+    the inverse image $D+L((\Gamma^{<0}))_\kappa$ of $D$ under the constant
+    coefficient $\pi:T\to L$; moreover $\pi(\hat x)=x_{\vert C}$.  Apply
     \ref{lem:primality-in-d-plus-m}.
   -/)]
 theorem isPrimal_of_isPrimal_regroupAmbient

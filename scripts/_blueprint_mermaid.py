@@ -94,6 +94,7 @@ TEX_COMMANDS = {
     r"\zeta": "ζ",
     r"\infty": "∞",
     r"\iota": "ι",
+    r"\kappa": "κ",
     r"\nu": "ν",
     r"\varphi": "φ",
     r"\mathcal A": "𝒜",

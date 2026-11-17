@@ -107,17 +107,21 @@ private theorem stratumStdPartHom_surjective :
 additive group. This is LM24, Proposition 2.4.3. -/
 @[blueprint "fact:surreal-archimedean-strata"
   (phase := "Surreal numbers and omnific integers")
-  (title := "Real structure of surreal Archimedean strata")
+  (title := "Condition (A1)$_\\sigma$ for the surreal numbers")
   (statement := /--
-    Every nonzero Archimedean stratum of the surreal numbers is noncanonically
-    isomorphic to $(\mathbb R,+,<)$ as an ordered additive group
-    \cite[Proposition~2.4.3]{LM24}.
+    Let $\mathbf{No}$ be the surreal numbers of a fixed universe, regarded as
+    an ordered $\mathbb R$-vector space.  For every nonzero Archimedean class
+    $\sigma$ of $\mathbf{No}$ and every $\mathbb R$-linear complement $H_\sigma$
+    of $\mathbf{No}_{\prec\sigma}$ in $\mathbf{No}_{\preceq\sigma}$, there is an
+    isomorphism of ordered groups $H_\sigma\simeq\mathbb R$
+    [LM24, Prop. 2.4.3].
   -/)
   (proof := /--
-    Choose a positive element $a$ of the stratum and send $x$ to the standard
-    part of $x/a$.  Division by $a$ makes the quotient finite; the chosen
-    complement to the lower Archimedean ball makes the map injective, and the
-    real multiples of $a$ make it surjective.
+    Choose a positive $a\in H_\sigma$ and send $x\in H_\sigma$ to the standard
+    part of $x/a$, a real number because $x/a$ is finite.  The map is additive
+    and strictly increasing, since a nonzero element of $H_\sigma$ has class
+    $\sigma$ and so its quotient by $a$ is not infinitesimal; it is surjective
+    because $ra\in H_\sigma$ has standard part $r$.
   -/)]
 noncomputable def stratumOrderAddMonoidIsoReal : u.stratum c ≃+o ℝ :=
   { AddEquiv.ofBijective (stratumStdPartHom u c)
@@ -220,16 +224,17 @@ This is the universe-bounded form of LM24, Proposition 2.4.4. -/
   (phase := "Surreal numbers and omnific integers")
   (title := "Cofinality of surreal Archimedean balls")
   (statement := /--
-    Fix a universe $u$, let $\kappa_u$ be its universe cardinal, and let $c$ be
-    a nonzero Archimedean class of $\mathbf{No}_u$.  The strict Archimedean ball
-    below $c$ has cofinality at least $\kappa_u$
-    \cite[Proposition~2.4.4]{LM24}.
+    Let $\mathbf{No}$ be the surreal numbers of a universe $u$ and $\kappa_u$
+    the cardinal of that universe.  For every nonzero Archimedean class
+    $\sigma$, the convex subgroup $\mathbf{No}_{\prec\sigma}$ has cofinality at
+    least $\kappa_u$ [LM24, Prop. 2.4.4].
   -/)
   (proof := /--
-    A cofinal subset of cardinality below $\kappa_u$ is $u$-small.  Conway's
-    cut construction gives a surreal number above that subset but still below
-    every positive rational multiple of a representative of $c$, contradicting
-    cofinality.
+    Let $a>0$ have class $\sigma$.  A subset of $\mathbf{No}_{\prec\sigma}$ of
+    cardinality less than $\kappa_u$ is a set of the universe $u$, so Conway's
+    cut construction gives a surreal number above it and below $a/n$ for every
+    $n\ge1$.  That number lies in $\mathbf{No}_{\prec\sigma}$, so the subset is
+    not cofinal.
   -/)]
 theorem smallSupportCardinal_le_ball_cof (c : FiniteArchimedeanClass Surreal.{u}) :
     smallSupportCardinal.{u} ≤ Order.cof ↥(ball ℝ c) := by
@@ -252,18 +257,20 @@ theorem smallSupportCardinal_le_ball_cof (c : FiniteArchimedeanClass Surreal.{u}
 least the surreal support cardinal. -/
 @[blueprint "lem:surreal-common-tail-cofinality"
   (phase := "Surreal numbers and omnific integers")
-  (title := "Cofinality of common surreal Archimedean tails")
+  (title := "Cofinality of intersections of surreal Archimedean balls")
   (statement := /--
-    Fix a universe $u$, let $\kappa_u$ be its universe cardinal, and let $T$ be
-    a $u$-small family of nonzero Archimedean classes with no least member in
-    the magnitude order.  The common tail below $T$ has cofinality at least
-    $\kappa_u$.
+    Let $\mathbf{No}$ be the surreal numbers of a universe $u$ and $\kappa_u$
+    the cardinal of that universe.  Let $T$ be a set of nonzero Archimedean
+    classes of cardinality less than $\kappa_u$ with no least element in
+    magnitude.  Then $H_T=\bigcap_{\sigma\in T}\mathbf{No}_{\preceq\sigma}$ has
+    cofinality at least $\kappa_u$.
   -/)
   (proof := /--
-    If a $u$-small subset were cofinal in the common tail, form a Conway cut
-    above it and below the positive rational fractions of representatives of
-    the classes in $T$.  The resulting surreal belongs to the common tail but
-    is above the proposed cofinal subset.
+    A subset of $H_T$ of cardinality less than $\kappa_u$ is a set of the
+    universe $u$.  Conway's cut construction gives a surreal number above it
+    and below $a_\sigma/n$ for every $\sigma\in T$ and $n\ge1$, where
+    $a_\sigma>0$ has class $\sigma$.  That number lies in $H_T$, so the subset
+    is not cofinal.
   -/)]
 theorem smallSupportCardinal_le_tailSubmodule_cof
     (T : Set (FiniteArchimedeanClass Surreal.{u})) [Small.{u} T]

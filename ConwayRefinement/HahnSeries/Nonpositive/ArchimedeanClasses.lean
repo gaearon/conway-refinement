@@ -9,7 +9,6 @@ public import ConwayRefinement.HahnSeries.Nonpositive.Basic
 public import ConwayRefinement.SetTheory.Ordinal.SetOrderType
 public import Mathlib.Algebra.Order.Archimedean.Class
 
-import ConwayRefinement.Blueprint
 
 /-!
 # Archimedean classes met by a nonpositive Hahn support
@@ -96,23 +95,6 @@ theorem Nonpositive.isPWO_nonzeroSupportArchimedeanClasses
 
 /-- If the nonzero support classes of one series lie strictly below a support class of another,
 their order type is strictly smaller. -/
-@[blueprint "lem:support-class-order-type-strict-decrease"
-  (phase := "Transfinite induction on Archimedean classes")
-  (title := "Strict decrease of support-class order type")
-  (statement := /--
-    Let $x,y\in K((G^{\le0}))$.  If $c$ is a nonzero Archimedean class met by
-    $\operatorname{supp}(x)$ and every nonzero class met by
-    $\operatorname{supp}(y)$ is a class met by $\operatorname{supp}(x)$ and is
-    strictly below $c$, then the order type of the nonzero support classes of
-    $y$ is strictly
-    smaller than that of $x$.
-  -/)
-  (proof := /--
-    The classes met by either nonpositive support are partially well ordered.
-    Monotonicity of order type embeds the classes of $y$ into the initial
-    segment of the classes of $x$ below $c$, and a proper initial segment of a
-    well-order has strictly smaller order type.
-  -/)]
 theorem Nonpositive.orderType_nonzeroSupportArchimedeanClasses_lt
     {R : Type*} [Ring R] (x y : Nonpositive G R)
     {c : ArchimedeanClass G} (hc : c ∈ x.nonzeroSupportArchimedeanClasses)

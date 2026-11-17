@@ -275,45 +275,49 @@ common tail below `T₀` is Cauchy complete, the bounded Hahn field on that tail
 field of its bounded integer part, finite-class primality holds, and every series of smaller
 support-class order type is primal, then `x` is primal. -/
 @[blueprint "thm:limit-tail-step"
-  (phase := "Transfinite induction on Archimedean classes")
+  (phase := "Reduction along Archimedean classes")
   (title := "Primality at a limit of Archimedean classes")
   (statement := /--
     Let $G$ be an ordered rational vector space, $R$ a field of characteristic
     zero, $\kappa>\aleph_0$ a regular cardinal, and $Z\subseteq R$ a subring.
-    Assume that every element of $Z+R((G^{<0}))_\kappa$ meeting only finitely
-    many Archimedean classes is primal.  Let $x\in Z+R((G^{<0}))_\kappa$ and
-    suppose the Archimedean classes met by its support are $T_0\cup T_1$,
-    where $T_1$ is finite and $T_0$ contains a nonzero class and has no least
-    member in the magnitude order.  Let $C$ be the common tail below $T_0$.
-    Assume that $G/C$ is Cauchy complete for its additive uniformity, that
-    $R((C))_\kappa$ is the fraction field of $Z+R((C^{<0}))_\kappa$, and that
-    every element of $Z+R((G^{<0}))_\kappa$ whose nonzero Archimedean support
-    classes have smaller order type than those of $x$ is primal.  Then $x$ is
-    primal.
+    Assume that every element of $Z+R((G^{<0}))_\kappa$ whose support meets
+    only finitely many Archimedean classes is primal.  Let
+    $x\in Z+R((G^{<0}))_\kappa$, and suppose the set of Archimedean classes
+    met by $\operatorname{supp}(x)$ is $T_0\cup T_1$, where $T_1$ is finite and
+    $T_0$ contains a nonzero class and has no least element in magnitude.  Let
+    $H=\bigcap_{\sigma\in T_0}G_{\preceq\sigma}$, taken over the nonzero classes
+    of $T_0$.  Assume that $G/H$ is Cauchy complete for the group uniformity of
+    its order topology, that $R((H))_\kappa=\operatorname{Frac}(Z+R((H^{<0}))_\kappa)$,
+    and that every element of $Z+R((G^{<0}))_\kappa$ for which the set of
+    nonzero Archimedean classes met by its support has smaller order type than
+    for $x$ is primal.  Then $x$ is primal.
   -/)
   (proof := /--
-    Put $\Gamma=G/C$, $L=R((C))_\kappa$, $D=Z+R((C^{<0}))_\kappa$ and
-    $T=L((\Gamma^{\le0}))_\kappa$.  The restriction of $x$ to $C$ meets only
-    classes of $T_1$, so it is primal in $D$ by
-    \ref{lem:convex-support-of-factors} and the finite-class hypothesis.  By
-    \ref{lem:primality-through-regrouping} it remains to show that the
-    regrouping of $x$ along $C$ is primal in $T$.
+    Put $\Gamma=G/H$, $L=R((H))_\kappa$, $D=Z+R((H^{<0}))_\kappa$ and
+    $T=L((\Gamma^{\le0}))_\kappa$.  We use
+    \ref{lem:primality-through-regrouping}.  The restriction $x_{\vert H}$ meets
+    only classes of $T_1$, so it is primal by the finite-class hypothesis, and
+    primal in $D$ because restriction to $H$ is a ring endomorphism
+    (\ref{lem:convex-restriction-ring-hom}) that tests divisibility
+    (\ref{lem:divisibility-from-convex-restriction}).  It remains to show that
+    the regrouping $\hat x$ of $x$ is primal in $T$.
 
-    Apply \ref{lem:primality-from-germs-and-restrictions} in $T$ with $J$ the
-    series bounded away from zero, and with the restrictions
-    $\rho_q$ to closed Archimedean balls of $\Gamma$, which are ring
-    endomorphisms by \ref{lem:convex-restriction-ring-hom}.  Every element of
-    $J$ is killed by $\rho_q$ for all sufficiently small $q$;
-    \ref{lem:divisibility-from-convex-restriction} tests divisibility after
-    $\rho_q$; and every element of $T/J$ is primal by
-    \ref{cor:bounded-hahn-germ-primality}, since $\Gamma$ is Cauchy complete.
-    The classes of $\Gamma$ met by the support of $x$ are arbitrarily small.  For such a class $q$,
-    \ref{lem:support-class-factorisation} gives $x=tw$ with $t$ the
-    restriction of $x$ to the inverse image of the closed ball of $q$, so that
-    $t$ corresponds to $\rho_q(x)$, and with $w$ of constant coefficient $1$
-    and smaller support-class order type.  By hypothesis $w$ is primal in
-    $D+L((\Gamma^{<0}))_\kappa$; as its constant coefficient is a unit, it is
-    primal in $T$.
+    Apply \ref{lem:primality-from-germs-and-restrictions} in $T$, with $J$ the
+    ideal of series whose support is bounded away from $0$, and with the
+    restrictions $\rho_q$ to the closed balls $\Gamma_{\preceq q}$, $q$ ranging
+    over the nonzero Archimedean classes of $\Gamma$ ordered towards $0$.  These
+    are ring endomorphisms that test divisibility by the same two lemmas, and
+    every element of $J$ is killed by $\rho_q$ once $q$ is small enough.  By
+    \ref{thm:bounded-hahn-germ-polynomial-algebra}, applied to the Cauchy
+    complete group $\Gamma$ and the field $L$, the ring $T/J$ is a polynomial
+    ring over a field, hence a unique factorisation domain, so every element
+    is primal.  Since $T_0$ has no least element, the classes of $\Gamma$ met
+    by the support of $\hat x$ are arbitrarily small.  For such a class $q$,
+    \ref{lem:support-class-factorisation} gives $x=tw$, where $t$ corresponds
+    to $\rho_q(\hat x)$ and $w$ has constant coefficient $1$ and smaller order
+    type of classes.  By hypothesis $w$ is primal in
+    $Z+R((G^{<0}))_\kappa\simeq D+L((\Gamma^{<0}))_\kappa$, and since its
+    constant coefficient is a unit of $L$ it is primal in $T$.
   -/)]
 theorem isPrimal_of_limit_tail
     {G : Type u} {R : Type v}
@@ -352,28 +356,6 @@ theorem isPrimal_of_limit_tail
 
 /-- The common-tail hypotheses extend finite-class primality to every cardinal-bounded Hahn
 integer-part series. -/
-@[blueprint "thm:limit-tail-primality"
-  (phase := "Transfinite induction on Archimedean classes")
-  (title := "Transfinite extension of finite-class primality")
-  (statement := /--
-    Let $G$ be an ordered rational vector space, $R$ a field of characteristic
-    zero, $\kappa>\aleph_0$ a regular cardinal, and $Z\subseteq R$ a subring.
-    Assume that every element of $Z+R((G^{<0}))_\kappa$ meeting only finitely
-    many Archimedean classes is primal.  For every nonempty set $T$ of nonzero
-    Archimedean classes with no least member in the magnitude order and
-    cardinality less than $\kappa$, assume that the quotient by the common tail
-    below $T$ is Cauchy complete for its additive uniformity and that the
-    bounded Hahn field on the common tail is the fraction field of its bounded
-    Hahn integer part.  Then every element of
-    $Z+R((G^{<0}))_\kappa$ is primal.
-  -/)
-  (proof := /--
-    Induct on the order type of the nonzero Archimedean support classes, which
-    form a well-ordered set.  If the support meets finitely many classes, use
-    the hypothesis.  Otherwise split the class set into a nonzero limit initial
-    segment and a finite final segment and apply \ref{thm:limit-tail-step}; its
-    induction hypothesis is the hypothesis of the ordinal induction.
-  -/)]
 theorem isPrimal_of_finite_classes_and_limit_tail_conditions
     {G : Type u} {R : Type v}
     [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G]
@@ -445,30 +427,45 @@ quotient of `G` by every such common tail is Cauchy complete. Then every element
 At strict balls, the first two conditions are assumptions `(A1)` and `(A2)` of L'Innocente and
 Mantova (LM24, Theorem 9.0.1); primality of `Z` is their `(A3)`. -/
 @[blueprint "thm:hahn-integer-part-primality"
-  (phase := "Transfinite induction on Archimedean classes")
-  (title := "Primality in bounded Hahn integer parts")
+  (phase := "Reduction along Archimedean classes")
+  (title := "Primality in $Z+R((G^{<0}))_\\kappa$")
   (statement := /--
     Let $K$ be an Archimedean ordered field and $G$ an ordered $K$-vector
-    space, let $R$ be a field of characteristic zero, $\kappa>\aleph_0$ a
-    regular cardinal, and $Z\subseteq R$ a pre-Schreier subring.  At every
-    nonzero Archimedean class $\sigma$, choose an additive complement
-    $H_\sigma$ to $G_{\prec\sigma}$ in $G_{\preceq\sigma}$ that is order
-    additively isomorphic to $\mathbb R$.  For every nonempty set $T$ of fewer
-    than $\kappa$ nonzero Archimedean classes with no least member in the
-    magnitude order, let $H_T$ be the subgroup of exponents lying beyond every
-    class in $T$.  Assume that each $G_{\prec\sigma}$ and each $H_T$ either has
-    cofinality at least $\kappa$, or is zero and $R$ is the fraction field of
-    $Z$, and that each $G/H_T$ is Cauchy complete for its additive uniformity.
-    Then every element of $Z+R((G^{<0}))_\kappa$ is primal.
+    space that is also an ordered $\mathbb Q$-vector space; let $R$ be a field
+    of characteristic zero, $\kappa>\aleph_0$ a regular cardinal, and
+    $Z\subseteq R$ a pre-Schreier subring.  For each nonzero Archimedean class
+    $\sigma$ fix a complement $H_\sigma$ of $G_{\prec\sigma}$ in
+    $G_{\preceq\sigma}$.  For a nonempty set $T$ of nonzero Archimedean classes
+    with no least element in magnitude, put
+    $H_T=\bigcap_{\sigma\in T}G_{\preceq\sigma}$.  Assume:
+    \begin{enumerate}
+      \item each $H_\sigma$ is isomorphic to $\mathbb R$ as an ordered group;
+      \item each $G_{\prec\sigma}$ has cofinality at least $\kappa$, or
+        $G_{\prec\sigma}=\{0\}$ and $R=\operatorname{Frac}(Z)$;
+      \item for every such $T$ of cardinality less than $\kappa$, $H_T$ has
+        cofinality at least $\kappa$, or $H_T=\{0\}$ and
+        $R=\operatorname{Frac}(Z)$;
+      \item for every such $T$ of cardinality less than $\kappa$, the quotient
+        $G/H_T$ is Cauchy complete for the group uniformity of its order
+        topology.
+    \end{enumerate}
+    Then every element of $Z+R((G^{<0}))_\kappa$ is primal, so
+    $Z+R((G^{<0}))_\kappa$ is pre-Schreier.  Conditions (1) and (2) are
+    (A1)$_\sigma$ and (A2)$_\sigma$ of [LM24, Thm. 9.0.1], which together with
+    (A3), that $Z$ is pre-Schreier, are shown there to be necessary.
   -/)
   (proof := /--
-    By \ref{thm:bounded-hahn-integer-part-fraction-field}, and directly when
-    the group is zero, the cofinality alternatives make the bounded Hahn field
-    on $G_{\prec\sigma}$ and on $H_T$ the fraction field of its bounded Hahn
-    integer part.  By \ref{thm:finite-support-classes-primality}, every
-    series meeting finitely many Archimedean classes is primal.  Apply
-    \ref{thm:limit-tail-primality} to extend this result to arbitrary
-    support-class order type.
+    Induct on the order type of the set of nonzero Archimedean classes met by
+    the support, a well-ordered set.  If the support meets only finitely many
+    classes, apply \ref{thm:finite-support-classes-primality}, whose hypotheses
+    are (1) and (2).  Otherwise the well-ordered set of classes met by the
+    support splits into an initial segment $T_0$ whose order type is a limit
+    ordinal, which has no least element in magnitude and fewer than $\kappa$
+    elements, and a finite final segment $T_1$.  Condition (3) makes
+    $R((H_{T_0}))_\kappa$ the fraction field of $Z+R((H_{T_0}^{<0}))_\kappa$,
+    because a support of cardinality less than $\kappa$ is bounded above in a
+    group of cofinality at least $\kappa$ [LM24, Prop. 2.4.5].  With (4) and the
+    induction hypothesis, \ref{thm:limit-tail-step} applies.
   -/)]
 theorem isPrimal
     {K : Type*} {G : Type u} {R : Type v}

@@ -165,24 +165,6 @@ theorem exists_rationalTailQuotientScale_le
 
 /-- The positive representatives of a limit family give a small coinitial family in its rational
 tail quotient. -/
-@[blueprint "lem:surreal-common-tail-quotient-coinitial-scales"
-  (phase := "Surreal numbers and omnific integers")
-  (title := "A coinitial family of positive elements in surreal common-tail quotients")
-  (statement := /--
-    Let $T$ be a $u$-small family of nonzero Archimedean classes of
-    $\mathbf{No}_u$ with no least member in the magnitude order.  Index $T$ by
-    a $u$-small type $I$, and let $\varepsilon_i$ be the image in
-    $\mathbf{No}_u/H_T$ of the positive representative of the class indexed
-    by $i$.  Then every $\varepsilon_i$ is positive, and for every $x>0$ in
-    the quotient there is $i\in I$ such that $\varepsilon_i\le x$.
-  -/)
-  (proof := /--
-    A positive representative cannot lie in $H_T$: a later class in $T$
-    excludes it from the common tail.  Conversely, lift $x>0$ to a positive
-    surreal representative.  Since that representative is not in $H_T$, its
-    Archimedean class lies above some member of $T$; the corresponding positive
-    representative therefore maps below $x$ in the quotient.
-  -/)]
 theorem rationalTailQuotientScale_pos_and_coinitial
     (T : Set (FiniteArchimedeanClass Surreal.{u})) [Small.{u} T]
     (hT : ∀ c ∈ T, ∃ d ∈ T, c < d) :
@@ -195,24 +177,28 @@ theorem rationalTailQuotientScale_pos_and_coinitial
 uniformity. -/
 @[blueprint "lem:surreal-common-tail-quotient-complete"
   (phase := "Surreal numbers and omnific integers")
-  (title := "Cauchy completeness of surreal common-tail quotients")
+  (title := "Cauchy completeness of surreal quotients")
   (statement := /--
-    Let $T$ be a $u$-small nonempty family of nonzero Archimedean classes of
-    $\mathbf{No}_u$ with no least member in the magnitude order.  The ordered
-    rational vector space obtained by quotienting $\mathbf{No}_u$ by the
-    common tail below $T$ is Cauchy complete in its additive uniformity.
+    Let $\mathbf{No}$ be the surreal numbers of a universe $u$ and $\kappa_u$
+    the cardinal of that universe.  Let $T$ be a nonempty set of nonzero
+    Archimedean classes of cardinality less than $\kappa_u$ with no least
+    element in magnitude, and $H_T=\bigcap_{\sigma\in T}\mathbf{No}_{\preceq\sigma}$.
+    The ordered $\mathbb Q$-vector space $\mathbf{No}/H_T$ is Cauchy complete
+    for the group uniformity of its order topology.
   -/)
   (proof := /--
-    By \ref{lem:surreal-common-tail-quotient-coinitial-scales}, a small copy
-    of $T$ indexes positive scales coinitial in the quotient, and rational
-    halving supplies the doubled-scale hypothesis of
-    \ref{lem:complete-of-coinitial-scales-and-cut-filling}.  To fill a cut in
-    the quotient, \ref{lem:cut-filling-order-reflecting-surjection} lifts its
-    two small indexed families to surreal representatives.  Strict order in a
-    convex quotient reflects to those representatives, so
-    \ref{thm:surreal-simplicity-small-cuts} fills the lifted cut inside
-    $\mathbf{No}_u$; the monotone quotient map sends the filler back between
-    the original families.  The Cauchy-completeness criterion now applies.
+    The images $\varepsilon_\sigma$ in $\mathbf{No}/H_T$ of positive
+    representatives of the classes $\sigma\in T$ are positive, because $T$ has
+    no least element in magnitude, and they are coinitial among positive
+    elements: a positive element outside $H_T$ has class beyond some
+    $\sigma\in T$ in magnitude.  Halving supplies the scales
+    $\varepsilon_\sigma/2$ required by
+    \ref{lem:complete-of-coinitial-scales-and-cut-filling}.  To fill a cut
+    between two families in $\mathbf{No}/H_T$ indexed by $T$, lift them to
+    $\mathbf{No}$; strict inequalities in the quotient by a convex subgroup
+    lift to strict inequalities between representatives, so
+    \ref{thm:surreal-simplicity-small-cuts} gives a surreal number between the
+    lifts, and its image lies between the original families.
   -/)]
 theorem completeSpace_rationalTailQuotient
     (T : Set (FiniteArchimedeanClass Surreal.{u})) [Small.{u} T] [Nonempty T]

@@ -37,25 +37,6 @@ variable [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G]
 
 /-- A quotient class met by the support bounds a strict initial segment of the original support
 classes. -/
-@[blueprint "lem:tail-quotient-class-bounds-support-classes"
-  (phase := "Transfinite induction on Archimedean classes")
-  (title := "Support classes beyond a quotient Archimedean ball")
-  (statement := /--
-    Let $T$ be a family of nonzero Archimedean classes of an ordered rational
-    vector space $G$, and let $q$ be a nonzero Archimedean class of the quotient
-    by the common tail below $T$.  Suppose $q$ is met by the image of a set
-    $S\subseteq G$.  If every nonzero element of $W\subseteq G$ maps outside
-    the closed ball of $q$ and has an Archimedean class met by $S$, then there
-    is a nonzero class $c$ met by $S$ such that every class met by $W$ is
-    strictly below $c$ and is met by $S$.
-  -/)
-  (proof := /--
-    Choose $y\in S$ whose image has class $q$.  For $g\in W\setminus\{0\}$,
-    being outside the closed ball of $q$ says that the quotient class of $g$ is
-    strictly larger in magnitude than that of $y$.  The common-tail quotient
-    reflects this strict comparison to the original Archimedean-class order,
-    so the class of $g$ lies strictly below the class of $y$.
-  -/)]
 theorem exists_nonzeroSupportClass_bound_tailQuotient
     (T : Set (FiniteArchimedeanClass G))
     (q : FiniteArchimedeanClass (FiniteArchimedeanClass.TailQuotient T))
@@ -193,27 +174,34 @@ open Classical in
 /-- Factoring at a tail-quotient class met by the support strictly lowers the order type of the
 nonzero support classes of the complementary factor. -/
 @[blueprint "lem:support-class-factorisation"
-  (phase := "Transfinite induction on Archimedean classes")
-  (title := "Factorisation at a quotient Archimedean class")
+  (phase := "Reduction along Archimedean classes")
+  (title := "Factorisation at an Archimedean class of a quotient")
   (statement := /--
-    Let $T$ be a set of nonzero Archimedean classes of an ordered rational
-    vector space $G$, and let $q$ be a nonzero Archimedean class of the quotient
-    of $G$ by the common tail below $T$.  Suppose the support of
-    $b\in Z+R((G^{<0}))_\kappa$ meets $q$ and the restriction $t$ of $b$ to
-    the inverse image of the closed ball of $q$ is nonzero.  Then
+    Let $G$ be an ordered rational vector space, $R$ a field, $Z\subseteq R$ a
+    subring and $\kappa>\aleph_0$.  Let $T$ be a set of nonzero Archimedean
+    classes of $G$, let $H_T=\bigcap_{\sigma\in T}G_{\preceq\sigma}$, and let
+    $q$ be a nonzero Archimedean class of $G/H_T$.  Let
+    $b\in Z+R((G^{<0}))_\kappa$ be such that the image of
+    $\operatorname{supp}(b)$ in $G/H_T$ meets $q$ and the restriction $t$ of
+    $b$ to the inverse image of $(G/H_T)_{\preceq q}$ is nonzero.  Then
     \[
       b=tw,
     \]
-    where $w$ has constant coefficient $1$ and the order type of the nonzero
-    Archimedean support classes of $w$ is strictly smaller than that of $b$.
+    where $w\in Z+R((G^{<0}))_\kappa$ has constant coefficient $1$ and the set
+    of nonzero Archimedean classes met by $\operatorname{supp}(w)$ has strictly
+    smaller order type than that of $b$.
   -/)
   (proof := /--
-    By \ref{lem:factorisation-by-convex-restriction}, the retained restriction
-    gives a factorisation $b=tw$, and every nonzero class met by $w$ is also met
-    by $b$.  The quotient class $q$ and
-    \ref{lem:tail-quotient-class-bounds-support-classes} bound all those classes
-    strictly below one class met by $b$.  The strict order-type inequality
-    follows from \ref{lem:support-class-order-type-strict-decrease}.
+    The inverse image of $(G/H_T)_{\preceq q}$ is a convex subgroup of $G$, so
+    \ref{lem:factorisation-by-convex-restriction} gives $b=tw$ with $w$ of
+    constant coefficient $1$, every nonzero exponent of $w$ outside that
+    subgroup and of an Archimedean class met by $\operatorname{supp}(b)$.  Pick
+    $y\in\operatorname{supp}(b)$ whose image has class $q$.  An exponent of $w$
+    outside the inverse image of $(G/H_T)_{\preceq q}$ has image of larger
+    magnitude than the image of $y$, and since $H_T$ is convex the same strict
+    comparison holds in $G$.  Thus the classes met by $w$ form a subset of the
+    classes met by $b$ lying strictly beyond the class of $y$ in magnitude, and
+    a proper initial segment of a well-ordered set has smaller order type.
   -/)]
 theorem exists_factor_with_smaller_support_class_orderType
     {G : Type u} {R : Type v}

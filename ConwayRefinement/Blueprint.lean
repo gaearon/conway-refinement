@@ -11,12 +11,10 @@ namespace ConwayRefinement.Blueprint
 
 /-- Mathematical phases used by the generated proof map. -/
 meta def phases : Array String := #[
+  "Two primality criteria",
   "Germs of translated truncations",
   "Polynomial presentations",
-  "Finitely many Archimedean classes",
-  "Transfinite induction on Archimedean classes",
-  "A cut criterion for Cauchy completeness",
-  "Bounded generalised-power-series integer parts",
+  "Reduction along Archimedean classes",
   "Surreal numbers and omnific integers",
 ]
 

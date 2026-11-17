@@ -30,17 +30,23 @@ refinement. -/
   (phase := "Surreal numbers and omnific integers")
   (title := "Conway's refinement theorem for omnific integers")
   (statement := /--
-    Let $a,b,c,d$ be surreal numbers satisfying Conway's cut equation
-    $x=\{x-1\mid x+1\}$.  If $ab=cd$, then there are surreal numbers
-    $e,f,g,h$, each satisfying the same cut equation, such that
+    Let $\mathbf{No}$ be the surreal numbers of a fixed universe.  Let
+    $a,b,c,d\in\mathbf{No}$ satisfy Conway's equation $x=\{x-1\mid x+1\}$, which
+    defines the omnific integers [Con76].  If $ab=cd$, then there are
+    $e,f,g,h\in\mathbf{No}$, each satisfying the same equation, such that
     \[
       a=ef,\qquad b=gh,\qquad c=eg,\qquad d=fh.
     \]
+    This is Conway's refinement conjecture [LM24, Conj. 1.1.1(2)].
   -/)
   (proof := /--
-    By \ref{thm:conway-cut-subring-equivalence}, Conway's cut-defined
-    statement is equivalent to the refinement property of the omnific-integer
-    subring. Apply \ref{thm:omnific-integer-refinement-property}.
+    A surreal number satisfies $x=\{x-1\mid x+1\}$ exactly when it lies in the
+    subring $\mathbf{Oz}$ of omnific integers.  By
+    \ref{thm:signed-normal-form-omnific-integer-equivalence}, $\mathbf{Oz}$ is
+    isomorphic to $\mathbb Z+\mathbb R((\mathbf{No}^{<0}))_{\kappa}$, in which
+    every element is primal by \ref{thm:surreal-hahn-integer-part-primality}.
+    So $\mathbf{Oz}$ is a pre-Schreier domain, and a domain is pre-Schreier
+    exactly when it has the refinement property [LM24, §2.5].
   -/)
   (highlight)]
 theorem proof : ConwayRefinement.Standalone.Oz.ConwayConjecture.{u} := by

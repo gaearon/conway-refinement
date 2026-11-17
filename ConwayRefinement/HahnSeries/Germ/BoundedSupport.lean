@@ -154,26 +154,6 @@ variable [UniformSpace G] [IsUniformAddGroup G] [OrderTopology G] [CompleteSpace
 
 variable (G K κ) in
 /-- The germs of translated truncations form a system of germs on `K((G^{≤0}))_κ`. -/
-@[blueprint "prop:bounded-hahn-germs-axioms"
-  (phase := "Polynomial presentations")
-  (title := "The germs of $K((G^{\\le 0}))_\\kappa$ form a system of germs")
-  (statement := /--
-    Let $K$ be a field of characteristic $0$, $\kappa>\aleph_0$ a cardinal,
-    and $G$ a nontrivial ordered abelian group which is Cauchy complete for
-    its additive uniformity.  Let $J_\kappa=J\cap K((G^{\le0}))_\kappa$.  The
-    quotient map $K((G^{\le0}))_\kappa\to K((G^{\le0}))_\kappa/J_\kappa$ and
-    the germs $g_\gamma(b)=[b^{|\gamma}]$ form a system of germs on
-    $K((G^{\le0}))_\kappa$ in the sense of \ref{def:germ-axioms}.
-  -/)
-  (proof := /--
-    Translated truncation and cutoff below a negative exponent do not enlarge
-    supports, so they preserve $K((G^{\le0}))_\kappa$.  Since
-    $J_\kappa=J\cap K((G^{\le0}))_\kappa$, the ring
-    $K((G^{\le0}))_\kappa/J_\kappa$ embeds in $K((G^{\le0}))/J$, compatibly
-    with the germ maps.  Every axiom is an identity or a vanishing statement
-    in the ring of germs, with witnesses that are translated truncations or
-    cutoffs, so it follows from \ref{prop:hahn-germs-axioms}.
-  -/)]
 def truncationGerms : TruncationGerms K G (CardSuppLTNonpositive (G := G) (L := K) (κ := κ))
     (CardSuppLTNonpositive (G := G) (L := K) (κ := κ) ⧸ boundedAwayIdeal G K κ) :=
   (Nonpositive.truncationGerms G K).comap (toNonpositiveAlgHom G K κ) (germEmbedding G K κ)
@@ -199,18 +179,29 @@ def truncationGerms : TruncationGerms K G (CardSuppLTNonpositive (G := G) (L := 
 nonpositive series is a polynomial algebra over `K`. -/
 @[blueprint "thm:bounded-hahn-germ-polynomial-algebra"
   (phase := "Polynomial presentations")
-  (title := "Polynomial presentation of the ring of bounded germs")
+  (title := "Polynomial presentation of the ring of germs of series with small support")
   (statement := /--
     Let $K$ be a field of characteristic zero, $\kappa>\aleph_0$ a cardinal,
-    and $G$ a nontrivial ordered abelian group which is Cauchy complete for
-    its additive uniformity.  Then for some set $I$ there is a $K$-algebra
-    isomorphism
+    and $G$ a nontrivial ordered abelian group which, with its order topology
+    and the associated group uniformity, is Cauchy complete.  Let
+    $K((G^{\le0}))_\kappa$ be the ring of series in $K((G^{\le0}))$ whose
+    support has cardinality less than $\kappa$, and
+    $J_\kappa=J\cap K((G^{\le0}))_\kappa$.  Then for some set $I$ there is a
+    $K$-algebra isomorphism
     \[
       K[X_i:i\in I]\simeq K((G^{\le 0}))_\kappa/J_\kappa.
     \]
   -/)
   (proof := /--
-    By \ref{prop:bounded-hahn-germs-axioms} and \ref{thm:germ-ring-generators}.
+    Translated truncations, and cutoffs below a negative exponent, do not
+    enlarge supports, so they preserve $K((G^{\le0}))_\kappa$; and
+    $K((G^{\le0}))_\kappa/J_\kappa$ embeds in $K((G^{\le0}))/J$ compatibly with
+    the germ maps.  Every axiom of a system of germs is an identity or a
+    vanishing statement in the ring of germs whose witnesses are translated
+    truncations or cutoffs, so the germs $[b^{|\gamma}]$ form a system of germs
+    on $K((G^{\le0}))_\kappa$ with values in $K((G^{\le0}))_\kappa/J_\kappa$,
+    by restriction from \ref{prop:hahn-germs-axioms}.  Apply
+    \ref{thm:germ-ring-generators}.
   -/)]
 theorem exists_mvPolynomial_algEquiv_germ :
     ∃ ι : Type (max (u + 1) v), Nonempty (MvPolynomial ι K ≃ₐ[K]
@@ -219,17 +210,6 @@ theorem exists_mvPolynomial_algEquiv_germ :
 
 /-- Every germ of a `κ`-bounded nonpositive series over a Cauchy-complete exponent group is
 primal. -/
-@[blueprint "cor:bounded-hahn-germ-primality"
-  (phase := "Polynomial presentations")
-  (title := "Primality in the ring of bounded germs")
-  (statement := /--
-    Under the hypotheses of \ref{thm:bounded-hahn-germ-polynomial-algebra},
-    every element of $K((G^{\le 0}))_\kappa/J_\kappa$ is primal.
-  -/)
-  (proof := /--
-    A polynomial ring over a field is a unique factorisation domain, hence
-    pre-Schreier.  Apply \ref{thm:bounded-hahn-germ-polynomial-algebra}.
-  -/)]
 theorem isPrimal_germ
     (q : CardSuppLTNonpositive (G := G) (L := K) (κ := κ) ⧸ boundedAwayIdeal G K κ) :
     IsPrimal q := by
