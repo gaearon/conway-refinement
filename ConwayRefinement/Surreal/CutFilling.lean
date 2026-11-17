@@ -39,14 +39,13 @@ first below every member of the second are strictly separated by a surreal. -/
   (phase := "Surreal numbers and omnific integers")
   (title := "Filling small cuts in the surreal numbers")
   (statement := /--
-    Let $L,R\subseteq\mathbf{No}$ be sets of the universe $u$ with $l<r$ for all
-    $l\in L$ and $r\in R$.  Then there is $x\in\mathbf{No}$ with $l<x<r$ for all
-    $l\in L$ and $r\in R$.
+    Let $L,R\subseteq\mathbf{No}$ be small sets with $l<r$ for all $l\in L$ and $r\in R$. Then there
+    is $x\in\mathbf{No}$ with $l<x<r$ for all $l\in L$ and $r\in R$.
   -/)
   (proof := /--
-    Form the surreal number $\{L\mid R\}$ [Con76].  The separation hypothesis
-    makes it a valid cut, and every left option is less than it and every
-    right option greater.
+    Form Conway's number $\{L\mid R\}$, which is defined because $L$ and $R$ are small. The
+    separation hypothesis makes it a number, every element of $L$ is less than it, and every element
+    of $R$ is greater; compare [LM24, Fact 2.3.1].
   -/)]
 theorem exists_between_small_sets (L R : Set Surreal.{u})
     [Small.{u} L] [Small.{u} R] (hLR : ∀ l ∈ L, ∀ r ∈ R, l < r) :

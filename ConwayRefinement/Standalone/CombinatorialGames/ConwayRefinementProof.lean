@@ -30,22 +30,19 @@ refinement. -/
   (phase := "Surreal numbers and omnific integers")
   (title := "Conway's refinement theorem for omnific integers")
   (statement := /--
-    Let $a,b,c,d\in\mathbf{No}$ satisfy Conway's equation $x=\{x-1\mid x+1\}$,
-    which defines the omnific integers [Con76].  If $ab=cd$, then there are
-    $e,f,g,h\in\mathbf{No}$, each satisfying the same equation, such that
+    Let $a,b,c,d\in\mathbf{No}$ be omnific integers, that is, satisfy Conway's equation
+    $x=\{x-1\mid x+1\}$ [Con76]. If $ab=cd$, then there are omnific integers $e,f,g,h$ such that
     \[
       a=ef,\qquad b=gh,\qquad c=eg,\qquad d=fh.
     \]
-    This is Conway's refinement conjecture [Con76, p. 46].
+    This is Conway's refinement conjecture [Con76, p. 46], listed as [LM24, Conj. 1.1.1(2)].
   -/)
   (proof := /--
-    A surreal number satisfies $x=\{x-1\mid x+1\}$ exactly when it lies in the
-    subring $\mathbf{Oz}$ of omnific integers.  By
-    \ref{thm:signed-normal-form-omnific-integer-equivalence}, $\mathbf{Oz}$ is
-    isomorphic to $\mathbb Z+\mathbb R((\mathbf{No}^{<0}))_{\kappa}$, in which
-    every element is primal by \ref{thm:surreal-hahn-integer-part-primality}.
-    So $\mathbf{Oz}$ is a pre-Schreier domain, and a domain is pre-Schreier
-    exactly when it has the refinement property [LM24, §2.5].
+    A surreal number satisfies $x=\{x-1\mid x+1\}$ exactly when it lies in the subring
+    $\mathbf{Oz}$. By \ref{thm:signed-normal-form-omnific-integer-equivalence}, $\mathbf{Oz}$ is
+    isomorphic to $\mathbb Z+\mathbb R((\mathbf{No}^{<0}))_\kappa$, in which every element is primal
+    by \ref{thm:surreal-hahn-integer-part-primality}. So $\mathbf{Oz}$ is a pre-Schreier domain, and
+    a domain is pre-Schreier exactly when it has the refinement property [LM24, §2.5].
   -/)
   (highlight)]
 theorem proof : ConwayRefinement.Standalone.Oz.ConwayConjecture.{u} := by

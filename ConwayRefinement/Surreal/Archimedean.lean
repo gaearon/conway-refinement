@@ -109,10 +109,9 @@ additive group. This is LM24, Proposition 2.4.3. -/
   (phase := "Surreal numbers and omnific integers")
   (title := "Condition (A1)$_\\sigma$ for the surreal numbers")
   (statement := /--
-    Regard $\mathbf{No}$ as an ordered $\mathbb R$-vector space.  For every nonzero
-    Archimedean class $\sigma$ and every $\mathbb R$-linear complement $H_\sigma$
-    of $\mathbf{No}_{\prec\sigma}$ in $\mathbf{No}_{\preceq\sigma}$, there is an
-    isomorphism of ordered groups $H_\sigma\simeq\mathbb R$ [LM24, Prop. 2.4.3].
+    For every nonzero Archimedean class $\sigma$ of $\mathbf{No}$ and every $\mathbb R$-linear
+    complement $H_\sigma$ of $\mathbf{No}_{\prec\sigma}$ in $\mathbf{No}_{\preceq\sigma}$, there is
+    an isomorphism of ordered groups $H_\sigma\simeq\mathbb R$ [LM24, Prop. 2.4.3].
   -/)
   (proof := /--
     Choose a positive $a\in H_\sigma$ and send $x\in H_\sigma$ to the standard
@@ -220,18 +219,19 @@ private theorem ball_not_isCofinal_of_small
 This is the universe-bounded form of LM24, Proposition 2.4.4. -/
 @[blueprint "fact:surreal-archimedean-ball-cofinality"
   (phase := "Surreal numbers and omnific integers")
-  (title := "Cofinality of surreal Archimedean balls")
+  (title := "Cofinality of $\\mathbf{No}_{\\prec\\sigma}$")
   (statement := /--
-    For every nonzero Archimedean class $\sigma$ of $\mathbf{No}$, the convex
-    subgroup $\mathbf{No}_{\prec\sigma}$ has cofinality at least $\kappa_u$.  This
-    is [LM24, Prop. 2.4.4] for the surreal numbers of one universe.
+    For every nonzero Archimedean class $\sigma$ of $\mathbf{No}$, the convex subgroup
+    $\mathbf{No}_{\prec\sigma}$ has cofinality at least $\kappa$. This is [LM24, Prop. 2.4.4] in the
+    setting of this chapter.
   -/)
   (proof := /--
-    Let $a>0$ have class $\sigma$.  A subset of $\mathbf{No}_{\prec\sigma}$ of
-    cardinality less than $\kappa_u$ is a set of the universe $u$, so Conway's
-    cut construction gives a surreal number above it and below $a/n$ for every
-    $n\ge1$.  That number lies in $\mathbf{No}_{\prec\sigma}$, so the subset is
-    not cofinal.
+    Let $a>0$ have class $\sigma$, and let $s\subseteq\mathbf{No}_{\prec\sigma}$ have cardinality
+    less than $\kappa$. The sets $\{0\}\cup s$ and $\{a/n:n\ge1\}$ are small, and every element of
+    the first is less than every element of the second, because elements of
+    $\mathbf{No}_{\prec\sigma}$ are infinitesimal compared with $a$. Conway's construction gives $y$
+    between them. Then $y>0$ and $ny<a$ for all $n\ge1$, so $y\in\mathbf{No}_{\prec\sigma}$, and $y$
+    exceeds every element of $s$. So $s$ is not cofinal.
   -/)]
 theorem smallSupportCardinal_le_ball_cof (c : FiniteArchimedeanClass Surreal.{u}) :
     smallSupportCardinal.{u} ≤ Order.cof ↥(ball ℝ c) := by
@@ -254,18 +254,19 @@ theorem smallSupportCardinal_le_ball_cof (c : FiniteArchimedeanClass Surreal.{u}
 least the surreal support cardinal. -/
 @[blueprint "lem:surreal-common-tail-cofinality"
   (phase := "Surreal numbers and omnific integers")
-  (title := "Cofinality of intersections of surreal Archimedean balls")
+  (title := "Cofinality of $\\mathbf{No}_T$")
   (statement := /--
-    Let $T$ be a set of fewer than $\kappa_u$ nonzero Archimedean classes of
-    $\mathbf{No}$, without least element in magnitude.  Then $H_T$ has
-    cofinality at least $\kappa_u$.
+    Let $T$ be a set of fewer than $\kappa$ nonzero Archimedean classes of $\mathbf{No}$, without
+    $\prec$-least element. Then $\mathbf{No}_T$ has cofinality at least $\kappa$.
   -/)
   (proof := /--
-    A subset of $H_T$ of cardinality less than $\kappa_u$ is a set of the
-    universe $u$.  Conway's cut construction gives a surreal number above it
-    and below $a_\sigma/n$ for every $\sigma\in T$ and $n\ge1$, where
-    $a_\sigma>0$ has class $\sigma$.  That number lies in $H_T$, so the subset
-    is not cofinal.
+    For $\sigma\in T$ let $a_\sigma>0$ have class $\sigma$. Let $s\subseteq\mathbf{No}_T$ have
+    cardinality less than $\kappa$. Every $z\in\mathbf{No}_T$ satisfies $z<a_\sigma/n$ for all
+    $\sigma\in T$ and $n\ge1$: as $T$ has no $\prec$-least element, there is $\tau\in T$ with
+    $\tau\prec\sigma$, and $[z]\preceq\tau$ since $z\in\mathbf{No}_{\preceq\tau}$. So the small sets
+    $\{0\}\cup s$ and $\{a_\sigma/n:\sigma\in T,\ n\ge1\}$ are separated, and Conway's construction
+    gives $y$ between them. Then $[y]\prec\sigma$ for every $\sigma\in T$, so $y\in\mathbf{No}_T$,
+    and $y$ exceeds every element of $s$. So $s$ is not cofinal.
   -/)]
 theorem smallSupportCardinal_le_tailSubmodule_cof
     (T : Set (FiniteArchimedeanClass Surreal.{u})) [Small.{u} T]

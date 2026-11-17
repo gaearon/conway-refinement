@@ -29,9 +29,11 @@ standalone statements of the main results on generalised power series.
 
 ## Dependencies
 
-Proof prose cites every visible immediate predecessor with `\ref{...}`. The generator contracts
-unselected declarations, transitively reduces the resulting graph, and rejects missing or extra
-references. Dependencies treated as routine background therefore do not appear as nodes.
+Proof prose cites every visible immediate predecessor with `\ref{...}`, and may also cite any
+other result from which the node is reachable in the dependency graph. The generator contracts
+unselected declarations, transitively reduces the resulting graph, rejects a missing citation of an
+immediate predecessor, and rejects a citation of any result that is not an ancestor. Dependencies
+treated as routine background therefore do not appear as nodes.
 
 ## Vocabulary
 

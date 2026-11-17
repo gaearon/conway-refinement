@@ -127,7 +127,8 @@ For every selected node:
   rely on its chapter's standing setting (`setting` in `blueprint/phases.json`) and states every
   further hypothesis; setting plus statement match the full Lean signature;
 - a statement does not assume the conclusion of another node; the proof cites that node instead;
-- proof prose cites exactly the visible immediate blueprint predecessors;
+- proof prose cites every visible immediate blueprint predecessor, and may also cite other
+  results from which the node is reachable in the dependency graph, but nothing else;
 - the vocabulary is standard and source attributions are checked at their primary pinpoints.
 
 Never add dummy theorem uses or prose references to shape the dependency graph. When an implication

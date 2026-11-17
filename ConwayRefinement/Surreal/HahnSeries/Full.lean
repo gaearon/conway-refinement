@@ -107,7 +107,8 @@ theorem toFullHahnSeries_mul (x y : Surreal.{u}) :
     (x * y).toFullHahnSeries = ofLex (x * y).toHahnSeries.1 :=
       toFullHahnSeries_eq_ofLex_toHahnSeries (x * y)
     _ = ofLex (x.toHahnSeries * y.toHahnSeries).1 := by
-      rw [toHahnSeries_mul]
+      rw [← toHahnSeriesRingEquiv_apply, map_mul, toHahnSeriesRingEquiv_apply,
+        toHahnSeriesRingEquiv_apply]
     _ = ofLex x.toHahnSeries.1 * ofLex y.toHahnSeries.1 :=
       ofLex_coe_mul x.toHahnSeries y.toHahnSeries
     _ = x.toFullHahnSeries * y.toFullHahnSeries := by

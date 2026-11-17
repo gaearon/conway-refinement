@@ -166,26 +166,23 @@ element of `S` multiplies the germ of `X` into `S`. -/
     Assume (H) and $x\notin S$.  Then $ax\notin S$ for every nonzero $a\in S$.
   -/)
   (proof := /--
-    Suppose otherwise, and choose such an $a$ with $\operatorname{rk}(a)$
-    least.  Choose $A_0,B\in A_S$ with $[A_0]=a$ and $[B]=-ax$.  Then
-    $[A_0X+B]=0$, so by \ref{lem:constant-germs} the germs of $A_0X+B$ vanish
-    at all $\xi$ in some interval $(\varepsilon,0)$.
+    Suppose otherwise, and choose such an $a$ with $V_{\mathrm{CB}}(a)$ least; by
+    \ref{lem:cantor-bendixson-value-class}, $V_{\mathrm{CB}}$ is defined on classes. Choose
+    $P,W\in A(S)$ with $[P]=a$ and $[W]=-ax$. Then $[PX+W]=0$, so by \ref{lem:constant-germs} the
+    germs of $PX+W$ vanish at all $\xi$ in some interval $(\varepsilon,0)$.
 
-    Let $\xi\in(\varepsilon,0)$.  By \ref{lem:convolution-formula},
-    $[(A_0X)^{|\xi}]-[A_0^{|\xi}]\,x$ is the sum of the products
-    $[A_0^{|\beta}]\,[X^{|\xi-\beta}]$ with $\beta\ne\xi$.  Such a product
-    vanishes if $\xi-\beta>0$, and lies in $S$ if $\xi-\beta<0$, because
-    $A_0\in A_S$ and the germs of $X$ at negative exponents lie in $S$.
-    Since $[(A_0X)^{|\xi}]=-[B^{|\xi}]\in S$, it follows that
-    $[A_0^{|\xi}]\,x\in S$; also $[A_0^{|\xi}]\in S$.
+    Let $\xi\in(\varepsilon,0)$. By \ref{lem:convolution-formula}, a finite sum by
+    \ref{lem:convolution-finite}, $[(PX)^{|\xi}]-[P^{|\xi}]\,x$ is the sum of the products
+    $[P^{|\beta}]\,[X^{|\xi-\beta}]$ with $\beta\ne\xi$. Such a product vanishes if $\xi-\beta>0$,
+    since germs at positive exponents vanish. It lies in $S$ if $\xi-\beta<0$, because $P\in A(S)$
+    and the germs of $X$ at negative exponents lie in $S$. Since $[(PX)^{|\xi}]=-[W^{|\xi}]\in S$,
+    it follows that $[P^{|\xi}]\,x\in S$; also $[P^{|\xi}]\in S$.
 
-    If $a\in K$, then $x=a^{-1}(ax)\in S$, a contradiction.  Otherwise
-    $a\ne0$, so $A_0\notin J$ and $V_{\mathrm{CB}}(A_0)\ne0$, and
-    \ref{lem:cantor-bendixson-value-drop} gives
-    $\operatorname{rk}[A_0^{|\xi}]<\operatorname{rk}(a)$ for all $\xi<0$ close
-    to $0$.  By the minimality of $\operatorname{rk}(a)$, the germs
-    $[A_0^{|\xi}]$ vanish for these $\xi$.  Then $a\in K$ by
-    \ref{lem:constant-germs}, a contradiction.
+    If $a\in K$, then $x=a^{-1}(ax)\in S$, a contradiction. If $a\notin K$, then $a\ne0$, so
+    $V_{\mathrm{CB}}(P)\ne0$, and \ref{lem:cantor-bendixson-value-drop} gives
+    $V_{\mathrm{CB}}([P^{|\xi}])<V_{\mathrm{CB}}(a)$ for all $\xi<0$ close to $0$. These germs lie
+    in $S$ and satisfy $[P^{|\xi}]\,x\in S$, so by the minimality of $V_{\mathrm{CB}}(a)$ they
+    vanish. Then $a\in K$ by \ref{lem:constant-germs}, a contradiction.
   -/)]
 theorem mul_mk_notMem
     (S : Subalgebra K (Nonpositive G K ⧸ boundedAwayIdeal G K))
@@ -218,33 +215,27 @@ constant multiple of the germ of `V`. -/
     Then $[U]=c\,[V]$ for some $c\in K$.
   -/)
   (proof := /--
-    A nonzero $v\in S$ cancels from an equation $vn=vn'$ with $n,n'\in S+Sx$.
-    Indeed, write $n-n'=s_0+s_1x$ with $s_0,s_1\in S$; then
-    $(vs_1)x=-vs_0\in S$, so $vs_1=0$ by \ref{lem:no-linear-relation}, and
-    then $vs_0=0$.  As $S$ is a domain, $s_0=s_1=0$.
+    A nonzero $v\in S$ cancels from an equation $vn=vn'$ with $n,n'\in S+Sx$. Indeed, write
+    $n-n'=s_0+s_1x$ with $s_0,s_1\in S$; then $(vs_1)x=-vs_0\in S$, so $vs_1=0$ by
+    \ref{lem:no-linear-relation}, and then $vs_0=0$. As $S$ is a domain, $s_0=s_1=0$.
 
-    Induct on $\operatorname{rk}[V]$.  Suppose first $[V]\in K$.  By the
-    characterisation of constant germs, the germs of $V$ vanish near $0$, so
-    the relation makes the germs of $U$ vanish near $0$, as $[V]\ne0$.  By the
-    same characterisation $[U]\in K$, and $c=[U]/[V]$.
+    Induct on $V_{\mathrm{CB}}([V])$. Suppose first that $[V]\in K$. By \ref{lem:constant-germs} the
+    germs of $V$ vanish near $0$, so the relation makes the germs of $U$ vanish near $0$, as
+    $[V]\ne0$. By \ref{lem:constant-germs} again $[U]\in K$, and $c=[U]/[V]$.
 
-    Suppose $[V]\notin K$.  Then $V_{\mathrm{CB}}(V)\ne0$.  By the
-    characterisation of constant germs and the decrease of the
-    Cantor--Bendixson value under translated truncation, there is
+    Suppose that $[V]\notin K$. Since $[V]\ne0$, $V_{\mathrm{CB}}(V)\ne0$. By
+    \ref{lem:constant-germs} and \ref{lem:cantor-bendixson-value-drop} there is
     $\xi\in(\varepsilon,0)$ with $[V^{|\xi}]\ne0$ and
-    $\operatorname{rk}[V^{|\xi}]<\operatorname{rk}[V]$.  Put $U'=U^{|\xi}$ and
-    $V'=V^{|\xi}$.  The germs of $U'$ and $V'$ at $\zeta\le0$ are those of $U$
-    and $V$ at $\xi+\zeta$, so $U'$, $V'$ satisfy the hypotheses on germs.  For
-    $\zeta\in(\varepsilon-\xi,0)$, the relations at $\xi+\zeta$ and at $\xi$
-    give
+    $V_{\mathrm{CB}}([V^{|\xi}])<V_{\mathrm{CB}}([V])$. Put $U'=U^{|\xi}$ and $V'=V^{|\xi}$. By
+    \ref{lem:germs-of-translated-truncation} the germs of $U'$ and $V'$ at $\zeta\le0$ are those of
+    $U$ and $V$ at $\xi+\zeta$, so $U'$ and $V'$ satisfy the hypotheses on germs. For
+    $\zeta\in(\varepsilon-\xi,0)$, the relations at $\xi+\zeta$ and at $\xi$ give
     \[
-      [V]\,[V']\,[U'^{|\zeta}]=[V']\,[U]\,[V'^{|\zeta}]
-      =[V]\,[U']\,[V'^{|\zeta}].
+      [V]\,[V']\,[U'^{|\zeta}]=[V']\,[U]\,[V'^{|\zeta}]=[V]\,[U']\,[V'^{|\zeta}].
     \]
     Both sides are $[V]$ times an element of $S+Sx$, so cancelling $[V]$ gives
-    $[V']\,[U'^{|\zeta}]=[U']\,[V'^{|\zeta}]$.  By induction $[U']=c\,[V']$
-    for some $c\in K$.  The relation at $\xi$ now reads
-    $[V']\,[U]=[V]\,[U']=[V']\,c\,[V]$, and cancelling $[V']\ne0$ gives
+    $[V']\,[U'^{|\zeta}]=[U']\,[V'^{|\zeta}]$. By induction $[U']=c\,[V']$ for some $c\in K$. The
+    relation at $\xi$ now reads $[V']\,[U]=[V]\,[U']=[V']\,c\,[V]$, and cancelling $[V']\ne0$ gives
     $[U]=c\,[V]$.
   -/)]
 theorem exists_mk_eq_smul_of_proportional
@@ -273,35 +264,31 @@ does not. Then the germ of `X` is transcendental over `S`. -/
   (phase := "Polynomial presentations")
   (title := "Transcendence lemma")
   (statement := /--
-    Assume (H), $x\notin S$, and that $S$ is a domain.  Then $x$ is
+    Let $K$ have characteristic $0$. Assume (H), $x\notin S$, and that $S$ is a domain. Then $x$ is
     transcendental over $S$.
   -/)
   (proof := /--
-    Let $p\in S[T]$ be nonzero of least degree $d$ with $p(x)=0$.  Then
-    $d\ge1$, and $d=1$ is excluded by the absence of linear relations.  Let
-    $d\ge2$.  Lift each coefficient $p_k$ to some $A_k\in A_S$, and put
-    $Y=\sum_kA_kX^k$.  Then $[Y]=p(x)=0$, so by the characterisation of constant
-    germs $[Y^{|\xi}]=0$ for all $\xi$ in some interval $(\varepsilon,0)$.
+    Let $p\in S[Y]$ be nonzero of least degree $d$ with $p(x)=0$. Then $d\ge1$, and $d=1$ is
+    excluded by \ref{lem:no-linear-relation}. Let $d\ge2$. Lift each coefficient $p_k$ to some
+    $P_k\in A(S)$, and put $W=\sum_kP_kX^k$. Then $[W]=p(x)=0$, so by \ref{lem:constant-germs}
+    $[W^{|\xi}]=0$ for all $\xi$ in some interval $(\varepsilon,0)$.
 
-    Fix $\xi\le0$.  Expanding $[(A_kX^k)^{|\xi}]$ by the convolution formula and
-    inducting on $k$, as in the proof of the absence of linear relations, gives
-    $[(A_kX^k)^{|\xi}]=q_k(x)$ for a polynomial $q_k\in S[T]$ of degree at most
-    $k$ whose coefficient of $T^k$ is $[A_k^{|\xi}]$ and whose coefficient of
-    $T^{k-1}$ is $k\,([(A_kX)^{|\xi}]-[A_k^{|\xi}]\,x)$.  Put $q=\sum_kq_k$,
-    so that $q(x)=[Y^{|\xi}]$.
+    Fix $\xi\le0$. Expanding $[(P_kX^k)^{|\xi}]$ by \ref{lem:convolution-formula} and inducting on
+    $k$, as in the proof of \ref{lem:no-linear-relation}, gives $[(P_kX^k)^{|\xi}]=q_k(x)$ for a
+    polynomial $q_k\in S[Y]$ of degree at most $k$ whose coefficient of $Y^k$ is $[P_k^{|\xi}]$ and
+    whose coefficient of $Y^{k-1}$ is $k\,([(P_kX)^{|\xi}]-[P_k^{|\xi}]\,x)$. Put $q=\sum_kq_k$, so
+    that $q(x)=[W^{|\xi}]$.
 
-    Let $\xi\in(\varepsilon,0)$.  The polynomial $p_d\,q-[A_d^{|\xi}]\,p$
-    vanishes at $x$ and has degree less than $d$, so it is $0$.  Its
-    coefficient of $T^{d-1}$ says that $Z=dA_dX+A_{d-1}$ satisfies
+    Let $\xi\in(\varepsilon,0)$. The polynomial $p_d\,q-[P_d^{|\xi}]\,p$ vanishes at $x$ and has
+    degree less than $d$, so it is $0$. Its coefficient of $Y^{d-1}$ says that $U=dP_dX+P_{d-1}$
+    satisfies
     \[
-      [A_d]\,[Z^{|\xi}]=[Z]\,[A_d^{|\xi}].
+      [P_d]\,[U^{|\xi}]=[U]\,[P_d^{|\xi}].
     \]
-    The germs of $A_d$ lie in $S$, and by the computation in the second
-    paragraph those of $Z$ lie in $S+Sx$.  So \ref{lem:proportionality}
-    gives $[Z]=c\,p_d$ for some $c\in K$, that is,
-    $d\,p_d\,x+p_{d-1}-c\,p_d=0$.  As $K$ has characteristic $0$,
-    $d\,p_d\ne0$, and this relation of degree one contradicts the minimality
-    of $d$.
+    The germs of $P_d$ lie in $S$, and by the computation in the second paragraph those of $U$ lie
+    in $S+Sx$. So \ref{lem:proportionality}, with $V=P_d$ and $[V]=p_d\ne0$, gives $[U]=c\,p_d$ for
+    some $c\in K$, that is, $d\,p_d\,x+p_{d-1}-c\,p_d=0$. As $K$ has characteristic $0$,
+    $d\,p_d\ne0$, and this relation of degree one contradicts the minimality of $d$.
   -/)
   (highlight)]
 theorem transcendental_mk_of_germAt_mem
@@ -322,19 +309,16 @@ property that every element is the germ of a series all of whose germs lie in th
   (phase := "Polynomial presentations")
   (title := "Representatives after adjoining a germ")
   (statement := /--
-    Assume (H).  Then every element of $S[x]$ is $[b]$ for some $b\in A$ all of
-    whose germs lie in $S[x]$.
+    Assume (H). Then $S[x]\subseteq[A(S[x])]$.
   -/)
   (proof := /--
-    Let $T$ be the set of $a\in S[x]$ such that $a=[b]$ for some $b$ all of
-    whose germs lie in $S[x]$.  It contains $S$, since $S$ has
-    representatives in $A_S$.  It contains $x=[X]$: the germs of $X$ at
-    $\xi<0$ lie in $S$, the germ at $0$ is $x$, and the germs at $\xi>0$
-    vanish.  It is closed under sums.  It is closed under products by
-    \ref{lem:convolution-formula}: if all germs of $b$ and $c$ lie in $S[x]$,
-    then so does each
-    $[(bc)^{|\gamma}]=\sum_\beta[b^{|\beta}]\,[c^{|\gamma-\beta}]$.  Hence
-    $T=S[x]$.
+    Let $\mathcal T$ be the set of $a\in S[x]$ with $a=[b]$ for some $b\in A(S[x])$. It contains
+    $S$, since $S\subseteq[A(S)]\subseteq[A(S[x])]$. It contains $x=[X]$: the germs of $X$ at
+    $\xi<0$ lie in $S$, the germ at $0$ is $x$, and the germs at $\xi>0$ vanish. It is closed under
+    sums, as the germ maps are linear. It is closed under products by \ref{lem:convolution-formula}:
+    if all germs of $b$ and $c$ lie in $S[x]$, then so does each
+    $[(bc)^{|\gamma}]=\sum_\beta[b^{|\beta}]\,[c^{|\gamma-\beta}]$, a finite sum by
+    \ref{lem:convolution-finite}. Hence $\mathcal T=S[x]$.
   -/)]
 theorem exists_mk_eq_of_mem_adjoin
     (S : Subalgebra K (Nonpositive G K ⧸ boundedAwayIdeal G K))
@@ -358,19 +342,18 @@ negative exponents lie in `S`. -/
     $[X^{|\xi}]\in S$ for all $\xi<0$ and $[X]\notin S$.
   -/)
   (proof := /--
-    Choose $y\in Q\setminus S$ with $\operatorname{rk}(y)$ least, and $X_0\in A$
-    with $[X_0]=y$.  Since $K\subseteq S$, $y\notin K$; so $X_0\notin J$ and
-    $V_{\mathrm{CB}}(X_0)\ne0$.  By \ref{lem:cantor-bendixson-value-drop} there
-    is $\varepsilon<0$ with $\operatorname{rk}[X_0^{|\xi}]<\operatorname{rk}(y)$
-    for all $\xi\in(\varepsilon,0)$; by the choice of $y$, these germs lie in
-    $S$.
+    Choose $y\in Q\setminus S$ with $V_{\mathrm{CB}}(y)$ least
+    (\ref{lem:cantor-bendixson-value-class}), and $X_0\in A$ with $[X_0]=y$. Since $K\subseteq S$,
+    $y\notin K$; in particular $y\ne0$ and $V_{\mathrm{CB}}(X_0)\ne0$. By
+    \ref{lem:cantor-bendixson-value-drop} there is $\varepsilon<0$ with
+    $V_{\mathrm{CB}}([X_0^{|\xi}])<V_{\mathrm{CB}}(y)$ for all $\xi\in(\varepsilon,0)$; by the
+    choice of $y$, these germs lie in $S$.
 
-    Let $X$ be the part of $X_0$ with exponents greater than $\varepsilon$.
-    Then $X_0-X\in J$, so $[X]=y\notin S$.  For $\xi\in(\varepsilon,0)$, the
-    series $X^{|\xi}$ and $X_0^{|\xi}$ differ by a series supported in
-    $(-\infty,\varepsilon-\xi]$, so they have the same germ, which lies in
-    $S$.  For $\xi\le\varepsilon$, the translated truncation $X^{|\xi}$ is $0$,
-    so the germ of $X$ at $\xi$ (\ref{def:germ-at}) is $0$.
+    Let $X$ be the part of $X_0$ with exponents greater than $\varepsilon$. Then $X_0-X\in J$, so
+    $[X]=y\notin S$. For $\xi\in(\varepsilon,0)$, the series $X^{|\xi}$ and $X_0^{|\xi}$ differ by a
+    series supported in $(-\infty,\varepsilon-\xi]$, so they have the same germ, which lies in $S$.
+    For $\xi\le\varepsilon$, the translated truncation $X^{|\xi}$ is $0$, so the germ of $X$ at
+    $\xi$ (\ref{def:germ-at}) is $0$.
   -/)]
 theorem exists_germAt_mem_mk_notMem
     (S : Subalgebra K (Nonpositive G K ⧸ boundedAwayIdeal G K)) (hS : S ≠ ⊤) :
@@ -385,27 +368,26 @@ bounded away from zero is a polynomial algebra over `K`. -/
   (phase := "Polynomial presentations")
   (title := "Polynomial presentation of the ring of germs")
   (statement := /--
-    Let $K$ have characteristic $0$ and $G$ be Cauchy complete.  For some set
-    $I$ there is a $K$-algebra isomorphism
+    Let $K$ have characteristic $0$ and $G$ be Cauchy complete. For some set $I$ there is a
+    $K$-algebra isomorphism
     \[
-      K[X_i:i\in I]\simeq Q.
+      K[Y_i:i\in I]\simeq Q.
     \]
   -/)
   (proof := /--
-    By Zorn's lemma choose a maximal set $T\subseteq Q$, algebraically
-    independent over $K$, such that every element of $K[T]$ is $[b]$ for some
-    $b$ with all germs in $K[T]$.  The empty set qualifies, because a constant
-    $k$ has $[k^{|\xi}]=0$ for $\xi\ne0$; and the union of a chain qualifies.
-    As a polynomial ring over $K$, $K[T]$ is a domain.
+    By Zorn's lemma choose a set $\mathcal T\subseteq Q$, algebraically independent over $K$, that
+    is maximal with $K[\mathcal T]\subseteq[A(K[\mathcal T])]$. The empty set qualifies, because a
+    constant $k$ has $[k^{|\xi}]=0$ for $\xi\ne0$. The union of a chain qualifies, since each
+    element of its polynomial ring lies in the polynomial ring of one member of the chain. As a
+    polynomial ring over $K$, $K[\mathcal T]$ is a domain.
 
-    Suppose that $K[T]\ne Q$.  By \ref{lem:new-germ} there is $X\in A$ whose
-    germs at negative exponents lie in $K[T]$, with $x=[X]\notin K[T]$.  By
-    \ref{lem:transcendence}, $x$ is transcendental over $K[T]$, so
-    $T\cup\{x\}$ is algebraically independent.  By
-    \ref{lem:representatives-adjoin}, $K[T\cup\{x\}]=K[T][x]$ again has the
-    property above.  This contradicts the maximality of $T$.  Hence
-    $K[T]=Q$, and evaluation at $T$ is an isomorphism
-    $K[X_t:t\in T]\simeq Q$.
+    Suppose that $K[\mathcal T]\ne Q$. By \ref{lem:new-germ} there is $X\in A$ whose germs at
+    negative exponents lie in $K[\mathcal T]$, with $x=[X]\notin K[\mathcal T]$. Then (H) holds with
+    $S=K[\mathcal T]$, and by \ref{lem:transcendence}, $x$ is transcendental over $K[\mathcal T]$;
+    so $\mathcal T\cup\{x\}$ is algebraically independent. By \ref{lem:representatives-adjoin},
+    $K[\mathcal T\cup\{x\}]=K[\mathcal T][x]$ again satisfies the condition. This contradicts the
+    maximality of $\mathcal T$. Hence $K[\mathcal T]=Q$, and evaluation at $\mathcal T$ is an
+    isomorphism $K[Y_\tau:\tau\in\mathcal T]\simeq Q$.
   -/)
   (highlight)]
 theorem exists_mvPolynomial_algEquiv_germ :
@@ -428,21 +410,21 @@ variable (G K) in
 /-- For a nontrivial ordered exponent group `G` that is Cauchy complete and a field `K` of
 characteristic zero, the ideal `J` of series in `K((G^{≤0}))` whose support is bounded away from
 zero is prime: the ring of germs `K((G^{≤0}))/J` is an integral domain. For real exponents this is
-Berarducci's theorem (Berarducci 2000, Corollary 9.8); for general exponent groups it is due to
-Pitteloud (2002, Theorem 6.1), see also L'Innocente–Mantova (2024, Corollary 8.1.5). Here it is a
-consequence of the polynomial presentation. -/
+Berarducci's theorem (Berarducci 2000, Corollary 9.8); for dense exponent groups it is due to
+Pitteloud (2002, Theorem 6.1), and for arbitrary exponent groups to L'Innocente–Mantova (2024,
+Corollary 8.1.5). Here it is a consequence of the polynomial presentation. -/
 @[blueprint "thm:bounded-away-ideal-prime"
   (phase := "Polynomial presentations")
   (title := "Primality of $J$")
   (statement := /--
-    Let $K$ have characteristic $0$ and $G$ be Cauchy complete.  Then $Q$ is a
-    domain; that is, $J$ is a prime ideal.  For $G=\mathbb R$ this is
-    [Ber00, Cor. 9.8]; for dense $G$ it is [Pit02, Thm. 6.1], and for arbitrary
-    $G$ [LM24, Cor. 8.1.5].
+    Let $K$ have characteristic $0$ and $G$ be Cauchy complete. Then $Q$ is a domain; that is, $J$
+    is a prime ideal. This is a special case of known results: [Ber00, Cor. 9.8] for $G=\mathbb R$,
+    [Pit02, Thm. 6.1] for dense $G$, and [LM24, Cor. 8.1.5] for arbitrary $G$. It is recorded here
+    as a corollary of the polynomial presentation.
   -/)
   (proof := /--
-    By \ref{thm:complete-hahn-germ-polynomial-algebra}, $Q$ is isomorphic to a
-    polynomial ring over the field $K$, which is a domain.
+    By \ref{thm:complete-hahn-germ-polynomial-algebra}, $Q$ is isomorphic to a polynomial ring over
+    the field $K$, which is a domain.
   -/)
   (highlight)]
 theorem isDomain_germ : IsDomain (Nonpositive G K ⧸ boundedAwayIdeal G K) := by

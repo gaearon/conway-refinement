@@ -163,20 +163,7 @@ private theorem restriction_mul_isPrimal_at_support_class
       x = t * w ∧ IsPrimal w ∧ (w : R⟦G⟧).coeff 0 ≠ 0 := by
   let C : AddSubgroup G := (FiniteArchimedeanClass.closedBallAddSubgroup q).comap
     (FiniteArchimedeanClass.tailSubmodule ℚ T).mkQ.toAddMonoidHom
-  have hfilter0 : HahnSeries.filter (· ∈ C) (x : HahnSeries G R) ≠ 0 := by
-    obtain ⟨z, ⟨r, hr, hqr⟩, hzq⟩ := hqocc
-    intro hzero
-    have hcoeff := congrArg (fun y : HahnSeries G R ↦ y.coeff r) hzero
-    rw [HahnSeries.coeff_filter, if_pos] at hcoeff
-    · exact (HahnSeries.mem_support _ _).mp hr hcoeff
-    · change (FiniteArchimedeanClass.tailSubmodule ℚ T).mkQ r ∈
-        FiniteArchimedeanClass.closedBallAddSubgroup q
-      apply FiniteArchimedeanClass.mem_closedBallAddSubgroup_iff.mpr
-      intro _hr0
-      change q.1 ≤ ArchimedeanClass.mk ((FiniteArchimedeanClass.tailSubmodule ℚ T).mkQ r)
-      change (FiniteArchimedeanClass.tailSubmodule ℚ T).mkQ r = z at hqr
-      rw [hqr, hzq]
-  have hfactor := exists_factor_with_smaller_support_class_orderType Z T q x hqocc hfilter0
+  have hfactor := exists_factor_with_smaller_support_class_orderType Z T q x hqocc
   obtain ⟨t, w, ht, hfac, hw1, hrank⟩ := hfactor
   refine ⟨t, w, ?_, hfac, ih w hrank, by rw [hw1]; exact one_ne_zero⟩
   apply Subtype.ext
@@ -214,42 +201,42 @@ private theorem limit_family_card_lt {G : Type u} {R : Type v}
     _ ≤ #(x : HahnSeries G R).support := Cardinal.mk_image_le
     _ < κ := x.1.2
 
-/-- Let the Archimedean classes met by the support of `x ≠ 0` be `T₀ ∪ T₁`, with `T₁` finite and
-`T₀` without least member in magnitude, and let the quotient `Γ` of `G` by the common tail below
-`T₀` be Cauchy complete. If every series of smaller support-class order type is primal, then the
+/-- Let `T₀` be a nonempty set of Archimedean classes met by the support of `x ≠ 0`, without least
+member in magnitude, and let the quotient `Γ` of `G` by the common tail below `T₀` be Cauchy
+complete. If every series of smaller support-class order type is primal, then the
 regrouping of `x` along the common tail is primal in `L((Γ^{≤0}))_κ`. -/
 @[blueprint "lem:regrouped-primality-at-limit"
   (phase := "Reduction along Archimedean classes")
   (title := "Primality of the regrouping at a limit of Archimedean classes")
   (statement := /--
-    Let $G$ be an ordered $\mathbb Q$-vector space, $R$ of characteristic $0$,
-    and $\kappa$ regular.  Let $0\ne x\in Z+R((G^{<0}))_\kappa$ meet exactly the
-    classes $T_0\cup T_1$, where $T_0$ contains a nonzero class and has no least
-    element in magnitude, and assume (B2)$_{T_0}$.  Suppose every element whose
-    set of nonzero classes has smaller order type than that of $x$ is primal.
-    Then the regrouping $\hat x$ of $x$ along $H_{T_0}$ is primal in
-    $L((\Gamma^{\le0}))_\kappa$.
+    Let $G$ be an ordered $\mathbb Q$-vector space, $R$ of characteristic $0$, and $\kappa$ regular.
+    Let $0\ne x\in Z+R((G^{<0}))_\kappa$, and let $T_0$ be a nonempty set of classes met by $x$,
+    without $\prec$-least element and satisfying (B2)$_{T_0}$. Suppose that every
+    $y\in Z+R((G^{<0}))_\kappa$ with $\operatorname{ot}\mathcal C(y)<\operatorname{ot}\mathcal C(x)$
+    is primal. Then the regrouping $\hat x$ of $x$ along the $\mathbb Q$-subspace $G_{T_0}$ is
+    primal in $L((\Gamma^{\le0}))_\kappa$, where $\Gamma=G/G_{T_0}$ and $L=R((G_{T_0}))_\kappa$.
   -/)
   (proof := /--
-    Here $\Gamma=G/H_{T_0}$ and $L=R((H_{T_0}))_\kappa$.  We apply
-    \ref{lem:primality-from-germs} to $f=\hat x$; it remains to find
-    arbitrarily small nonzero classes $q$ of $\Gamma$ with
-    $\hat x_{|q}\ne0$ and $\hat x=\hat x_{|q}\,w$, $w$ primal.
+    Since $[0]$ is the $\prec$-least class, $T_0$ consists of nonzero classes. We apply
+    \ref{lem:primality-from-germs} with $f=\hat x$ and $T=T_0$; the field $L$ has characteristic
+    $0$. Let $q_0$ be a nonzero class of $\Gamma$. We find a nonzero class $q\preceq q_0$ with
+    $\rho_q(\hat x)\ne0$ and $\hat x=\rho_q(\hat x)\,\hat w$, $\hat w$ primal.
 
-    Since $T_0$ has no least element in magnitude, the nonzero classes of
-    $\Gamma$ met by the support of $\hat x$ are arbitrarily small.  Let $q$ be
-    one of them.  By \ref{lem:support-class-factorisation} there is
-    $w\in Z+R((G^{<0}))_\kappa$ with constant coefficient $1$ such that $x=tw$,
-    where $t$ is the restriction of $x$ to the inverse image of
-    $\Gamma_{\preceq q}$, and the nonzero classes of $w$ have smaller order type
-    than those of $x$.  So $w$ is primal by hypothesis.  Regrouping is a ring
-    isomorphism onto $D+L((\Gamma^{<0}))_\kappa$ which takes $t$ to
-    $\hat x_{|q}\ne0$.  The regrouping $\hat w$ is primal there, with constant
-    coefficient $1$.  So it is primal in $L((\Gamma^{\le0}))_\kappa$: every
-    element of that ring is a nonzero constant times one with constant
-    coefficient $0$ or $1$, and this reduces a divisibility relation in
-    $L((\Gamma^{\le0}))_\kappa$ to one in $D+L((\Gamma^{<0}))_\kappa$.  Thus
-    $\hat x=\hat x_{|q}\,\hat w$ as required.
+    The class $q_0$ is the class of the image of some $g\notin G_{T_0}$, so $\sigma\prec[g]$ for
+    some $\sigma\in T_0$. Choose $\tau,\tau'\in T_0$ with $\tau'\prec\tau\prec\sigma$, and
+    $y\in\operatorname{supp}(x)$ of class $\tau$. Then $y\notin G_{T_0}$, and the class $q$ of the
+    image of $y$ is nonzero and satisfies $q\preceq q_0$. By \ref{lem:support-class-factorisation},
+    applied with $T=T_0$, we have $x=\rho_C(x)\,w$, where $C$ is the inverse image of
+    $\Gamma_{\preceq q}$, $w$ has constant coefficient $1$, and $\operatorname{ot}\mathcal
+    C(w)<\operatorname{ot}\mathcal C(x)$. So $w$ is primal by hypothesis.
+
+    Regrouping is a ring isomorphism onto $D+L((\Gamma^{<0}))_\kappa$, which takes $\rho_C(x)$ to
+    $\rho_q(\hat x)$; this is nonzero because $y\in C$. The regrouping $\hat w$ is primal in
+    $D+L((\Gamma^{<0}))_\kappa$, with constant coefficient $1$. So it is primal in
+    $L((\Gamma^{\le0}))_\kappa$: every element of that ring is a nonzero constant times one with
+    constant coefficient $0$ or $1$, and this reduces a divisibility relation in
+    $L((\Gamma^{\le0}))_\kappa$ to one in $D+L((\Gamma^{<0}))_\kappa$. Thus
+    $\hat x=\rho_q(\hat x)\,\hat w$ as required.
   -/)]
 theorem isPrimal_regroupAmbient_of_limit_tail
     {G : Type u} {R : Type v}
@@ -258,10 +245,10 @@ theorem isPrimal_regroupAmbient_of_limit_tail
     [Field R] [CharZero R]
     {κ : Cardinal} [Fact (ℵ₀ < κ)] [Fact κ.IsRegular]
     (Z : Subring R)
-    (T₀ T₁ : Set (ArchimedeanClass G)) (hT₀gt : ∀ a ∈ T₀, ∃ b ∈ T₀, a < b)
+    (T₀ : Set (ArchimedeanClass G)) (hT₀ne : T₀.Nonempty)
+    (hT₀gt : ∀ a ∈ T₀, ∃ b ∈ T₀, a < b)
     (x : HahnSeries.cardSuppLTTruncationIntegerPart (G := G) (R := R) (κ := κ) Z)
-    (hxclasses : ArchimedeanClass.mk '' (x : HahnSeries G R).support = T₀ ∪ T₁)
-    [Nonempty {c : FiniteArchimedeanClass G | c.1 ∈ T₀}]
+    (hT₀sub : T₀ ⊆ ArchimedeanClass.mk '' (x : HahnSeries G R).support)
     [CompleteSpace (FiniteArchimedeanClass.TailQuotient
       {c : FiniteArchimedeanClass G | c.1 ∈ T₀})]
     (hx0 : x ≠ 0)
@@ -275,6 +262,11 @@ theorem isPrimal_regroupAmbient_of_limit_tail
   let T : Set (FiniteArchimedeanClass G) := {c | c.1 ∈ T₀}
   let P := FiniteArchimedeanClass.tailSubmodule ℚ T
   have hT := limit_family_exists_gt T₀ hT₀gt
+  haveI : Nonempty T := by
+    obtain ⟨a, ha⟩ := hT₀ne
+    obtain ⟨b, hb, hab⟩ := hT₀gt a ha
+    obtain ⟨c, _hc, hbc⟩ := hT₀gt b hb
+    exact ⟨⟨⟨b, ne_top_of_lt hbc⟩, hb⟩⟩
   haveI : Nonempty (FiniteArchimedeanClass (FiniteArchimedeanClass.TailQuotient T)) := by
     letI := FiniteArchimedeanClass.nontrivial_tailQuotient T hT
     obtain ⟨y, hy⟩ := exists_ne (0 : FiniteArchimedeanClass.TailQuotient T)
@@ -287,7 +279,7 @@ theorem isPrimal_regroupAmbient_of_limit_tail
       q.1 ∈ ArchimedeanClass.mk ''
         (HahnSeries.convexQuotientSplitRingEquiv P (x : HahnSeries G R)).support} :=
     HahnSeries.isCofinal_supportArchimedeanClasses_convexQuotientSplit
-      T₀ T₁ hT₀gt (x : HahnSeries G R) hxclasses
+      T₀ hT₀gt (x : HahnSeries G R) hT₀sub
   have hq₀ : ∃ q ∈ {q : FiniteArchimedeanClass (FiniteArchimedeanClass.TailQuotient T) |
       q.1 ∈ ArchimedeanClass.mk ''
         (HahnSeries.convexQuotientSplitRingEquiv P (x : HahnSeries G R)).support}, q₀ ≤ q :=
@@ -318,37 +310,33 @@ Mantova (LM24, Theorem 9.0.1); primality of `Z` is their `(A3)`. -/
   (phase := "Reduction along Archimedean classes")
   (title := "Primality in $Z+R((G^{<0}))_\\kappa$")
   (statement := /--
-    Let $K$ be an Archimedean ordered field and $G$ an ordered $K$-vector space
-    that is also an ordered $\mathbb Q$-vector space, with $K$-linear complements
-    $H_\sigma$; let $R$ have characteristic $0$ and $\kappa$ be regular.  Assume
-    (A1)$_\sigma$ and (A2)$_\sigma$ for every nonzero class $\sigma$, (A3), and
-    (B1)$_T$ and (B2)$_T$ for every nonempty set $T$ of fewer than $\kappa$
-    nonzero classes without least element in magnitude.  Then every element of
-    $Z+R((G^{<0}))_\kappa$ is primal.  Conditions (A1)--(A3) are shown to be
-    necessary in [LM24, Thm. 9.0.1].
+    Let $F$ be an Archimedean ordered field and $G$ an ordered $F$-vector space (hence an ordered
+    $\mathbb Q$-vector space), with $F$-linear complements $H_\sigma$; let $R$ have characteristic
+    $0$ and $\kappa$ be regular. Assume (A1)$_\sigma$ and (A2)$_\sigma$ for every nonzero class
+    $\sigma$, (A3), and (B1)$_T$ and (B2)$_T$ for every nonempty set $T$ of fewer than $\kappa$
+    nonzero classes without $\prec$-least element. Then every element of $Z+R((G^{<0}))_\kappa$ is
+    primal. Conditions (A1)--(A3) are necessary by [LM24, Thm. 9.0.1].
   -/)
   (proof := /--
-    Induct on the order type of the well-ordered set of nonzero classes met by
-    $x$.  If it is finite, $x$ is primal by
-    \ref{thm:finite-support-classes-primality}, from (A1), (A2) and (A3).
+    Induct on $\operatorname{ot}\mathcal C(x)$. If $\mathcal C(x)$ is finite, $x$ meets only
+    finitely many classes and is primal by \ref{thm:finite-support-classes-primality}, from (A1),
+    (A2) and (A3).
 
-    Otherwise the classes met by $x$ split as $T_0\cup T_1$, with $T_1$ a finite
-    final segment and $T_0$ an initial segment whose order type is a limit
-    ordinal.  So $T_0$ has no least element in magnitude and contains a nonzero
-    class, and it has fewer than $\kappa$ elements because
-    $\operatorname{supp}(x)$ does.  We may assume $x\ne0$.  Put $C=H_{T_0}$ and
-    apply the primality through regrouping along $C$.  Its hypotheses hold:
+    Let $\mathcal C(x)$ be infinite; then $x\ne0$. It splits as $T_0\cup T_1$, with $T_1$ a finite
+    final segment and $T_0$ an initial segment whose order type is a limit ordinal. So $T_0$ is
+    nonempty and has no $\prec$-least element, and it has fewer than $\kappa$ elements because
+    $\operatorname{supp}(x)$ does. Put $C=G_{T_0}$, a convex $\mathbb Q$-subspace, and apply
+    \ref{lem:primality-through-regrouping} with $F=\mathbb Q$. Its hypotheses hold.
 
-    $\hat x$ is primal, by \ref{lem:regrouped-primality-at-limit}; that lemma
-    needs (B2)$_{T_0}$ and the induction hypothesis.
+    $\hat x$ is primal, by \ref{lem:regrouped-primality-at-limit}, using (B2)$_{T_0}$ and the
+    induction hypothesis.
 
-    $x_{|C}$ is primal in $D$.  It meets only classes in $T_1$, so it is primal
-    in $Z+R((G^{<0}))_\kappa$ by \ref{thm:finite-support-classes-primality}.  It
-    is then primal in the subring $D$ of elements supported in $C$, as in the
-    proof of primality at the leading class.
+    $\rho_C(x)$ is primal in $D$. Its exponents have classes in $T_1$ or the class $[0]$, so it
+    meets only finitely many classes and is primal in $Z+R((G^{<0}))_\kappa$ by
+    \ref{thm:finite-support-classes-primality}. It is then primal in the subring $D$ of elements
+    supported in $C$, as in the proof of \ref{lem:primality-at-leading-class}.
 
-    $L=\operatorname{Frac}(D)$, by (B1)$_{T_0}$ and the fraction field lemma
-    [LM24, Prop. 2.4.5].
+    $L=\operatorname{Frac}(D)$, by (B1)$_{T_0}$ and \ref{lem:fraction-field-from-cofinality}.
   -/)
   (highlight)]
 theorem isPrimal
@@ -409,7 +397,8 @@ theorem isPrimal
       · rw [hx0]
         exact isPrimal_zero
       exact isPrimal_of_isPrimal_regroupAmbient _ Z x
-        (isPrimal_regroupAmbient_of_limit_tail Z T₀ T₁ hT₀gt x hxclasses hx0
+        (isPrimal_regroupAmbient_of_limit_tail Z T₀ ⟨hTne.some.1, hTne.some_mem⟩ hT₀gt x
+          (fun c hc ↦ hxclasses ▸ Or.inl hc) hx0
           (fun w hw ↦ ih (rank w) (hxrank ▸ hw) w rfl))
         (isPrimal_restrictDomain_tailSubmodule_of_ambient_finiteClasses
           Z hfinite T₀ T₁ hT₀gt hT₁finite x hxclasses.le)

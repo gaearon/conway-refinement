@@ -177,25 +177,23 @@ theorem rationalTailQuotientScale_pos_and_coinitial
 uniformity. -/
 @[blueprint "lem:surreal-common-tail-quotient-complete"
   (phase := "Surreal numbers and omnific integers")
-  (title := "Cauchy completeness of surreal quotients")
+  (title := "Cauchy completeness of $\\mathbf{No}/\\mathbf{No}_T$")
   (statement := /--
-    Let $T$ be a nonempty set of fewer than $\kappa_u$ nonzero Archimedean classes
-    of $\mathbf{No}$, without least element in magnitude.  Then $\mathbf{No}/H_T$
-    is Cauchy complete for its order topology and group uniformity.
+    Let $T$ be a nonempty set of fewer than $\kappa$ nonzero Archimedean classes of $\mathbf{No}$,
+    without $\prec$-least element. Then $\mathbf{No}/\mathbf{No}_T$ is Cauchy complete for its order
+    topology and group uniformity.
   -/)
   (proof := /--
-    The images $\varepsilon_\sigma$ in $\mathbf{No}/H_T$ of positive
-    representatives of the classes $\sigma\in T$ are positive, because $T$ has
-    no least element in magnitude, and they are coinitial among positive
-    elements: a positive element outside $H_T$ has class beyond some
-    $\sigma\in T$ in magnitude.  Halving supplies the scales
-    $\varepsilon_\sigma/2$ required by
-    \ref{lem:complete-of-coinitial-scales-and-cut-filling}.  To fill a cut
-    between two families in $\mathbf{No}/H_T$ indexed by $T$, lift them to
-    $\mathbf{No}$; strict inequalities in the quotient by a convex subgroup
-    lift to strict inequalities between representatives, so
-    \ref{thm:surreal-simplicity-small-cuts} gives a surreal number between the
-    lifts, and its image lies between the original families.
+    For $\sigma\in T$ let $\varepsilon_\sigma$ be the image in $\mathbf{No}/\mathbf{No}_T$ of a
+    positive element of class $\sigma$. It is positive, because some $\tau\in T$ has
+    $\tau\prec\sigma$, so that element is not in $\mathbf{No}_T$. These images are coinitial among
+    positive elements: a positive element outside $\mathbf{No}_T$ has class $\succ\sigma$ for some
+    $\sigma\in T$. Halving supplies the scales $\varepsilon_\sigma/2$ required by
+    \ref{lem:complete-of-coinitial-scales-and-cut-filling}. To fill a cut between two families in
+    $\mathbf{No}/\mathbf{No}_T$ indexed by $T$, lift them to $\mathbf{No}$. Strict inequalities in
+    the quotient by a convex subgroup lift to strict inequalities between representatives, and the
+    lifted families are small since $T$ is. So \ref{thm:surreal-simplicity-small-cuts} gives a
+    surreal number between the lifts, and its image lies between the original families.
   -/)]
 theorem completeSpace_rationalTailQuotient
     (T : Set (FiniteArchimedeanClass Surreal.{u})) [Small.{u} T] [Nonempty T]

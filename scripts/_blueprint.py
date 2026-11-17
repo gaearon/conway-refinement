@@ -64,10 +64,10 @@ class Node:
     highlight: bool
 
 
-def shallow_dependencies(nodes: dict[str, Node]) -> dict[str, frozenset[str]]:
-    """Dependencies left after contracting every path through another selected node."""
+def ancestor_sets(nodes: dict[str, Node]) -> dict[str, frozenset[str]]:
+    """Every selected node from which each node is reachable in the dependency graph."""
 
-    def ancestors(label: str) -> set[str]:
+    def ancestors(label: str) -> frozenset[str]:
         seen: set[str] = set()
         pending = list(nodes[label].dependencies)
         while pending:
@@ -76,15 +76,21 @@ def shallow_dependencies(nodes: dict[str, Node]) -> dict[str, frozenset[str]]:
                 continue
             seen.add(dependency)
             pending.extend(nodes[dependency].dependencies)
-        return seen
+        return frozenset(seen)
 
-    ancestor_sets = {label: ancestors(label) for label in nodes}
+    return {label: ancestors(label) for label in nodes}
+
+
+def shallow_dependencies(nodes: dict[str, Node]) -> dict[str, frozenset[str]]:
+    """Dependencies left after contracting every path through another selected node."""
+
+    ancestor_sets_by_label = ancestor_sets(nodes)
     return {
         label: frozenset(
             dependency
             for dependency in node.dependencies
             if not any(
-                dependency in ancestor_sets[other]
+                dependency in ancestor_sets_by_label[other]
                 for other in node.dependencies
                 if other != dependency
             )
@@ -340,16 +346,19 @@ def validate_phase_contract(nodes: dict[str, Node]) -> None:
 def reference_mismatches(
     nodes: dict[str, Node],
 ) -> tuple[list[tuple[str, list[str]]], list[tuple[str, list[str]]]]:
+    """A proof must cite every immediate predecessor and may cite only transitive ancestors."""
+
     shallow = shallow_dependencies(nodes)
+    ancestors = ancestor_sets(nodes)
     missing_references = sorted(
         (node.label, sorted(shallow[node.label] - node.proof_references))
         for node in nodes.values()
         if shallow[node.label] - node.proof_references
     )
     unexpected_references = sorted(
-        (node.label, sorted(node.proof_references - shallow[node.label]))
+        (node.label, sorted(node.proof_references - ancestors[node.label]))
         for node in nodes.values()
-        if node.proof_references - shallow[node.label]
+        if node.proof_references - ancestors[node.label]
     )
     return missing_references, unexpected_references
 
@@ -441,11 +450,11 @@ def validate_reference_contract(nodes: dict[str, Node]) -> None:
         for label, references in missing_references
     )
     details.extend(
-        f"{label} cites non-dependencies {', '.join(references)}"
+        f"{label} cites non-ancestors {', '.join(references)}"
         for label, references in unexpected_references
     )
     raise SystemExit(
-        "blueprint: proof references must equal shallow blueprint dependencies: "
+        "blueprint: proof references must cite every immediate dependency and only ancestors: "
         + "; ".join(details)
         + (
             "; inserted dependency-explanation TODOs in " + ", ".join(inserted)

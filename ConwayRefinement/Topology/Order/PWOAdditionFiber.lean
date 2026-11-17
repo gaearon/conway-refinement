@@ -10,6 +10,7 @@ public import Mathlib.Topology.Order.Basic
 public import Mathlib.Topology.UniformSpace.Cauchy
 import ConwayRefinement.Topology.CantorBendixson.Rank
 import ConwayRefinement.Topology.Order.PWOAddition
+import ConwayRefinement.Blueprint
 
 /-!
 # Local domination by a finite addition fiber
@@ -43,6 +44,37 @@ theorem Set.IsPWO.eventually_exists_add_dominator {B C : Set G}
   exact ⟨p, hp, hq1 q.2.1, hq2 q.2.2⟩
 
 /-- Every nearby addition pair lies below exactly one pair in the fixed fiber. -/
+@[blueprint "lem:addition-fibre"
+  (phase := "Germs of translated truncations")
+  (title := "Addition near a fibre on closed well-ordered sets")
+  (statement := /--
+    Let $G$ be Cauchy complete, let $B,C\subseteq G$ be closed and well ordered, and let
+    $\gamma\in G$. Then there is a neighbourhood $U$ of $\gamma$ such that every
+    $(\beta,\eta)\in B\times C$ with $\beta+\eta\in U$ satisfies $\beta\le\xi$ and $\eta\le\zeta$
+    for exactly one $(\xi,\zeta)\in B\times C$ with $\xi+\zeta=\gamma$.
+  -/)
+  (proof := /--
+    Let $F$ be the set of $(\xi,\zeta)\in B\times C$ with $\xi+\zeta=\gamma$. Two distinct pairs of
+    $F$ are incomparable coordinatewise, and $B\times C$ is partially well ordered, so $F$ is
+    finite.
+
+    Addition $B\times C\to G$ is a closed map. Let $\mathcal U$ be an ultrafilter on $B\times C$
+    whose image under addition converges. As $B\times C$ is partially well ordered, $\mathcal U$
+    contains the set of pairs above some $a\in B\times C$. For pairs $p,q\ge a$, the number
+    $|p_1-q_1|$ is at most the larger of $(p_1+p_2)-(a_1+a_2)$ and $(q_1+q_2)-(a_1+a_2)$, and
+    similarly for the second coordinates. So $\mathcal U$ is Cauchy, and it converges in the closed
+    subset $B\times C$ of the complete space $G\times G$. Thus addition is proper, hence closed.
+
+    Existence. For $(\xi,\zeta)\in F$, the points of $B$ above $\xi$, if any, have a least element,
+    so the points of $B$ near $\xi$ are at most $\xi$; likewise for $C$ near $\zeta$. So the set of
+    pairs lying below some pair of $F$ contains an open neighbourhood $W$ of $F$ in $B\times C$. The
+    image of $(B\times C)\setminus W$ under addition is closed and does not contain $\gamma$. Take
+    $U$ disjoint from it.
+
+    Uniqueness. If $(\beta,\eta)$ lies below two distinct pairs $(\xi,\zeta)$ and $(\xi',\zeta')$ of
+    $F$, say with $\xi<\xi'$, then $\zeta>\zeta'$ and $\beta+\eta\le\xi+\zeta'<\gamma$. There are
+    finitely many such sums $\xi+\zeta'$; shrinking $U$ to lie above all of them gives uniqueness.
+  -/)]
 theorem Set.IsPWO.eventually_existsUnique_add_dominator {B C : Set G}
     (hB : B.IsPWO) (hC : C.IsPWO) (hBc : IsClosed B) (hCc : IsClosed C) (γ : G) :
     ∀ᶠ δ in 𝓝 γ, ∀ q : B ×ˢ C, q.1.1 + q.1.2 = δ →

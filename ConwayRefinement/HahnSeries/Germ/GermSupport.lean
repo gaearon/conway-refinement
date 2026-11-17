@@ -46,14 +46,12 @@ variable {G : Type u} {K : Type v} [AddCommGroup G] [LinearOrder G] [IsOrderedAd
     $\operatorname{supp}(b)$.
   -/)
   (proof := /--
-    For $d\in K((G^{\le0}))$, $d\in J$ exactly when $0$ is not in the closure
-    of $\operatorname{supp}(d)$, that is, when $V_{\mathrm{CB}}(d)=0$
-    (\ref{def:cantor-bendixson-value}).  Truncation at $\gamma$ does not change
-    the closed support near $\gamma$, and translation by $-\gamma$ moves
-    $\gamma$ to $0$; so $0$ lies in the closure of
-    $\operatorname{supp}(b^{|\gamma})$ exactly when $\gamma$ lies in the closure
-    of $\operatorname{supp}(b)$.  Apply this to the class of
-    \ref{def:germ-at}.
+    For $d\in K((G^{\le0}))$, $d\in J$ exactly when $0$ is not in the closed support of $d$, that
+    is, when $V_{\mathrm{CB}}(d)=0$ (\ref{def:cantor-bendixson-value}). The points of
+    $\operatorname{supp}(b)$ above $\gamma$, if any, have a least element, so the closed supports of
+    $b_{|\gamma}$ and $b$ agree near $\gamma$; translation by $-\gamma$ moves $\gamma$ to $0$. So
+    $0$ lies in the closed support of $b^{|\gamma}$ exactly when $\gamma$ lies in the closed support
+    of $b$. Apply this to the class of \ref{def:germ-at}.
   -/)]
 theorem germAt_ne_zero_iff (b : Nonpositive G K) (γ : G) :
     germAt γ b ≠ 0 ↔ γ ∈ closure (b : HahnSeries G K).support := by
@@ -149,17 +147,17 @@ neighbourhood of `γ`. -/
     all $\zeta\in(\varepsilon,0)$.
   -/)
   (proof := /--
-    By \ref{lem:germs-of-translated-truncation} the germs of $b^{|\gamma}$ at
-    $\zeta\le0$ are the germs of $b$ at $\gamma+\zeta$, so it suffices to treat
-    $\gamma=0$.  If $b-k\in J$ for some $k\in K$, say with support in
-    $(-\infty,c]$, $c<0$, then for $\xi\in(c,0)$ the translated truncation
-    $(b-k)^{|\xi}=t^{-\xi}(b-k)$ has support bounded away from $0$ and
-    $k^{|\xi}=0$; so the germs of $b$ vanish on $(c,0)$.  Conversely, if the
-    germ at $\xi$ vanishes, then $V_{\mathrm{CB}}(b^{|\xi})=0$, so $0$ is not in
-    the support of $b^{|\xi}$ and the coefficient of $t^\xi$ in $b$ is $0$
-    (\ref{def:cantor-bendixson-value}).  If this holds for all
-    $\xi\in(\varepsilon,0)$, then $b$ minus its constant coefficient has support
-    in $(-\infty,\varepsilon]$ and lies in $J$.
+    By \ref{lem:germs-of-translated-truncation} the germs of $b^{|\gamma}$ at $\zeta\le0$ are the
+    germs of $b$ at $\gamma+\zeta$, for every $\gamma\in G$, so it suffices to treat $\gamma=0$.
+    (For $\gamma>0$ both sides hold: $b^{|\gamma}=t^{-\gamma}b$ has support in $(-\infty,-\gamma]$,
+    so the germs of $b$ at positive exponents vanish.) If $b-k\in J$ for some $k\in K$, say with
+    support in $(-\infty,c]$, $c<0$, then for $\xi\in(c,0)$ the translated truncation
+    $(b-k)^{|\xi}=t^{-\xi}(b-k)$ has support bounded away from $0$ and $k^{|\xi}=0$; so the germs of
+    $b$ vanish on $(c,0)$. Conversely, if the germ of $b$ at $\xi<0$ vanishes, then
+    $V_{\mathrm{CB}}(b^{|\xi})=0$, so $0$ is not in the support of $b^{|\xi}$, and the coefficient
+    of $t^\xi$ in $b$ is $0$ (\ref{def:cantor-bendixson-value}). If this holds for all
+    $\xi\in(\varepsilon,0)$, then $b$ minus its constant coefficient has support in
+    $(-\infty,\varepsilon]$ and lies in $J$.
   -/)]
 theorem germAt_mem_range_algebraMap_iff (b : Nonpositive G K) (γ : G) :
     germAt γ b ∈ Set.range (algebraMap K (Nonpositive G K ⧸

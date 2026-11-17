@@ -295,22 +295,22 @@ def smallSupportIntegerPartSignedRingEquiv :
 /-- The signed-exponent Conway/Hahn ring equivalence for universe-bounded omnific integers. -/
 @[blueprint "thm:signed-normal-form-omnific-integer-equivalence"
   (phase := "Surreal numbers and omnific integers")
-  (title := "Conway normal form of omnific integers")
+  (title := "Omnific integers as generalised power series")
   (statement := /--
-    Conway normal form, with the signs of the exponents reversed, restricts to a
-    ring isomorphism
+    Conway normal form, with $\omega^y$ written as $t^{-y}$, restricts to a ring isomorphism
     \[
-      \mathbf{Oz}\simeq\mathbb Z+\mathbb R((\mathbf{No}^{<0}))_{\kappa_u}.
+      \mathbf{Oz}\simeq\mathbb Z+\mathbb R((\mathbf{No}^{<0}))_\kappa.
     \]
   -/)
   (proof := /--
-    Conway normal form is a ring isomorphism from $\mathbf{No}$ onto the series
-    with real coefficients, exponents in $\mathbf{No}$ and reverse well-ordered
-    support of cardinality less than $\kappa_u$, and an omnific integer is a
-    surreal number whose normal form has only nonnegative exponents and an
-    integer constant term [Con76].  Writing $\omega^{y}=t^{-y}$ turns these into
-    series in $t=\omega^{-1}$ with well-ordered nonpositive support and constant
-    coefficient in $\mathbb Z$.
+    By \ref{fact:conway-normal-form}, normal form is a ring isomorphism from $\mathbf{No}$ onto the
+    formal sums $\sum_yr_y\omega^y$ with small reverse well-ordered support. Writing
+    $\omega^y=t^{-y}$, that is, negating exponents, turns a reverse well-ordered support into a
+    well-ordered one, and a small set is one of cardinality less than $\kappa$. So this is a ring
+    isomorphism from $\mathbf{No}$ onto $\mathbb R((\mathbf{No}))_\kappa$, with $t=\omega^{-1}$. By
+    \ref{fact:omnific-normal-form} it maps $\mathbf{Oz}$ onto the series with exponents at most $0$
+    and integer constant coefficient, that is, onto
+    $\mathbb Z+\mathbb R((\mathbf{No}^{<0}))_\kappa$.
   -/)]
 def signedSmallSupportIntegerPartRingEquiv :
     Surreal.OmnificInteger.{u} ≃+* SignedSmallSupportIntegerPart.{u} :=

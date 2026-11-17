@@ -273,15 +273,14 @@ integer part. -/
   (phase := "Reduction along Archimedean classes")
   (title := "Restriction to a convex subgroup")
   (statement := /--
-    Let $C\subseteq G$ be a convex subgroup.  Then $x\mapsto x_{|C}$ is a ring
-    endomorphism of $Z+R((G^{<0}))_\kappa$.
+    Let $C\subseteq G$ be a convex subgroup. Then $\rho_C$ is a ring endomorphism of
+    $Z+R((G^{<0}))_\kappa$.
   -/)
   (proof := /--
-    Restriction is additive, fixes $1$, and preserves the constant
-    coefficient.  For $i,j\le0$, convexity gives $i+j\in C$ if and only if
-    $i\in C$ and $j\in C$: indeed $i+j\le i\le0$.  Hence the coefficient of
-    $(xy)_{\vert C}$ at $g\in C$ involves only pairs of exponents in $C$, and
-    is the coefficient of $x_{\vert C}\,y_{\vert C}$.
+    Restriction is additive, fixes $1$, and preserves the constant coefficient. For $i,j\le0$,
+    convexity gives $i+j\in C$ if and only if $i\in C$ and $j\in C$: indeed $i+j\le i\le0$. Hence
+    the coefficient of $\rho_C(xy)$ at $g\in C$ involves only pairs of exponents in $C$, and is the
+    coefficient of $\rho_C(x)\rho_C(y)$.
   -/)]
 def restrictToAddSubgroupRingHom (Z : Subring K) {C : AddSubgroup G}
     (hC : (C : Set G).OrdConnected) :
@@ -369,16 +368,15 @@ convex subgroup divides a series as soon as it divides the restriction of that s
   (phase := "Reduction along Archimedean classes")
   (title := "Divisibility from a convex restriction")
   (statement := /--
-    Let $C\subseteq G$ be a convex subgroup and $q,x\in Z+R((G^{<0}))_\kappa$ with
-    $q\ne0$ and $q_{|C}=q$.  If $q\mid x_{|C}$, then $q\mid x$.
+    Let $C\subseteq G$ be a convex subgroup and $q,x\in Z+R((G^{<0}))_\kappa$ with $q\ne0$ and
+    $\rho_C(q)=q$. If $q\mid\rho_C(x)$, then $q\mid x$.
   -/)
   (proof := /--
-    Write $x_{|C}=qw$ and divide $x$ by $q$ in the field $R((G))_\kappa$.  The
-    inverse of $q$ is supported in $C$, so the quotient is
-    $w+q^{-1}(x-x_{|C})$.  The exponents of the second term are sums of an
-    element of $C$ and a nonpositive exponent outside $C$, and convexity keeps
-    every such sum strictly negative.  Hence the quotient has nonpositive support
-    and the constant coefficient of $w$, so it lies in $Z+R((G^{<0}))_\kappa$.
+    Write $\rho_C(x)=qw$ and divide $x$ by $q$ in the field $R((G))_\kappa$. The inverse of $q$ is
+    supported in $C$, so the quotient is $w+q^{-1}(x-\rho_C(x))$. The exponents of the second term
+    are sums of an element of $C$ and a nonpositive exponent outside $C$, and convexity keeps every
+    such sum strictly negative. Hence the quotient has nonpositive support and the constant
+    coefficient of $w$, so it lies in $Z+R((G^{<0}))_\kappa$.
   -/)]
 theorem dvd_of_dvd_restrictToAddSubgroup
     (Z : Subring K) {C : AddSubgroup G} (hC : (C : Set G).OrdConnected)
@@ -403,18 +401,16 @@ support. -/
   (phase := "Reduction along Archimedean classes")
   (title := "Factorisation by a convex restriction")
   (statement := /--
-    Let $C\subseteq G$ be a convex subgroup and $b\in Z+R((G^{<0}))_\kappa$ with
-    $t=b_{|C}\ne0$.  Then $b=tw$ for some $w\in Z+R((G^{<0}))_\kappa$ with
-    constant coefficient $1$, all of whose nonzero exponents lie outside $C$ and
-    in Archimedean classes met by $b$.
+    Let $C\subseteq G$ be a convex subgroup and $b\in Z+R((G^{<0}))_\kappa$ with $u=\rho_C(b)\ne0$.
+    Then $b=uw$ for some $w\in Z+R((G^{<0}))_\kappa$ with constant coefficient $1$, all of whose
+    nonzero exponents lie outside $C$ and in Archimedean classes met by $b$.
   -/)
   (proof := /--
-    Divide $b$ by $t$ in the field $R((G))_\kappa$; the quotient $w$ has constant
-    coefficient $1$.  Write $b=t+r$ with $\operatorname{supp}(r)$ disjoint from
-    $C$; then $w=1+t^{-1}r$.  By convexity every exponent of $t^{-1}r$ is the sum
-    of an exponent of $r$ and an element of $C$, which is negative, lies outside
-    $C$, and has the Archimedean class of that exponent of $r$.  Hence
-    $w\in Z+R((G^{<0}))_\kappa$ and has the stated support.
+    Divide $b$ by $u$ in the field $R((G))_\kappa$; the quotient $w$ has constant coefficient $1$.
+    Write $b=u+r$ with $\operatorname{supp}(r)$ disjoint from $C$; then $w=1+u^{-1}r$. By convexity
+    every exponent of $u^{-1}r$ is the sum of an exponent of $r$ and an element of $C$, which is
+    negative, lies outside $C$, and has the Archimedean class of that exponent of $r$. Hence
+    $w\in Z+R((G^{<0}))_\kappa$, and $w$ has the stated support.
   -/)]
 theorem exists_factorization_by_restriction
     (Z : Subring K) {C : AddSubgroup G} (hC : (C : Set G).OrdConnected)

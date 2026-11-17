@@ -100,39 +100,36 @@ as, at arbitrarily small Archimedean classes, its restriction to the closed ball
 the complementary factor is primal. -/
 @[blueprint "lem:primality-from-germs"
   (phase := "Reduction along Archimedean classes")
-  (title := "Primality from germs and restrictions to balls")
+  (title := "Primality from germs and restrictions")
   (statement := /--
-    Let $G$ be an ordered $\mathbb Q$-vector space, $L$ a field of
-    characteristic $0$, and $T$ a nonempty set of nonzero Archimedean classes
-    of $G$ without least element in magnitude, satisfying (B2)$_T$.  Put
-    $\Gamma=G/H_T$ and let $f\in L((\Gamma^{\le0}))_\kappa$.  Suppose that for
-    arbitrarily small nonzero Archimedean classes $q$ of $\Gamma$ one has
-    $f_{|q}\ne0$ and $f=f_{|q}\,w$ for some primal $w$, where $f_{|q}$ is the
-    restriction of $f$ to $\Gamma_{\preceq q}$.  Then $f$ is primal in
-    $L((\Gamma^{\le0}))_\kappa$.
+    Let $G$ be an ordered $\mathbb Q$-vector space, $L$ a field of characteristic $0$, and $T$ a
+    nonempty set of nonzero Archimedean classes of $G$ without $\prec$-least element, satisfying
+    (B2)$_T$. Put $\Gamma=G/G_T$, let $f\in L((\Gamma^{\le0}))_\kappa$, and for a nonzero class $q$
+    of $\Gamma$ let $\rho_q$ be the restriction to $\Gamma_{\preceq q}$. Suppose that for every
+    nonzero class $q_0$ of $\Gamma$ there is a nonzero class $q\preceq q_0$ with $\rho_q(f)\ne0$ and
+    $f=\rho_q(f)\,w$ for some primal $w$. Then $f$ is primal in $L((\Gamma^{\le0}))_\kappa$.
   -/)
   (proof := /--
-    Write $T'=L((\Gamma^{\le0}))_\kappa$, let $J'$ be its ideal of series whose
-    support is bounded away from $0$, and $\rho_q(g)=g_{|q}$.  By
-    \ref{lem:convex-restriction-ring-hom} each $\rho_q$ is a ring endomorphism,
-    and it is idempotent.  Since $T$ has no least element, $\Gamma$ has
-    arbitrarily small nonzero classes, so every $j\in J'$ has $\rho_q(j)=0$ for
-    all small $q$.  By \ref{thm:bounded-hahn-germ-polynomial-algebra}, applied
-    to the Cauchy complete group $\Gamma$, the ring $T'/J'$ is a polynomial
-    ring over $L$, hence a unique factorisation domain, so its elements are
-    primal.
+    Write $B=L((\Gamma^{\le0}))_\kappa$, which is $Z+R((\Gamma^{<0}))_\kappa$ with $Z=R=L$, and let
+    $J'$ be its ideal of series whose support is bounded away from $0$. By
+    \ref{lem:convex-restriction-ring-hom} each $\rho_q$ is a ring endomorphism of $B$, and it is
+    idempotent. If $j\in J'$ has support in $(-\infty,\delta]$ with $\delta<0$, then $\rho_q(j)=0$
+    for every nonzero class $q\prec[\delta]$. By \ref{thm:bounded-hahn-germ-polynomial-algebra},
+    applied to the Cauchy complete group $\Gamma$, the ring $B/J'$ is a polynomial ring over $L$,
+    hence a unique factorisation domain, so its elements are primal.
 
-    Let $f\mid xy$, say $xy=fz$.  Choose $p_1,p_2,q_1,q_2\in T'$ with
-    $f\equiv p_1p_2$, $x\equiv p_1q_1$ and $y\equiv p_2q_2$ modulo $J'$.  Pick
-    $q$ so small that $\rho_q$ kills the three differences, $f_{|q}\ne0$, and
-    $f=f_{|q}w$ with $w$ primal.  With $g_k=\rho_q(p_k)$ this gives
-    $f_{|q}=g_1g_2$, $x_{|q}=g_1\rho_q(q_1)$ and $y_{|q}=g_2\rho_q(q_2)$.  Each
-    $g_k$ is nonzero and supported in $\Gamma_{\preceq q}$, so
-    \ref{lem:divisibility-from-convex-restriction} gives $g_1\mid x$ and
-    $g_2\mid y$; write $x=g_1x'$ and $y=g_2y'$.  Cancelling $g_1g_2\ne0$ from
-    $g_1g_2x'y'=fz=g_1g_2wz$ gives $w\mid x'y'$, hence $w=w_1w_2$ with
-    $w_1\mid x'$ and $w_2\mid y'$.  Then $f=(g_1w_1)(g_2w_2)$ with
-    $g_1w_1\mid x$ and $g_2w_2\mid y$.
+    Let $f\mid cd$, say $cd=fe$. Choose $p_1,p_2,r_1,r_2\in B$ with $f\equiv p_1p_2$,
+    $c\equiv p_1r_1$ and $d\equiv p_2r_2$ modulo $J'$. The three differences have support bounded
+    away from $0$. Since $T$ has no $\prec$-least element, $\Gamma\ne\{0\}$, so there are nonzero
+    classes $q_0$ below the classes of these bounds. Take $q\preceq q_0$ as in the hypothesis: then
+    $\rho_q$ kills the three differences, $\rho_q(f)\ne0$, and $f=\rho_q(f)\,w$ with $w$ primal.
+    With $g_k=\rho_q(p_k)$ this gives $\rho_q(f)=g_1g_2$, $\rho_q(c)=g_1\rho_q(r_1)$ and
+    $\rho_q(d)=g_2\rho_q(r_2)$. Each $g_k$ is nonzero and fixed by $\rho_q$, so
+    \ref{lem:divisibility-from-convex-restriction}, applied with $Z=R=L$, exponent group $\Gamma$
+    and the convex subgroup $\Gamma_{\preceq q}$, gives $g_1\mid c$ and $g_2\mid d$; write $c=g_1c'$
+    and $d=g_2d'$. Cancelling $g_1g_2\ne0$ from $g_1g_2c'd'=fe=g_1g_2we$ gives $w\mid c'd'$, hence
+    $w=w_1w_2$ with $w_1\mid c'$ and $w_2\mid d'$. Then $f=(g_1w_1)(g_2w_2)$ with $g_1w_1\mid c$ and
+    $g_2w_2\mid d$.
   -/)]
 theorem isPrimal_of_frequently_restriction_mul_isPrimal
     {κ : Cardinal.{u}} [Fact (ℵ₀ < κ)]

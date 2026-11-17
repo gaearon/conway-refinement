@@ -182,31 +182,33 @@ nonpositive series is a polynomial algebra over `K`. -/
   (phase := "Polynomial presentations")
   (title := "Polynomial presentation of the ring of germs of series with small support")
   (statement := /--
-    Let $K$ have characteristic $0$, $G$ be Cauchy complete, and
-    $\kappa>\aleph_0$.  Let $A_\kappa=K((G^{\le0}))_\kappa$ be the subring of
-    series whose support has cardinality less than $\kappa$, and
-    $J_\kappa=J\cap A_\kappa$.  For some set $I$ there is a $K$-algebra
-    isomorphism
+    Let $K$ have characteristic $0$, $G$ be Cauchy complete, and $\kappa>\aleph_0$ a cardinal. Let
+    $A_\kappa=K((G^{\le0}))_\kappa$ be the subring of series whose support has cardinality less than
+    $\kappa$, and $J_\kappa=J\cap A_\kappa$. For some set $I$ there is a $K$-algebra isomorphism
     \[
-      K[X_i:i\in I]\simeq A_\kappa/J_\kappa.
+      K[Y_i:i\in I]\simeq A_\kappa/J_\kappa.
     \]
   -/)
   (proof := /--
-    A translated truncation $b^{|\gamma}$, and the part of $b$ with exponents
-    above a negative $\varepsilon$, have support inside a translate of
-    $\operatorname{supp}(b)$; so they preserve $A_\kappa$.  The inclusion
-    $A_\kappa\subseteq A$ induces an embedding $A_\kappa/J_\kappa\to Q$
-    compatible with the germs $b\mapsto[b^{|\gamma}]$.  Hence
-    \ref{lem:convolution-formula}, \ref{lem:constant-germs} and
-    \ref{lem:cantor-bendixson-value-drop} hold for series in $A_\kappa$, with
-    germs in $A_\kappa/J_\kappa$.
+    The proofs in this chapter of the absence of linear relations, of proportional germs, of the
+    transcendence lemma, of representatives after adjoining a germ, of the existence of a new germ,
+    and of the polynomial presentation of $Q$ use only the following properties of the germ maps
+    $b\mapsto[b^{|\gamma}]$, and they are carried out once in that generality: the germ at $0$ is
+    the class map; germs at positive exponents vanish, and so do the germs of constants at nonzero
+    exponents; the convolution formula \ref{lem:convolution-formula}, with finitely many nonzero
+    terms by \ref{lem:convolution-finite}; the germs of translated truncations
+    (\ref{lem:germs-of-translated-truncation}); the characterisation of constant germs
+    (\ref{lem:constant-germs}); the drop of the Cantor--Bendixson value
+    (\ref{lem:cantor-bendixson-value-drop}), a function of the class by
+    \ref{lem:cantor-bendixson-value-class}; and, for every series $b$ and $\varepsilon<0$, a series
+    with the class of $b$, the germs of $b$ above $\varepsilon$, and no nonzero germ at or below
+    $\varepsilon$, namely the part of $b$ above $\varepsilon$.
 
-    Besides these three results, the proofs of the absence of linear
-    relations, the proportionality of germs, the transcendence lemma, the
-    representatives after adjoining a germ, the existence of a new germ, and
-    the polynomial presentation of $Q$ use only translated truncations and the
-    parts of series above a negative exponent.  Repeating these proofs inside
-    $A_\kappa$ gives the isomorphism.
+    Translated truncation and passing to the part above $\varepsilon$ do not enlarge supports, so
+    they preserve $A_\kappa$. The inclusion $A_\kappa\subseteq A$ induces an injective $K$-algebra
+    homomorphism $A_\kappa/J_\kappa\to Q$ compatible with the germ maps. Hence the germ maps on
+    $A_\kappa$, with values in $A_\kappa/J_\kappa$, have all the properties listed, and the same
+    proofs give the isomorphism.
   -/)]
 theorem exists_mvPolynomial_algEquiv_germ :
     ∃ ι : Type (max (u + 1) v), Nonempty (MvPolynomial ι K ≃ₐ[K]

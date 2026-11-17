@@ -275,19 +275,21 @@ along a convex subspace `C` is primal in `L((Γ^{≤0}))_κ`, its restriction to
   (phase := "Reduction along Archimedean classes")
   (title := "Primality through regrouping along a convex subgroup")
   (statement := /--
-    Let $G$ also be a vector space over a field $K$, let $C\subseteq G$ be a
-    convex $K$-subspace, and let $\kappa$ be regular.  Let
-    $x\in Z+R((G^{<0}))_\kappa$.  If $\hat x$ is primal in
-    $L((\Gamma^{\le0}))_\kappa$, $x_{|C}$ is primal in $D$, and
-    $L=\operatorname{Frac}(D)$ in case $x_{|C}=0$, then $x$ is primal.
+    Let $G$ also be a vector space over a field $F$, let $C\subseteq G$ be a convex $F$-subspace,
+    and let $\kappa$ be regular. Let $x\in Z+R((G^{<0}))_\kappa$. If $\hat x$ is primal in
+    $L((\Gamma^{\le0}))_\kappa$, $\rho_C(x)$ is primal in $D$, and $L=\operatorname{Frac}(D)$ in
+    case $\rho_C(x)=0$, then $x$ is primal.
   -/)
   (proof := /--
-    A $K$-linear complement of $C$ identifies $G$ with $C\times\Gamma$, ordered
-    lexicographically with the $\Gamma$-coordinate first, and regrouping
-    exponents along this decomposition identifies $Z+R((G^{<0}))_\kappa$ with
-    the inverse image $D+L((\Gamma^{<0}))_\kappa$ of $D$ under the constant
-    coefficient $\pi:T\to L$; moreover $\pi(\hat x)=x_{\vert C}$.  Apply
-    \ref{lem:primality-in-d-plus-m}.
+    An $F$-linear complement of $C$ identifies $G$ with $C\times\Gamma$, ordered lexicographically
+    with the $\Gamma$-coordinate first. Since $\kappa$ is regular, regrouping exponents along this
+    decomposition preserves the bound on the cardinality of supports. It is a ring isomorphism from
+    $Z+R((G^{<0}))_\kappa$ onto the subring $D+L((\Gamma^{<0}))_\kappa$ of
+    $L((\Gamma^{\le0}))_\kappa$, and it sends $x$ to $\hat x$. The ring $L((\Gamma^{\le0}))_\kappa$
+    is a domain and an $L$-algebra. Its constant coefficient $\pi$ is a homomorphism of $L$-algebras
+    onto $L$, because $i+j=0$ with $i,j\le0$ forces $i=j=0$; and
+    $D+L((\Gamma^{<0}))_\kappa=\pi^{-1}(D)$, with $\pi(\hat x)=\rho_C(x)$. Apply
+    \ref{lem:primality-in-d-plus-m} with $A=L((\Gamma^{\le0}))_\kappa$ and $S=D$.
   -/)]
 theorem isPrimal_of_isPrimal_regroupAmbient
     (P : Submodule K G) [P.toAddSubgroup.IsConvex] (Z : Subring R)

@@ -407,27 +407,25 @@ fraction field of `S` when the residue is zero. -/
   (phase := "Reduction along Archimedean classes")
   (title := "Primality in a $D+M$ construction")
   (statement := /--
-    Let $L$ be a field, $A$ a domain that is an $L$-algebra, $\pi:A\to L$ a
-    homomorphism of $L$-algebras, and $S\subseteq L$ a subring.  Let
-    $b\in\pi^{-1}(S)$ be primal in $A$.  If $\pi(b)\ne0$, assume $\pi(b)$ is
-    primal in $S$; if $\pi(b)=0$, assume $L=\operatorname{Frac}(S)$.  Then $b$
-    is primal in $\pi^{-1}(S)$.  For domains this is the sufficiency direction
-    of the transfer lemma [LM24, Lem. 9.2.1].
+    Let $L$ be a field, $A$ a domain that is an $L$-algebra, $\pi:A\to L$ a homomorphism of
+    $L$-algebras, and $S\subseteq L$ a subring. Let $b\in\pi^{-1}(S)$ be primal in $A$. If
+    $\pi(b)\ne0$, assume $\pi(b)$ is primal in $S$; if $\pi(b)=0$, assume
+    $L=\operatorname{Frac}(S)$. Then $b$ is primal in $\pi^{-1}(S)$. This is the sufficiency
+    direction of [LM24, Lem. 9.2.1] for a domain $A$; when $\pi(b)=0$ it is the case
+    $L=\operatorname{Frac}(S)$, in which $\pi^{-1}(\operatorname{Frac}(S))=A$.
   -/)
   (proof := /--
-    Let $b\mid cd$ in $\pi^{-1}(S)$ and refine in $A$: $b=b_1b_2$, $b_1\mid c$,
-    $b_2\mid d$, with cofactors $f,g$; cancellation of $b$ gives that the
-    cofactor of $b$ is $fg$.  If $\pi(b)\ne0$, apply $\pi$: then $\pi(b)\mid
-    \pi(c)\pi(d)$ in $S$, and primality of $\pi(b)$ gives
-    $\pi(b)=b_1'b_2'$ with $b_1'\mid\pi(c)$ and $b_2'\mid\pi(d)$ in $S$.  The
-    scalar $\eta=\pi(b_1)/b_1'\in L^\times$ turns $b_1\eta^{-1}$, $b_2\eta$,
-    $f\eta$, $g\eta^{-1}$ into elements of $\pi^{-1}(S)$ with residues
-    $b_1',b_2'$ and the two cofactors in $S$.  If $\pi(b)=0$, one factor, say
-    $b_1$, has zero residue.  Choose $\eta\in L^\times$ with $\eta\pi(b_2)$,
-    $\eta\pi(f)\in S$ and $\pi(g)\eta^{-1}\in S$: take $\eta=\pi(g)$ if this is
-    nonzero, and otherwise a common denominator in $S$ of $\pi(b_2)$ and
-    $\pi(f)$.  Then $b_1\eta^{-1}$, $b_2\eta$, $f\eta$, $g\eta^{-1}$ lie in
-    $\pi^{-1}(S)$ and refine the original divisibility.
+    If $b=0$, then $b$ is primal. Let $b\ne0$ and $b\mid cd$ in $\pi^{-1}(S)$, say $cd=be$. Refine
+    in $A$: $b=b_1b_2$ with $c=b_1f$ and $d=b_2g$; cancelling $b$ gives $e=fg$. If $\pi(b)\ne0$,
+    apply $\pi$: then $\pi(b)\mid\pi(c)\pi(d)$ in $S$, and primality of $\pi(b)$ gives
+    $\pi(b)=b_1'b_2'$ with $b_1'\mid\pi(c)$ and $b_2'\mid\pi(d)$ in $S$. The scalar
+    $\eta=\pi(b_1)/b_1'\in L^\times$ turns $b_1\eta^{-1}$, $b_2\eta$, $f\eta$, $g\eta^{-1}$ into
+    elements of $\pi^{-1}(S)$, with residues $b_1'$, $b_2'$ and the two cofactors in $S$. If
+    $\pi(b)=0$, one factor, say $b_1$, has residue $0$. Choose $\eta\in L^\times$ with
+    $\eta\pi(b_2),\eta\pi(f)\in S$ and $\pi(g)\eta^{-1}\in S$: take $\eta=\pi(g)$ if this is
+    nonzero, and otherwise a common denominator in $S$ of $\pi(b_2)$ and $\pi(f)$. Then
+    $b_1\eta^{-1}$, $b_2\eta$, $f\eta$, $g\eta^{-1}$ lie in $\pi^{-1}(S)$ and refine the
+    divisibility $b\mid cd$.
   -/)]
 theorem isPrimal_residueSubring_of_isPrimal_of_residue {b : A} (hb : π b ∈ S)
     (hA : IsPrimal b) (hres : π b ≠ 0 → IsPrimal (⟨π b, hb⟩ : S))

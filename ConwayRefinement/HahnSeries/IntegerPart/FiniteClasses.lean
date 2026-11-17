@@ -142,16 +142,15 @@ This is L'Innocente and Mantova (LM24, Proposition 2.4.5). -/
   (phase := "Reduction along Archimedean classes")
   (title := "Fraction field of $Z+R((C^{<0}))_\\kappa$")
   (statement := /--
-    Let $C$ be an ordered abelian group with $\operatorname{cf}(C)\ge\kappa$, or
-    with $C=\{0\}$ and $R=\operatorname{Frac}(Z)$.  Then
-    $R((C))_\kappa=\operatorname{Frac}(Z+R((C^{<0}))_\kappa)$
-    [LM24, Prop. 2.4.5].
+    Let $C$ be an ordered abelian group with $\operatorname{cf}(C)\ge\kappa$, or with $C=\{0\}$ and
+    $R=\operatorname{Frac}(Z)$. Then $R((C))_\kappa=\operatorname{Frac}(Z+R((C^{<0}))_\kappa)$. This
+    is the ``if'' direction of [LM24, Prop. 2.4.5].
   -/)
   (proof := /--
-    If $C=\{0\}$, both rings are $R$ and $Z$.  Let $\operatorname{cf}(C)\ge\kappa$
-    and $y\in R((C))_\kappa$.  The support of $y$ has cardinality less than
-    $\kappa$, so it is bounded above by some $g\in C$, and we may take $g>0$.
-    Then $t^{-g}y$ has negative support, so $t^{-g}y$ and $t^{-g}$ lie in
+    If $C=\{0\}$, the two rings are $R$ and $Z$, and $R=\operatorname{Frac}(Z)$ by hypothesis. Let
+    $\operatorname{cf}(C)\ge\kappa$ and $y\in R((C))_\kappa$. The support of $y$ has cardinality
+    less than $\kappa$, so it is not cofinal in $C$ and has a strict upper bound $g\in C$; we may
+    take $g>0$. Then $t^{-g}y$ has negative support, so $t^{-g}y$ and $t^{-g}$ lie in
     $Z+R((C^{<0}))_\kappa$, and $y=t^{-g}y/t^{-g}$.
   -/)]
 theorem fracSubring_eq_top_of_le_cof_or_subsingleton {C : Type u} [AddCommGroup C]
@@ -166,34 +165,32 @@ inner ball of the class of its order is primal, then so is the series. -/
   (phase := "Reduction along Archimedean classes")
   (title := "Primality at the leading Archimedean class")
   (statement := /--
-    Let $K$ be an Archimedean ordered field and $G$ an ordered $K$-vector space,
-    with $K$-linear complements $H_\sigma$; let $R$ have characteristic $0$ and
-    $\kappa$ be regular.  Let $x\in Z+R((G^{<0}))_\kappa$ have nonzero order, of
-    class $\sigma$, and assume (A1)$_\sigma$ and (A2)$_\sigma$.  If
-    $x_{|G_{\prec\sigma}}$ is primal, then $x$ is primal.
+    Let $F$ be an Archimedean ordered field and $G$ an ordered $F$-vector space, with $F$-linear
+    complements $H_\sigma$; let $R$ have characteristic $0$ and $\kappa$ be regular. Let
+    $x\in Z+R((G^{<0}))_\kappa$ with $v(x)\ne0$, let $\sigma=[v(x)]$, and assume (A1)$_\sigma$ and
+    (A2)$_\sigma$. If $\rho_{G_{\prec\sigma}}(x)$ is primal, then $x$ is primal.
   -/)
   (proof := /--
-    Put $C=G_{\prec\sigma}$, a convex $K$-subspace, and apply
-    \ref{lem:primality-through-regrouping}.  Its hypotheses hold:
+    Put $C=G_{\prec\sigma}$, a convex $F$-subspace, and apply
+    \ref{lem:primality-through-regrouping}. Its hypotheses hold.
 
-    $x_{|C}$ is primal in $D$.  It is primal in $Z+R((G^{<0}))_\kappa$, and $D$
-    is the subring of elements supported in $C$; a divisibility relation in $D$
-    is one in $Z+R((G^{<0}))_\kappa$, and restricting a refinement there to $C$
-    by \ref{lem:convex-restriction-ring-hom} gives one in $D$.
+    $\rho_C(x)$ is primal in $D$. It is primal in $Z+R((G^{<0}))_\kappa$, and $D$ is the subring of
+    elements supported in $C$. A divisibility relation in $D$ is one in $Z+R((G^{<0}))_\kappa$, and
+    applying $\rho_C$ (\ref{lem:convex-restriction-ring-hom}) to a refinement there gives one in
+    $D$.
 
-    $L=\operatorname{Frac}(D)$ by (A2)$_\sigma$ and
-    \ref{lem:fraction-field-from-cofinality}.
+    $L=\operatorname{Frac}(D)$, by (A2)$_\sigma$ and \ref{lem:fraction-field-from-cofinality}.
 
-    $\hat x$ is primal.  The support of $x$ lies in $G_{\preceq\sigma}$, whose
-    image in $\Gamma=G/C$ is the image of $H_\sigma$, a convex subgroup of
-    $\Gamma$ isomorphic to $\mathbb R$ by (A1)$_\sigma$.  So $\hat x$ lies in the
-    copy of $L((\mathbb R^{\le0}))$ inside $L((\Gamma^{\le0}))_\kappa$; well-ordered
-    subsets of $\mathbb R$ are countable, so no cardinality bound is lost.  By
-    \ref{thm:hahn-series-gcd-domain}, $L((\mathbb R^{\le0}))$ is a GCD domain,
-    so $\hat x$ is primal there.  It stays primal in $L((\Gamma^{\le0}))_\kappa$:
-    given a divisibility relation there, restrict it to the convex subgroup by
-    \ref{lem:convex-restriction-ring-hom}, refine it in the smaller ring, and
-    lift the refinement by \ref{lem:divisibility-from-convex-restriction}.
+    $\hat x$ is primal. The support of $x$ lies in $G_{\preceq\sigma}$, whose image in $\Gamma=G/C$
+    is the image of $H_\sigma$, a convex subgroup of $\Gamma$ isomorphic to $\mathbb R$ by
+    (A1)$_\sigma$. So $\hat x$ lies in the copy of $L((\mathbb R^{\le0}))$ inside
+    $L((\Gamma^{\le0}))_\kappa$; well-ordered subsets of $\mathbb R$ are countable, so no
+    cardinality bound is lost. By \ref{thm:hahn-series-gcd-domain}, $L((\mathbb R^{\le0}))$ is a GCD
+    domain, so $\hat x$ is primal there. It stays primal in $L((\Gamma^{\le0}))_\kappa$: given a
+    divisibility relation there, restrict it to the convex subgroup by
+    \ref{lem:convex-restriction-ring-hom}, refine it in the smaller ring, and lift the refinement by
+    \ref{lem:divisibility-from-convex-restriction}; both lemmas are applied with $Z=R=L$ and
+    exponent group $\Gamma$.
   -/)]
 theorem isPrimal_of_isPrimal_restrict_leadingClass [CharZero R] [Fact κ.IsRegular]
     (u : HahnEmbedding.ArchimedeanStrata K G) (Z : Subring R)
@@ -242,19 +239,16 @@ fraction field of `Z`, and `Z` is pre-Schreier. -/
   (phase := "Reduction along Archimedean classes")
   (title := "Primality for finitely many Archimedean classes")
   (statement := /--
-    Let $K$ be an Archimedean ordered field and $G$ an ordered $K$-vector space,
-    with $K$-linear complements $H_\sigma$; let $R$ have characteristic $0$ and
-    $\kappa$ be regular.  Assume (A1)$_\sigma$ and (A2)$_\sigma$ for every
-    nonzero class $\sigma$, and (A3).  Then every element of
-    $Z+R((G^{<0}))_\kappa$ meeting only finitely many Archimedean classes is
-    primal.
+    Let $F$ be an Archimedean ordered field and $G$ an ordered $F$-vector space, with $F$-linear
+    complements $H_\sigma$; let $R$ have characteristic $0$ and $\kappa$ be regular. Assume
+    (A1)$_\sigma$ and (A2)$_\sigma$ for every nonzero class $\sigma$, and (A3). Then every element
+    of $Z+R((G^{<0}))_\kappa$ that meets only finitely many Archimedean classes is primal.
   -/)
   (proof := /--
-    Induct on the number of Archimedean classes met by $x$.  If the order of $x$
-    is $0$, then $x\in Z$, and $x$ is primal by (A3).  Otherwise let $\sigma$ be
-    the class of the order of $x$.  The restriction $x_{|G_{\prec\sigma}}$ meets
-    only classes met by $x$, but not $\sigma$; so it is primal by induction.
-    Hence $x$ is primal by \ref{lem:primality-at-leading-class}.
+    Induct on the number of Archimedean classes met by $x$. If $v(x)=0$, then $x\in Z$, and $x$ is
+    primal by \ref{lem:primality-of-constants}, which uses (A3). Otherwise let $\sigma=[v(x)]$. The
+    restriction $\rho_{G_{\prec\sigma}}(x)$ meets only classes met by $x$, but not $\sigma$; so it
+    is primal by induction. Hence $x$ is primal by \ref{lem:primality-at-leading-class}.
   -/)]
 theorem isPrimal_of_supportArchimedeanClasses_finite [CharZero R]
     [Fact κ.IsRegular] (Z : Subring R) [DecompositionMonoid Z]

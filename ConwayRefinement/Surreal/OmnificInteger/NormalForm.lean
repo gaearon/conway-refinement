@@ -13,6 +13,7 @@ module
 public import ConwayRefinement.Surreal.OmnificInteger.Basic
 public import ConwayRefinement.Surreal.HahnSeries.Transfer
 import ConwayRefinement.Surreal.HahnSeries.NormalFormAdd
+import ConwayRefinement.Blueprint
 
 /-!
 # Conway normal forms of omnific integers
@@ -93,6 +94,27 @@ theorem sub_trunc_zero_eq_realCast_of_support_subset_Ici {x : Surreal.{u}}
 
 /-- Conway's normal-form characterization: `x` is an omnific integer exactly when all exponents
 in its support are nonnegative and its coefficient at exponent zero is an integer. -/
+@[blueprint "fact:omnific-normal-form"
+  (phase := "Surreal numbers and omnific integers")
+  (title := "Normal form of omnific integers")
+  (statement := /--
+    A surreal number $x$ satisfies $x=\{x-1\mid x+1\}$ if and only if all exponents of its normal
+    form are nonnegative and its constant coefficient is an integer [Con76]; see [LM24, §1.1].
+  -/)
+  (proof := /--
+    The equation says that $x$ is the simplest number in the interval $(x-1,x+1)$. Two facts about
+    normal forms are used. A truncation $x_{>e}$ of the normal form of $x$ is at most as simple as
+    $x$. And a number $w$ with $|w-x|<1$ has the same terms as $x$ with positive exponents.
+
+    If all exponents of $x$ are positive, every $w$ in $(x-1,x+1)$ has $x$ as a truncation of its
+    normal form, so $x$ is at least as simple as $w$; hence $x$ satisfies the equation. If some
+    exponent $z$ of $x$ is negative, then $x$ minus its terms with exponent at most $z$ is a simpler
+    truncation of $x$ within distance $1$ of $x$, so $x$ does not satisfy the equation.
+
+    The numbers satisfying the equation form a subring of $\mathbf{No}$ [Con76], and a real number
+    satisfies it exactly when it is an integer. A number whose exponents are nonnegative is its
+    constant coefficient plus a number whose exponents are all positive. Both directions follow.
+  -/)]
 theorem isOmnificInteger_iff_normalForm {x : Surreal.{u}} :
     IsOmnificInteger x ↔
       x.support ⊆ Ici 0 ∧ x.coeff 0 ∈ range ((↑) : ℤ → ℝ) := by
