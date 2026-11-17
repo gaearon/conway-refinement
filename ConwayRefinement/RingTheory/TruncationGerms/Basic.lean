@@ -75,8 +75,8 @@ and `germAt γ b` the germ at `0` of the translated truncation of `b` at `γ`. -
   (proof := /--
     The axioms abstract the germs of generalised power series: for
     $A=K((G^{\le0}))$ and $Q=K((G^{\le0}))/J$, $g_\gamma(b)$ is the class of
-    the translated truncation $b^{|\gamma}$, axiom (2) is the convolution
-    formula, axiom (3) is witnessed by $b^{|\xi}$, and $\operatorname{rk}$ is
+    the translated truncation $b^{|\gamma}$, property (2) is the convolution
+    formula, property (3) is witnessed by $b^{|\xi}$, and $\operatorname{rk}$ is
     the Cantor--Bendixson value of a representative.
   -/)]
 structure TruncationGerms (K Γ A Q : Type*) [Field K] [CharZero K]

@@ -67,15 +67,15 @@ variable (G K) in
     We check the axioms of \ref{def:germ-axioms}.  The rank is well defined
     because series congruent modulo $J$ agree near
     $0$, and the Cantor--Bendixson value depends only on the support near $0$.
-    Axiom (1) holds because $b^{|0}=b$ and, for $\xi>0$, $b^{|\xi}=t^{-\xi}b$
-    has support bounded away from $0$.  Axiom (2) is
-    \ref{lem:convolution-formula}.  Axiom (3) holds with $b'=b^{|\xi}$, since
-    $(b^{|\xi})^{|\zeta}=b^{|\xi+\zeta}$ for $\zeta\le0$.  Axiom (4) is the case
-    $\gamma=0$ of \ref{lem:constant-germs}.  For axiom (5), if $[b]$ is not a
+    Property (1) holds because $b^{|0}=b$ and, for $\xi>0$, $b^{|\xi}=t^{-\xi}b$
+    has support bounded away from $0$.  Property (2) is
+    \ref{lem:convolution-formula}.  Property (3) holds with $b'=b^{|\xi}$, since
+    $(b^{|\xi})^{|\zeta}=b^{|\xi+\zeta}$ for $\zeta\le0$.  Property (4) is the case
+    $\gamma=0$ of \ref{lem:constant-germs}.  For property (5), if $[b]$ is not a
     constant then $b\notin J$, so $V_{\mathrm{CB}}(b)\ne0$, and
     \ref{lem:cantor-bendixson-value-drop} applies because $g_\xi(b)$ is the class
-    of $b^{|\xi}$.  Axiom (6) holds because the support of a constant is
-    contained in $\{0\}$.  For axiom (7) take for $b'$ the part of $b$ with
+    of $b^{|\xi}$.  Property (6) holds because the support of a constant is
+    contained in $\{0\}$.  For property (7) take for $b'$ the part of $b$ with
     exponents greater than $\varepsilon$.
   -/)]
 def truncationGerms : TruncationGerms K G (Nonpositive G K)

@@ -127,11 +127,11 @@ constant multiple of `germ V`. -/
     nonzero element of $S$ can be cancelled from an equation $vn=vn'$ with
     $n,n'\in S+Sx$.  Induct on $\operatorname{rk}[V]$, using the axioms of
     \ref{def:germ-axioms}.  If $[V]=k\in K^\times$, then $g_\xi(V)=0$ near $0$
-    by axiom (4), so the relation gives $g_\xi(U)=0$ near $0$ and $[U]\in K$.
-    Otherwise axiom (5) bounds the rank of $g_\xi(V)$ below
-    $\operatorname{rk}[V]$ near $0$, and axiom (4) provides such $\xi$ in
+    by property (4), so the relation gives $g_\xi(U)=0$ near $0$ and $[U]\in K$.
+    Otherwise property (5) bounds the rank of $g_\xi(V)$ below
+    $\operatorname{rk}[V]$ near $0$, and property (4) provides such $\xi$ in
     $(\varepsilon,0)$ with $g_\xi(V)\ne0$.  Let $U',V'$ be the translated
-    truncations at $\xi$ given by axiom (3).  For $\zeta<0$ close to $0$, the
+    truncations at $\xi$ given by property (3).  For $\zeta<0$ close to $0$, the
     relations at $\xi+\zeta$ and at $\xi$, after cancelling $[V]$ in $S+Sx$,
     give $[V']\,g_\zeta(U')=[U']\,g_\zeta(V')$.  By induction
     $g_\xi(U)=[U']=c\,[V']=c\,g_\xi(V)$, and cancelling $g_\xi(V)\ne0$ from the
@@ -288,17 +288,17 @@ not. Then no nonzero element of `S` multiplies the germ of `X` into `S`. -/
   (proof := /--
     Suppose otherwise and take a counterexample $a$ of minimal rank.  Choose
     $A_0$ representing $a$ and $B$ representing $-ax$, both with all germs in
-    $S$.  Then $[A_0X+B]=0$, so by axiom (4) of \ref{def:germ-axioms} the germs
+    $S$.  Then $[A_0X+B]=0$, so by property (4) of \ref{def:germ-axioms} the germs
     of $A_0X+B$ vanish on some $(\varepsilon,0)$.  For $\xi$ in this interval,
-    the convolution formula (axiom (2)) gives
+    the convolution formula (property (2)) gives
     $g_\xi(A_0X)\in g_\xi(A_0)\,x+S$, because every other term pairs a germ of
     $A_0$ with a germ of $X$ at a negative or positive exponent.  Since
     $g_\xi(A_0X)+g_\xi(B)=0$ and $g_\xi(B)\in S$, it follows that
     $g_\xi(A_0)\,x\in S$; also $g_\xi(A_0)\in S$ by the choice of $A_0$.
     If $a\in K$, then
-    $x=a^{-1}(ax)\in S$, a contradiction.  Otherwise axiom (5) gives
+    $x=a^{-1}(ax)\in S$, a contradiction.  Otherwise property (5) gives
     $\operatorname{rk}g_\xi(A_0)<\operatorname{rk}a$ for $\xi$ near $0$, so
-    minimality forces $g_\xi(A_0)=0$ near $0$, and axiom (4) puts $a$ in $K$
+    minimality forces $g_\xi(A_0)=0$ near $0$, and property (4) puts $a$ in $K$
     after all.
   -/)]
 theorem mul_germ_notMem (S : Subalgebra K Q) (hS : sys.HasRepresentativesWithGermsIn S)
@@ -718,7 +718,7 @@ generators. -/
     $K[T]\ne Q$ and choose $x\notin K[T]$ of minimal rank; then $x\notin K$.
     Represent $x$ by $X_0$, choose $\varepsilon<0$ with
     $\operatorname{rk}g_\xi(X_0)<\operatorname{rk}x$ for $\xi\in(\varepsilon,0)$
-    by axiom (5), and use axiom (7) to replace $X_0$ by a series $X$ with the
+    by property (5), and use property (7) to replace $X_0$ by a series $X$ with the
     same germ, the same germs on $(\varepsilon,0)$, and no germs at or below
     $\varepsilon$.  By minimality of $x$, all germs of $X$ at negative exponents
     lie in $K[T]$.  By \ref{lem:transcendence}, $x$ is transcendental over

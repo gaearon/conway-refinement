@@ -434,7 +434,7 @@ exponents lie in `R` gives a truncation-closed subalgebra. -/
     $\zeta<0$.  Then the $K$-subalgebra $R[X]$ is closed under truncation.
   -/)
   (proof := /--
-    The argument uses the convolution formula (axiom (2) of
+    The argument uses the convolution formula (property (2) of
     \ref{def:germ-axioms}) and the axioms of \ref{def:series-germ-axioms}.
     Write $E=R[X]$.  It suffices to show that if all truncations of $w$ lie in
     $E$, then so do all truncations of $wX$; induction on $n$ then handles
@@ -495,8 +495,8 @@ polynomial relation for `X` over `R₀` is a polynomial relation for `germ X` ov
   (proof := /--
     Let $\sum_kc_kX^k=0$ with $c_k\in R_0$ not all zero, and let $\eta$ be the
     greatest exponent at which some $c_k$ has a nonzero germ; it exists by
-    axiom (11) of \ref{def:series-germ-axioms}.  No $c_k$ has germs above
-    $\eta$, so the convolution formula (axiom (2) of \ref{def:germ-axioms})
+    property (11) of \ref{def:series-germ-axioms}.  No $c_k$ has germs above
+    $\eta$, so the convolution formula (property (2) of \ref{def:germ-axioms})
     gives $g_\eta(c_kX^k)=g_\eta(c_k)\,[X]^k$.  Hence
     $\sum_kg_\eta(c_k)\,[X]^k=0$ is a nontrivial polynomial relation for $[X]$
     over $S$.
@@ -574,11 +574,11 @@ of `S` is the germ of an element of `R`, contains `seriesWithGermsIn S`. -/
   (proof := /--
     Let $b\in A_S$.  Show $b_{|\eta}\in R$ by well-founded induction on the
     exponents $\eta$ at which $b$ has a nonzero germ.  Choose $r\in R$ with
-    $[r]=g_\eta(b)$ and put $c=t^\eta r$ (axiom (10) of
+    $[r]=g_\eta(b)$ and put $c=t^\eta r$ (property (10) of
     \ref{def:series-germ-axioms}); the monomial $t^\eta$ has constant germs,
     so $c\in R$, and $c$ has no germs above $\eta$.  The difference
     $d=b_{|\eta}-c$ has $g_\eta(d)=0$ and no germs above $\eta$; applying
-    axioms (3) and (4) of \ref{def:germ-axioms} to it shows that its germs
+    properties (3) and (4) of \ref{def:germ-axioms} to it shows that its germs
     vanish on some $(\varepsilon,\eta]$, so $d=b_{|\varepsilon}-c_{|\varepsilon}$.  Here
     $c_{|\varepsilon}\in R$ by closure under truncation, and
     $b_{|\varepsilon}=b_{|\zeta}$ for the greatest $\zeta\le\varepsilon$ at
