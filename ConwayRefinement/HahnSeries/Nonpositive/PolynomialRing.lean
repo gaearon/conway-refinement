@@ -141,6 +141,11 @@ theorem seriesTruncationGerms_germAt (γ : ℝ) :
     (seriesTruncationGerms K).germAt γ = germAt γ :=
   truncationGerms_germAt γ
 
+@[simp]
+theorem seriesTruncationGerms_germ (b : Nonpositive ℝ K) :
+    (seriesTruncationGerms K).germ b = Ideal.Quotient.mk (boundedAwayIdeal ℝ K) b :=
+  truncationGerms_germ b
+
 /-- The series all of whose germs are constants are exactly the series with finite support. -/
 theorem mem_seriesWithConstantGerms_iff (b : Nonpositive ℝ K) :
     b ∈ (seriesTruncationGerms K).seriesWithConstantGerms ↔
@@ -169,24 +174,90 @@ over its finite-support subring `K(ℝ^{≤0})`. -/
     \]
   -/)
   (proof := /--
-    By \ref{prop:hahn-germs-axioms} the germ maps on $K((\mathbb R^{\le0}))$
-    satisfy (1)--(7).  They also satisfy (8)--(11): a series
-    all of whose germs vanish has empty closed support, the truncation
-    $b_{|\eta}$ keeps exactly the germs at exponents $\le\eta$, multiplication
-    by $t^\gamma$ translates germs by $\gamma$, and the exponents with nonzero
-    germ form the closure of the support, a closed well-ordered subset of
-    $\mathbb R$ whose intersection with any ray $(-\infty,\varepsilon]$ is
-    closed and bounded above, hence has a greatest element when nonempty.  By
-    \ref{lem:constant-germs-finite-support}, the series all of whose germs are
-    constants form $K(\mathbb R^{\le0})$.  Apply
-    \ref{thm:series-ring-generators}.
+    Write $A=K((\mathbb R^{\le0}))$ and $Q=A/J$. For a $K$-subalgebra
+    $S\subseteq Q$ let $A_S$ be the $K$-subalgebra of series all of whose
+    germs lie in $S$; by \ref{lem:constant-germs-finite-support},
+    $A_K=K(\mathbb R^{\le0})$. A $K$-subalgebra $R\subseteq A$ is closed
+    under truncation if $b_{|\eta}\in R$ for all $b\in R$ and
+    $\eta\in\mathbb R$; each $A_S$ is. For real exponents, a series all of
+    whose germs vanish is $0$; the truncation $b_{|\eta}$ keeps exactly the
+    germs of $b$ at exponents $\le\eta$; multiplication by $t^\gamma$
+    translates germs by $\gamma$; and the exponents at which $b$ has a
+    nonzero germ form the closure of $\operatorname{supp}(b)$, a closed
+    well-ordered subset of $(-\infty,0]$ whose intersection with any ray
+    $(-\infty,\varepsilon]$ has a greatest element when nonempty.
+
+    Step 1: closure under truncation of a simple extension. Let $R$ be
+    closed under truncation and let $X\in A$ with $X_{|\zeta}\in R$ for
+    every $\zeta<0$; then $E=R[X]$ is closed under truncation. It suffices
+    to show that if all truncations of $w$ lie in $E$, then so do all
+    truncations of $wX$; induction on $n$ then handles $aX^n$ with $a\in R$,
+    and these span $E$. Fix $\eta$, and show $(w_{|\beta}X)_{|\eta}\in E$ by
+    well-founded induction on the exponents $\beta$ at which $w$ has a
+    nonzero germ. If $\beta\le\eta$, then $w_{|\beta}X$ has no germs above
+    $\eta$ and equals its own truncation. If $\beta>\eta$, well-foundedness
+    gives $\beta'\in[\eta,\beta)$ such that $X$ has no nonzero germ at
+    exponents in $(\eta-\beta,\eta-\beta')$. The series
+    $v=w_{|\beta}-w_{|\beta'}$ has germs only in $(\beta',\beta]$, and the
+    convolution formula gives $(vX)_{|\eta}=v\,X_{|\eta-\beta}\in E$ since
+    $\eta-\beta<0$. The remaining term $(w_{|\beta'}X)_{|\eta}$ is covered
+    by the induction hypothesis, because $w_{|\beta'}=w_{|\zeta}$ for the
+    greatest $\zeta\le\beta'$ at which $w$ has a nonzero germ.
+
+    Step 2: a series with transcendental germ is transcendental. Let
+    $S\subseteq Q$ be a $K$-subalgebra, $R_0\subseteq A_S$ an
+    $A_K$-subalgebra, and $X\in A$ with $[X]$ transcendental over $S$; then
+    $X$ is transcendental over $R_0$. Indeed, let $\sum_kc_kX^k=0$ with
+    $c_k\in R_0$ not all zero, and let $\eta$ be the greatest exponent at
+    which some $c_k$ has a nonzero germ. No $c_k$ has germs above $\eta$, so
+    the convolution formula gives $[(c_kX^k)^{|\eta}]=[c_k^{|\eta}]\,[X]^k$.
+    Hence $\sum_k[c_k^{|\eta}]\,[X]^k=0$ is a nontrivial polynomial relation
+    for $[X]$ over $S$.
+
+    Step 3: generation. Let $S\subseteq Q$ be a $K$-subalgebra, and let
+    $R\subseteq A$ be a $K$-subalgebra that is closed under truncation,
+    contains $A_K$, and contains for every $a\in S$ some $r$ with $[r]=a$;
+    then $A_S\subseteq R$. Let $b\in A_S$, and show $b_{|\eta}\in R$ by
+    well-founded induction on the exponents $\eta$ at which $b$ has a
+    nonzero germ. Choose $r\in R$ with $[r]=[b^{|\eta}]$ and put $c=t^\eta
+    r$. The monomial $t^\eta$ has finite support, so $c\in R$, and $c$ has
+    no germs above $\eta$. The difference $d=b_{|\eta}-c$ has
+    $[d^{|\eta}]=0$ and no germs above $\eta$; by the characterisation of
+    constant germs its germs vanish on some $(\varepsilon,\eta]$, so
+    $d=b_{|\varepsilon}-c_{|\varepsilon}$. Here $c_{|\varepsilon}\in R$ by
+    closure under truncation, and $b_{|\varepsilon}=b_{|\zeta}$ for the
+    greatest $\zeta\le\varepsilon$ at which $b$ has a nonzero germ, which
+    lies in $R$ by induction. Finally $b=b_{|\eta}$ for the greatest $\eta$
+    at which $b$ has a nonzero germ.
+
+    By Zorn's lemma choose a maximal set $\mathcal X\subseteq A$,
+    algebraically independent over $A_K$, such that $R=A_K[\mathcal X]$ is
+    closed under truncation and $R\subseteq A_S$ for $S=K[\{[X]:X\in\mathcal
+    X\}]$. By Step 3, $R=A_S$. Suppose that $S\ne Q$. As in the polynomial
+    presentation of the ring of germs, a germ outside $S$ with least
+    Cantor--Bendixson value is $[X]$ for a series $X$ whose germs at
+    negative exponents lie in $S$. By \ref{thm:bounded-away-ideal-prime},
+    $Q$ is an integral domain, hence so is $S$. Every element of $S$ is the
+    germ of an element of $R=A_S$, so the transcendence lemma makes $[X]$
+    transcendental over $S$. By Step 2, $X$ is transcendental over $R$. For
+    $\zeta<0$ all germs of $X_{|\zeta}$ lie in $S$, so $X_{|\zeta}\in
+    A_S=R$, and by Step 1 $R[X]$ is closed under truncation. Thus $\mathcal
+    X\cup\{X\}$ contradicts the maximality of $\mathcal X$. Hence $S=Q$ and
+    $R=A_Q=A$, and evaluation at $\mathcal X$ is an isomorphism
+    $A_K[X_i:i\in\mathcal X]\simeq A$ of $A_K$-algebras, with $A_K=K(\mathbb
+    R^{\le0})$.
   -/)
   (highlight)]
 theorem exists_mvPolynomial_algEquiv_finiteSupportRing :
     ∃ ι : Type (max v w), Nonempty (MvPolynomial ι (FiniteSupportRing (G := ℝ) (K := K)) ≃ₐ[
       FiniteSupportRing (G := ℝ) (K := K)] Nonpositive ℝ K) := by
   set B := (seriesTruncationGerms K).seriesWithConstantGerms
-  obtain ⟨𝒳, hind, htop⟩ := (seriesTruncationGerms K).exists_algebraicIndependent_series_generators
+  obtain ⟨𝒳, hind, htop⟩ :=
+    (seriesTruncationGerms K).exists_algebraicIndependent_series_generators
+      fun S hS X hX hx ↦ by
+        simp only [TruncationGerms.HasRepresentativesWithGermsIn, seriesTruncationGerms_germ,
+          seriesTruncationGerms_germAt] at hS hX hx ⊢
+        exact (transcendental_mk_of_germAt_mem S hS X hX hx).1
   let e : MvPolynomial 𝒳 B ≃ₐ[B] Nonpositive ℝ K := hind.mvPolynomialAlgEquivOfAdjoinEqTop htop
   let φ : FiniteSupportRing (G := ℝ) (K := K) ≃+* B :=
     RingEquiv.subringCongr toSubring_seriesWithConstantGerms

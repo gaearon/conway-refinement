@@ -8,6 +8,7 @@ module
 public import ConwayRefinement.Algebra.Divisibility.Refinement
 
 import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import ConwayRefinement.Algebra.Divisibility.PrimalPreimage
 import ConwayRefinement.Blueprint
 public import ConwayRefinement.HahnSeries.Germ.Basic
 public import ConwayRefinement.Topology.Order.ArchimedeanBallBase

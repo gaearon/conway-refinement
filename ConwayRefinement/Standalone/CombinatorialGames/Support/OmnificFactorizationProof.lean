@@ -9,6 +9,8 @@ public import ConwayRefinement.Standalone.CombinatorialGames.Examples.OmnificFac
 public import ConwayRefinement.Standalone.CombinatorialGames.ConwayRefinementProof
 public import ConwayRefinement.Standalone.CombinatorialGames.Support.ConwayNormalForm
 
+import ConwayRefinement.Algebra.Divisibility.PrimalPreimage
+
 /-!
 # Proofs of factorisation statements for omnific integers
 

@@ -196,13 +196,15 @@ nonpositive series is a polynomial algebra over `K`. -/
   (proof := /--
     Translated truncations, and cutoffs below a negative exponent, do not
     enlarge supports, so they preserve $K((G^{\le0}))_\kappa$; and
-    $K((G^{\le0}))_\kappa/J_\kappa$ embeds in $K((G^{\le0}))/J$ compatibly with
-    the germ maps.  Each of the properties (1)--(7) is an identity or a
-    vanishing statement in the ring of germs whose witnesses are translated
-    truncations or cutoffs.  So the germ maps $b\mapsto[b^{|\gamma}]$ on
-    $K((G^{\le0}))_\kappa$ with values in $K((G^{\le0}))_\kappa/J_\kappa$
-    satisfy (1)--(7), by restriction from \ref{prop:hahn-germs-axioms}.  Apply
-    \ref{thm:germ-ring-generators}.
+    $K((G^{\le0}))_\kappa/J_\kappa$ embeds in $K((G^{\le0}))/J$ compatibly
+    with the germs $b\mapsto[b^{|\gamma}]$. Hence
+    \ref{lem:convolution-formula}, \ref{lem:constant-germs} and
+    \ref{lem:cantor-bendixson-value-drop} hold for the germs of series in
+    $K((G^{\le0}))_\kappa$, with values in $K((G^{\le0}))_\kappa/J_\kappa$.
+    Besides elementary properties of truncations, the transcendence lemma
+    and the Zorn argument for the polynomial presentation of
+    $K((G^{\le0}))/J$ use only these three facts, translated truncations and
+    cutoffs. So the same argument gives the isomorphism.
   -/)]
 theorem exists_mvPolynomial_algEquiv_germ :
     ∃ ι : Type (max (u + 1) v), Nonempty (MvPolynomial ι K ≃ₐ[K]

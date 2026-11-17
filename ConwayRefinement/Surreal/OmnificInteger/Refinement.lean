@@ -8,6 +8,7 @@ module
 public import ConwayRefinement.Surreal.HahnSeries.IntegerPart
 
 import ConwayRefinement.Blueprint
+import ConwayRefinement.Algebra.Divisibility.PrimalPreimage
 import ConwayRefinement.Algebra.Divisibility.Refinement
 import ConwayRefinement.HahnSeries.IntegerPart.Primality
 import ConwayRefinement.Surreal.CommonTail

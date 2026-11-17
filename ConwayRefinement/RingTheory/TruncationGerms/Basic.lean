@@ -7,8 +7,8 @@ module
 
 public import Mathlib.SetTheory.Ordinal.Basic
 
-import ConwayRefinement.Blueprint
 public import Mathlib.Algebra.Algebra.Subalgebra.Lattice
+import Mathlib.Algebra.Algebra.Subalgebra.Directed
 
 /-!
 # Germs of translated truncations: the axioms
@@ -29,10 +29,12 @@ cut off below a negative exponent without changing the germ. The ring of germs i
 an integral domain; that it is one is a consequence (`TruncationGerms.isDomain`).
 
 This file states the axioms, defines `HasRepresentativesWithGermsIn`, and proves the elementary
-consequences of the convolution formula. `ConwayRefinement.RingTheory.TruncationGerms.Transcendence`
-proves the transcendence lemma and shows that `Q` is a polynomial ring over `K`;
-`ConwayRefinement.RingTheory.TruncationGerms.Series` shows, under further axioms, that `A` is a
-polynomial ring over the series all of whose germs are constants.
+consequences of the convolution formula. It also shows that a proper subalgebra of germs misses the
+germ of a series whose germs at negative exponents lie in it (`exists_germAt_mem_germ_notMem`).
+`ConwayRefinement.RingTheory.TruncationGerms.Transcendence` proves the transcendence lemma and
+shows that `Q` is a polynomial ring over `K`; `ConwayRefinement.RingTheory.TruncationGerms.Series`
+shows, under further axioms and given the transcendence lemma, that `A` is a polynomial ring over
+the series all of whose germs are constants.
 -/
 
 universe w
@@ -42,43 +44,6 @@ public section
 /-- Berarducci's germs of generalised power series at exponents. `A` is a ring of generalised
 power series with exponents in `Γ`, `Q` its nontrivial ring of germs at `0`, `germ` the germ at `0`,
 and `germAt γ b` the germ at `0` of the translated truncation of `b` at `γ`. -/
-@[blueprint "def:germ-axioms"
-  (phase := "Polynomial presentations")
-  (title := "Properties of germs used in the transcendence argument")
-  (statement := /--
-    Let $K$ be a field of characteristic $0$, $\Gamma$ an ordered abelian
-    group, $A$ a commutative $K$-algebra and $Q$ a nontrivial commutative
-    $K$-algebra.  Consider a surjective $K$-algebra homomorphism $A\to Q$,
-    $b\mapsto[b]$ (the germ at $0$), $K$-linear maps $g_\gamma:A\to Q$ for
-    $\gamma\in\Gamma$ (the germ at $\gamma$), and a map
-    $\operatorname{rk}:Q\to\mathbf{On}$.  The following properties are used,
-    for all $b,c\in A$:
-    \begin{itemize}
-      \item (1) $g_0(b)=[b]$, and $g_\xi(b)=0$ for $\xi>0$;
-      \item (2) for every $\gamma$, only finitely many $\beta$ have
-        $g_\beta(b)\ne0$ and $g_{\gamma-\beta}(c)\ne0$, and
-        $g_\gamma(bc)=\sum_\beta g_\beta(b)\,g_{\gamma-\beta}(c)$;
-      \item (3) for every $\xi\le0$ there is $b'\in A$ with
-        $g_\zeta(b')=g_{\xi+\zeta}(b)$ for all $\zeta\le0$;
-      \item (4) $[b]$ lies in the image of $K$ if and only if there is
-        $\varepsilon<0$ with $g_\xi(b)=0$ for all $\xi\in(\varepsilon,0)$;
-      \item (5) if $[b]$ is not in the image of $K$, there is $\varepsilon<0$ with
-        $\operatorname{rk}(g_\xi(b))<\operatorname{rk}([b])$ for all
-        $\xi\in(\varepsilon,0)$;
-      \item (6) $g_\xi(k)=0$ for $k\in K$ and $\xi\ne0$;
-      \item (7) for every $\varepsilon<0$ there is $b'\in A$ with $[b']=[b]$,
-        $g_\xi(b')=g_\xi(b)$ for $\xi>\varepsilon$ and $g_\xi(b')=0$ for
-        $\xi\le\varepsilon$.
-    \end{itemize}
-    The ring $Q$ is not assumed to be an integral domain.
-  -/)
-  (proof := /--
-    The axioms abstract the germs of generalised power series: for
-    $A=K((G^{\le0}))$ and $Q=K((G^{\le0}))/J$, $g_\gamma(b)$ is the class of
-    the translated truncation $b^{|\gamma}$, property (2) is the convolution
-    formula, property (3) is witnessed by $b^{|\xi}$, and $\operatorname{rk}$ is
-    the Cantor--Bendixson value of a representative.
-  -/)]
 structure TruncationGerms (K Γ A Q : Type*) [Field K] [CharZero K]
     [AddCommGroup Γ] [LinearOrder Γ] [IsOrderedAddMonoid Γ]
     [CommRing A] [Algebra K A] [CommRing Q] [Nontrivial Q] [Algebra K Q] where
@@ -214,6 +179,53 @@ theorem hasRepresentativesWithGermsIn_bot :
   · rcases eq_or_ne ξ 0 with rfl | hξ
     · rw [sys.germAt_zero, AlgHom.commutes]; exact Subalgebra.algebraMap_mem _ k
     · rw [sys.germAt_algebraMap k ξ hξ]; exact zero_mem _
+
+/-- The union of a chain of sets generating subalgebras with representatives whose germs lie in
+them generates a subalgebra with the same property. -/
+theorem hasRepresentativesWithGermsIn_adjoin_sUnion {c : Set (Set Q)} (hcn : c.Nonempty)
+    (hchain : IsChain (· ⊆ ·) c)
+    (hc : ∀ T ∈ c, sys.HasRepresentativesWithGermsIn (Algebra.adjoin K T)) :
+    sys.HasRepresentativesWithGermsIn (Algebra.adjoin K (⋃₀ c)) := by
+  intro a ha
+  haveI : Nonempty ↥c := hcn.to_subtype
+  have hdir : Directed (· ≤ ·) fun s : c => Algebra.adjoin K (s : Set Q) := by
+    rintro ⟨s, hs⟩ ⟨t, ht⟩
+    rcases hchain.total hs ht with hst | hts
+    · exact ⟨⟨t, ht⟩, Algebra.adjoin_mono hst, le_rfl⟩
+    · exact ⟨⟨s, hs⟩, le_rfl, Algebra.adjoin_mono hts⟩
+  have hcoe : (↑(Algebra.adjoin K (⋃₀ c)) : Set Q) =
+      ⋃ s : c, (Algebra.adjoin K (s : Set Q) : Set Q) := by
+    rw [Set.sUnion_eq_iUnion, Algebra.adjoin_iUnion]
+    exact Subalgebra.coe_iSup_of_directed hdir
+  have ha' : a ∈ (↑(Algebra.adjoin K (⋃₀ c)) : Set Q) := ha
+  rw [hcoe, Set.mem_iUnion] at ha'
+  obtain ⟨s, has⟩ := ha'
+  obtain ⟨b, hbg, hbs⟩ := hc s s.2 a has
+  exact ⟨b, hbg, fun ξ => Algebra.adjoin_mono (Set.subset_sUnion_of_mem s.2) (hbs ξ)⟩
+
+/-- A proper subalgebra `S` of the ring of germs misses the germ of a series whose germs at
+negative exponents lie in `S`: represent a germ outside `S` of minimal rank, and cut the
+representative off below the exponents at which the rank drops. -/
+theorem exists_germAt_mem_germ_notMem (S : Subalgebra K Q) (hS : S ≠ ⊤) :
+    ∃ X : A, (∀ ξ < 0, sys.germAt ξ X ∈ S) ∧ sys.germ X ∉ S := by
+  obtain ⟨g₀, hg₀⟩ : ∃ g : Q, g ∉ S := by
+    by_contra h
+    exact hS (Algebra.eq_top_iff.mpr fun x => not_not.mp fun hx => h ⟨x, hx⟩)
+  have hwf : WellFounded fun a b : Q => sys.rank a < sys.rank b :=
+    InvImage.wf sys.rank Ordinal.lt_wf
+  obtain ⟨x, hxnotS, hxmin⟩ := hwf.has_min {g : Q | g ∉ S} ⟨g₀, hg₀⟩
+  have hmin : ∀ y : Q, sys.rank y < sys.rank x → y ∈ S := fun y hy => by
+    by_contra hyS; exact hxmin y hyS hy
+  have hxnc : x ∉ Set.range (algebraMap K Q) := by
+    rintro ⟨k, rfl⟩; exact hxnotS (Subalgebra.algebraMap_mem S k)
+  obtain ⟨X₀, hX₀⟩ := sys.germ_surjective x
+  obtain ⟨ε, hε, hdrop⟩ := sys.rank_germAt_lt X₀ (by rw [hX₀]; exact hxnc)
+  obtain ⟨X, hXg, hXeq, hXvan⟩ := sys.exists_cutoff X₀ ε hε
+  refine ⟨X, fun ξ hξ => ?_, by rw [hXg, hX₀]; exact hxnotS⟩
+  rcases le_or_gt ξ ε with hξε | hεξ
+  · rw [hXvan ξ hξε]; exact zero_mem S
+  · rw [hXeq ξ hεξ]
+    exact hmin _ (by simpa [hX₀] using hdrop ξ hεξ hξ)
 
 section Comap
 

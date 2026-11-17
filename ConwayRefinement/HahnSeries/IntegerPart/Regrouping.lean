@@ -13,6 +13,8 @@ public import Mathlib.Algebra.Group.Subgroup.Order
 public import Mathlib.Algebra.Order.Monoid.Submonoid
 public import Mathlib.Data.Real.Basic
 import ConwayRefinement.HahnSeries.Nonpositive.GCD
+import ConwayRefinement.Algebra.Divisibility.PrimalPreimage
+import ConwayRefinement.HahnSeries.BoundedSupport.Primality
 import Mathlib.Algebra.Order.Archimedean.Real.Basic
 import Mathlib.LinearAlgebra.DFinsupp
 

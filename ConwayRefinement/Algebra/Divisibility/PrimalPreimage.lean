@@ -5,7 +5,7 @@ Authors: Dan Abramov
 -/
 module
 
-public import Mathlib.Algebra.Field.Subfield.Basic
+public import ConwayRefinement.Algebra.Ring.Subring.Residue
 import Mathlib.Tactic.FieldSimp
 import ConwayRefinement.Blueprint
 public import Mathlib.Algebra.Group.Irreducible.Defs
@@ -63,29 +63,7 @@ theorem RingEquiv.isPrimal_iff {B : Type*} [CommRing B]
 
 namespace Subring
 
-/-- `π ⁻¹ S`, as a subring of `A`. -/
-abbrev residueSubring (π : A →ₐ[L] L) (S : Subring L) : Subring A := S.comap (π : A →+* L)
-
-/-- `Frac S`, realised as a subring of the ambient field `L`. -/
-abbrev fracSubring (S : Subring L) : Subring L := (Subfield.closure (S : Set L)).toSubring
-
 variable {π : A →ₐ[L] L} {S : Subring L}
-
-theorem mem_residueSubring {b : A} : b ∈ residueSubring π S ↔ π b ∈ S := (Iff.rfl)
-
-theorem le_fracSubring : S ≤ fracSubring S := fun _ hx ↦ Subfield.subset_closure hx
-
-/-- Every element of `Frac S` has a denominator in `S`. -/
-theorem exists_den {x : L} (hx : x ∈ fracSubring S) :
-    ∃ s ∈ S, s ≠ 0 ∧ s * x ∈ S := by
-  obtain ⟨y, hy, z, hz, rfl⟩ := Subfield.mem_closure_iff.mp hx
-  rw [Subring.closure_eq] at hy hz
-  rcases eq_or_ne z 0 with rfl | hz0
-  · exact ⟨1, S.one_mem, one_ne_zero, by simp⟩
-  · exact ⟨z, hz, hz0, by rw [mul_div_cancel₀ _ hz0]; exact hy⟩
-
-theorem inv_mem_fracSubring {x : L} (hx : x ∈ fracSubring S) : x⁻¹ ∈ fracSubring S :=
-  Subfield.inv_mem _ hx
 
 /-! ### Normalising a factor so that its residue is `0` or `1` -/
 
@@ -426,7 +404,7 @@ theorem isPrimal_residueSubring_of_isPrimal_pre_fracSubring {b : A} (hb : π b �
 primal in `π ⁻¹ S`, provided its residue is primal in `S` when it is nonzero, and `L` is the
 fraction field of `S` when the residue is zero. -/
 @[blueprint "lem:primality-in-d-plus-m"
-  (phase := "Two primality criteria")
+  (phase := "Reduction along Archimedean classes")
   (title := "Primality in a $D+M$ construction")
   (statement := /--
     Let $L$ be a field, $A$ an integral domain that is an $L$-algebra, and

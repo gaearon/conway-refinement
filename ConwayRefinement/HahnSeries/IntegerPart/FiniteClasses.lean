@@ -12,6 +12,7 @@ import ConwayRefinement.Blueprint
 public import ConwayRefinement.HahnSeries.ConvexSubgroup.Restriction
 public import Mathlib.Data.Real.Basic
 import ConwayRefinement.HahnSeries.CharZero
+import ConwayRefinement.HahnSeries.BoundedSupport.Primality
 import ConwayRefinement.HahnSeries.IntegerPart.Regrouping
 import Mathlib.Data.Set.Card
 

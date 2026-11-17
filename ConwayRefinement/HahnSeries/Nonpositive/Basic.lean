@@ -6,7 +6,7 @@ Authors: Dan Abramov
 module
 
 public import ConwayRefinement.HahnSeries.EmbDomain
-public import ConwayRefinement.Algebra.Divisibility.PrimalPreimage
+public import ConwayRefinement.Algebra.Ring.Subring.Residue
 import Mathlib.Data.Rat.Floor
 
 /-!

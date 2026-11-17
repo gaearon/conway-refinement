@@ -76,7 +76,7 @@ that each retraction `ρ i` is idempotent and kills every element of `J` for all
 and that divisibility by a nonzero element fixed by `ρ i` can be tested after `ρ i`. Then `f` is
 primal as soon as, for `i` frequently, `ρ i f ≠ 0` and `f = ρ i f * w` with `w` primal. -/
 @[blueprint "lem:primality-from-germs-and-restrictions"
-  (phase := "Two primality criteria")
+  (phase := "Reduction along Archimedean classes")
   (title := "Primality via a quotient and retractions")
   (statement := /--
     Let $T$ be an integral domain and $J\subseteq T$ an ideal such that every
