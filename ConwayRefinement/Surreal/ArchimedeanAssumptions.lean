@@ -9,7 +9,10 @@ public import ConwayRefinement.Surreal.RealModule
 public import CombinatorialGames.Surreal.Basic
 public import Mathlib.Logic.Small.Set
 public import ConwayRefinement.Algebra.Order.Module.ConvexQuotientSplitting
-public import ConwayRefinement.HahnSeries.IntegerPart.Assumptions
+public import ConwayRefinement.HahnSeries.CardinalTruncation
+public import Mathlib.Algebra.Order.Module.HahnEmbedding
+public import Mathlib.Algebra.Order.Module.Archimedean
+public import Mathlib.Data.Real.Embedding
 public import CombinatorialGames.Surreal.Leading
 public import Mathlib.Algebra.Order.Module.Rat
 public import Mathlib.SetTheory.Cardinal.Regular
@@ -344,40 +347,5 @@ theorem smallSupportCardinal_le_tailSubmodule_cof
   exact (not_isCofinal_iff.mpr ⟨⟨y, hyTail⟩, fun z hz ↦ by
     apply Surreal.lt_ofSets_of_mem_left
     exact Set.mem_union_right _ (Set.mem_image_of_mem _ hz)⟩) hs
-
-/-- The bounded integer part on a surreal common tail generates its whole bounded Hahn field. -/
-@[blueprint "thm:surreal-common-tail-integer-part-fraction-field"
-  (phase := "Surreal numbers and omnific integers")
-  (title := "Fraction fields of surreal common-tail integer parts")
-  (statement := /--
-    Let $T$ be a $u$-small family of nonzero Archimedean classes of
-    $\mathbf{No}_u$ with no least member in the magnitude order, and let $H_T$
-    be the common tail below $T$.  For every field $R$ and subring
-    $Z\subseteq R$, the bounded Hahn field $R((H_T))_{\kappa_u}$ is the
-    fraction field of $Z+R((H_T^{<0}))_{\kappa_u}$.
-  -/)
-  (proof := /--
-    By \ref{lem:surreal-common-tail-cofinality},
-    $\kappa_u\leq\operatorname{cof}(H_T)$. Therefore
-    \ref{thm:bounded-hahn-integer-part-fraction-field} applies to $H_T$.
-  -/)]
-theorem fracSubring_cardSuppLTTruncationIntegerPart_tailSubmodule_eq_top
-    {R : Type v} [Field R] (Z : Subring R)
-    (T : Set (FiniteArchimedeanClass Surreal.{u})) [Small.{u} T]
-    (hT : ∀ c ∈ T, ∃ d ∈ T, c < d) :
-    Subring.fracSubring (HahnSeries.cardSuppLTTruncationIntegerPart
-      (G := FiniteArchimedeanClass.tailSubmodule ℚ T) (R := R)
-      (κ := smallSupportCardinal.{u}) Z) = ⊤ :=
-  HahnSeries.fracSubring_cardSuppLTTruncationIntegerPart_eq_top_of_le_cof Z
-    (smallSupportCardinal_le_tailSubmodule_cof T hT)
-
-/-- Every nonzero surreal Archimedean class satisfies LM24 assumption `(A2)_σ` at the cardinal
-that bounds surreal Hahn supports. -/
-theorem assumptionA2AtFiniteClass
-    {R : Type v} [Field R] (Z : Subring R)
-    (c : FiniteArchimedeanClass Surreal.{u}) :
-    LM24.AssumptionA2AtFiniteClass (K := ℝ) smallSupportCardinal.{u} Z c := by
-  rw [LM24.assumptionA2AtFiniteClass_iff]
-  exact Or.inl (smallSupportCardinal_le_ball_cof c)
 
 end Surreal

@@ -431,63 +431,67 @@ theorem isPrimal_of_finite_classes_and_limit_tail_conditions
             (fun w hw ↦ ih (rank w) (hxrank ▸ hw) w rfl)
   exact hind (rank a) a rfl
 
-/-- Conditions `(A1)`--`(A3)` at finite Archimedean classes, together with the two
-common-tail hypotheses at limit families, make every element of the bounded Hahn integer part
-primal. -/
+/-- **Primality in bounded Hahn integer parts.** Let `K` be an Archimedean ordered field, `G` an
+ordered `K`-vector space, `R` a field of characteristic zero, `κ > ℵ₀` a regular cardinal, and
+`Z ⊆ R` a pre-Schreier subring. Suppose that every Archimedean stratum of `G` is order-isomorphic
+to `ℝ`; that every strict ball `G_{≺σ}`, and every common tail of a limit family of fewer than `κ`
+classes, has cofinality at least `κ` or is zero with `R` the fraction field of `Z`; and that the
+quotient of `G` by every such common tail is Cauchy complete. Then every element of
+`Z + R((G^{<0}))_κ` is primal.
+
+At strict balls, the first two conditions are assumptions `(A1)` and `(A2)` of L'Innocente and
+Mantova (LM24, Theorem 9.0.1); primality of `Z` is their `(A3)`. -/
 @[blueprint "thm:hahn-integer-part-primality"
   (phase := "Transfinite induction on Archimedean classes")
-  (title := "Primality under finite-class and common-tail hypotheses")
+  (title := "Primality in bounded Hahn integer parts")
   (statement := /--
-    Let $G$ be an ordered rational vector space, $R$ a field of characteristic
-    zero, $\kappa>\aleph_0$ a regular cardinal, and $Z\subseteq R$ a
-    pre-Schreier subring.  At every nonzero Archimedean class, choose an
-    additive complement to the strict inner ball that is order additively
-    isomorphic to $\mathbb R$.  Assume that each strict inner ball either has
-    cofinality at least $\kappa$, or is zero and every element of $R$ is a
-    fraction of elements of $Z$.
-
-    For every nonempty set $T$ of fewer than $\kappa$ nonzero Archimedean
-    classes having no least member in the magnitude order, let $H_T$ be the
-    rational subspace of exponents lying beyond every class in $T$.  Assume
-    that $G/H_T$ is Cauchy complete for its additive uniformity and that the
-    bounded Hahn field on $H_T$ is the fraction field of its bounded Hahn
-    integer part.  Then every element of
-    $Z+R((G^{<0}))_\kappa$ is primal.
+    Let $K$ be an Archimedean ordered field and $G$ an ordered $K$-vector
+    space, let $R$ be a field of characteristic zero, $\kappa>\aleph_0$ a
+    regular cardinal, and $Z\subseteq R$ a pre-Schreier subring.  At every
+    nonzero Archimedean class $\sigma$, choose an additive complement
+    $H_\sigma$ to $G_{\prec\sigma}$ in $G_{\preceq\sigma}$ that is order
+    additively isomorphic to $\mathbb R$.  For every nonempty set $T$ of fewer
+    than $\kappa$ nonzero Archimedean classes with no least member in the
+    magnitude order, let $H_T$ be the subgroup of exponents lying beyond every
+    class in $T$.  Assume that each $G_{\prec\sigma}$ and each $H_T$ either has
+    cofinality at least $\kappa$, or is zero and $R$ is the fraction field of
+    $Z$, and that each $G/H_T$ is Cauchy complete for its additive uniformity.
+    Then every element of $Z+R((G^{<0}))_\kappa$ is primal.
   -/)
   (proof := /--
-    By \ref{thm:finite-support-classes-primality}, assumptions
-    $(A1)_\sigma$--$(A3)$ make every series meeting finitely many Archimedean
-    classes primal.  Apply \ref{thm:limit-tail-primality} to extend this result
-    to arbitrary support-class order type.
+    By \ref{thm:bounded-hahn-integer-part-fraction-field}, and directly when
+    the group is zero, the cofinality alternatives make the bounded Hahn field
+    on $G_{\prec\sigma}$ and on $H_T$ the fraction field of its bounded Hahn
+    integer part.  By \ref{thm:finite-support-classes-primality}, every
+    series meeting finitely many Archimedean classes is primal.  Apply
+    \ref{thm:limit-tail-primality} to extend this result to arbitrary
+    support-class order type.
   -/)]
-theorem isPrimal_of_finite_class_assumptions_and_limit_tail_conditions
-    {G : Type u} {R : Type v}
+theorem isPrimal
+    {K : Type*} {G : Type u} {R : Type v}
+    [Field K] [LinearOrder K] [IsOrderedRing K] [Archimedean K]
     [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G]
-    [Module ℚ G] [IsOrderedModule ℚ G]
+    [Module K G] [IsOrderedModule K G] [Module ℚ G] [PosSMulMono ℚ G]
     [Field R] [CharZero R]
     {κ : Cardinal} [Fact (ℵ₀ < κ)] [Fact κ.IsRegular]
     (Z : Subring R) [DecompositionMonoid Z]
-    (s : HahnEmbedding.ArchimedeanStrata ℚ G)
-    (hA1 : ∀ c : FiniteArchimedeanClass G, LM24.AssumptionA1AtFiniteClass s c)
-    (hA2 : ∀ c : FiniteArchimedeanClass G,
-      LM24.AssumptionA2AtFiniteClass (K := ℚ) κ Z c)
-    (hcomplete : ∀ (T : Set (FiniteArchimedeanClass G)), T.Nonempty →
-      (∀ c ∈ T, ∃ d ∈ T, c < d) →
-      (#T < κ) →
-      Nonempty (CompleteSpace (FiniteArchimedeanClass.TailQuotient T)))
-    (htailfrac : ∀ (T : Set (FiniteArchimedeanClass G)), T.Nonempty →
-      (∀ c ∈ T, ∃ d ∈ T, c < d) →
-      (#T < κ) →
-      Subring.fracSubring (HahnSeries.cardSuppLTTruncationIntegerPart
-        (G := FiniteArchimedeanClass.tailSubmodule ℚ T)
-        (R := R) (κ := κ) Z) = ⊤)
+    (s : HahnEmbedding.ArchimedeanStrata K G)
+    (hstratum : ∀ c : FiniteArchimedeanClass G, Nonempty (s.stratum c ≃+o ℝ))
+    (hball : ∀ c : FiniteArchimedeanClass G, κ ≤ Order.cof (FiniteArchimedeanClass.ball K c) ∨
+      (Subsingleton (FiniteArchimedeanClass.ball K c) ∧ Subring.fracSubring Z = ⊤))
+    (htail : ∀ T : Set (FiniteArchimedeanClass G), T.Nonempty → (∀ c ∈ T, ∃ d ∈ T, c < d) →
+      #T < κ → κ ≤ Order.cof (FiniteArchimedeanClass.tailSubmodule ℚ T) ∨
+        (Subsingleton (FiniteArchimedeanClass.tailSubmodule ℚ T) ∧ Subring.fracSubring Z = ⊤))
+    (hcomplete : ∀ T : Set (FiniteArchimedeanClass G), T.Nonempty →
+      (∀ c ∈ T, ∃ d ∈ T, c < d) → #T < κ →
+        CompleteSpace (FiniteArchimedeanClass.TailQuotient T))
     (a : HahnSeries.cardSuppLTTruncationIntegerPart
       (G := G) (R := R) (κ := κ) Z) : IsPrimal a := by
   apply isPrimal_of_finite_classes_and_limit_tail_conditions Z
-  · intro y hy
-    exact isPrimal_of_supportArchimedeanClasses_finite
-      Z s (fun c ↦ (LM24.assumptionA1AtFiniteClass_iff s c).mp (hA1 c)) hA2 y hy
-  · exact hcomplete
-  · exact htailfrac
+  · exact isPrimal_of_supportArchimedeanClasses_finite Z s hstratum hball
+  · exact fun T hT hTgt hTcard ↦ ⟨hcomplete T hT hTgt hTcard⟩
+  · exact fun T hT hTgt hTcard ↦
+      fracSubring_cardSuppLTTruncationIntegerPart_eq_top_of_le_cof_or_subsingleton Z
+        (htail T hT hTgt hTcard)
 
 end HahnSeries.CardSuppLTTruncationIntegerPart

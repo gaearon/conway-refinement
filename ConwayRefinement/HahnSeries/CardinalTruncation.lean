@@ -290,4 +290,17 @@ theorem fracSubring_cardSuppLTTruncationIntegerPart_eq_top_of_subsingleton (Z : 
   rw [show b = a * d⁻¹ by rw [hba, mul_comm d b, mul_inv_cancel_right₀ hd0]]
   exact (Subring.fracSubring _).mul_mem haF (Subring.inv_mem_fracSubring hdF)
 
+
+/-- If `κ ≤ cof G`, or `G = 0` and `R` is the fraction field of `Z`, then the `κ`-bounded Hahn
+field is the fraction field of the `κ`-bounded Hahn truncation integer part. This disjunction is
+assumption `(A2)` of L'Innocente and Mantova for the exponent group `G`. -/
+theorem fracSubring_cardSuppLTTruncationIntegerPart_eq_top_of_le_cof_or_subsingleton
+    (Z : Subring R)
+    (h : κ ≤ Order.cof G ∨ (Subsingleton G ∧ Subring.fracSubring Z = ⊤)) :
+    Subring.fracSubring
+      (cardSuppLTTruncationIntegerPart (G := G) (R := R) (κ := κ) Z) = ⊤ := by
+  rcases h with hcof | ⟨hzero, hfrac⟩
+  · exact fracSubring_cardSuppLTTruncationIntegerPart_eq_top_of_le_cof Z hcof
+  · exact fracSubring_cardSuppLTTruncationIntegerPart_eq_top_of_subsingleton Z hfrac
+
 end HahnSeries

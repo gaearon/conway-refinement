@@ -29,12 +29,6 @@ theorem surreal_smallSupportCardinal_regular :
     Surreal.smallSupportCardinal.{u}.IsRegular :=
   Surreal.smallSupportCardinal_isRegular
 
-theorem surreal_assumptionA2_finite
-    {R : Type v} [Field R] (Z : Subring R)
-    (c : FiniteArchimedeanClass Surreal.{u}) :
-    LM24.AssumptionA2AtFiniteClass (K := ℝ) Surreal.smallSupportCardinal Z c :=
-  Surreal.assumptionA2AtFiniteClass Z c
-
 /-- The Archimedean class of the surreal number `1`. -/
 def surrealUnitClass : FiniteArchimedeanClass Surreal :=
   FiniteArchimedeanClass.mk 1 one_ne_zero

@@ -54,33 +54,26 @@ is primal. -/
     is primal, where $\kappa_u$ is the universe cardinal.
   -/)
   (proof := /--
-    The two Archimedean hypotheses follow from
-    \ref{fact:surreal-archimedean-strata} and
-    \ref{fact:surreal-archimedean-ball-cofinality}. Therefore
-    \ref{thm:finite-support-classes-primality} handles series whose support
-    meets finitely many Archimedean classes. For a small limit family, the
-    quotient by its common tail is Cauchy complete by
-    \ref{lem:surreal-common-tail-quotient-complete}.  The common tail has
-    the required fraction-field property by
-    \ref{thm:surreal-common-tail-integer-part-fraction-field}. Finally,
-    \ref{thm:limit-tail-primality} proves primality for arbitrary support-class
-    order type.
+    Apply \ref{thm:hahn-integer-part-primality} with $K=\mathbb R$ and
+    $Z=\mathbb Z$, which is pre-Schreier.  The strata are isomorphic to
+    $\mathbb R$ by \ref{fact:surreal-archimedean-strata}; strict balls have
+    cofinality at least $\kappa_u$ by
+    \ref{fact:surreal-archimedean-ball-cofinality}, and common tails of small
+    limit families by \ref{lem:surreal-common-tail-cofinality}; the quotients
+    by these tails are Cauchy complete by
+    \ref{lem:surreal-common-tail-quotient-complete}.
   -/)]
 theorem signedSmallSupportIntegerPart_isPrimal
     (a : SignedSmallSupportIntegerPart.{u}) : IsPrimal a := by
-  apply isPrimal_of_finite_classes_and_limit_tail_conditions Surreal.realIntegerSubring
-  · exact isPrimal_of_supportArchimedeanClasses_finite
-      Surreal.realIntegerSubring Surreal.archimedeanStrata
-      (fun c ↦ ⟨Surreal.stratumOrderAddMonoidIsoReal Surreal.archimedeanStrata c⟩)
-      (Surreal.assumptionA2AtFiniteClass Surreal.realIntegerSubring)
-  · intro T hTne hTlimit hTcard
-    letI : Small.{u} T := small_of_card_lt_smallSupportCardinal hTcard
+  refine isPrimal Surreal.realIntegerSubring Surreal.archimedeanStrata
+    (fun c ↦ ⟨Surreal.stratumOrderAddMonoidIsoReal Surreal.archimedeanStrata c⟩)
+    (fun c ↦ Or.inl (Surreal.smallSupportCardinal_le_ball_cof c))
+    (fun T _ hTlimit hTcard ↦ ?_) (fun T hTne hTlimit hTcard ↦ ?_) a
+  · letI : Small.{u} T := small_of_card_lt_smallSupportCardinal hTcard
+    exact Or.inl (Surreal.smallSupportCardinal_le_tailSubmodule_cof T hTlimit)
+  · letI : Small.{u} T := small_of_card_lt_smallSupportCardinal hTcard
     letI : Nonempty T := Set.nonempty_coe_sort.mpr hTne
-    exact ⟨Surreal.completeSpace_rationalTailQuotient T hTlimit⟩
-  · intro T _hTne hTlimit hTcard
-    letI : Small.{u} T := small_of_card_lt_smallSupportCardinal hTcard
-    exact Surreal.fracSubring_cardSuppLTTruncationIntegerPart_tailSubmodule_eq_top
-      Surreal.realIntegerSubring T hTlimit
+    exact Surreal.completeSpace_rationalTailQuotient T hTlimit
 
 /-- The signed bounded Hahn integer part corresponding to the omnific integers is pre-Schreier. -/
 theorem signedSmallSupportIntegerPart_decompositionMonoid :

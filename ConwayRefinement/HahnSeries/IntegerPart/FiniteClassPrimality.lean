@@ -5,7 +5,10 @@ Authors: Dan Abramov
 -/
 module
 
-public import ConwayRefinement.HahnSeries.IntegerPart.Assumptions
+public import ConwayRefinement.HahnSeries.CardinalTruncation
+public import Mathlib.Algebra.Order.Module.HahnEmbedding
+public import Mathlib.Algebra.Order.Module.Archimedean
+public import Mathlib.Data.Real.Embedding
 public import ConwayRefinement.HahnSeries.IntegerPart.ConvexRegrouping
 public import ConwayRefinement.HahnSeries.CharZero
 public import ConwayRefinement.Algebra.Order.ArchimedeanBall
@@ -139,7 +142,9 @@ theorem isPrimal_of_isPrimal_restrict_leadingClass [CharZero R] [Fact κ.IsRegul
     (x : cardSuppLTTruncationIntegerPart (G := G) (R := R) (κ := κ) Z)
     (horder : (x : R⟦G⟧).order ≠ 0)
     (hA1 : Nonempty (u.stratum (FiniteArchimedeanClass.mk _ horder) ≃+o ℝ))
-    (hA2 : LM24.AssumptionA2AtFiniteClass (K := K) κ Z (FiniteArchimedeanClass.mk _ horder))
+    (hA2 : κ ≤ Order.cof (ball K (FiniteArchimedeanClass.mk _ horder)) ∨
+      (Subsingleton (ball K (FiniteArchimedeanClass.mk _ horder)) ∧
+        Subring.fracSubring Z = ⊤))
     (hres : IsPrimal (restrictToAddSubgroup Z
       (ball K (FiniteArchimedeanClass.mk _ horder)).toAddSubgroup x)) :
     IsPrimal x := by
@@ -153,8 +158,7 @@ theorem isPrimal_of_isPrimal_restrict_leadingClass [CharZero R] [Fact κ.IsRegul
   refine isPrimal_of_isPrimal_regroupAmbient (ball K c) Z x ?_
     (isPrimal_restrictDomain_of_isPrimal_restrictToAddSubgroup Z _
       AddSubgroup.IsConvex.ordConnected x hres)
-    (fun _ ↦ LM24.fracSubring_cardSuppLTTruncationIntegerPart_eq_top_of_assumptionA2AtFiniteClass
-      Z c hA2)
+    (fun _ ↦ fracSubring_cardSuppLTTruncationIntegerPart_eq_top_of_le_cof_or_subsingleton Z hA2)
   let φ := u.stratumToQuotient c
   have hw : ((regroupAmbient (κ := κ) (ball K c) Z x :
       CardSuppLTNonpositive (G := G ⧸ ball K c)
@@ -172,8 +176,10 @@ theorem isPrimal_of_isPrimal_restrict_leadingClass [CharZero R] [Fact κ.IsRegul
     (u.stratumToQuotient_le_iff c) (u.ordConnected_range_stratumToQuotient c)
     (CardSuppLTNonpositive.isPrimal_of_orderIso_real hA1.some _)
 
-/-- Under LM24 assumptions `(A1)_σ`--`(A3)`, every series meeting only finitely many Archimedean
-classes is primal. -/
+/-- Under assumptions `(A1)`--`(A3)` of L'Innocente and Mantova (LM24, Theorem 9.0.1), every
+series meeting only finitely many Archimedean classes is primal: every Archimedean stratum is
+order-isomorphic to `ℝ`, every strict ball has cofinality at least `κ` or is zero with `R` the
+fraction field of `Z`, and `Z` is pre-Schreier. -/
 @[blueprint "thm:finite-support-classes-primality"
   (phase := "Finitely many Archimedean classes")
   (title := "Primality for finitely many Archimedean support classes")
@@ -208,8 +214,8 @@ theorem isPrimal_of_supportArchimedeanClasses_finite [CharZero R]
     [Fact κ.IsRegular] (Z : Subring R) [DecompositionMonoid Z]
     (u : HahnEmbedding.ArchimedeanStrata K G)
     (hA1 : ∀ c : FiniteArchimedeanClass G, Nonempty (u.stratum c ≃+o ℝ))
-    (hA2 : ∀ c : FiniteArchimedeanClass G,
-      LM24.AssumptionA2AtFiniteClass (K := K) κ Z c)
+    (hA2 : ∀ c : FiniteArchimedeanClass G, κ ≤ Order.cof (ball K c) ∨
+      (Subsingleton (ball K c) ∧ Subring.fracSubring Z = ⊤))
     (x : cardSuppLTTruncationIntegerPart (G := G) (R := R) (κ := κ) Z)
     (hfinite : (ArchimedeanClass.mk '' (x : R⟦G⟧).support).Finite) : IsPrimal x := by
   classical
