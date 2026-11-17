@@ -40,12 +40,10 @@ variable (G R) in
   (phase := "Germs of translated truncations")
   (title := "The ideal $J$")
   (statement := /--
-    Let $G$ be a nontrivial ordered abelian group and $R$ a commutative ring.
-    Let $J\subseteq R((G^{\le0}))$ be the set of series $b$ for which there is
-    $c<0$ with $\operatorname{supp}(b)\subseteq(-\infty,c]$, that is, the series
-    whose support is bounded away from $0$.  Then $J$ is an ideal of
-    $R((G^{\le0}))$.  For $G=\mathbb R$ this is the ideal $J$ of
-    [Ber00, Def. 5.1].
+    Let $R$ be a commutative ring.  The series $b\in R((G^{\le0}))$ with
+    $\operatorname{supp}(b)\subseteq(-\infty,c]$ for some $c<0$ form an ideal $J$
+    of $R((G^{\le0}))$: the series whose support is bounded away from $0$.  For
+    $G=\mathbb R$ and $R=K$ this is the ideal $J$ of [Ber00, Def. 5.1].
   -/)
   (proof := /--
     The zero series has empty support, and $G$ has a negative element because

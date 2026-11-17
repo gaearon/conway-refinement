@@ -192,9 +192,8 @@ divisor. -/
   (phase := "Polynomial presentations")
   (title := "Greatest common divisors of finite-support series")
   (statement := /--
-    Let $G$ be a linearly ordered abelian group and $K$ a field.  For all $p,q$
-    in the finite-support subring $K(G^{\le 0})$ of $K((G^{\le 0}))$, there is
-    $d\in K(G^{\le 0})$ such that, for every $e\in K(G^{\le 0})$,
+    Let $G$ be any ordered abelian group.  For all $p,q\in K(G^{\le0})$ there
+    is $d\in K(G^{\le0})$ such that, for every $e\in K(G^{\le0})$,
     \[
       e\mid p\ \text{and}\ e\mid q \quad\Longleftrightarrow\quad e\mid d.
     \]

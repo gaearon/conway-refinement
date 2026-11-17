@@ -39,13 +39,9 @@ first below every member of the second are strictly separated by a surreal. -/
   (phase := "Surreal numbers and omnific integers")
   (title := "Filling small cuts in the surreal numbers")
   (statement := /--
-    Let $\mathbf{No}$ be the surreal numbers of a universe $u$, and let
-    $L,R\subseteq\mathbf{No}$ be sets of the universe $u$.  If $l<r$ for every
-    $l\in L$ and $r\in R$, then there is $x\in\mathbf{No}$ such that
-    \[
-      l<x<r
-    \]
-    for every $l\in L$ and $r\in R$.
+    Let $L,R\subseteq\mathbf{No}$ be sets of the universe $u$ with $l<r$ for all
+    $l\in L$ and $r\in R$.  Then there is $x\in\mathbf{No}$ with $l<x<r$ for all
+    $l\in L$ and $r\in R$.
   -/)
   (proof := /--
     Form the surreal number $\{L\mid R\}$ [Con76].  The separation hypothesis

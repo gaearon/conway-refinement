@@ -52,9 +52,8 @@ is stated through `Nonempty` because `GCDMonoid` contains a choice of gcd operat
   (phase := "Polynomial presentations")
   (title := "Greatest common divisors in $K((\\mathbb R^{\\le 0}))$")
   (statement := /--
-    Let $K$ be a field of characteristic $0$.  The ring
-    $K((\mathbb R^{\le 0}))$ of generalised power series with nonpositive real
-    exponents is a GCD domain.
+    Let $K$ have characteristic $0$.  Then $K((\mathbb R^{\le 0}))$ is a GCD
+    domain.
   -/)
   (proof := /--
     By \ref{thm:hahn-series-polynomial-algebra}, $K((\mathbb R^{\le 0}))$ is

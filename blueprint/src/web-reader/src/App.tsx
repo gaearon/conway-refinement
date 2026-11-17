@@ -354,7 +354,9 @@ function Chapter({ data, phase, selected }: {
   const nodes = data.nodes.filter(node => node.phase === phase);
   const metadata = phaseMetadata(data, phase);
   return <><header className="phase-header"><h1>{phaseIndex(data, phase) + 1}. {metadata.title}</h1>
-    <Introduction text={metadata.descriptionHtml} /></header>
+    <Introduction text={metadata.descriptionHtml} />
+    <section className="phase-setting"><h2>Setting</h2>
+      <Introduction text={metadata.settingHtml} /></section></header>
     <ResultCollection data={data} nodes={nodes} selected={selected} /></>;
 }
 

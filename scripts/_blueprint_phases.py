@@ -29,11 +29,14 @@ class Phase:
     slug: str
     title: str
     description: str
+    setting: str
+    order: tuple[str, ...] = ()
 
     def web_data(self) -> dict[str, str]:
         result = asdict(self)
         result["id"] = result.pop("slug")
         result.pop("key")
+        result.pop("order")
         return result
 
 
@@ -64,16 +67,23 @@ def load_manifest() -> tuple[Highlights, tuple[Phase, ...]]:
     if not isinstance(records, list) or not records:
         _fail("`phases` must be a non-empty array")
     phases: list[Phase] = []
-    fields = {"key", "slug", "title", "description"}
+    fields = {"key", "slug", "title", "description", "setting"}
     for index, record in enumerate(records, start=1):
-        if not isinstance(record, dict) or set(record) != fields:
-            _fail(f"phase {index} must contain exactly {', '.join(sorted(fields))}")
+        if not isinstance(record, dict) or not fields <= set(record) <= fields | {"order"}:
+            _fail(
+                f"phase {index} must contain exactly {', '.join(sorted(fields))}, "
+                "and optionally order"
+            )
         if any(not isinstance(record[field], str) or record[field].strip() != record[field]
                or not record[field] for field in fields):
             _fail(f"phase {index} fields must be non-empty trimmed strings")
         if SLUG_RE.fullmatch(record["slug"]) is None:
             _fail(f"phase {index} has invalid slug {record['slug']!r}")
-        phases.append(Phase(**record))
+        order = record.get("order", [])
+        if not isinstance(order, list) or not all(isinstance(label, str) for label in order) \
+                or len(set(order)) != len(order):
+            _fail(f"phase {index} order must be a list of distinct labels")
+        phases.append(Phase(**{**record, "order": tuple(order)}))
     for field in ("key", "slug", "title"):
         values = [getattr(phase, field) for phase in phases]
         duplicates = sorted({value for value in values if values.count(value) > 1})

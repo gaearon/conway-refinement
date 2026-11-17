@@ -250,6 +250,42 @@ audit_expect_rejection blueprint-highlights-manifest \
 cp "$audit_blueprint_phases_backup" "$audit_blueprint_phases_source"
 audit_blueprint_phases_changed=false
 
+# Blueprint: every phase carries a standing setting.
+cp "$audit_blueprint_phases_source" "$audit_blueprint_phases_backup"
+audit_blueprint_phases_changed=true
+python3 - "$audit_blueprint_phases_source" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+path = Path(sys.argv[1])
+payload = json.loads(path.read_text())
+del payload["phases"][0]["setting"]
+path.write_text(json.dumps(payload))
+PY
+audit_expect_rejection blueprint-phase-setting \
+  'phase 1 must contain exactly' scripts/blueprint.sh check
+cp "$audit_blueprint_phases_backup" "$audit_blueprint_phases_source"
+audit_blueprint_phases_changed=false
+
+# Blueprint: a phase reading order lists only labels of that phase.
+cp "$audit_blueprint_phases_source" "$audit_blueprint_phases_backup"
+audit_blueprint_phases_changed=true
+python3 - "$audit_blueprint_phases_source" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+path = Path(sys.argv[1])
+payload = json.loads(path.read_text())
+payload["phases"][0]["order"] = ["lem:transcendence"]
+path.write_text(json.dumps(payload))
+PY
+audit_expect_rejection blueprint-phase-order \
+  'lists labels outside it' scripts/blueprint.sh check
+cp "$audit_blueprint_phases_backup" "$audit_blueprint_phases_source"
+audit_blueprint_phases_changed=false
+
 # Blueprint: the phase manifest has unique stable slugs.
 cp "$audit_blueprint_phases_source" "$audit_blueprint_phases_backup"
 audit_blueprint_phases_changed=true

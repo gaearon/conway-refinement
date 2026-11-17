@@ -115,13 +115,8 @@ truncation `b^{|γ}` modulo the ideal of series whose support is bounded away fr
   (phase := "Germs of translated truncations")
   (title := "Germ of a series at an exponent")
   (statement := /--
-    Let $K$ be a field and $G$ a nontrivial ordered abelian group.  For
-    $b\in K((G^{\le0}))$ and $\gamma\in G$, let $b_{|\gamma}$ be the truncation
-    of $b$ at $\gamma$, the part of $b$ with exponents at most $\gamma$, and let
-    $b^{|\gamma}=t^{-\gamma}b_{|\gamma}$ be the translated truncation, again an
-    element of $K((G^{\le0}))$.  The germ of $b$ at $\gamma$ is the class
-    $[b^{|\gamma}]$ of $b^{|\gamma}$ in $K((G^{\le0}))/J$ [Ber00, Def. 6.1].
-    For fixed $\gamma$ it is a $K$-linear map
+    For $b\in K((G^{\le0}))$ and $\gamma\in G$, the germ of $b$ at $\gamma$ is
+    $[b^{|\gamma}]$ [Ber00, Def. 6.1].  For fixed $\gamma$ it is a $K$-linear map
     $K((G^{\le0}))\to K((G^{\le0}))/J$.
   -/)
   (proof := /--
@@ -151,8 +146,7 @@ translated by `γ`. -/
   (phase := "Germs of translated truncations")
   (title := "Germs of a translated truncation")
   (statement := /--
-    Let $K$ be a field and $G$ a nontrivial ordered abelian group.  For
-    $b\in K((G^{\le0}))$, $\gamma\in G$ and $\zeta\le0$, the germ of
+    For $b\in K((G^{\le0}))$, $\gamma\in G$ and $\zeta\le0$, the germ of
     $b^{|\gamma}$ at $\zeta$ is the germ of $b$ at $\gamma+\zeta$:
     \[
       [(b^{|\gamma})^{|\zeta}]=[b^{|\gamma+\zeta}].
@@ -304,13 +298,11 @@ left neighbourhood of `0` have strictly smaller Cantor--Bendixson value. -/
   (phase := "Germs of translated truncations")
   (title := "Decrease of the Cantor--Bendixson value under translated truncation")
   (statement := /--
-    Let $K$ be a field and $G$ a nontrivial ordered abelian group with its order
-    topology and the associated group uniformity.  If
-    $b\in K((G^{\le0}))$ and $V_{\mathrm{CB}}(b)\ne0$, then there is
+    Let $b\in K((G^{\le0}))$ with $V_{\mathrm{CB}}(b)\ne0$.  Then there is
     $\varepsilon<0$ such that
     \[
-      V_{\mathrm{CB}}(b^{|\xi})<V_{\mathrm{CB}}(b)
-      \qquad\text{for all }\xi\in(\varepsilon,0).
+      V_{\mathrm{CB}}(b^{|\xi})<V_{\mathrm{CB}}(b)\qquad\text{for all }
+      \xi\in(\varepsilon,0).
     \]
   -/)
   (proof := /--
@@ -370,14 +362,12 @@ private theorem germAt_mul_eq_sum_closedSupportAddFiber (b c : Nonpositive G K) 
   (phase := "Germs of translated truncations")
   (title := "Convolution formula")
   (statement := /--
-    Let $K$ be a field and $G$ a nontrivial ordered abelian group with its order
-    topology and the associated group uniformity, and assume that $G$ is Cauchy
-    complete.  For $b,c\in K((G^{\le0}))$ and $\gamma\in G$,
+    Let $G$ be Cauchy complete.  For $b,c\in K((G^{\le0}))$ and $\gamma\in G$,
     \[
       [(bc)^{|\gamma}]=\sum_{\beta\in G}[b^{|\beta}]\,[c^{|\gamma-\beta}],
     \]
-    where the sum is the sum of its finitely many nonzero terms (and $0$ if
-    there were infinitely many).  For $G=\mathbb R$ this is [Ber00, Lem. 7.5].
+    where the sum is the sum of its finitely many nonzero terms (and $0$ if there
+    were infinitely many).  For $G=\mathbb R$ this is [Ber00, Lem. 7.5].
   -/)
   (proof := /--
     Let $B$ and $C$ be the closures of the supports of $b$ and $c$; they are

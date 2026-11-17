@@ -30,9 +30,8 @@ refinement. -/
   (phase := "Surreal numbers and omnific integers")
   (title := "Conway's refinement theorem for omnific integers")
   (statement := /--
-    Let $\mathbf{No}$ be the surreal numbers of a fixed universe.  Let
-    $a,b,c,d\in\mathbf{No}$ satisfy Conway's equation $x=\{x-1\mid x+1\}$, which
-    defines the omnific integers [Con76].  If $ab=cd$, then there are
+    Let $a,b,c,d\in\mathbf{No}$ satisfy Conway's equation $x=\{x-1\mid x+1\}$,
+    which defines the omnific integers [Con76].  If $ab=cd$, then there are
     $e,f,g,h\in\mathbf{No}$, each satisfying the same equation, such that
     \[
       a=ef,\qquad b=gh,\qquad c=eg,\qquad d=fh.

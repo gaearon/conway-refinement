@@ -407,14 +407,12 @@ fraction field of `S` when the residue is zero. -/
   (phase := "Reduction along Archimedean classes")
   (title := "Primality in a $D+M$ construction")
   (statement := /--
-    Let $L$ be a field, $A$ an integral domain that is an $L$-algebra, and
-    $\pi:A\to L$ a homomorphism of $L$-algebras, so that $A=L+M$ with
-    $M=\ker\pi$.  Let $S\subseteq L$ be a subring and let
-    $b\in\pi^{-1}(S)=S+M$.  Suppose that $b$ is primal in $A$, that $\pi(b)$
-    is primal in $S$ if $\pi(b)\ne0$, and that $L=\operatorname{Frac}(S)$ if
-    $\pi(b)=0$.  Then $b$ is primal in $\pi^{-1}(S)$.  This is a special case,
-    for $A$ an integral domain, of the sufficiency direction of the transfer
-    lemma [LM24, Lem. 9.2.1].
+    Let $L$ be a field, $A$ a domain that is an $L$-algebra, $\pi:A\to L$ a
+    homomorphism of $L$-algebras, and $S\subseteq L$ a subring.  Let
+    $b\in\pi^{-1}(S)$ be primal in $A$.  If $\pi(b)\ne0$, assume $\pi(b)$ is
+    primal in $S$; if $\pi(b)=0$, assume $L=\operatorname{Frac}(S)$.  Then $b$
+    is primal in $\pi^{-1}(S)$.  For domains this is the sufficiency direction
+    of the transfer lemma [LM24, Lem. 9.2.1].
   -/)
   (proof := /--
     Let $b\mid cd$ in $\pi^{-1}(S)$ and refine in $A$: $b=b_1b_2$, $b_1\mid c$,

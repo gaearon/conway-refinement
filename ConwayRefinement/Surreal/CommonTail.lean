@@ -179,12 +179,9 @@ uniformity. -/
   (phase := "Surreal numbers and omnific integers")
   (title := "Cauchy completeness of surreal quotients")
   (statement := /--
-    Let $\mathbf{No}$ be the surreal numbers of a universe $u$ and $\kappa_u$
-    the cardinal of that universe.  Let $T$ be a nonempty set of nonzero
-    Archimedean classes of cardinality less than $\kappa_u$ with no least
-    element in magnitude, and $H_T=\bigcap_{\sigma\in T}\mathbf{No}_{\preceq\sigma}$.
-    The ordered $\mathbb Q$-vector space $\mathbf{No}/H_T$ is Cauchy complete
-    for the group uniformity of its order topology.
+    Let $T$ be a nonempty set of fewer than $\kappa_u$ nonzero Archimedean classes
+    of $\mathbf{No}$, without least element in magnitude.  Then $\mathbf{No}/H_T$
+    is Cauchy complete for its order topology and group uniformity.
   -/)
   (proof := /--
     The images $\varepsilon_\sigma$ in $\mathbf{No}/H_T$ of positive

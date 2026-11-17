@@ -10,6 +10,7 @@ public import ConwayRefinement.HahnSeries.Germ.BoundedSupport
 public import ConwayRefinement.HahnSeries.ConvexSubgroup.Restriction
 
 import ConwayRefinement.Algebra.Divisibility.RetractionPrimality
+import ConwayRefinement.Blueprint
 import ConwayRefinement.HahnSeries.Nonpositive.ArchimedeanClasses
 
 /-!
@@ -97,6 +98,42 @@ open CardSuppLTTruncationIntegerPart in
 /-- Over a Cauchy-complete common-tail quotient, a bounded nonpositive series is primal as soon
 as, at arbitrarily small Archimedean classes, its restriction to the closed ball is nonzero and
 the complementary factor is primal. -/
+@[blueprint "lem:primality-from-germs"
+  (phase := "Reduction along Archimedean classes")
+  (title := "Primality from germs and restrictions to balls")
+  (statement := /--
+    Let $G$ be an ordered $\mathbb Q$-vector space, $L$ a field of
+    characteristic $0$, and $T$ a nonempty set of nonzero Archimedean classes
+    of $G$ without least element in magnitude, satisfying (B2)$_T$.  Put
+    $\Gamma=G/H_T$ and let $f\in L((\Gamma^{\le0}))_\kappa$.  Suppose that for
+    arbitrarily small nonzero Archimedean classes $q$ of $\Gamma$ one has
+    $f_{|q}\ne0$ and $f=f_{|q}\,w$ for some primal $w$, where $f_{|q}$ is the
+    restriction of $f$ to $\Gamma_{\preceq q}$.  Then $f$ is primal in
+    $L((\Gamma^{\le0}))_\kappa$.
+  -/)
+  (proof := /--
+    Write $T'=L((\Gamma^{\le0}))_\kappa$, let $J'$ be its ideal of series whose
+    support is bounded away from $0$, and $\rho_q(g)=g_{|q}$.  By
+    \ref{lem:convex-restriction-ring-hom} each $\rho_q$ is a ring endomorphism,
+    and it is idempotent.  Since $T$ has no least element, $\Gamma$ has
+    arbitrarily small nonzero classes, so every $j\in J'$ has $\rho_q(j)=0$ for
+    all small $q$.  By \ref{thm:bounded-hahn-germ-polynomial-algebra}, applied
+    to the Cauchy complete group $\Gamma$, the ring $T'/J'$ is a polynomial
+    ring over $L$, hence a unique factorisation domain, so its elements are
+    primal.
+
+    Let $f\mid xy$, say $xy=fz$.  Choose $p_1,p_2,q_1,q_2\in T'$ with
+    $f\equiv p_1p_2$, $x\equiv p_1q_1$ and $y\equiv p_2q_2$ modulo $J'$.  Pick
+    $q$ so small that $\rho_q$ kills the three differences, $f_{|q}\ne0$, and
+    $f=f_{|q}w$ with $w$ primal.  With $g_k=\rho_q(p_k)$ this gives
+    $f_{|q}=g_1g_2$, $x_{|q}=g_1\rho_q(q_1)$ and $y_{|q}=g_2\rho_q(q_2)$.  Each
+    $g_k$ is nonzero and supported in $\Gamma_{\preceq q}$, so
+    \ref{lem:divisibility-from-convex-restriction} gives $g_1\mid x$ and
+    $g_2\mid y$; write $x=g_1x'$ and $y=g_2y'$.  Cancelling $g_1g_2\ne0$ from
+    $g_1g_2x'y'=fz=g_1g_2wz$ gives $w\mid x'y'$, hence $w=w_1w_2$ with
+    $w_1\mid x'$ and $w_2\mid y'$.  Then $f=(g_1w_1)(g_2w_2)$ with
+    $g_1w_1\mid x$ and $g_2w_2\mid y$.
+  -/)]
 theorem isPrimal_of_frequently_restriction_mul_isPrimal
     {κ : Cardinal.{u}} [Fact (ℵ₀ < κ)]
     (T : Set (FiniteArchimedeanClass G)) [Nonempty T]

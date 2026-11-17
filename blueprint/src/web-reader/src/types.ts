@@ -29,6 +29,8 @@ export type BlueprintPhase = {
   title: string;
   description: string;
   descriptionHtml: string;
+  setting: string;
+  settingHtml: string;
 };
 
 export type BlueprintData = {

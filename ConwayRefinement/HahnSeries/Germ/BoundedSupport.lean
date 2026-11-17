@@ -182,29 +182,31 @@ nonpositive series is a polynomial algebra over `K`. -/
   (phase := "Polynomial presentations")
   (title := "Polynomial presentation of the ring of germs of series with small support")
   (statement := /--
-    Let $K$ be a field of characteristic zero, $\kappa>\aleph_0$ a cardinal,
-    and $G$ a nontrivial ordered abelian group which, with its order topology
-    and the associated group uniformity, is Cauchy complete.  Let
-    $K((G^{\le0}))_\kappa$ be the ring of series in $K((G^{\le0}))$ whose
-    support has cardinality less than $\kappa$, and
-    $J_\kappa=J\cap K((G^{\le0}))_\kappa$.  Then for some set $I$ there is a
-    $K$-algebra isomorphism
+    Let $K$ have characteristic $0$, $G$ be Cauchy complete, and
+    $\kappa>\aleph_0$.  Let $A_\kappa=K((G^{\le0}))_\kappa$ be the subring of
+    series whose support has cardinality less than $\kappa$, and
+    $J_\kappa=J\cap A_\kappa$.  For some set $I$ there is a $K$-algebra
+    isomorphism
     \[
-      K[X_i:i\in I]\simeq K((G^{\le 0}))_\kappa/J_\kappa.
+      K[X_i:i\in I]\simeq A_\kappa/J_\kappa.
     \]
   -/)
   (proof := /--
-    Translated truncations, and cutoffs below a negative exponent, do not
-    enlarge supports, so they preserve $K((G^{\le0}))_\kappa$; and
-    $K((G^{\le0}))_\kappa/J_\kappa$ embeds in $K((G^{\le0}))/J$ compatibly
-    with the germs $b\mapsto[b^{|\gamma}]$. Hence
+    A translated truncation $b^{|\gamma}$, and the part of $b$ with exponents
+    above a negative $\varepsilon$, have support inside a translate of
+    $\operatorname{supp}(b)$; so they preserve $A_\kappa$.  The inclusion
+    $A_\kappa\subseteq A$ induces an embedding $A_\kappa/J_\kappa\to Q$
+    compatible with the germs $b\mapsto[b^{|\gamma}]$.  Hence
     \ref{lem:convolution-formula}, \ref{lem:constant-germs} and
-    \ref{lem:cantor-bendixson-value-drop} hold for the germs of series in
-    $K((G^{\le0}))_\kappa$, with values in $K((G^{\le0}))_\kappa/J_\kappa$.
-    Besides elementary properties of truncations, the transcendence lemma
-    and the Zorn argument for the polynomial presentation of
-    $K((G^{\le0}))/J$ use only these three facts, translated truncations and
-    cutoffs. So the same argument gives the isomorphism.
+    \ref{lem:cantor-bendixson-value-drop} hold for series in $A_\kappa$, with
+    germs in $A_\kappa/J_\kappa$.
+
+    Besides these three results, the proofs of the absence of linear
+    relations, the proportionality of germs, the transcendence lemma, the
+    representatives after adjoining a germ, the existence of a new germ, and
+    the polynomial presentation of $Q$ use only translated truncations and the
+    parts of series above a negative exponent.  Repeating these proofs inside
+    $A_\kappa$ gives the isomorphism.
   -/)]
 theorem exists_mvPolynomial_algEquiv_germ :
     ∃ ι : Type (max (u + 1) v), Nonempty (MvPolynomial ι K ≃ₐ[K]
