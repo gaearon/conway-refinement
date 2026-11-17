@@ -350,7 +350,7 @@ over its finite-support subring `K(ℝ^{≤0})`. -/
     \ref{lem:transcendental-series}, $X$ is transcendental over $R$.  For
     $\zeta<0$ all germs of $X_{|\zeta}$ lie in $S$, so $X_{|\zeta}\in A_S=R$,
     and by \ref{lem:truncations-of-simple-extension} $R[X]$ is closed under the
-    truncations.  Its elements have their germs in $S[[X]]$.  Thus
+    truncations.  Its elements have their germs in $S[x]$, where $x=[X]$.  Thus
     $\mathcal X\cup\{X\}$ contradicts the maximality of $\mathcal X$.
 
     Hence $S=Q$ and $R=A_Q=A$, and evaluation at $\mathcal X$ is an isomorphism
