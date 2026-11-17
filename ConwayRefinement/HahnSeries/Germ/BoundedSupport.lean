@@ -90,7 +90,6 @@ def translatedTruncation (γ : G) (b : CardSuppLTNonpositive (G := G) (L := K) (
       (cardSupp_mono (support_truncLE_subset _ _))).trans_lt ?_
     exact CardSuppLTTruncationIntegerPart.cardSupp_toNonpositiveRingHom_lt _ b
 
-@[simp]
 theorem toNonpositiveAlgHom_translatedTruncation (γ : G)
     (b : CardSuppLTNonpositive (G := G) (L := K) (κ := κ)) :
     toNonpositiveAlgHom G K κ (translatedTruncation γ b) =
