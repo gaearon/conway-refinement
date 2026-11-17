@@ -144,7 +144,7 @@ This is L'Innocente and Mantova (LM24, Proposition 2.4.5). -/
   (statement := /--
     Let $C$ be an ordered abelian group with $\operatorname{cf}(C)\ge\kappa$, or with $C=\{0\}$ and
     $R=\operatorname{Frac}(Z)$. Then $R((C))_\kappa=\operatorname{Frac}(Z+R((C^{<0}))_\kappa)$. This
-    is the ``if'' direction of [LM24, Prop. 2.4.5].
+    is the sufficiency direction of [LM24, Prop. 2.4.5].
   -/)
   (proof := /--
     If $C=\{0\}$, the two rings are $R$ and $Z$, and $R=\operatorname{Frac}(Z)$ by hypothesis. Let
