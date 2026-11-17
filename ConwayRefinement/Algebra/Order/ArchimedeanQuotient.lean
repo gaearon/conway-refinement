@@ -40,38 +40,6 @@ instance instIsOrderedAddMonoid (S : AddSubgroup C) : IsOrderedAddMonoid S where
       simpa [add_comm] using
         add_le_add_left (show (a : C) ≤ (b : C) from h) (z : C)
 
-/-- A positively coinitial subgroup inherits the absence of a largest finite Archimedean class
-from its ambient ordered group. -/
-theorem finiteArchimedeanClass_noMax_of_pos_coinitial
-    [NoMaxOrder (FiniteArchimedeanClass C)] (S : AddSubgroup C)
-    (hS : ∀ y : C, 0 < y → ∃ x : S, 0 < (x : C) ∧ (x : C) ≤ y) :
-    NoMaxOrder (FiniteArchimedeanClass S) := by
-  constructor
-  intro c
-  induction c using FiniteArchimedeanClass.ind with
-  | mk x hx =>
-    obtain ⟨d, hxd⟩ := exists_gt
-      (FiniteArchimedeanClass.mk (x : C) (Subtype.coe_ne_coe.mpr hx))
-    induction d using FiniteArchimedeanClass.ind with
-    | mk y hy =>
-      obtain ⟨z, hzpos, hzy⟩ := hS |y| (abs_pos.mpr hy)
-      have hz0 : z ≠ 0 := fun hz ↦ hzpos.ne' (Subtype.ext_iff.mp hz)
-      refine ⟨FiniteArchimedeanClass.mk z hz0, ?_⟩
-      let e : S →+o C :=
-        { toFun := fun z ↦ (z : C)
-          map_zero' := rfl
-          map_add' := fun _ _ ↦ rfl
-          monotone' := fun _ _ h ↦ h }
-      change ArchimedeanClass.mk (e x) < ArchimedeanClass.mk (e z)
-      rw [← ArchimedeanClass.orderHom_mk e x, ← ArchimedeanClass.orderHom_mk e z]
-      apply ((ArchimedeanClass.orderHom e).monotone.strictMono_of_injective
-        (ArchimedeanClass.orderHom_injective Subtype.val_injective)).lt_iff_lt.mpr
-      change ArchimedeanClass.mk (x : C) < ArchimedeanClass.mk (z : C)
-      change ArchimedeanClass.mk (x : C) < ArchimedeanClass.mk y at hxd
-      refine hxd.trans_le ?_
-      apply ArchimedeanClass.mk_le_mk_of_abs
-      simpa [abs_of_pos hzpos] using hzy
-
 end AddSubgroup
 
 namespace FiniteArchimedeanClass
@@ -111,21 +79,6 @@ theorem quotient_abs (T : Set (FiniteArchimedeanClass G)) (x : G) :
       rw [← QuotientAddGroup.mk_zero]
       exact ConvexQuotient.mk_le_mk hx
     rw [abs_of_nonpos hx, abs_of_nonpos hxq, ← QuotientAddGroup.mk_neg]
-
-/-- A strict comparison of Archimedean classes in a common-tail quotient reflects to any chosen
-representatives. -/
-theorem archimedeanClass_mk_lt_of_quotient_mk_lt
-    (T : Set (FiniteArchimedeanClass G)) {x y : G}
-    (h : ArchimedeanClass.mk (x : G ⧸ tailKernel T) <
-      ArchimedeanClass.mk (y : G ⧸ tailKernel T)) :
-    ArchimedeanClass.mk x < ArchimedeanClass.mk y := by
-  rw [ArchimedeanClass.mk_lt_mk] at h ⊢
-  intro n
-  have hn := h n
-  have hn' : ((n • |y| : G) : G ⧸ tailKernel T) <
-      ((|x| : G) : G ⧸ tailKernel T) := by
-    simpa only [quotient_abs, QuotientAddGroup.mk_nsmul] using hn
-  exact ConvexQuotient.lt_of_mk_lt_mk hn'
 
 /-- A nonzero natural multiple of an absolute value stays in the same Archimedean class. -/
 theorem mk_nsmul_abs {x : G} {n : ℕ} (hn : n ≠ 0) :
@@ -232,32 +185,5 @@ theorem positiveRepresentative_not_mem_tailKernel {T : Set (FiniteArchimedeanCla
   have := mem_tailKernel_iff.mp hmem ⟨d, hdT⟩
   rw [mk_positiveRepresentative] at this
   exact (not_le_of_gt hcd) this
-
-/-- The image of a canonical representative in its limit quotient is positive. -/
-theorem quotient_positiveRepresentative_pos {T : Set (FiniteArchimedeanClass G)}
-    (hT : ∀ c ∈ T, ∃ d ∈ T, c < d) (c : T) :
-    0 < ((positiveRepresentative c.1 : G) : G ⧸ tailKernel T) := by
-  rw [← QuotientAddGroup.mk_zero]
-  exact ConvexQuotient.mk_lt_mk_iff.mpr ⟨positiveRepresentative_pos c.1,
-    by simpa using positiveRepresentative_not_mem_tailKernel hT c⟩
-
-/-- The canonical representatives of a limit family are coinitial among the positive elements of
-the common tail quotient. -/
-theorem exists_quotient_positiveRepresentative_le {T : Set (FiniteArchimedeanClass G)}
-    {x : G ⧸ tailKernel T} (hx : 0 < x) :
-    ∃ c : T, ((positiveRepresentative c.1 : G) : G ⧸ tailKernel T) ≤ x := by
-  induction x using QuotientAddGroup.induction_on with
-  | H x =>
-    have hxq : ((0 : G) : G ⧸ tailKernel T) < (x : G ⧸ tailKernel T) := by
-      simpa using hx
-    have hx0 : 0 < x := ConvexQuotient.lt_of_mk_lt_mk hxq
-    have hxH : x ∉ tailKernel T := by
-      simpa using (ConvexQuotient.mk_lt_mk_iff.mp hxq).2
-    rw [mem_tailKernel_iff] at hxH
-    push Not at hxH
-    obtain ⟨c, hxc⟩ := hxH
-    refine ⟨c, ConvexQuotient.mk_le_mk ?_⟩
-    apply (ArchimedeanClass.lt_of_mk_lt_mk_of_nonneg ?_ hx0.le).le
-    rwa [mk_positiveRepresentative]
 
 end FiniteArchimedeanClass

@@ -13,7 +13,16 @@ import ConwayRefinement.HahnSeries.FiniteSupportGCDProof
 import ConwayRefinement.HahnSeries.FiniteSupportUnit
 import ConwayRefinement.Surreal.OmnificInteger.RefinementConjecture
 import ConwayRefinement.Surreal.ArchimedeanAssumptions
-import ConwayRefinement.Surreal.HahnSeries.DegreeTransfer
+import Mathlib.Data.List.Chain
+import Mathlib.RingTheory.HahnSeries.Addition
+import ConwayRefinement.HahnSeries.Truncation
+import CombinatorialGames.NatOrdinal.Pow
+import Mathlib.SetTheory.Ordinal.Exponential
+import ConwayRefinement.SetTheory.Ordinal.SetOrderType
+import ConwayRefinement.Order.Archimedean
+import Mathlib.RingTheory.HahnSeries.Multiplication
+import ConwayRefinement.Surreal.HahnSeries.Full
+import CombinatorialGames.Surreal.HahnSeries.Basic
 import ConwayRefinement.Surreal.OmnificInteger.NormalForm
 
 /-!
@@ -121,14 +130,6 @@ from zero. -/
       x.support ⊆ Set.Ici 0 ∧
         x.coeff 0 ∈ Set.range ((↑) : ℤ → ℝ))
 
-/- LM24, Sections 1.1 and 1.5, after the change of variable `t = ω⁻¹`. -/
-#check (@Surreal.supportOrderType_toFullHahnSeries :
-  ∀ (x : Surreal.{u}),
-    x.toFullHahnSeries.supportOrderType = Ordinal.lift.{u + 1, u} x.length)
-
-#check (@Surreal.supportDegree_toFullHahnSeries :
-  ∀ (x : Surreal.{u}), x.toFullHahnSeries.degree = x.supportDegree)
-
 /- LM24, Proposition 2.4.3: every nonzero surreal Archimedean stratum is order-additively
 isomorphic to the reals. -/
 #check (@Surreal.stratumOrderAddMonoidIsoReal :
@@ -141,18 +142,5 @@ cofinality at least the cardinal bounding small Conway normal forms. -/
   ∀ (c : FiniteArchimedeanClass Surreal.{u}),
     Surreal.smallSupportCardinal.{u} ≤
       Order.cof ↥(FiniteArchimedeanClass.ball ℝ c))
-
-/- LM24, Lemma 9.2.1, as used for regrouped cardinal-bounded series. The preimage lemma is used
-with a domain ambient ring and clears scalar denominators before applying primality in the
-residue subring. -/
-#check (@Subring.isPrimal_residueSubring_iff :
-  ∀ {L : Type u} {A : Type v} [Field L] [CommRing A] [Algebra L A]
-    {π : A →ₐ[L] L} {S : Subring L} [IsDomain A] {b : A} (hb : π b ∈ S),
-      IsPrimal (⟨b, hb⟩ : Subring.residueSubring π S) ↔
-        (π b ≠ 0 ∧ IsPrimal (⟨π b, hb⟩ : S) ∧ IsPrimal b) ∨
-          (π b = 0 ∧
-            IsPrimal
-              (⟨b, Subring.le_fracSubring hb⟩ :
-                Subring.residueSubring π (Subring.fracSubring S))))
 
 end ExactSignatures

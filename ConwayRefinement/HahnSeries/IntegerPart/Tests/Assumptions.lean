@@ -24,16 +24,6 @@ open Cardinal
 
 namespace Tests
 
-theorem assumptionA1_zero_class
-    {K : Type*} {G : Type u}
-    [DivisionRing K] [LinearOrder K] [IsOrderedRing K] [Archimedean K]
-    [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G]
-    [Module K G] [IsOrderedModule K G]
-    (s : HahnEmbedding.ArchimedeanStrata K G) :
-    LM24.AssumptionA1 s (⊤ : ArchimedeanClass G) := by
-  rw [LM24.assumptionA1_iff]
-  exact Or.inl rfl
-
 theorem assumptionA1_finite_of_orderAddMonoidIso_real
     {K : Type*} {G : Type u}
     [DivisionRing K] [LinearOrder K] [IsOrderedRing K] [Archimedean K]
@@ -44,14 +34,6 @@ theorem assumptionA1_finite_of_orderAddMonoidIso_real
     LM24.AssumptionA1AtFiniteClass s c := by
   rw [LM24.assumptionA1AtFiniteClass_iff]
   exact ⟨e⟩
-
-theorem assumptionA2_zero_class
-    {G : Type u} {R : Type v}
-    [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G] [Field R]
-    (κ : Cardinal.{u}) (Z : Subring R) :
-    LM24.AssumptionA2 κ Z (⊤ : ArchimedeanClass G) := by
-  rw [LM24.assumptionA2_iff]
-  exact Or.inr (Or.inr rfl)
 
 theorem assumptionA2_finite_of_cofinality
     {K : Type*} {G : Type u} {R : Type v}

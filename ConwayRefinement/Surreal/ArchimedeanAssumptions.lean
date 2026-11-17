@@ -6,7 +6,8 @@ Authors: Dan Abramov
 module
 
 public import ConwayRefinement.Surreal.RealModule
-public import ConwayRefinement.Surreal.SmallDiscrete
+public import CombinatorialGames.Surreal.Basic
+public import Mathlib.Logic.Small.Set
 public import ConwayRefinement.Algebra.Order.Module.ConvexQuotientSplitting
 public import ConwayRefinement.HahnSeries.IntegerPart.Assumptions
 public import CombinatorialGames.Surreal.Leading
@@ -132,27 +133,9 @@ noncomputable def stratumOrderAddMonoidIsoReal : u.stratum c ≃+o ℝ :=
         stratumStdPartHom_surjective u c⟩ with
     map_le_map_iff' := (stratumStdPartHom_strictMono u c).le_iff_le }
 
-/-- Every nonzero surreal Archimedean class satisfies LM24 assumption `(A1)_σ`. -/
-theorem assumptionA1AtFiniteClass : LM24.AssumptionA1AtFiniteClass u c := by
-  rw [LM24.assumptionA1AtFiniteClass_iff]
-  exact ⟨stratumOrderAddMonoidIsoReal u c⟩
-
-/-- Every surreal Archimedean class, including the zero class, satisfies LM24 assumption
-`(A1)_σ`. -/
-theorem assumptionA1 (σ : ArchimedeanClass Surreal) : LM24.AssumptionA1 u σ := by
-  rw [LM24.assumptionA1_iff]
-  by_cases hσ : σ = ⊤
-  · exact Or.inl hσ
-  · exact Or.inr ⟨⟨σ, hσ⟩, by simp, ⟨stratumOrderAddMonoidIsoReal u ⟨σ, hσ⟩⟩⟩
-
 /-- A fixed noncanonical family of real-linear complements to the surreal Archimedean balls. -/
 noncomputable def archimedeanStrata : HahnEmbedding.ArchimedeanStrata ℝ Surreal :=
   Classical.choice inferInstance
-
-/-- The fixed surreal strata satisfy LM24 assumption `(A1)_σ` at every class. -/
-theorem archimedeanStrata_assumptionA1 (σ : ArchimedeanClass Surreal) :
-    LM24.AssumptionA1 archimedeanStrata σ :=
-  assumptionA1 archimedeanStrata σ
 
 /-! ### Assumption `(A2)_σ` -/
 
@@ -396,35 +379,5 @@ theorem assumptionA2AtFiniteClass
     LM24.AssumptionA2AtFiniteClass (K := ℝ) smallSupportCardinal.{u} Z c := by
   rw [LM24.assumptionA2AtFiniteClass_iff]
   exact Or.inl (smallSupportCardinal_le_ball_cof c)
-
-/-- Every surreal Archimedean class, including the zero class, satisfies LM24 assumption
-`(A2)_σ` at the cardinal that bounds surreal Hahn supports. -/
-theorem assumptionA2
-    {R : Type v} [Field R] (Z : Subring R) (σ : ArchimedeanClass Surreal.{u}) :
-    LM24.AssumptionA2 smallSupportCardinal.{u} Z σ := by
-  rw [LM24.assumptionA2_iff]
-  by_cases hσ : σ = ⊤
-  · exact Or.inr (Or.inr hσ)
-  · let c : FiniteArchimedeanClass Surreal := ⟨σ, hσ⟩
-    have hball : (ball ℝ c : Set Surreal) = σ.ballAddSubgroup := by
-      change ((ball ℝ c).toAddSubgroup : Set Surreal) = σ.ballAddSubgroup
-      rw [FiniteArchimedeanClass.toAddSubgroup_ball]
-      ext x
-      rw [SetLike.mem_coe, SetLike.mem_coe,
-        FiniteArchimedeanClass.mem_ballAddSubgroup_iff,
-        ArchimedeanClass.mem_ballAddSubgroup_iff hσ]
-      by_cases hx : x = 0
-      · subst x
-        constructor
-        · intro _
-          exact lt_top_iff_ne_top.mpr hσ
-        · intro _ hzero
-          exact (hzero rfl).elim
-      · exact ⟨fun h ↦ h hx, fun h _ ↦ h⟩
-    let e : ↥(ball ℝ c) ≃o ↥σ.ballAddSubgroup :=
-      OrderIso.setCongr _ _ hball
-    exact Or.inl (by
-      rw [← e.cof_congr]
-      exact smallSupportCardinal_le_ball_cof c)
 
 end Surreal

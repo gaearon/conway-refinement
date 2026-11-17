@@ -62,13 +62,6 @@ def cantorBendixsonRank (b : HahnSeries Γ R) (x : Γ) : Ordinal.{u} :=
 theorem cantorBendixsonRank_eq (b : HahnSeries Γ R) (x : Γ) :
     b.cantorBendixsonRank x = b.closedSupport.cantorBendixsonRank b.closedSupport_isPWO x := (rfl)
 
-/-- Derivative membership characterizes the Cantor–Bendixson rank at each exponent. -/
-theorem mem_support_derivative_iff (b : HahnSeries Γ R) (x : Γ) (o : Ordinal.{u}) :
-    x ∈ (b.closedSupport.cantorBendixson o : Set Γ) ↔
-      x ∈ closure b.support ∧ o ≤ b.cantorBendixsonRank x := by
-  rw [cantorBendixsonRank_eq, ← coe_closedSupport]
-  exact b.closedSupport.mem_cantorBendixson_iff b.closedSupport_isPWO x o
-
 variable [Zero Γ]
 
 /-- Zero off the closed support, and `omega` to its Cantor–Bendixson rank at zero otherwise. -/
@@ -117,32 +110,6 @@ theorem cantorBendixsonValue_eq_zero_iff (b : HahnSeries Γ R) :
     exact (Ordinal.opow_pos _ Ordinal.omega0_pos).ne' hv
   · exact b.cantorBendixsonValue_of_notMem
 
-@[simp]
-theorem cantorBendixsonValue_zero : (0 : HahnSeries Γ R).cantorBendixsonValue = 0 := by
-  apply cantorBendixsonValue_of_notMem
-  simp
-
-omit [Zero Γ] in
-/-- Finite Hahn supports have point rank zero everywhere. -/
-theorem cantorBendixsonRank_of_finite (b : HahnSeries Γ R) (hfin : b.support.Finite) (x : Γ) :
-    b.cantorBendixsonRank x = 0 := by
-  rw [cantorBendixsonRank_eq]
-  apply b.closedSupport.cantorBendixsonRank_of_finite b.closedSupport_isPWO
-  simpa only [coe_closedSupport, hfin.isClosed.closure_eq] using hfin
-
-/-- A finite support with nonzero ordinary coefficient has value one. -/
-theorem cantorBendixsonValue_of_finite_of_coeff_ne_zero (b : HahnSeries Γ R)
-    (hfin : b.support.Finite) (h : b.coeff 0 ≠ 0) : b.cantorBendixsonValue = 1 := by
-  rw [b.cantorBendixsonValue_of_mem (subset_closure h), b.cantorBendixsonRank_of_finite hfin]
-  exact Ordinal.opow_zero _
-
-/-- A finite support with zero ordinary coefficient has value zero. -/
-theorem cantorBendixsonValue_of_finite_of_coeff_eq_zero (b : HahnSeries Γ R)
-    (hfin : b.support.Finite) (h : b.coeff 0 = 0) : b.cantorBendixsonValue = 0 := by
-  apply b.cantorBendixsonValue_of_notMem
-  rw [hfin.isClosed.closure_eq]
-  simpa using h
-
 /-- For nonpositive supports, value zero is equivalent to a strictly negative support bound. -/
 theorem cantorBendixsonValue_eq_zero_iff_support_bounded_lt [NoMinOrder Γ]
     (b : HahnSeries Γ R) (hb : b.support ⊆ Iic 0) :
@@ -159,17 +126,5 @@ theorem cantorBendixsonValue_eq_zero_iff_support_bounded_lt [NoMinOrder Γ]
     exact hcut ⟨hcx, hb hx⟩ (subset_closure hx)
   · rintro ⟨c, hc, hbound⟩ hmem
     exact (not_le_of_gt hc) (closure_minimal hbound isClosed_Iic hmem)
-
-/-- Equal supports give equal Cantor–Bendixson values. -/
-theorem cantorBendixsonValue_congr_support {b d : HahnSeries Γ R} (h : b.support = d.support) :
-    b.cantorBendixsonValue = d.cantorBendixsonValue := by
-  have he : b.closedSupport = d.closedSupport := by
-    apply Closeds.ext
-    simp only [coe_closedSupport, h]
-  have hr : b.cantorBendixsonRank 0 = d.cantorBendixsonRank 0 := by
-    simp only [cantorBendixsonRank_eq, he]
-  by_cases hm : 0 ∈ closure b.support
-  · rw [b.cantorBendixsonValue_of_mem hm, d.cantorBendixsonValue_of_mem (h ▸ hm), hr]
-  · rw [b.cantorBendixsonValue_of_notMem hm, d.cantorBendixsonValue_of_notMem (h ▸ hm)]
 
 end HahnSeries

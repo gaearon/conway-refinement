@@ -168,10 +168,4 @@ variable [Field K] [LinearOrder K] [IsOrderedRing K] [Archimedean K]
 variable [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G]
 variable [Module K G] [PosSMulMono K G]
 
-/-- The ambient group split lexicographically into the quotient by its tail subspace and that
-subspace. Its additive subgroup is propositionally equal to `tailKernel T`. -/
-noncomputable def tailQuotientLexEquiv (T : Set (FiniteArchimedeanClass G)) :
-    ((G ⧸ (tailSubmodule K T).toAddSubgroup) ×ₗ tailSubmodule K T) ≃+o G :=
-  Submodule.quotientLexEquiv (tailSubmodule K T)
-
 end FiniteArchimedeanClass

@@ -35,13 +35,11 @@ abbrev IntegerNonpositiveFiniteSupportRing :=
 abbrev IntegerFiniteSupportRing :=
   (HahnSeries.finiteSupportSubring : Subring ℚ⟦ℤ⟧)
 
-/-- The nonpositive exponent `-1`. -/
-def negativeExponent : HahnSeries.Nonpositive.exponentMonoid ℤ :=
-  ⟨-1, by norm_num⟩
-
 /-- The monomial `t⁻¹` in the nonpositive finite-support ring. -/
 def nonpositiveNegativeMonomial : IntegerNonpositiveFiniteSupportRing :=
-  HahnSeries.Nonpositive.finiteSupportMonomial (K := ℚ) negativeExponent
+  ⟨HahnSeries.Nonpositive.single (-1) (1 : ℚ) (by norm_num), by
+    rw [HahnSeries.Nonpositive.mem_finiteSupportSubring_iff, HahnSeries.Nonpositive.coe_single]
+    exact Set.Finite.subset (Set.finite_singleton (-1)) HahnSeries.support_single_subset⟩
 
 /-- The monomial `t⁻¹` is not a unit in the nonpositive finite-support ring. -/
 theorem nonpositiveNegativeMonomial_not_isUnit :
@@ -51,7 +49,7 @@ theorem nonpositiveNegativeMonomial_not_isUnit :
   have hcoeff := congrArg
     (fun p : IntegerNonpositiveFiniteSupportRing ↦
       (((p : HahnSeries.Nonpositive ℤ ℚ) : ℚ⟦ℤ⟧).coeff (-1))) h
-  simp [nonpositiveNegativeMonomial, negativeExponent] at hcoeff
+  simp [nonpositiveNegativeMonomial] at hcoeff
 
 /-- The monomial `t⁻¹` in the finite-support ring on the whole exponent group. -/
 def fullNegativeMonomial : IntegerFiniteSupportRing :=
@@ -90,7 +88,7 @@ theorem fullNegativeMonomial_isUnit : IsUnit fullNegativeMonomial := by
 theorem fullNegativeMonomial_eq_nonpositiveNegativeMonomial :
     (fullNegativeMonomial : ℚ⟦ℤ⟧) =
       ((nonpositiveNegativeMonomial : HahnSeries.Nonpositive ℤ ℚ) : ℚ⟦ℤ⟧) := by
-  simp [fullNegativeMonomial, nonpositiveNegativeMonomial, negativeExponent]
+  simp [fullNegativeMonomial, nonpositiveNegativeMonomial]
 
 /-- The gcd supplied for `(0, t⁻¹)` is associated to `t⁻¹` and satisfies the exact defining
 orientation from LM24, Fact 2.5.2. -/

@@ -56,17 +56,6 @@ theorem cantorBendixson_limit (s : Closeds X) (o : Ordinal.{w}) (ho : IsSuccLimi
     s.cantorBendixson o = ⨅ i : Iio o, s.cantorBendixson i.1 := by
   exact transfiniteIterate_limit (I := (Closeds X)ᵒᵈ) derived s o ho
 
-theorem cantorBendixson_mono {s t : Closeds X} (hst : s ≤ t) (o : Ordinal.{w}) :
-    s.cantorBendixson o ≤ t.cantorBendixson o := by
-  induction o using Ordinal.limitRecOn with
-  | zero => simpa using hst
-  | add_one o ih =>
-    rw [cantorBendixson_add_one, cantorBendixson_add_one]
-    exact derivedSet_mono _ _ ih
-  | limit o ho ih =>
-    rw [cantorBendixson_limit _ _ ho, cantorBendixson_limit _ _ ho]
-    exact iInf_mono fun i ↦ ih i.1 i.2
-
 theorem cantorBendixson_antitone (s : Closeds X) :
     Antitone (s.cantorBendixson : Ordinal.{w} → Closeds X) :=
   monotone_transfiniteIterate (I := (Closeds X)ᵒᵈ) derived s derived_le
@@ -153,38 +142,5 @@ theorem cantorBendixson_subset_of_locally_lt (s : Closeds X) (r : X → Ordinal.
     intro x hx
     rw [cantorBendixson_limit _ _ ho] at hx
     exact ho.le_iff_forall_le.mpr fun a ha ↦ ih a ha (mem_iInf.mp hx ⟨a, ha⟩)
-
-/-- Transfinite derivatives commute with binary unions of closed sets. -/
-theorem cantorBendixson_sup (s t : Closeds X) (o : Ordinal.{w}) :
-    (s ⊔ t).cantorBendixson o = s.cantorBendixson o ⊔ t.cantorBendixson o := by
-  apply le_antisymm
-  · induction o using Ordinal.limitRecOn with
-    | zero => simp
-    | add_one o ih =>
-      rw [cantorBendixson_add_one, cantorBendixson_add_one, cantorBendixson_add_one]
-      change (((s ⊔ t).cantorBendixson o).derived : Set X) ⊆
-        ((s.cantorBendixson o).derived : Set X) ∪ ((t.cantorBendixson o).derived : Set X)
-      simp only [coe_derived]
-      rw [← derivedSet_union]
-      exact derivedSet_mono _ _ ih
-    | limit o ho ih =>
-      intro x hx
-      change x ∈ (s.cantorBendixson o : Set X) ∪ (t.cantorBendixson o : Set X)
-      by_contra hnot
-      have hs : x ∉ s.cantorBendixson o := fun hh ↦ hnot (Or.inl hh)
-      have ht : x ∉ t.cantorBendixson o := fun hh ↦ hnot (Or.inr hh)
-      rw [cantorBendixson_limit _ _ ho] at hs ht
-      obtain ⟨i, hi⟩ : ∃ i : Iio o, x ∉ s.cantorBendixson i.1 := by
-        by_contra! hn
-        exact hs (mem_iInf.mpr hn)
-      obtain ⟨j, hj⟩ : ∃ j : Iio o, x ∉ t.cantorBendixson j.1 := by
-        by_contra! hn
-        exact ht (mem_iInf.mpr hn)
-      have hm := ih (max i.1 j.1) (max_lt i.2 j.2)
-        ((s ⊔ t).cantorBendixson_antitone (max_lt i.2 j.2).le hx)
-      rcases hm with hm | hm
-      · exact hi (s.cantorBendixson_antitone (le_max_left _ _) hm)
-      · exact hj (t.cantorBendixson_antitone (le_max_right _ _) hm)
-  · exact sup_le (cantorBendixson_mono le_sup_left o) (cantorBendixson_mono le_sup_right o)
 
 end TopologicalSpace.Closeds

@@ -84,56 +84,6 @@ theorem convexQuotientSplitRingEquiv_filter_comap
     rfl
 
 open Classical in
-/-- The regrouped outer support lies in a quotient subgroup exactly when the ambient support lies
-in its preimage. -/
-theorem support_convexQuotientSplitRingEquiv_subset_iff
-    (P : Submodule K G) [P.toAddSubgroup.IsConvex]
-    (D : AddSubgroup (G ⧸ P)) (x : R⟦G⟧) :
-    (convexQuotientSplitRingEquiv P x).support ⊆ (D : Set (G ⧸ P)) ↔
-      x.support ⊆ (D.comap P.mkQ.toAddMonoidHom : Set G) := by
-  constructor
-  · intro hs g hg
-    let z : (G ⧸ P) ×ₗ P := (Submodule.quotientLexEquiv P).symm g
-    let q : G ⧸ P := (ofLex z).1
-    let p : P := (ofLex z).2
-    have hz : Submodule.quotientLexEquiv P (toLex (q, p)) = g :=
-      (Submodule.quotientLexEquiv P).apply_symm_apply g
-    have hcoeff : ((convexQuotientSplitRingEquiv P x).coeff q).coeff p ≠ 0 := by
-      rw [convexQuotientSplitRingEquiv_coeff, hz]
-      exact (HahnSeries.mem_support _ _).mp hg
-    have hqsupp : q ∈ (convexQuotientSplitRingEquiv P x).support := by
-      rw [HahnSeries.mem_support]
-      intro hzero
-      exact hcoeff (congrArg (fun y : R⟦P⟧ ↦ y.coeff p) hzero)
-    have hqD := hs hqsupp
-    change Submodule.Quotient.mk g ∈ D
-    have hmk : Submodule.Quotient.mk
-        (Submodule.quotientLexEquiv P (toLex (q, p))) = q := by
-      rw [Submodule.quotientLexEquiv_apply, Submodule.mk_quotientProdLinearEquiv]
-      rfl
-    rwa [← hz, hmk]
-  · intro hs q hq
-    rw [HahnSeries.mem_support] at hq
-    obtain ⟨p, hp⟩ : ∃ p : P,
-        ((convexQuotientSplitRingEquiv P x).coeff q).coeff p ≠ 0 := by
-      by_contra h
-      push Not at h
-      apply hq
-      ext p
-      exact h p
-    have hxp : Submodule.quotientLexEquiv P (toLex (q, p)) ∈ x.support := by
-      rw [HahnSeries.mem_support, ← convexQuotientSplitRingEquiv_coeff]
-      exact hp
-    have hmem := hs hxp
-    change Submodule.Quotient.mk
-      (Submodule.quotientLexEquiv P (toLex (q, p))) ∈ D at hmem
-    have hmk : Submodule.Quotient.mk
-        (Submodule.quotientLexEquiv P (toLex (q, p))) = q := by
-      rw [Submodule.quotientLexEquiv_apply, Submodule.mk_quotientProdLinearEquiv]
-      rfl
-    rwa [hmk] at hmem
-
-open Classical in
 /-- The outer support after regrouping along a convex submodule is exactly the quotient image of
 the original support. -/
 theorem support_convexQuotientSplitRingEquiv

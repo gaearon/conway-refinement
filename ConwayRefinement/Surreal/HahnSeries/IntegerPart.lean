@@ -61,41 +61,6 @@ theorem coe_toNonpositiveHahn (x : OmnificInteger.{u}) :
     (x.toNonpositiveHahn : HahnSeries Surrealᵒᵈ ℝ) = toFullHahnSeries x.1 :=
   (rfl)
 
-/-- The nonpositive Hahn image of omnific integers as an additive homomorphism. -/
-def toNonpositiveHahnAddMonoidHom :
-    OmnificInteger.{u} →+ HahnSeries.Nonpositive Surrealᵒᵈ ℝ where
-  toFun := toNonpositiveHahn
-  map_zero' := by
-    apply Subtype.ext
-    exact toFullHahnSeries_zero
-  map_add' x y := by
-    apply Subtype.ext
-    exact toFullHahnSeries_add x.1 y.1
-
-/-- Evaluation of the additive nonpositive Hahn map. -/
-@[simp]
-theorem toNonpositiveHahnAddMonoidHom_apply (x : OmnificInteger.{u}) :
-    toNonpositiveHahnAddMonoidHom x = x.toNonpositiveHahn :=
-  (rfl)
-
-/-- The additive nonpositive Hahn map is injective. -/
-theorem toNonpositiveHahn_injective :
-    Function.Injective (toNonpositiveHahn :
-      OmnificInteger.{u} → HahnSeries.Nonpositive Surrealᵒᵈ ℝ) := by
-  intro x y hxy
-  apply Subtype.ext
-  apply toFullHahnSeries_injective
-  have hraw := congrArg (fun q : HahnSeries.Nonpositive Surrealᵒᵈ ℝ ↦
-    (q : HahnSeries Surrealᵒᵈ ℝ)) hxy
-  simpa only [coe_toNonpositiveHahn] using hraw
-
-/-- The nonpositive Hahn image preserves arbitrary omnific-integer products. -/
-@[simp]
-theorem toNonpositiveHahn_mul (x y : OmnificInteger.{u}) :
-    toNonpositiveHahn (x * y) = toNonpositiveHahn x * toNonpositiveHahn y := by
-  apply Subtype.ext
-  exact toFullHahnSeries_mul x.1 y.1
-
 /-- The Hahn truncation-integer-part element represented by an omnific integer. -/
 def toTruncationIntegerPart (x : OmnificInteger.{u}) :
     HahnSeries.truncationIntegerPart Surrealᵒᵈ realIntegerSubring :=
@@ -114,45 +79,6 @@ theorem coe_toTruncationIntegerPart (x : OmnificInteger.{u}) :
   by
     apply Subtype.ext
     rfl
-
-/-- The truncation-integer-part image of omnific integers as an additive homomorphism. -/
-def toTruncationIntegerPartAddMonoidHom :
-    OmnificInteger.{u} →+
-      HahnSeries.truncationIntegerPart Surrealᵒᵈ realIntegerSubring where
-  toFun := toTruncationIntegerPart
-  map_zero' := by
-    apply Subtype.ext
-    change toNonpositiveHahn (0 : OmnificInteger.{u}) = 0
-    exact toNonpositiveHahnAddMonoidHom.map_zero
-  map_add' x y := by
-    apply Subtype.ext
-    change toNonpositiveHahn (x + y) = toNonpositiveHahn x + toNonpositiveHahn y
-    exact toNonpositiveHahnAddMonoidHom.map_add x y
-
-/-- Evaluation of the additive truncation-integer-part map. -/
-@[simp]
-theorem toTruncationIntegerPartAddMonoidHom_apply (x : OmnificInteger.{u}) :
-    toTruncationIntegerPartAddMonoidHom x = x.toTruncationIntegerPart :=
-  (rfl)
-
-/-- The additive truncation-integer-part map is injective. -/
-theorem toTruncationIntegerPart_injective :
-    Function.Injective (toTruncationIntegerPart : OmnificInteger.{u} →
-      HahnSeries.truncationIntegerPart Surrealᵒᵈ realIntegerSubring) := by
-  intro x y hxy
-  apply toNonpositiveHahn_injective
-  have h := congrArg (fun q : HahnSeries.truncationIntegerPart
-    Surrealᵒᵈ realIntegerSubring ↦
-      (q : HahnSeries.Nonpositive Surrealᵒᵈ ℝ)) hxy
-  simpa only [coe_toTruncationIntegerPart] using h
-
-/-- The truncation-integer-part image preserves arbitrary omnific-integer products. -/
-@[simp]
-theorem toTruncationIntegerPart_mul (x y : OmnificInteger.{u}) :
-    toTruncationIntegerPart (x * y) =
-      toTruncationIntegerPart x * toTruncationIntegerPart y := by
-  apply Subtype.ext
-  exact toNonpositiveHahn_mul x y
 
 end OmnificInteger
 

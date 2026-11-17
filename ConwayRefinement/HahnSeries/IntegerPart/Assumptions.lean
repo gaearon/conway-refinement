@@ -40,26 +40,6 @@ variable [Field R]
 
 /-! ### Assumption `(A1)_σ` -/
 
-/-- LM24 assumption `(A1)_σ`: the chosen stratum at `σ` is order-additively isomorphic to
-`ℝ`, or `σ` is the class of zero. Mathlib orders Archimedean classes oppositely to LM24, so
-the zero class is `⊤`. -/
-def AssumptionA1 (u : HahnEmbedding.ArchimedeanStrata K G)
-    (σ : ArchimedeanClass G) : Prop :=
-  σ = ⊤ ∨
-    ∃ c : FiniteArchimedeanClass G,
-      FiniteArchimedeanClass.withTopOrderIso G c = σ ∧
-        Nonempty (u.stratum c ≃+o ℝ)
-
-/-- The defining zero-class/isomorphic-stratum disjunction for `(A1)_σ`. -/
-theorem assumptionA1_iff (u : HahnEmbedding.ArchimedeanStrata K G)
-    (σ : ArchimedeanClass G) :
-    AssumptionA1 u σ ↔
-      σ = ⊤ ∨
-        ∃ c : FiniteArchimedeanClass G,
-          FiniteArchimedeanClass.withTopOrderIso G c = σ ∧
-            Nonempty (u.stratum c ≃+o ℝ) :=
-  (Iff.rfl)
-
 /-- The nonzero-class specialization of LM24 assumption `(A1)_σ`. -/
 def AssumptionA1AtFiniteClass (u : HahnEmbedding.ArchimedeanStrata K G)
     (c : FiniteArchimedeanClass G) : Prop :=
@@ -72,21 +52,6 @@ theorem assumptionA1AtFiniteClass_iff (u : HahnEmbedding.ArchimedeanStrata K G)
   (Iff.rfl)
 
 /-! ### Assumption `(A2)_σ` -/
-
-/-- LM24 assumption `(A2)_σ`: the inner exponent group has cofinality at least `κ`, or it
-is zero and `Frac(Z) = R`, or `σ` is the class of zero. -/
-def AssumptionA2 (κ : Cardinal.{u}) (Z : Subring R) (σ : ArchimedeanClass G) : Prop :=
-  κ ≤ Order.cof ↥(ArchimedeanClass.ballAddSubgroup σ) ∨
-    (Subsingleton ↥(ArchimedeanClass.ballAddSubgroup σ) ∧
-      Subring.fracSubring Z = ⊤) ∨ σ = ⊤
-
-/-- The defining disjunction for `(A2)_σ`. -/
-theorem assumptionA2_iff (κ : Cardinal.{u}) (Z : Subring R) (σ : ArchimedeanClass G) :
-    AssumptionA2 κ Z σ ↔
-      κ ≤ Order.cof ↥(ArchimedeanClass.ballAddSubgroup σ) ∨
-        (Subsingleton ↥(ArchimedeanClass.ballAddSubgroup σ) ∧
-          Subring.fracSubring Z = ⊤) ∨ σ = ⊤ :=
-  (Iff.rfl)
 
 /-- The nonzero-class specialization of LM24 assumption `(A2)_σ`. -/
 def AssumptionA2AtFiniteClass (κ : Cardinal.{u}) (Z : Subring R)

@@ -102,34 +102,6 @@ theorem mem_cantorBendixson_iff (s : Closeds X) (hs : (s : Set X).IsPWO)
       rw [cantorBendixson_limit _ _ hlo]
       exact mem_iInf.mpr fun i ↦ ih i.1 i.2 (i.2.le.trans ho)
 
-/-- A support point has rank `o` exactly when it survives stage `o` but not its successor. -/
-theorem cantorBendixsonRank_eq_iff (s : Closeds X) (hs : (s : Set X).IsPWO)
-    {x : X} (hx : x ∈ s) (o : Ordinal.{u}) :
-    s.cantorBendixsonRank hs x = o ↔
-      x ∈ (s.cantorBendixson o : Set X) ∧ x ∉ (s.cantorBendixson (o + 1) : Set X) := by
-  constructor
-  · intro he
-    exact ⟨(s.mem_cantorBendixson_iff hs x o).mpr ⟨hx, he.ge⟩,
-      he ▸ s.notMem_cantorBendixson_rank_add_one hs x⟩
-  · rintro ⟨hm, hn⟩
-    exact le_antisymm (s.cantorBendixsonRank_le_of_notMem hs x hn)
-      ((s.mem_cantorBendixson_iff hs x o).mp hm).2
-
-/-- The rank convention assigns zero to points outside the original closed set. -/
-theorem cantorBendixsonRank_of_notMem (s : Closeds X) (hs : (s : Set X).IsPWO)
-    {x : X} (hx : x ∉ s) : s.cantorBendixsonRank hs x = 0 := by
-  apply le_antisymm _ zero_le
-  apply s.cantorBendixsonRank_le_of_notMem hs x
-  exact fun h ↦ hx (s.cantorBendixson_le _ h)
-
-/-- Every point has rank zero relative to a finite closed set. -/
-theorem cantorBendixsonRank_of_finite (s : Closeds X) (hs : (s : Set X).IsPWO)
-    (hfin : (s : Set X).Finite) (x : X) : s.cantorBendixsonRank hs x = 0 := by
-  apply le_antisymm _ zero_le
-  apply s.cantorBendixsonRank_le_of_notMem hs x
-  rw [cantorBendixson_add_one, cantorBendixson_zero, coe_derived, mem_derivedSet]
-  exact fun h ↦ hfin.not_infinite (Set.Infinite.of_accPt h)
-
 /-- All other sufficiently nearby support points have strictly smaller rank. -/
 theorem cantorBendixsonRank_locally_lt (s : Closeds X) (hs : (s : Set X).IsPWO)
     (x : X) : ∀ᶠ y in 𝓝 x, y ∈ s → y ≠ x →

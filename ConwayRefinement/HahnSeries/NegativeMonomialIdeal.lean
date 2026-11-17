@@ -123,24 +123,4 @@ theorem mem_negativeMonomialIdeal_iff_supportSup_lt_zero
   · exact fun hb => negativeMonomialIdeal_le_supportSupLTZeroIdeal hb
   · exact mem_negativeMonomialIdeal_of_supportSup_lt_zero
 
-/-- A series with support supremum zero does not belong to the negative-monomial ideal. -/
-theorem not_mem_negativeMonomialIdeal_of_supportSup_eq_zero
-    {b : Nonpositive ℝ K} (hb : supportSup b = 0) :
-    b ∉ negativeMonomialIdeal K := by
-  rw [mem_negativeMonomialIdeal_iff_supportSup_lt_zero, hb]
-  exact lt_irrefl 0
-
-/-- The negative-monomial ideal is proper. This does not assert that it is prime. -/
-theorem negativeMonomialIdeal_ne_top : negativeMonomialIdeal K ≠ ⊤ := by
-  intro htop
-  have hone : (1 : Nonpositive ℝ K) ∈ negativeMonomialIdeal K := by
-    rw [htop]
-    trivial
-  rw [mem_negativeMonomialIdeal_iff_supportSup_lt_zero] at hone
-  have honeEq : single 0 (1 : K) le_rfl = (1 : Nonpositive ℝ K) := by
-    apply Subtype.ext
-    simp
-  rw [← honeEq, supportSup_single one_ne_zero] at hone
-  exact (lt_irrefl (0 : WithBot ℝ)) hone
-
 end HahnSeries.Nonpositive

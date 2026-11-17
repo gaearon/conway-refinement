@@ -19,22 +19,6 @@ public noncomputable section
 
 namespace Tests
 
-theorem surreal_stratum_orderAddMonoidIso_real
-    (u : HahnEmbedding.ArchimedeanStrata ℝ Surreal)
-    (c : FiniteArchimedeanClass Surreal) :
-    Nonempty (u.stratum c ≃+o ℝ) :=
-  (LM24.assumptionA1AtFiniteClass_iff u c).mp
-    (Surreal.assumptionA1AtFiniteClass u c)
-
-theorem surreal_fixed_strata_assumptionA1_finite
-    (c : FiniteArchimedeanClass Surreal) :
-    LM24.AssumptionA1AtFiniteClass Surreal.archimedeanStrata c :=
-  Surreal.assumptionA1AtFiniteClass Surreal.archimedeanStrata c
-
-theorem surreal_fixed_strata_assumptionA1_zero :
-    LM24.AssumptionA1 Surreal.archimedeanStrata (⊤ : ArchimedeanClass Surreal) :=
-  Surreal.archimedeanStrata_assumptionA1 ⊤
-
 universe u v
 
 theorem surreal_smallSupportCardinal_uncountable :
@@ -50,12 +34,6 @@ theorem surreal_assumptionA2_finite
     (c : FiniteArchimedeanClass Surreal.{u}) :
     LM24.AssumptionA2AtFiniteClass (K := ℝ) Surreal.smallSupportCardinal Z c :=
   Surreal.assumptionA2AtFiniteClass Z c
-
-theorem surreal_assumptionA2_zero
-    {R : Type v} [Field R] (Z : Subring R) :
-    LM24.AssumptionA2 Surreal.smallSupportCardinal Z
-      (⊤ : ArchimedeanClass Surreal.{u}) :=
-  Surreal.assumptionA2 Z ⊤
 
 /-- The Archimedean class of the surreal number `1`. -/
 def surrealUnitClass : FiniteArchimedeanClass Surreal :=

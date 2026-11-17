@@ -62,15 +62,6 @@ theorem smallSupportIntegerPart_map_mul
         Surreal.OmnificInteger.smallSupportIntegerPartRingEquiv y :=
   map_mul _ x y
 
-/-- Signed exponent reindexing retains exactly the signed Conway normal form. -/
-theorem signedSmallSupportIntegerPart_rawSeries
-    (x : Surreal.OmnificInteger.{u}) :
-    ((x.toSignedSmallSupportIntegerPart :
-      HahnSeries.CardSuppLTField (G := Surreal) (R := ℝ)
-        (κ := Surreal.smallSupportCardinal.{u})) : HahnSeries Surreal ℝ) =
-      x.1.toSignedFullHahnSeries :=
-  Surreal.OmnificInteger.coe_toSignedSmallSupportIntegerPart x
-
 /-- The signed Conway/Hahn correspondence preserves multiplication without an extra premise. -/
 theorem signedSmallSupportIntegerPart_map_mul
     (x y : Surreal.OmnificInteger.{u}) :

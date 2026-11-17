@@ -65,10 +65,6 @@ theorem support_filter_subset (p : G → Prop) [DecidablePred p] (x : R⟦G⟧) 
 def truncLE [DecidableLE G] (c : G) : ZeroHom R⟦G⟧ R⟦G⟧ :=
   filter (· ≤ c)
 
-/-- Keeps exactly the coefficients at indices `i` satisfying `c ≤ i`. -/
-def truncGE [DecidableLE G] (c : G) : ZeroHom R⟦G⟧ R⟦G⟧ :=
-  filter (c ≤ ·)
-
 /-- Keeps exactly the coefficients at indices `i` satisfying `c < i`. -/
 def truncGT [DecidableLT G] (c : G) : ZeroHom R⟦G⟧ R⟦G⟧ :=
   filter (c < ·)
@@ -76,11 +72,6 @@ def truncGT [DecidableLT G] (c : G) : ZeroHom R⟦G⟧ R⟦G⟧ :=
 @[simp]
 protected theorem coeff_truncLE [DecidableLE G] (c : G) (x : R⟦G⟧) (i : G) :
     (truncLE c x).coeff i = if i ≤ c then x.coeff i else 0 :=
-  (rfl)
-
-@[simp]
-protected theorem coeff_truncGE [DecidableLE G] (c : G) (x : R⟦G⟧) (i : G) :
-    (truncGE c x).coeff i = if c ≤ i then x.coeff i else 0 :=
   (rfl)
 
 @[simp]
@@ -92,44 +83,12 @@ theorem coeff_truncLE_of_le [DecidableLE G] {c i : G} (h : i ≤ c) (x : R⟦G�
     (truncLE c x).coeff i = x.coeff i := by
   simp [h]
 
-theorem coeff_truncLE_of_lt [DecidableLE G] {c i : G} (h : c < i) (x : R⟦G⟧) :
-    (truncLE c x).coeff i = 0 := by
-  simp [not_le_of_gt h]
-
-theorem coeff_truncGE_of_le [DecidableLE G] {c i : G} (h : c ≤ i) (x : R⟦G⟧) :
-    (truncGE c x).coeff i = x.coeff i := by
-  simp [h]
-
-theorem coeff_truncGE_of_lt [DecidableLE G] {c i : G} (h : i < c) (x : R⟦G⟧) :
-    (truncGE c x).coeff i = 0 := by
-  simp [not_le_of_gt h]
-
-theorem coeff_truncGT_of_lt [DecidableLT G] {c i : G} (h : c < i) (x : R⟦G⟧) :
-    (truncGT c x).coeff i = x.coeff i := by
-  simp [h]
-
-theorem coeff_truncGT_of_le [DecidableLT G] {c i : G} (h : i ≤ c) (x : R⟦G⟧) :
-    (truncGT c x).coeff i = 0 := by
-  simp [not_lt_of_ge h]
-
 theorem support_truncLE [DecidableLE G] (c : G) (x : R⟦G⟧) :
     (truncLE c x).support = {i ∈ x.support | i ≤ c} :=
   support_filter _ _
 
-theorem support_truncGE [DecidableLE G] (c : G) (x : R⟦G⟧) :
-    (truncGE c x).support = {i ∈ x.support | c ≤ i} :=
-  support_filter _ _
-
-theorem support_truncGT [DecidableLT G] (c : G) (x : R⟦G⟧) :
-    (truncGT c x).support = {i ∈ x.support | c < i} :=
-  support_filter _ _
-
 theorem support_truncLE_subset [DecidableLE G] (c : G) (x : R⟦G⟧) :
     (truncLE c x).support ⊆ x.support :=
-  support_filter_subset _ _
-
-theorem support_truncGE_subset [DecidableLE G] (c : G) (x : R⟦G⟧) :
-    (truncGE c x).support ⊆ x.support :=
   support_filter_subset _ _
 
 theorem support_truncGT_subset [DecidableLT G] (c : G) (x : R⟦G⟧) :
@@ -161,35 +120,11 @@ theorem truncLE_add [DecidableLE G] (c : G) (x y : R⟦G⟧) :
     truncLE c (x + y) = truncLE c x + truncLE c y :=
   filter_add _ _ _
 
-theorem truncGE_add [DecidableLE G] (c : G) (x y : R⟦G⟧) :
-    truncGE c (x + y) = truncGE c x + truncGE c y :=
-  filter_add _ _ _
-
-theorem truncGT_add [DecidableLT G] (c : G) (x y : R⟦G⟧) :
-    truncGT c (x + y) = truncGT c x + truncGT c y :=
-  filter_add _ _ _
-
 end AddMonoid
 
 section LinearOrder
 
 variable [LinearOrder G] [AddMonoid R]
-
-/-- A Hahn series is the sum of its strict lower and weak upper truncations. -/
-theorem truncLT_add_truncGE (c : G) (x : R⟦G⟧) :
-    truncLT c x + truncGE c x = x := by
-  ext i
-  by_cases hi : i < c
-  · simp [hi, not_le_of_gt hi]
-  · simp [hi, le_of_not_gt hi]
-
-/-- A Hahn series is the sum of its weak lower and strict upper truncations. -/
-theorem truncLE_add_truncGT (c : G) (x : R⟦G⟧) :
-    truncLE c x + truncGT c x = x := by
-  ext i
-  by_cases hi : i ≤ c
-  · simp [hi, not_lt_of_ge hi]
-  · simp [hi, lt_of_not_ge hi]
 
 end LinearOrder
 

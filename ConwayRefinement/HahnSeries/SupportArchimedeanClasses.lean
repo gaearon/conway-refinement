@@ -11,7 +11,7 @@ public import Mathlib.Algebra.Order.Archimedean.Class
 public import Mathlib.Order.WellFounded
 public import Mathlib.RingTheory.HahnSeries.Basic
 
-import ConwayRefinement.SetTheory.FinitePWOUnion
+import Mathlib.Order.WellFoundedSet
 import ConwayRefinement.Blueprint
 
 /-!
@@ -79,51 +79,6 @@ theorem Nonpositive.mem_nonzeroSupportArchimedeanClasses_iff
   · rintro ⟨g, hg, hg0, hgc⟩
     exact ⟨g, ⟨hg, by simpa only [Set.mem_singleton_iff] using hg0⟩, hgc⟩
 
-/-- The Archimedean classes met by a well-founded nonpositive set are well ordered ascending. -/
-theorem exists_min_mem_image_mk_of_isWF {S : Set G} (hS : S.IsWF) (hS0 : S ⊆ Set.Iic 0)
-    {T : Set (ArchimedeanClass G)} (hT : T ⊆ ArchimedeanClass.mk '' S) (hne : T.Nonempty) :
-    ∃ c ∈ T, ∀ d ∈ T, c ≤ d := by
-  classical
-  let P : Set G := {g ∈ S | ArchimedeanClass.mk g ∈ T}
-  have hPS : P ⊆ S := fun _ hg ↦ hg.1
-  have hPne : P.Nonempty := by
-    obtain ⟨c, hc⟩ := hne
-    obtain ⟨g, hgS, hgc⟩ := hT hc
-    exact ⟨g, hgS, by rw [hgc]; exact hc⟩
-  have hPwf : P.IsWF := hS.subset hPS
-  refine ⟨ArchimedeanClass.mk (hPwf.min hPne), (hPwf.min_mem hPne).2, fun d hd ↦ ?_⟩
-  obtain ⟨g, hgS, rfl⟩ := hT hd
-  exact ArchimedeanClass.mk_le_mk_of_le_of_nonpos
-    (hPwf.min_le hPne ⟨hgS, hd⟩) (hS0 hgS)
-
-/-- The Archimedean classes met by a nonpositive Hahn support are well ordered ascending. -/
-theorem exists_min_mem_image_mk_support {R : Type*} [Zero R] (x : R⟦G⟧)
-    (hx : x.support ⊆ Set.Iic 0) {T : Set (ArchimedeanClass G)}
-    (hT : T ⊆ ArchimedeanClass.mk '' x.support) (hne : T.Nonempty) :
-    ∃ c ∈ T, ∀ d ∈ T, c ≤ d :=
-  exists_min_mem_image_mk_of_isWF x.isWF_support hx hT hne
-
-/-- The classes met by a nonpositive Hahn support have well-founded strict order. -/
-theorem wellFounded_supportArchimedeanClasses {R : Type*} [Zero R] (x : R⟦G⟧)
-    (hx : x.support ⊆ Set.Iic 0) :
-    WellFounded ((· < ·) :
-      {c : ArchimedeanClass G // c ∈ ArchimedeanClass.mk '' x.support} →
-        {c : ArchimedeanClass G // c ∈ ArchimedeanClass.mk '' x.support} → Prop) := by
-  rw [WellFounded.wellFounded_iff_has_min]
-  intro U hU
-  let V : Set (ArchimedeanClass G) := Subtype.val '' U
-  have hVne : V.Nonempty := by
-    obtain ⟨c, hc⟩ := hU
-    exact ⟨c, c, hc, rfl⟩
-  have hVsub : V ⊆ ArchimedeanClass.mk '' x.support := by
-    rintro _ ⟨c, -, rfl⟩
-    exact c.2
-  obtain ⟨c, hcV, hcmin⟩ := exists_min_mem_image_mk_support x hx hVsub hVne
-  obtain ⟨c', hc'U, hc'c⟩ := hcV
-  refine ⟨c', hc'U, ?_⟩
-  intro d hdU hdc
-  exact (not_lt_of_ge (hcmin d ⟨d, hdU, rfl⟩)) (hc'c ▸ hdc)
-
 /-- The Archimedean classes met by a nonpositive Hahn series are partially well ordered. -/
 theorem Nonpositive.isPWO_supportArchimedeanClasses
     {R : Type*} [Ring R] (x : Nonpositive G R) :
@@ -172,24 +127,6 @@ theorem Nonpositive.orderType_nonzeroSupportArchimedeanClasses_lt
     (s := x.nonzeroSupportArchimedeanClasses ∩ Set.Iio c) Set.inter_subset_left
   exact (y.isPWO_nonzeroSupportArchimedeanClasses.orderType_mono hxbelow hsub).trans_lt
     (x.isPWO_nonzeroSupportArchimedeanClasses.orderType_inter_Iio_lt hc)
-
-/-- For a finite family of nonpositive Hahn series, the classes met by their supports are either
-finite or split into an initial block of nonzero limit order type and a finite final block. -/
-theorem Nonpositive.finite_or_exists_limit_initial_finite_final_supportArchimedeanClasses
-    {R : Type*} [Ring R] {ι : Type*} [Finite ι] (x : ι → Nonpositive G R) :
-    let s := ⋃ i, ArchimedeanClass.mk '' (x i : R⟦G⟧).support
-    s.Finite ∨
-      ∃ (s₀ s₁ : Set (ArchimedeanClass G)) (hs₀ : s₀.IsPWO) (_ : s₁.IsPWO),
-        s₀ ⊆ s ∧
-          s₁ ⊆ s ∧
-          (∀ a ∈ s₀, ∀ b ∈ s₁, a < b) ∧
-          Order.IsSuccLimit hs₀.orderType ∧
-          s₁.Finite ∧
-          s = s₀ ∪ s₁ := by
-  dsimp only
-  apply Set.IsPWO.finite_or_exists_limit_initial_finite_final
-  exact Set.IsPWO.iUnion_of_finite _ fun i ↦
-    Nonpositive.isPWO_supportArchimedeanClasses (x i)
 
 end
 

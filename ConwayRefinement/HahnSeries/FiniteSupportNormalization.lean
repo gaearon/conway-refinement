@@ -52,14 +52,6 @@ theorem isMonicFiniteSupport_iff
           ((p : Nonpositive G K) : K⟦G⟧).coeff x = 1 :=
   Iff.rfl
 
-/-- A monic finite-support series is nonzero. -/
-theorem IsMonicFiniteSupport.ne_zero
-    {p : finiteSupportSubring (G := G) (K := K)}
-    (hp : IsMonicFiniteSupport p) : p ≠ 0 := by
-  rintro rfl
-  obtain ⟨x, hx, _⟩ := hp
-  exact hx.1 (by simp)
-
 /-- The multiplicative identity is a monic finite-support series. -/
 @[simp]
 theorem isMonicFiniteSupport_one :
@@ -295,23 +287,6 @@ theorem IsNormalizedAssociateRepresentative.eq
           ((r : Nonpositive G K) : K⟦G⟧).coeff xp) hqp
       rw [coeff_finiteSupportScalarHom_mul, hxpCoeff, mul_one, hxqCoeff] at hcoeff
       rw [hqp, hcoeff.symm, map_one, one_mul]
-
-/-- Equal associate classes differ by multiplication by a nonzero coefficient scalar when all
-units are nonzero constant series. -/
-theorem exists_nonzero_scalar_mul_of_mk_eq_mk
-    (hunits : ∀ u : finiteSupportSubring (G := G) (K := K),
-      IsUnit u ↔ ∃ k : K, k ≠ 0 ∧ u = finiteSupportScalarHom (G := G) k)
-    {p q : finiteSupportSubring (G := G) (K := K)}
-    (h : Associates.mk p = Associates.mk q) :
-    ∃ k : K, k ≠ 0 ∧ q = finiteSupportScalarHom (G := G) k * p := by
-  obtain ⟨u, hu⟩ := Associates.mk_eq_mk_iff_associated.mp h
-  obtain ⟨k, hk, huk⟩ :=
-    (hunits (u : finiteSupportSubring (G := G) (K := K))).mp u.isUnit
-  refine ⟨k, hk, ?_⟩
-  calc
-    q = p * (u : finiteSupportSubring (G := G) (K := K)) := hu.symm
-    _ = p * finiteSupportScalarHom (G := G) k := congrArg (p * ·) huk
-    _ = finiteSupportScalarHom (G := G) k * p := mul_comm _ _
 
 /-- The chosen normalized representative is the unique normalized representative when all units
 are nonzero constant series. -/

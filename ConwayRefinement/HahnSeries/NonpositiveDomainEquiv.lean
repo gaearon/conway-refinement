@@ -7,7 +7,14 @@ module
 
 public import ConwayRefinement.HahnSeries.DomainEquiv
 public import ConwayRefinement.HahnSeries.Nonpositive
-public import ConwayRefinement.HahnSeries.OrderType
+public import Mathlib.Data.List.Chain
+public import Mathlib.RingTheory.HahnSeries.Addition
+public import ConwayRefinement.HahnSeries.Truncation
+public import CombinatorialGames.NatOrdinal.Pow
+public import Mathlib.SetTheory.Ordinal.Exponential
+public import ConwayRefinement.SetTheory.Ordinal.SetOrderType
+public import ConwayRefinement.Order.Archimedean
+public import Mathlib.RingTheory.HahnSeries.Multiplication
 
 /-!
 # Reindexing nonpositive Hahn series along an exponent equivalence
@@ -73,24 +80,5 @@ def embDomainRingEquiv (e : G ≃+o H) : Nonpositive G K ≃+* Nonpositive H K w
 theorem coe_embDomainRingEquiv (e : G ≃+o H) (x : Nonpositive G K) :
     (embDomainRingEquiv e x : K⟦H⟧) = HahnSeries.embDomainRingEquiv e x :=
   (rfl)
-
-/-- Reindexing identifies supports as ordered sets, so their order types agree after lifting. -/
-theorem lift_supportOrderType_embDomainRingEquiv (e : G ≃+o H)
-    (x : Nonpositive G K) :
-    Ordinal.lift.{u, v}
-        (HahnSeries.supportOrderType (embDomainRingEquiv e x : K⟦H⟧)) =
-      Ordinal.lift.{v, u} (HahnSeries.supportOrderType (x : K⟦G⟧)) := by
-  letI : WellFoundedLT (x : K⟦G⟧).support := ⟨(x : K⟦G⟧).isWF_support⟩
-  letI : WellFoundedLT (embDomainRingEquiv e x : K⟦H⟧).support :=
-    ⟨(embDomainRingEquiv e x : K⟦H⟧).isWF_support⟩
-  let supportEquiv : (embDomainRingEquiv e x : K⟦H⟧).support ≃o
-      (x : K⟦G⟧).support :=
-    (OrderIso.setCongr _ (e '' (x : K⟦G⟧).support) (by
-      rw [coe_embDomainRingEquiv, HahnSeries.support_embDomainRingEquiv])).trans
-        (StrictMonoOn.orderIso e (x : K⟦G⟧).support
-          (e.strictMono.strictMonoOn (x : K⟦G⟧).support)).symm
-  rw [HahnSeries.supportOrderType_eq_typeLT (OrderIso.refl _),
-    HahnSeries.supportOrderType_eq_typeLT (OrderIso.refl _)]
-  exact supportEquiv.toRelIsoLT.ordinal_lift_type_eq
 
 end HahnSeries.Nonpositive

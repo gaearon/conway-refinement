@@ -50,13 +50,6 @@ theorem embDomainRingEquiv_coeff (e : G ≃+o H) (x : R⟦G⟧) (g : G) :
     (embDomainRingEquiv e x).coeff (e g) = x.coeff g :=
   embDomain_coeff
 
-/-- Reindexing exponents maps a singleton Hahn series to the corresponding singleton. -/
-@[simp]
-theorem embDomainRingEquiv_single (e : G ≃+o H) (g : G) (r : R) :
-    embDomainRingEquiv e (single g r) = single (e g) r := by
-  change embDomain e.toOrderIso.toOrderEmbedding (single g r) = single (e g) r
-  exact embDomain_single
-
 /-- Reindexing exponents along an ordered additive equivalence maps support pointwise. -/
 @[simp]
 theorem support_embDomainRingEquiv (e : G ≃+o H) (x : R⟦G⟧) :

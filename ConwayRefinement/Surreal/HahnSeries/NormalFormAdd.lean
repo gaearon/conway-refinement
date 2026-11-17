@@ -359,22 +359,11 @@ theorem toHahnSeriesOrderAddMonoidIso_symm_apply (x : SurrealHahnSeries) :
 theorem toHahnSeries_one : (1 : Surreal).toHahnSeries = .single 0 1 := by
   simpa using toHahnSeries_realCast (1 : ℝ)
 
-/-- The Conway coefficient function of one is supported at exponent zero. -/
-@[simp]
-theorem coeff_one : (1 : Surreal).coeff = Pi.single 0 1 := by
-  rw [← coeff_toHahnSeries, toHahnSeries_one, SurrealHahnSeries.coeff_single]
-
 /-- Negation of a surreal number agrees with coefficientwise negation of its Conway normal form. -/
 @[simp]
 theorem toHahnSeries_neg (x : Surreal) : (-x).toHahnSeries = -x.toHahnSeries := by
   apply eq_neg_of_add_eq_zero_left
   rw [← toHahnSeries_add, neg_add_cancel, toHahnSeries_zero]
-
-/-- Conway coefficients commute with negation. -/
-@[simp]
-theorem coeff_neg (x : Surreal) : (-x).coeff = -x.coeff := by
-  rw [← coeff_toHahnSeries, toHahnSeries_neg,
-    SurrealHahnSeries.coeff_neg, coeff_toHahnSeries]
 
 /-- Addition of surreal Hahn series agrees with addition of their surreal values. -/
 @[simp]

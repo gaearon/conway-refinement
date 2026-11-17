@@ -70,86 +70,6 @@ instance rationalTailQuotientPosSMulStrictMono
     PosSMulStrictMono ℚ (RationalTailQuotient T) :=
   PosSMulMono.toPosSMulStrictMono
 
-/-- Absolute value commutes with projection to a rational tail quotient. -/
-theorem rationalTailQuotient_abs
-    (T : Set (FiniteArchimedeanClass Surreal.{u})) (x : Surreal.{u}) :
-    |(Submodule.Quotient.mk x : RationalTailQuotient T)| = Submodule.Quotient.mk |x| := by
-  rcases le_total 0 x with hx | hx
-  · have hxq : (0 : RationalTailQuotient T) ≤ Submodule.Quotient.mk x := by
-      rw [← Submodule.Quotient.mk_zero]
-      exact ConvexQuotient.mk_le_mk hx
-    rw [abs_of_nonneg hx, abs_of_nonneg hxq]
-  · have hxq : (Submodule.Quotient.mk x : RationalTailQuotient T) ≤ 0 := by
-      rw [← Submodule.Quotient.mk_zero]
-      exact ConvexQuotient.mk_le_mk hx
-    rw [abs_of_nonpos hx, abs_of_nonpos hxq, ← Submodule.Quotient.mk_neg]
-
-/-- A strict comparison of quotient Archimedean classes reflects to the chosen surreal
-representatives. -/
-theorem archimedeanClass_mk_lt_of_rationalTailQuotient_mk_lt
-    (T : Set (FiniteArchimedeanClass Surreal.{u})) {x y : Surreal.{u}}
-    (h : ArchimedeanClass.mk (Submodule.Quotient.mk x : RationalTailQuotient T) <
-      ArchimedeanClass.mk (Submodule.Quotient.mk y : RationalTailQuotient T)) :
-    ArchimedeanClass.mk x < ArchimedeanClass.mk y := by
-  rw [ArchimedeanClass.mk_lt_mk] at h ⊢
-  intro n
-  have hn := h n
-  have hn' : (Submodule.Quotient.mk (n • |y|) : RationalTailQuotient T) <
-      Submodule.Quotient.mk |x| := by
-    have heq : (Submodule.Quotient.mk (n • |y|) : RationalTailQuotient T) =
-        n • Submodule.Quotient.mk |y| := by
-      change QuotientAddGroup.mk' _ (n • |y|) = n • QuotientAddGroup.mk' _ |y|
-      exact map_nsmul (QuotientAddGroup.mk' _) n |y|
-    rw [heq]
-    simpa only [rationalTailQuotient_abs] using hn
-  exact ConvexQuotient.lt_of_mk_lt_mk hn'
-
-/-- Suppose a chosen quotient class is met by `S`, and every nonzero member of `W` lies outside
-its quotient closed ball while retaining a class met by `S`. Then the nonzero support classes of
-`W` form a strict initial segment of the support classes of `S`. -/
-theorem exists_nonzeroSupportClass_bound
-    (T : Set (FiniteArchimedeanClass Surreal.{u}))
-    (q : FiniteArchimedeanClass (RationalTailQuotient T))
-    (S W : Set Surreal.{u})
-    (hqocc : q.1 ∈ ArchimedeanClass.mk ''
-      (Submodule.Quotient.mk (p := FiniteArchimedeanClass.tailSubmodule ℚ T) '' S))
-    (hW : ∀ g ∈ W, g ≠ 0 →
-      Submodule.Quotient.mk g ∉ FiniteArchimedeanClass.closedBallAddSubgroup q)
-    (hWocc : ∀ g ∈ W, g ≠ 0 → ArchimedeanClass.mk g ∈ ArchimedeanClass.mk '' S) :
-    ∃ c ∈ ArchimedeanClass.mk '' (S \ {0}),
-      ArchimedeanClass.mk '' (W \ {0}) ⊆
-        (ArchimedeanClass.mk '' (S \ {0})) ∩ Set.Iio c := by
-  obtain ⟨yq, ⟨y, hyS, rfl⟩, hyq⟩ := hqocc
-  have hy0 : y ≠ 0 := by
-    intro hy
-    subst y
-    have hqtop : q.1 = ⊤ := by
-      rw [← hyq]
-      exact ArchimedeanClass.mk_eq_top_iff.mpr (Submodule.Quotient.mk_zero _)
-    exact q.2 hqtop
-  refine ⟨ArchimedeanClass.mk y, ⟨y, ⟨hyS, by simpa using hy0⟩, rfl⟩, ?_⟩
-  rintro c ⟨g, ⟨hgW, hg0⟩, rfl⟩
-  rw [Set.mem_singleton_iff] at hg0
-  obtain ⟨z, hzS, hzg⟩ := hWocc g hgW hg0
-  have hz0 : z ≠ 0 := by
-    intro hz
-    subst z
-    rw [ArchimedeanClass.mk_zero] at hzg
-    have hgtop : ArchimedeanClass.mk g = ⊤ := hzg.symm
-    exact hg0 (ArchimedeanClass.mk_eq_top_iff.mp hgtop)
-  refine ⟨⟨z, ⟨hzS, by simpa using hz0⟩, hzg⟩, ?_⟩
-  have hgq : ArchimedeanClass.mk (Submodule.Quotient.mk g : RationalTailQuotient T) <
-      ArchimedeanClass.mk (Submodule.Quotient.mk y : RationalTailQuotient T) := by
-    apply ArchimedeanClass.mk_lt_of_not_mem_closedBallAddSubgroup
-    intro hmem
-    apply hW g hgW hg0
-    apply FiniteArchimedeanClass.mem_closedBallAddSubgroup_iff.mpr
-    intro hgq0
-    change q.1 ≤ ArchimedeanClass.mk (Submodule.Quotient.mk g : RationalTailQuotient T)
-    rw [← hyq]
-    exact ArchimedeanClass.mem_closedBallAddSubgroup_iff.mp hmem
-  exact archimedeanClass_mk_lt_of_rationalTailQuotient_mk_lt T hgq
-
 noncomputable instance rationalTailQuotientTopologicalSpace
     (T : Set (FiniteArchimedeanClass Surreal.{u})) :
     TopologicalSpace (RationalTailQuotient T) :=
@@ -201,15 +121,6 @@ def rationalTailQuotientScale
     RationalTailQuotient T :=
   Submodule.Quotient.mk
     (FiniteArchimedeanClass.positiveRepresentative ((equivShrink T).symm i).1)
-
-/-- The canonical quotient scale is represented by the positive representative of its class. -/
-@[simp]
-theorem rationalTailQuotientScale_apply
-    (T : Set (FiniteArchimedeanClass Surreal.{u})) [Small.{u} T]
-    (i : Shrink.{u} T) :
-    rationalTailQuotientScale T i = Submodule.Quotient.mk
-      (FiniteArchimedeanClass.positiveRepresentative ((equivShrink T).symm i).1) :=
-  (rfl)
 
 /-- At a limit family, every canonical tail-quotient scale is positive. -/
 theorem rationalTailQuotientScale_pos

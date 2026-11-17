@@ -44,14 +44,4 @@ theorem negativeIntegerMonomial_reindex_roundtrip :
 
 universe u v w
 
-theorem reindex_lift_supportOrderType
-    {G : Type u} {H : Type v} {K : Type w}
-    [LinearOrder G] [AddCommGroup G] [IsOrderedAddMonoid G]
-    [LinearOrder H] [AddCommGroup H] [IsOrderedAddMonoid H] [CommRing K]
-    (e : G ≃+o H) (x : HahnSeries.Nonpositive G K) :
-    Ordinal.lift.{u, v}
-        (HahnSeries.supportOrderType (embDomainRingEquiv e x : K⟦H⟧)) =
-      Ordinal.lift.{v, u} (HahnSeries.supportOrderType (x : K⟦G⟧)) :=
-  lift_supportOrderType_embDomainRingEquiv e x
-
 end Tests

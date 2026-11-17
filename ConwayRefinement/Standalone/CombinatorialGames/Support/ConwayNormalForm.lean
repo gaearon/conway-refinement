@@ -12,8 +12,16 @@ public import ConwayRefinement.Surreal.OmnificInteger.Primality.OrdinaryIntegers
 public import ConwayRefinement.Surreal.OmnificInteger.RefinementConjecture
 public import ConwayRefinement.Algebra.Divisibility.DenominatorIdeal
 
-import ConwayRefinement.SetTheory.Ordinal.Degree
-import ConwayRefinement.Surreal.HahnSeries.DegreeTransfer
+import CombinatorialGames.NatOrdinal.Pow
+import Mathlib.SetTheory.Ordinal.Exponential
+import Mathlib.Data.List.Chain
+import Mathlib.RingTheory.HahnSeries.Addition
+import ConwayRefinement.HahnSeries.Truncation
+import ConwayRefinement.SetTheory.Ordinal.SetOrderType
+import ConwayRefinement.Order.Archimedean
+import Mathlib.RingTheory.HahnSeries.Multiplication
+import ConwayRefinement.Surreal.HahnSeries.Full
+import CombinatorialGames.Surreal.HahnSeries.Basic
 import ConwayRefinement.Blueprint
 
 /-!

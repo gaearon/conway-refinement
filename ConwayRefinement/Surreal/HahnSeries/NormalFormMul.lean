@@ -53,52 +53,6 @@ private theorem mem_support_ofLex_coe_iff (x : SurrealHahnSeries) (k : Surreal) 
     OrderDual.toDual k ∈ (ofLex x.1).support ↔ k ∈ x.support := by
   rfl
 
-private theorem ofLex_coe_zero : ofLex (0 : SurrealHahnSeries).1 = 0 := by
-  with_unfolding_all rfl
-
-private theorem ofLex_coe_ne_zero {x : SurrealHahnSeries} (hx : x ≠ 0) :
-    ofLex x.1 ≠ 0 := by
-  intro hzero
-  apply hx
-  apply Subtype.ext
-  rw [← ofLex_inj, hzero, ofLex_coe_zero]
-
-private theorem ofLex_coe_order_eq_exp_zero {x : SurrealHahnSeries} (hx : x ≠ 0) :
-    (ofLex x.1).order = OrderDual.toDual (x.exp ⟨0, by
-      change 0 < x.length
-      rw [pos_iff_ne_zero, ne_eq, length_eq_zero]
-      exact hx⟩).1 := by
-  have hlength : 0 < x.length := by
-    rw [pos_iff_ne_zero, ne_eq, length_eq_zero]
-    exact hx
-  have hxRaw : ofLex x.1 ≠ 0 := ofLex_coe_ne_zero hx
-  apply WithTop.coe_inj.mp
-  rw [HahnSeries.order_eq_orderTop_of_ne_zero hxRaw]
-  apply HahnSeries.orderTop_eq_of_le
-  · rw [mem_support_ofLex_coe_iff]
-    exact (x.exp ⟨0, hlength⟩).2
-  · intro k hk
-    have hk' : k.ofDual ∈ x.support := by
-      simpa using (mem_support_ofLex_coe_iff x k.ofDual).1 (by simpa using hk)
-    let j := x.exp.symm ⟨k.ofDual, hk'⟩
-    have hj : (⟨0, hlength⟩ : Iio x.length) ≤ j := by
-      change (0 : Ordinal) ≤ j.1
-      exact bot_le
-    have hexp : x.exp j ≤ x.exp ⟨0, hlength⟩ := x.exp_anti hj
-    change k.ofDual ≤ (x.exp ⟨0, hlength⟩).1
-    change (x.exp j).1 ≤ (x.exp ⟨0, hlength⟩).1 at hexp
-    dsimp [j] at hexp
-    simpa only [x.exp.apply_symm_apply] using hexp
-
-private theorem ofLex_coe_leadingCoeff_eq_coeffIdx_zero {x : SurrealHahnSeries}
-    (hx : x ≠ 0) :
-    (ofLex x.1).leadingCoeff = x.coeffIdx 0 := by
-  rw [HahnSeries.leadingCoeff_eq, ofLex_coe_order_eq_exp_zero hx,
-    x.coeffIdx_of_lt (by
-      rw [pos_iff_ne_zero, ne_eq, length_eq_zero]
-      exact hx)]
-  rfl
-
 /-- Lexicographic comparison of surreal Hahn series, stated directly in terms of their public
 coefficient function. -/
 theorem lt_iff_exists_coeff {x y : SurrealHahnSeries} :
@@ -111,41 +65,6 @@ theorem one_eq_single_zero : (1 : SurrealHahnSeries) = single 0 1 := by
   apply Subtype.ext
   rw [← ofLex_inj, ofLex_coe_single]
   with_unfolding_all rfl
-
-/-- An integer cast is the constant singleton surreal Hahn series. -/
-theorem intCast_eq_single_zero (n : ℤ) :
-    (n : SurrealHahnSeries) = single 0 (n : ℝ) := by
-  apply Subtype.ext
-  rw [← ofLex_inj, ofLex_coe_single]
-  with_unfolding_all rfl
-
-/-- Conway normal forms preserve multiplication by an integer on the left. -/
-theorem _root_.Surreal.toHahnSeries_intCast_mul (n : ℤ) (x : Surreal) :
-    ((n : Surreal) * x).toHahnSeries =
-      SurrealHahnSeries.single 0 (n : ℝ) * x.toHahnSeries := by
-  have hsource : (n : Surreal) * x = n • x := by
-    rw [← Int.cast_smul_eq_zsmul Surreal]
-    rfl
-  have htarget : SurrealHahnSeries.single 0 (n : ℝ) * x.toHahnSeries =
-      n • x.toHahnSeries := by
-    rw [← SurrealHahnSeries.intCast_eq_single_zero,
-      ← Int.cast_smul_eq_zsmul SurrealHahnSeries]
-    rfl
-  rw [hsource, htarget]
-  calc
-    (n • x).toHahnSeries =
-        Surreal.toHahnSeriesOrderAddMonoidIso (n • x) :=
-      (Surreal.toHahnSeriesOrderAddMonoidIso_apply _).symm
-    _ = n • Surreal.toHahnSeriesOrderAddMonoidIso x :=
-      map_zsmul Surreal.toHahnSeriesOrderAddMonoidIso.toAddEquiv n x
-    _ = n • x.toHahnSeries := by
-      rw [Surreal.toHahnSeriesOrderAddMonoidIso_apply]
-
-/-- Conway normal forms preserve multiplication by an integer on the right. -/
-theorem _root_.Surreal.toHahnSeries_mul_intCast (x : Surreal) (n : ℤ) :
-    (x * (n : Surreal)).toHahnSeries =
-      x.toHahnSeries * SurrealHahnSeries.single 0 (n : ℝ) := by
-  rw [mul_comm x, Surreal.toHahnSeries_intCast_mul, mul_comm]
 
 /-- The surreal value map commutes with rational scalar multiplication. -/
 theorem toSurreal_rat_smul (q : ℚ) (x : SurrealHahnSeries.{u}) :
@@ -213,65 +132,6 @@ theorem single_mul_trunc_add_single_div (p q : Surreal.{u}) (r s : ℝ)
     single p r * (y.trunc q + single q (s / r)) =
       (single p r * y).trunc (p + q) + single (p + q) s := by
   rw [mul_add, trunc_single_mul, single_mul_single, mul_div_cancel₀ s hr]
-
-/-- The leading indexed term of a formal product is the product of the leading indexed terms. -/
-theorem term_zero_mul (x y : SurrealHahnSeries) :
-    (x * y).term 0 = x.term 0 * y.term 0 := by
-  obtain rfl | hx := eq_or_ne x 0
-  · rw [zero_mul, term_of_le (by simp), zero_mul]
-  obtain rfl | hy := eq_or_ne y 0
-  · rw [mul_zero, term_of_le (by simp), mul_zero]
-  have hxy : x * y ≠ 0 := mul_ne_zero hx hy
-  have hxLength : 0 < x.length := by
-    rw [pos_iff_ne_zero, ne_eq, length_eq_zero]
-    exact hx
-  have hyLength : 0 < y.length := by
-    rw [pos_iff_ne_zero, ne_eq, length_eq_zero]
-    exact hy
-  have hxyLength : 0 < (x * y).length := by
-    rw [pos_iff_ne_zero, ne_eq, length_eq_zero]
-    exact hxy
-  have hxRaw : ofLex x.1 ≠ 0 := ofLex_coe_ne_zero hx
-  have hyRaw : ofLex y.1 ≠ 0 := ofLex_coe_ne_zero hy
-  have hleadingNe :
-      (ofLex x.1).leadingCoeff * (ofLex y.1).leadingCoeff ≠ 0 := by
-    exact mul_ne_zero (HahnSeries.leadingCoeff_ne_zero.mpr hxRaw)
-      (HahnSeries.leadingCoeff_ne_zero.mpr hyRaw)
-  have hexp := HahnSeries.order_mul_of_ne_zero hleadingNe
-  rw [← ofLex_coe_mul, ofLex_coe_order_eq_exp_zero hxy,
-    ofLex_coe_order_eq_exp_zero hx, ofLex_coe_order_eq_exp_zero hy] at hexp
-  have hexp' :
-      ((x * y).exp ⟨0, hxyLength⟩).1 =
-        (x.exp ⟨0, hxLength⟩).1 + (y.exp ⟨0, hyLength⟩).1 := by
-    simpa using congrArg OrderDual.ofDual hexp
-  have hcoeff := HahnSeries.leadingCoeff_mul_of_ne_zero hleadingNe
-  rw [← ofLex_coe_mul, ofLex_coe_leadingCoeff_eq_coeffIdx_zero hxy,
-    ofLex_coe_leadingCoeff_eq_coeffIdx_zero hx,
-    ofLex_coe_leadingCoeff_eq_coeffIdx_zero hy] at hcoeff
-  rw [term_of_lt hxyLength, term_of_lt hxLength, term_of_lt hyLength,
-    hcoeff, hexp', Real.toSurreal_mul, Surreal.wpow_add]
-  ring
-
-/-- The leading term of the surreal represented by a series is its zeroth indexed term. -/
-theorem leadingTerm_toSurreal (x : SurrealHahnSeries) :
-    x.toSurreal.leadingTerm = x.term 0 := by
-  have h := leadingTerm_sub_truncIdx (x := x) (i := 0)
-  have hzeroSeries : x.truncIdx 0 = 0 := by
-    rw [← length_eq_zero, length_truncIdx]
-    simp
-  have hzero : (x.truncIdx 0).toSurreal = 0 := by
-    calc
-      (x.truncIdx 0).toSurreal = (0 : SurrealHahnSeries).toSurreal :=
-        congrArg toSurreal hzeroSeries
-      _ = 0 := toSurreal_zero
-  rw [hzero, sub_zero] at h
-  exact h
-
-/-- Formal Hahn multiplication and Conway multiplication have the same leading term. -/
-theorem leadingTerm_toSurreal_mul (x y : SurrealHahnSeries) :
-    (x * y).toSurreal.leadingTerm = (x.toSurreal * y.toSurreal).leadingTerm := by
-  rw [leadingTerm_toSurreal, term_zero_mul, ← leadingTerm_toSurreal,
-    ← leadingTerm_toSurreal, Surreal.leadingTerm_mul]
 
 /-- Every exponent in the support of a product is a sum of exponents from the two factors. -/
 theorem exists_add_eq_of_mem_support_mul {x y : SurrealHahnSeries.{u}} {k : Surreal}
@@ -354,67 +214,6 @@ theorem exists_eq_single_mul_of_mem_truncGT
     · exact trunc_add_single_truncGT hq <|
         (lt_div_iff₀ hrPos).2 (by simpa [mul_comm] using hs)
     · exact single_mul_trunc_add_single_div p q r s y hr
-
-/-- A product of surreal Hahn series supported at nonnegative exponents is again supported at
-nonnegative exponents. -/
-theorem support_mul_subset_Ici {x y : SurrealHahnSeries}
-    (hx : x.support ⊆ Ici 0) (hy : y.support ⊆ Ici 0) :
-    (x * y).support ⊆ Ici 0 := by
-  intro k hk
-  obtain ⟨p, hp, q, hq, rfl⟩ := exists_add_eq_of_mem_support_mul hk
-  have hpNonneg : 0 ≤ p := by simpa only [mem_Ici] using hx hp
-  have hqNonneg : 0 ≤ q := by simpa only [mem_Ici] using hy hq
-  simpa only [mem_Ici] using add_nonneg hpNonneg hqNonneg
-
-private theorem coeff_mul_zero_of_support_subsets {x y : SurrealHahnSeries}
-    (hx : x.support ⊆ Ioi 0) (hy : y.support ⊆ Ici 0) :
-    (x * y).coeff 0 = 0 := by
-  apply notMem_support_iff.mp
-  intro hzero
-  obtain ⟨p, hp, q, hq, hpq⟩ := exists_add_eq_of_mem_support_mul hzero
-  have hpPos : 0 < p := by simpa only [mem_Ioi] using hx hp
-  have hqNonneg : 0 ≤ q := by simpa only [mem_Ici] using hy hq
-  nlinarith
-
-/-- At exponent zero, multiplication of nonnegative-support surreal Hahn series is multiplication
-of their constant coefficients. -/
-theorem coeff_zero_mul_of_support_subset_Ici {x y : SurrealHahnSeries}
-    (hx : x.support ⊆ Ici 0) (hy : y.support ⊆ Ici 0) :
-    (x * y).coeff 0 = x.coeff 0 * y.coeff 0 := by
-  have hxSplit : x.trunc 0 + single 0 (x.coeff 0) = x :=
-    trunc_add_single fun i hi ↦ hx hi
-  have hySplit : y.trunc 0 + single 0 (y.coeff 0) = y :=
-    trunc_add_single fun i hi ↦ hy hi
-  conv_lhs => rw [← hxSplit, ← hySplit]
-  rw [add_mul, mul_add, mul_add,
-    coeff_add_apply, coeff_add_apply, coeff_add_apply]
-  have hxTrunc : (x.trunc 0).support ⊆ Ioi 0 := by
-    intro i hi
-    rw [support_trunc] at hi
-    exact hi.2
-  have hyTrunc : (y.trunc 0).support ⊆ Ioi 0 := by
-    intro i hi
-    rw [support_trunc] at hi
-    exact hi.2
-  have hxTruncNonneg : (x.trunc 0).support ⊆ Ici 0 := fun i hi ↦ by
-    rw [mem_Ici]
-    exact (show 0 < i by simpa only [mem_Ioi] using hxTrunc hi).le
-  have hyTruncNonneg : (y.trunc 0).support ⊆ Ici 0 := fun i hi ↦ by
-    rw [mem_Ici]
-    exact (show 0 < i by simpa only [mem_Ioi] using hyTrunc hi).le
-  have hsingleNonneg (r : ℝ) : (single 0 r).support ⊆ Ici 0 := by
-    intro i hi
-    have hi' := support_single_subset hi
-    simp only [mem_singleton_iff] at hi'
-    subst i
-    exact le_refl (0 : Surreal)
-  rw [coeff_mul_zero_of_support_subsets hxTrunc hyTruncNonneg,
-    coeff_mul_zero_of_support_subsets hxTrunc (hsingleNonneg _)]
-  have hsingleTrunc : (single 0 (x.coeff 0) * y.trunc 0).coeff 0 = 0 := by
-    rw [mul_comm]
-    exact coeff_mul_zero_of_support_subsets hyTrunc (hsingleNonneg _)
-  rw [hsingleTrunc, single_mul_single]
-  simp [coeff_single_self]
 
 /-- The ring expression occurring in a Conway multiplication option. -/
 def mulOptionValue (x y a b : SurrealHahnSeries) : SurrealHahnSeries :=
@@ -1184,21 +983,6 @@ theorem toSurreal_mul_of_isSuccPrelimit_of_axes
       grw [cutMulOption_equiv (hmulAY (Or.inl ha)) (hmulXB (Or.inr hb))
         (hmulAB (Or.inl ha) (Or.inr hb))]
       exact (toIGame_lt_toIGame_iff.mpr hbt).le
-
-/-- The limit-by-limit induction step for Conway normal-form multiplication. If multiplication is
-already compatible whenever at least one input has strictly shorter support, it is compatible for
-two inputs whose support lengths are successor prelimits. -/
-theorem toSurreal_mul_of_isSuccPrelimit
-    {x y : SurrealHahnSeries.{u}}
-    (hx : IsSuccPrelimit x.length) (hy : IsSuccPrelimit y.length)
-    (hmul : ∀ a b : SurrealHahnSeries.{u},
-      a.length ≤ x.length → b.length ≤ y.length →
-      (a.length < x.length ∨ b.length < y.length) →
-      (a * b).toSurreal = a.toSurreal * b.toSurreal) :
-    (x * y).toSurreal = x.toSurreal * y.toSurreal :=
-  toSurreal_mul_of_isSuccPrelimit_of_axes hx hy
-    (fun a b ha hb ↦ hmul a b ha.le hb (Or.inl ha))
-    (fun b hb ↦ hmul x b le_rfl hb.le (Or.inr hb))
 
 /-- The Conway normal-form equivalence from surreal Hahn series to surreal numbers preserves
 multiplication. -/

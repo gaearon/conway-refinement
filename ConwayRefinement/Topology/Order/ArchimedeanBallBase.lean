@@ -66,11 +66,6 @@ theorem mk_representative (i : CofinalIndex G) :
     ArchimedeanClass.mk (representative i) = (archimedeanClass i).1 :=
   ArchimedeanClass.mk_out (archimedeanClass i).1
 
-/-- The map from the cofinal index set to finite Archimedean classes is strictly monotone. -/
-theorem archimedeanClass_lt_of_lt {i j : CofinalIndex G} (hij : i < j) :
-    archimedeanClass i < archimedeanClass j :=
-  hij
-
 /-- The index order is the order induced from finite Archimedean classes. -/
 theorem lt_iff_archimedeanClass_lt {i j : CofinalIndex G} :
     i < j ↔ archimedeanClass i < archimedeanClass j :=
@@ -103,35 +98,7 @@ theorem isCofinal_range_archimedeanClass : IsCofinal
 
 end CofinalIndex
 
-/-- Every open Archimedean ball is order-convex. -/
-theorem ballAddSubgroup_ordConnected (c : ArchimedeanClass G) :
-    ((ballAddSubgroup c : AddSubgroup G) : Set G).OrdConnected := by
-  by_cases hc : c = ⊤
-  · rw [hc, ballAddSubgroup_top]
-    exact ordConnected_singleton
-  constructor
-  intro a ha b hb x hx
-  apply (mem_ballAddSubgroup_iff hc).mpr
-  have ha' := (mem_ballAddSubgroup_iff hc).mp ha
-  have hb' := (mem_ballAddSubgroup_iff hc).mp hb
-  exact (lt_min ha' hb').trans_le (min_le_mk_of_le_of_le hx.1 hx.2)
-
 variable [TopologicalSpace G] [OrderTopology G] [IsTopologicalAddGroup G]
-
-/-- An Archimedean ball is open when there is a strictly smaller nonzero magnitude. -/
-theorem ballAddSubgroup_isOpen_of_exists_gt
-    {c : ArchimedeanClass G} (hc : ∃ d ≠ ⊤, c < d) :
-    IsOpen ((ballAddSubgroup c : AddSubgroup G) : Set G) := by
-  obtain ⟨d, hdtop, hcd⟩ := hc
-  induction d using ArchimedeanClass.ind with
-  | mk a =>
-    have ha0 : a ≠ 0 := mk_eq_top_iff.not.mp hdtop
-    have habs : 0 < |a| := abs_pos.mpr ha0
-    apply AddSubgroup.isOpen_of_mem_nhds
-    apply Filter.mem_of_superset (Ioo_mem_nhds (neg_lt_zero.mpr habs) habs)
-    intro x hx
-    apply (mem_ballAddSubgroup_iff hcd.ne_top).mpr
-    exact hcd.trans_le ((mk_le_mk).mpr ⟨1, by simpa using (abs_lt.mpr hx).le⟩)
 
 /-- The canonical open Archimedean ball at a record class. -/
 def cofinalBallBase (i : CofinalIndex G) : AddSubgroup G :=
@@ -143,24 +110,6 @@ theorem mem_cofinalBallBase_iff (i : CofinalIndex G) (x : G) :
     x ∈ cofinalBallBase i ↔
       (CofinalIndex.archimedeanClass i).1 < ArchimedeanClass.mk x :=
   mem_ballAddSubgroup_iff (CofinalIndex.archimedeanClass i).2
-
-omit [TopologicalSpace G] [OrderTopology G] [IsTopologicalAddGroup G] in
-/-- The canonical Archimedean balls decrease along their index order. -/
-theorem cofinalBallBase_antitone : Antitone (cofinalBallBase (G := G)) := by
-  intro i j hij
-  exact ballAddSubgroup_antitone (show i.1.1 ≤ j.1.1 from hij)
-
-/-- If finite Archimedean classes have no maximum, every canonical ball is open. -/
-theorem cofinalBallBase_isOpen [NoMaxOrder (FiniteArchimedeanClass G)] (i : CofinalIndex G) :
-    IsOpen ((cofinalBallBase i : AddSubgroup G) : Set G) := by
-  obtain ⟨d, hid⟩ := exists_gt (CofinalIndex.archimedeanClass i)
-  exact ballAddSubgroup_isOpen_of_exists_gt ⟨d.1, d.2, hid⟩
-
-omit [TopologicalSpace G] [OrderTopology G] [IsTopologicalAddGroup G] in
-/-- Every canonical Archimedean ball is order-convex. -/
-theorem cofinalBallBase_ordConnected (i : CofinalIndex G) :
-    ((cofinalBallBase i : AddSubgroup G) : Set G).OrdConnected :=
-  ballAddSubgroup_ordConnected (CofinalIndex.archimedeanClass i).1
 
 omit [TopologicalSpace G] [OrderTopology G] [IsTopologicalAddGroup G] in
 /-- The canonical Archimedean balls are coinitial among symmetric neighborhoods of zero. -/
@@ -176,20 +125,6 @@ theorem exists_cofinalBallBase_subset_Ioo (ε : G) (hε : 0 < ε) :
   have hxabs : |x| < ε := by
     simpa [abs_of_pos hε] using (mk_lt_mk.mp (hi'.trans_lt hix) 1)
   exact abs_lt.mp hxabs
-
-/-- Open Archimedean balls admit a well-founded decreasing neighbourhood basis when the nonzero
-Archimedean classes have no smallest magnitude. -/
-theorem exists_wellFounded_archimedeanBall_basis
-    [NoMaxOrder (FiniteArchimedeanClass G)] :
-    ∃ (ι : Type u) (_ : LinearOrder ι) (_ : WellFoundedLT ι)
-      (U : ι → AddSubgroup G),
-      Antitone U ∧
-      (∀ i, IsOpen ((U i : AddSubgroup G) : Set G)) ∧
-      (∀ i, ((U i : AddSubgroup G) : Set G).OrdConnected) ∧
-      ∀ ε : G, 0 < ε → ∃ i, ((U i : AddSubgroup G) : Set G) ⊆ Ioo (-ε) ε := by
-  exact ⟨CofinalIndex G, inferInstance, inferInstance, cofinalBallBase,
-    cofinalBallBase_antitone, cofinalBallBase_isOpen, cofinalBallBase_ordConnected,
-    exists_cofinalBallBase_subset_Ioo⟩
 
 end ArchimedeanClass
 

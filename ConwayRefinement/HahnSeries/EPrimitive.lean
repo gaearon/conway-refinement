@@ -39,10 +39,6 @@ def IsEPrimitive (x : K⟦G⟧) : Prop :=
   x.support ⊆ Set.Iic 0 ∧ x.coeff 0 ≠ 0
 
 omit [IsOrderedAddMonoid G] in
-theorem IsEPrimitive.support_subset {x : K⟦G⟧} (hx : IsEPrimitive x) :
-    x.support ⊆ Set.Iic 0 := hx.1
-
-omit [IsOrderedAddMonoid G] in
 theorem IsEPrimitive.ne_zero {x : K⟦G⟧} (hx : IsEPrimitive x) : x ≠ 0 :=
   fun h ↦ hx.2 (by simp [h])
 
@@ -146,15 +142,6 @@ theorem exists_eprimitive_decomposition {x : K⟦G⟧} (hfin : x.support.Finite)
       m ≤ 0 ∧ y.support.Finite ∧ IsEPrimitive y ∧ x = translate m y := by
   obtain ⟨m, y, hm, hyf, hy, hxy⟩ := exists_eprimitive_decomposition' hfin hx
   exact ⟨m, y, hsub hm, hyf, hy, hxy⟩
-
-/-- Divisibility among finite-support series in the nonpositive exponents, with the divisor
-exponent-primitive: the quotient may be taken exponent-primitive as well. -/
-theorem eprimitive_of_mul_eq {x y w : K⟦G⟧} (hx : IsEPrimitive x) (hy : IsEPrimitive y)
-    (hw : w.support ⊆ Set.Iic 0) (hmul : y = x * w) : IsEPrimitive w := by
-  refine ⟨hw, ?_⟩
-  intro h0
-  apply hy.2
-  rw [hmul, coeff_zero_mul_of_support_subset hx.1 hw, h0, mul_zero]
 
 /-- Two exponent-primitive series differing by a translation are equal: the translation must be
 trivial, since it moves both the largest exponent and the exponent carrying a nonzero

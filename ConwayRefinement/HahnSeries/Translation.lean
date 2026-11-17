@@ -5,7 +5,14 @@ Authors: Dan Abramov
 -/
 module
 
-public import ConwayRefinement.HahnSeries.OrderType
+public import Mathlib.Data.List.Chain
+public import Mathlib.RingTheory.HahnSeries.Addition
+public import ConwayRefinement.HahnSeries.Truncation
+public import CombinatorialGames.NatOrdinal.Pow
+public import Mathlib.SetTheory.Ordinal.Exponential
+public import ConwayRefinement.SetTheory.Ordinal.SetOrderType
+public import ConwayRefinement.Order.Archimedean
+public import Mathlib.RingTheory.HahnSeries.Multiplication
 public import Mathlib.Algebra.Order.Group.OrderIso
 
 import ConwayRefinement.HahnSeries.Domain
@@ -67,18 +74,6 @@ section OrderType
 variable {R : Type v} {G H : Type u}
 variable [LinearOrder G] [LinearOrder H] [AddMonoid R]
 
-/-- Reindexing along an order isomorphism preserves ordinary support order type. -/
-@[simp]
-theorem supportOrderType_embDomainAddEquiv (e : G ≃o H) (x : R⟦G⟧) :
-    (embDomainAddEquiv e x).supportOrderType = x.supportOrderType := by
-  rw [supportOrderType_eq_setOrderType, supportOrderType_eq_setOrderType]
-  letI : WellFoundedLT x.support := ⟨x.isWF_support⟩
-  let supportEquiv : (embDomainAddEquiv e x).support ≃o x.support :=
-    (OrderIso.setCongr _ (e '' x.support) (support_embDomain e.toOrderEmbedding x)).trans
-      (StrictMonoOn.orderIso e x.support (e.strictMono.strictMonoOn x.support)).symm
-  exact (embDomainAddEquiv e x).isPWO_support.orderType_eq_typeLT_of_orderIso supportEquiv |>.trans
-    (x.isPWO_support.orderType_eq_typeLT_of_orderIso (OrderIso.refl x.support)).symm
-
 end OrderType
 
 section Translation
@@ -117,39 +112,12 @@ theorem translate_add_apply (a b : G) (x : R⟦G⟧) :
   ext g
   simp [sub_sub]
 
-theorem translate_neg_apply (a : G) (x : R⟦G⟧) :
-    translate (-a) (translate a x) = x := by
-  rw [translate_add_apply, neg_add_cancel, translate_zero_apply]
-
 end Translation
 
 section TranslationOrderType
 
 variable {R : Type v} {G : Type u}
 variable [LinearOrder G] [AddCommGroup G] [IsOrderedAddMonoid G] [AddMonoid R]
-
-/-- Translation preserves ordinary support order type. -/
-@[simp]
-theorem supportOrderType_translate (a : G) (x : R⟦G⟧) :
-    (translate a x).supportOrderType = x.supportOrderType :=
-  supportOrderType_embDomainAddEquiv (R := R) _ _
-
-/-- Translation preserves LM24 degree. -/
-@[simp]
-theorem degree_translate (a : G) (x : R⟦G⟧) :
-    (translate a x).degree = x.degree := by
-  rw [degree_eq_cantorDegree, supportOrderType_translate, ← degree_eq_cantorDegree]
-
-/-- Weak lower truncation commutes with translation after shifting the cutoff. -/
-theorem truncLE_translate (a c : G) (x : R⟦G⟧) :
-    truncLE c (translate a x) = translate a (truncLE (c - a) x) := by
-  ext g
-  simp only [HahnSeries.coeff_truncLE, coeff_translate]
-  by_cases hgc : g ≤ c
-  · have hsub : g - a ≤ c - a := sub_le_sub_right hgc a
-    simp [hgc, hsub]
-  · have hsub : ¬g - a ≤ c - a := fun h ↦ hgc ((sub_le_sub_iff_right a).mp h)
-    simp [hgc, hsub]
 
 end TranslationOrderType
 

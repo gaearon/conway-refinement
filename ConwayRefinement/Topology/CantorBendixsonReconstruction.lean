@@ -129,44 +129,6 @@ theorem cantorBendixsonRank_congr_on_open (s t : Closeds X)
     have he := s.cantorBendixson_congr_on_open t hU hst (s.cantorBendixsonRank hs x + 1)
     exact s.notMem_cantorBendixson_rank_add_one hs x ((Set.ext_iff.mp he x).mpr ⟨hm, hx⟩).1
 
-omit [T1Space X] in
-/-- The isolated points of a closed well-ordered support are dense in that support. -/
-theorem closure_isolated_eq (s : Closeds X) (hs : (s : Set X).IsPWO) :
-    closure {x | x ∈ s ∧ x ∉ derivedSet (s : Set X)} = (s : Set X) := by
-  apply Subset.antisymm (closure_minimal (fun _ h ↦ h.1) s.isClosed)
-  intro x hx
-  apply mem_closure_iff.mpr
-  intro U hU hxU
-  let v : Set X := (s : Set X) ∩ U
-  have hv : v.IsWF := hs.isWF.mono inter_subset_left
-  have hn : v.Nonempty := ⟨x, hx, hxU⟩
-  let m := hv.min hn
-  have hm : m ∈ v := hv.min_mem hn
-  refine ⟨m, hm.2, hm.1, ?_⟩
-  rw [mem_derivedSet, accPt_iff_frequently, Filter.not_frequently]
-  filter_upwards [hs.eventually_le m, hU.mem_nhds hm.2] with y hy hyU hn
-  exact hn.1 ((hy hn.2).antisymm (hv.min_le ‹v.Nonempty› ⟨hn.2, hyU⟩))
-
-/-- The exact rank-`o` points are dense in the `o`-th derivative of a well-ordered support. -/
-theorem closure_rank_level_eq (s : Closeds X) (hs : (s : Set X).IsPWO) (o : Ordinal.{u}) :
-    closure {x | x ∈ s ∧ s.cantorBendixsonRank hs x = o} =
-      (s.cantorBendixson o : Set X) := by
-  have hd := (s.cantorBendixson o).closure_isolated_eq (hs.mono (s.cantorBendixson_le o))
-  have he : {x | x ∈ s ∧ s.cantorBendixsonRank hs x = o} =
-      {x | x ∈ (s.cantorBendixson o : Set X) ∧
-        x ∉ derivedSet (s.cantorBendixson o : Set X)} := by
-    ext x
-    constructor
-    · rintro ⟨hx, hr⟩
-      have hh := (s.cantorBendixsonRank_eq_iff hs hx o).mp hr
-      simpa only [cantorBendixson_add_one, coe_derived, mem_setOf_eq] using hh
-    · intro hh
-      have hx := s.cantorBendixson_le o hh.1
-      refine ⟨hx, (s.cantorBendixsonRank_eq_iff hs hx o).mpr ?_⟩
-      simpa only [cantorBendixson_add_one, coe_derived, mem_setOf_eq] using hh
-  rw [he]
-  exact hd
-
 end TopologicalSpace.Closeds
 
 /-- Homeomorphisms carrying one closed well-ordered support onto another preserve point ranks. -/

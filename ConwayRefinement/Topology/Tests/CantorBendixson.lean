@@ -118,33 +118,4 @@ theorem enat_product_top_mem_stage_two :
   change (⊤, ⊤) ∈ ((⊤ : Closeds (ℕ∞ × ℕ∞)).derived.derived : Set (ℕ∞ × ℕ∞))
   simpa only [Closeds.coe_derived, Closeds.coe_top] using hcol
 
-/-- The sequence limit has point rank exactly one, rather than its order index `omega`. -/
-theorem enat_top_rank :
-    (⊤ : Closeds ℕ∞).cantorBendixsonRank (Set.isPWO_of_wellQuasiOrderedLE _) ⊤ = 1 := by
-  apply ((⊤ : Closeds ℕ∞).cantorBendixsonRank_eq_iff (Set.isPWO_of_wellQuasiOrderedLE _)
-    (by trivial) 1).mpr
-  constructor
-  · rw [enat_stage_one]
-    exact mem_singleton _
-  · rw [one_add_one_eq_two, enat_stage_two]
-    exact notMem_empty _
-
-/-- Every finite point is isolated, so its point rank is zero. -/
-theorem enat_nat_rank (n : ℕ) :
-    (⊤ : Closeds ℕ∞).cantorBendixsonRank (Set.isPWO_of_wellQuasiOrderedLE _) n = 0 := by
-  apply ((⊤ : Closeds ℕ∞).cantorBendixsonRank_eq_iff (Set.isPWO_of_wellQuasiOrderedLE _)
-    (by trivial) 0).mpr
-  constructor
-  · simp
-  · rw [zero_add, enat_stage_one]
-    exact ENat.coe_ne_top n
-
-/-- The isolated rank-zero points are dense even though the limit point has rank one. -/
-theorem enat_rank_zero_dense :
-    closure {x : ℕ∞ | (⊤ : Closeds ℕ∞).cantorBendixsonRank
-      (Set.isPWO_of_wellQuasiOrderedLE _) x = 0} = univ := by
-  have hm (x : ℕ∞) : x ∈ (⊤ : Closeds ℕ∞) := by trivial
-  simpa only [hm, true_and, Closeds.cantorBendixson_zero, Closeds.coe_top] using
-    (⊤ : Closeds ℕ∞).closure_rank_level_eq (Set.isPWO_of_wellQuasiOrderedLE _) 0
-
 end Tests.CantorBendixson

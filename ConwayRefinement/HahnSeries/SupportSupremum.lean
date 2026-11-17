@@ -42,11 +42,6 @@ variable {R : Type v} [Ring R]
 def supportSup (x : Nonpositive ℝ R) : WithBot ℝ :=
   sSup ((fun a : ℝ ↦ (a : WithBot ℝ)) '' (x : R⟦ℝ⟧).support)
 
-/-- Negation preserves the support supremum. -/
-@[simp]
-theorem supportSup_neg (x : Nonpositive ℝ R) : supportSup (-x) = supportSup x := by
-  simp only [supportSup, Subring.coe_neg, HahnSeries.support_neg]
-
 /-- A nonpositive real Hahn-series support is bounded above by zero. -/
 theorem bddAbove_support (x : Nonpositive ℝ R) :
     BddAbove (x : R⟦ℝ⟧).support :=
@@ -63,35 +58,6 @@ theorem supportSup_of_ne {x : Nonpositive ℝ R} (hx : x ≠ 0) :
   rw [supportSup]
   have hx' : (x : R⟦ℝ⟧) ≠ 0 := by simpa using hx
   exact (WithBot.coe_sSup' (support_nonempty_iff.mpr hx') (bddAbove_support x)).symm
-
-/-- The support supremum is `⊥` exactly at the zero series. -/
-@[simp]
-theorem supportSup_eq_bot {x : Nonpositive ℝ R} : supportSup x = ⊥ ↔ x = 0 := by
-  constructor
-  · intro h
-    by_contra hx
-    rw [supportSup_of_ne hx] at h
-    exact WithBot.coe_ne_bot h
-  · rintro rfl
-    exact supportSup_zero
-
-/-- Characterization of a finite support-supremum value by the least-upper-bound property. -/
-theorem supportSup_eq_coe_iff {x : Nonpositive ℝ R} {a : ℝ} :
-    supportSup x = (a : WithBot ℝ) ↔
-      x ≠ 0 ∧ IsLUB (x : R⟦ℝ⟧).support a := by
-  constructor
-  · intro h
-    have hx : x ≠ 0 := by
-      intro hzero
-      subst x
-      simp at h
-    have hx' : (x : R⟦ℝ⟧) ≠ 0 := by simpa using hx
-    rw [supportSup_of_ne hx, WithBot.coe_eq_coe] at h
-    exact ⟨hx, h ▸ isLUB_csSup (support_nonempty_iff.mpr hx') (bddAbove_support x)⟩
-  · rintro ⟨hx, ha⟩
-    have hx' : (x : R⟦ℝ⟧) ≠ 0 := by simpa using hx
-    rw [supportSup_of_ne hx, WithBot.coe_eq_coe]
-    exact ha.csSup_eq (support_nonempty_iff.mpr hx')
 
 /-- The support supremum of a nonpositive series is at most zero. -/
 theorem supportSup_le_zero (x : Nonpositive ℝ R) : supportSup x ≤ 0 := by
@@ -162,13 +128,6 @@ namespace HahnSeries
 
 variable {R : Type v} [Ring R]
 
-/-- Translating a nonzero bounded real Hahn-series support translates its real supremum. -/
-theorem csSup_support_translate {x : R⟦ℝ⟧} (hx : x ≠ 0)
-    (hbounded : BddAbove x.support) (a : ℝ) :
-    sSup (translate a x).support = a + sSup x.support := by
-  rw [support_translate]
-  exact ((OrderIso.addLeft a).map_csSup' (support_nonempty_iff.mpr hx) hbounded).symm
-
 namespace Nonpositive
 
 /-- Translate a nonpositive series by the negative of the real supremum of its support. For a
@@ -186,40 +145,11 @@ theorem coe_normalize (x : Nonpositive ℝ R) :
     (normalize x : R⟦ℝ⟧) = translate (-sSup (x : R⟦ℝ⟧).support) x :=
   (rfl)
 
-@[simp]
-theorem normalize_zero : normalize (0 : Nonpositive ℝ R) = 0 := by
-  apply Subtype.ext
-  simp
-
-/-- Normalization preserves nonzeroness. -/
-theorem normalize_ne_zero {x : Nonpositive ℝ R} (hx : x ≠ 0) : normalize x ≠ 0 := by
-  intro hzero
-  have hval := congrArg Subtype.val hzero
-  change translate (-sSup (x : R⟦ℝ⟧).support) (x : R⟦ℝ⟧) = (0 : R⟦ℝ⟧) at hval
-  have hxval : (x : R⟦ℝ⟧) = 0 :=
-    (translate _).injective (hval.trans (map_zero _).symm)
-  exact hx (Subtype.ext hxval)
-
 /-- Translating a normalized series back by its original support supremum recovers the series. -/
 theorem translate_csSup_normalize (x : Nonpositive ℝ R) :
     translate (sSup (x : R⟦ℝ⟧).support) (normalize x : R⟦ℝ⟧) = x := by
   rw [coe_normalize, translate_add_apply]
   simp
-
-/-- Normalization preserves ordinary support order type. -/
-theorem supportOrderType_normalize (x : Nonpositive ℝ R) :
-    (normalize x : R⟦ℝ⟧).supportOrderType = (x : R⟦ℝ⟧).supportOrderType := by
-  rw [coe_normalize, supportOrderType_translate]
-
-/-- A nonzero normalized series has support supremum zero. -/
-theorem supportSup_normalize {x : Nonpositive ℝ R} (hx : x ≠ 0) :
-    supportSup (normalize x) = 0 := by
-  rw [supportSup_of_ne (normalize_ne_zero hx)]
-  norm_cast
-  rw [coe_normalize, csSup_support_translate]
-  · simp
-  · simpa using hx
-  · exact bddAbove_support x
 
 end Nonpositive
 

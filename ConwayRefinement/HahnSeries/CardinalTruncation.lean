@@ -132,33 +132,6 @@ theorem cardSupp_toNonpositiveRingHom_lt (Z : Subring R)
   rw [coe_toNonpositiveRingHom]
   exact (mem_cardSuppLTSubfield (Γ := G) (R := R) (κ := κ)).mp x.1.2
 
-/-- Forget the cardinal bound on a bounded truncation-integer-part element. -/
-def toTruncationIntegerPartRingHom (Z : Subring R) :
-    cardSuppLTTruncationIntegerPart (G := G) (R := R) (κ := κ) Z →+*
-      truncationIntegerPart G Z where
-  toFun x := ⟨toNonpositiveRingHom Z x,
-    (mem_truncationIntegerPart (R := R) (Γ := G)).mpr x.2.2⟩
-  map_one' := rfl
-  map_mul' _ _ := rfl
-  map_zero' := rfl
-  map_add' _ _ := rfl
-
-/-- Forgetting the bound preserves the underlying nonpositive Hahn series. -/
-@[simp]
-theorem coe_toTruncationIntegerPartRingHom (Z : Subring R)
-    (x : cardSuppLTTruncationIntegerPart (G := G) (R := R) (κ := κ) Z) :
-    (toTruncationIntegerPartRingHom Z x : Nonpositive G R) = toNonpositiveRingHom Z x :=
-  (rfl)
-
-/-- Forgetting the cardinal bound on a truncation integer part is injective. -/
-theorem toTruncationIntegerPartRingHom_injective (Z : Subring R) :
-    Function.Injective
-      (toTruncationIntegerPartRingHom (G := G) (R := R) (κ := κ) Z) := by
-  intro x y hxy
-  apply toNonpositiveRingHom_injective Z
-  have h := congrArg (fun q : truncationIntegerPart G Z ↦ (q : Nonpositive G R)) hxy
-  simpa only [coe_toTruncationIntegerPartRingHom] using h
-
 end CardSuppLTTruncationIntegerPart
 
 /-- If `κ ≤ cof(G)`, the `κ`-bounded truncation integer part has the whole bounded Hahn

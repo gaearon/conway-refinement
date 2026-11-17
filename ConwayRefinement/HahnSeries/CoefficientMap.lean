@@ -58,29 +58,6 @@ variable {Γ : Type u} {R : Type v} {S : Type w}
 variable [AddCommGroup Γ] [LinearOrder Γ] [IsOrderedAddMonoid Γ]
 variable [Ring R] [Ring S]
 
-/-- Apply a ring homomorphism coefficientwise to a nonpositive Hahn series. -/
-def coefficientMapRingHom (f : R →+* S) : Nonpositive Γ R →+* Nonpositive Γ S where
-  toFun x := ⟨HahnSeries.coefficientMapRingHom f (x : R⟦Γ⟧),
-    (HahnSeries.support_map_subset (x : R⟦Γ⟧) f.toZeroHom).trans (support_subset x)⟩
-  map_one' := Subtype.ext (map_one (HahnSeries.coefficientMapRingHom f))
-  map_mul' x y := Subtype.ext
-    (map_mul (HahnSeries.coefficientMapRingHom f) (x : R⟦Γ⟧) (y : R⟦Γ⟧))
-  map_zero' := Subtype.ext (map_zero (HahnSeries.coefficientMapRingHom f))
-  map_add' x y := Subtype.ext
-    (map_add (HahnSeries.coefficientMapRingHom f) (x : R⟦Γ⟧) (y : R⟦Γ⟧))
-
-/-- The nonpositive coefficient map acts coefficientwise. -/
-@[simp]
-theorem coe_coefficientMapRingHom (f : R →+* S) (x : Nonpositive Γ R) :
-    (coefficientMapRingHom f x : S⟦Γ⟧) = HahnSeries.coefficientMapRingHom f x :=
-  (rfl)
-
-/-- An injective coefficient homomorphism preserves nonpositive Hahn-series support. -/
-theorem support_coefficientMapRingHom (f : R →+* S) (hf : Function.Injective f)
-    (x : Nonpositive Γ R) :
-    (coefficientMapRingHom f x : S⟦Γ⟧).support = (x : R⟦Γ⟧).support := by
-  rw [coe_coefficientMapRingHom, HahnSeries.support_coefficientMapRingHom f hf]
-
 end Nonpositive
 
 end HahnSeries

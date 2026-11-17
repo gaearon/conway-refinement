@@ -57,12 +57,6 @@ the subring. -/
 def denominatorNumerator (R : Subring K) (ξ : K) (x : denominatorIdeal R ξ) : R :=
   ⟨ξ * (x : R), x.2⟩
 
-@[simp]
-theorem coe_denominatorNumerator (R : Subring K) (ξ : K)
-    (x : denominatorIdeal R ξ) :
-    (denominatorNumerator R ξ x : K) = ξ * (x : R) :=
-  (rfl)
-
 /-- Two nonzero elements of a denominator ideal have a nonzero common divisor in that ideal
 exactly when their associated rank-one equality has a four-factor refinement in the subring. -/
 theorem exists_common_divisor_denominatorIdeal_iff_exists_fourFactorRefinement

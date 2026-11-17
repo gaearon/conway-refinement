@@ -141,14 +141,6 @@ theorem coe_toSmallSupportIntegerPart
       x.1.toFullHahnSeries :=
   (rfl)
 
-/-- Recovering a bounded Hahn integer part preserves its underlying full Hahn series. -/
-@[simp]
-theorem toFullHahnSeries_ofSmallSupportIntegerPart
-    (b : SmallSupportIntegerPart.{u}) :
-    (ofSmallSupportIntegerPart b).1.toFullHahnSeries =
-      (b.1.1 : HahnSeries Surrealᵒᵈ ℝ) :=
-  toFullHahnSeries_ofSmallSupportSurreal b
-
 /-- Recovering the omnific integer after passing to bounded Hahn series is the identity. -/
 @[simp]
 theorem ofSmallSupportIntegerPart_toSmallSupportIntegerPart
@@ -182,13 +174,6 @@ def smallSupportIntegerPartAddEquiv :
     apply Subtype.ext
     exact Surreal.toFullHahnSeries_add x.1 y.1
 
-/-- Evaluation of the additive Conway/Hahn equivalence. -/
-@[simp]
-theorem smallSupportIntegerPartAddEquiv_apply
-    (x : Surreal.OmnificInteger.{u}) :
-    smallSupportIntegerPartAddEquiv x = toSmallSupportIntegerPart x :=
-  (rfl)
-
 /-- The Conway/Hahn ring equivalence for universe-bounded omnific integers. -/
 def smallSupportIntegerPartRingEquiv :
     Surreal.OmnificInteger.{u} ≃+* SmallSupportIntegerPart.{u} :=
@@ -198,13 +183,6 @@ def smallSupportIntegerPartRingEquiv :
       apply Subtype.ext
       apply Subtype.ext
       exact Surreal.toFullHahnSeries_mul x.1 y.1 }
-
-/-- Evaluation of the Conway/Hahn ring equivalence. -/
-@[simp]
-theorem smallSupportIntegerPartRingEquiv_apply
-    (x : Surreal.OmnificInteger.{u}) :
-    smallSupportIntegerPartRingEquiv x = toSmallSupportIntegerPart x :=
-  (rfl)
 
 /-! ### Signed surreal exponents -/
 
@@ -221,48 +199,6 @@ def smallSupportIntegerPartSignedRingEquiv :
     SmallSupportIntegerPart.{u} ≃+* SignedSmallSupportIntegerPart.{u} :=
   HahnSeries.cardSuppLTTruncationIntegerPartRingEquiv
     Surreal.dualExponentOrderAddMonoidIso Surreal.realIntegerSubring
-
-/-- Evaluation of signed exponent reindexing on bounded integer parts. -/
-@[simp]
-theorem smallSupportIntegerPartSignedRingEquiv_apply
-    (b : SmallSupportIntegerPart.{u}) :
-    smallSupportIntegerPartSignedRingEquiv b =
-      HahnSeries.cardSuppLTTruncationIntegerPartRingEquiv
-        Surreal.dualExponentOrderAddMonoidIso Surreal.realIntegerSubring b :=
-  (rfl)
-
-/-- Put an omnific integer into the bounded Hahn integer part with signed surreal exponents. -/
-def toSignedSmallSupportIntegerPart
-    (x : Surreal.OmnificInteger.{u}) : SignedSmallSupportIntegerPart.{u} :=
-  smallSupportIntegerPartSignedRingEquiv (toSmallSupportIntegerPart x)
-
-/-- The signed bounded Hahn image has exactly the signed full Conway normal form. -/
-@[simp]
-theorem coe_toSignedSmallSupportIntegerPart
-    (x : Surreal.OmnificInteger.{u}) :
-    ((toSignedSmallSupportIntegerPart x :
-      HahnSeries.CardSuppLTField (G := Surreal) (R := ℝ)
-        (κ := Surreal.smallSupportCardinal.{u})) : HahnSeries Surreal ℝ) =
-      x.1.toSignedFullHahnSeries := by
-  rw [toSignedSmallSupportIntegerPart,
-    smallSupportIntegerPartSignedRingEquiv_apply,
-    HahnSeries.coe_cardSuppLTTruncationIntegerPartRingEquiv,
-    coe_toSmallSupportIntegerPart, Surreal.toSignedFullHahnSeries_eq]
-
-/-- The nonpositive signed Hahn series underlying an omnific integer. -/
-def toSignedNonpositiveHahn (x : Surreal.OmnificInteger.{u}) :
-    HahnSeries.Nonpositive Surreal ℝ :=
-  HahnSeries.CardSuppLTTruncationIntegerPart.toNonpositiveRingHom
-    Surreal.realIntegerSubring (toSignedSmallSupportIntegerPart x)
-
-/-- Coercing the signed nonpositive image recovers the signed full Conway normal form. -/
-@[simp]
-theorem coe_toSignedNonpositiveHahn (x : Surreal.OmnificInteger.{u}) :
-    (x.toSignedNonpositiveHahn : HahnSeries Surreal ℝ) =
-      x.1.toSignedFullHahnSeries := by
-  rw [toSignedNonpositiveHahn,
-    HahnSeries.CardSuppLTTruncationIntegerPart.coe_toNonpositiveRingHom,
-    coe_toSignedSmallSupportIntegerPart]
 
 /-- The signed-exponent Conway/Hahn ring equivalence for universe-bounded omnific integers. -/
 @[blueprint "thm:signed-normal-form-omnific-integer-equivalence"
@@ -285,13 +221,5 @@ theorem coe_toSignedNonpositiveHahn (x : Surreal.OmnificInteger.{u}) :
 def signedSmallSupportIntegerPartRingEquiv :
     Surreal.OmnificInteger.{u} ≃+* SignedSmallSupportIntegerPart.{u} :=
   smallSupportIntegerPartRingEquiv.trans smallSupportIntegerPartSignedRingEquiv
-
-/-- Evaluation of the signed Conway/Hahn ring equivalence. -/
-@[simp]
-theorem signedSmallSupportIntegerPartRingEquiv_apply
-    (x : Surreal.OmnificInteger.{u}) :
-    signedSmallSupportIntegerPartRingEquiv x =
-      toSignedSmallSupportIntegerPart x :=
-  (rfl)
 
 end Surreal.OmnificInteger

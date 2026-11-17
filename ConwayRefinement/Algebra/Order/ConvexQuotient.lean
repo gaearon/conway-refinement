@@ -165,21 +165,4 @@ theorem mk_lt_mk_iff {a b : G} :
   · refine lt_of_le_of_ne (mk_le_mk hab.le) fun hEq ↦ hmem ?_
     simpa using H.neg_mem (QuotientAddGroup.eq_iff_sub_mem.mp hEq)
 
-/-- **Halving descends to the quotient.** If every positive element of `G` is twice a positive
-element, the same holds in the quotient: a representative's half stays outside the subgroup,
-since otherwise the representative itself would lie inside it. -/
-theorem exists_half_of_pos (hG : ∀ x : G, 0 < x → ∃ y, 0 < y ∧ y + y = x) {c : G ⧸ H}
-    (hc : 0 < c) : ∃ d : G ⧸ H, 0 < d ∧ d + d ≤ c := by
-  induction c using QuotientAddGroup.induction_on with
-  | H x =>
-    have hpos : ((0 : G) : G ⧸ H) < (x : G ⧸ H) := by
-      rw [QuotientAddGroup.mk_zero]
-      exact hc
-    have hxH : x ∉ H := by simpa using (mk_lt_mk_iff.mp hpos).2
-    obtain ⟨y, hy, hyx⟩ := hG x (lt_of_mk_lt_mk hpos)
-    have hyH : y ∉ H := fun hmem ↦ hxH (hyx ▸ H.add_mem hmem hmem)
-    refine ⟨(y : G ⧸ H), ?_, ?_⟩
-    · exact mk_lt_mk_iff.mpr ⟨hy, by simpa using hyH⟩
-    · rw [← QuotientAddGroup.mk_add, hyx]
-
 end ConvexQuotient

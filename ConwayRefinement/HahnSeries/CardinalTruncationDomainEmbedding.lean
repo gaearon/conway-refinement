@@ -9,7 +9,15 @@ public import ConwayRefinement.HahnSeries.CardinalTruncation
 public import ConwayRefinement.HahnSeries.ConvexFactorSupport
 public import ConwayRefinement.HahnSeries.ConvexQuotientSplitting
 public import ConwayRefinement.HahnSeries.Domain
-public import ConwayRefinement.HahnSeries.DomainEmbedding
+public import ConwayRefinement.HahnSeries.FiniteSupport
+public import Mathlib.Data.List.Chain
+public import Mathlib.RingTheory.HahnSeries.Addition
+public import ConwayRefinement.HahnSeries.Truncation
+public import CombinatorialGames.NatOrdinal.Pow
+public import Mathlib.SetTheory.Ordinal.Exponential
+public import ConwayRefinement.SetTheory.Ordinal.SetOrderType
+public import ConwayRefinement.Order.Archimedean
+public import Mathlib.RingTheory.HahnSeries.Multiplication
 
 import ConwayRefinement.HahnSeries.SubgroupSupport
 
@@ -54,14 +62,6 @@ def cardSuppLTFieldMapDomain (f : G →+ H) (hfi : Function.Injective f)
   map_add' x y := by
     apply Subtype.ext
     exact map_add (HahnSeries.embDomainRingHom f hfi hf) (x : R⟦G⟧) y
-
-@[simp]
-theorem coe_cardSuppLTFieldMapDomain (f : G →+ H) (hfi : Function.Injective f)
-    (hf : ∀ g g' : G, f g ≤ f g' ↔ g ≤ g')
-    (x : CardSuppLTField (G := G) (R := R) (κ := κ)) :
-    (cardSuppLTFieldMapDomain f hfi hf x : R⟦H⟧) =
-      HahnSeries.embDomain (⟨⟨f, hfi⟩, hf _ _⟩ : G ↪o H) (x : R⟦G⟧) :=
-  (rfl)
 
 /-- Map a cardinal-bounded Hahn integer part along an injective additive order embedding. -/
 def CardSuppLTTruncationIntegerPart.mapDomain (f : G →+ H)

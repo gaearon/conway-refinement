@@ -182,30 +182,4 @@ theorem Set.IsPWO.finite_subtype_add_fiber {s t : Set G}
   change {p : s ×ˢ t | p.1.1 + p.1.2 = z}.Finite
   simpa only [preimage_setOf_eq, Subtype.coe_prop, true_and] using hf
 
-/-- The sum of two closed well-ordered supports is closed. -/
-theorem Set.IsPWO.isClosed_add [CompleteSpace G] {s t : Set G}
-    (hs : s.IsPWO) (ht : t.IsPWO) (hsc : IsClosed s) (htc : IsClosed t) :
-    IsClosed (s + t) := by
-  have he : Set.range (fun p : s ×ˢ t ↦ p.1.1 + p.1.2) = s + t := by
-    ext z
-    constructor
-    · rintro ⟨p, rfl⟩
-      exact Set.add_mem_add p.2.1 p.2.2
-    · rintro ⟨x, hx, y, hy, rfl⟩
-      exact ⟨⟨(x, y), hx, hy⟩, rfl⟩
-  rw [← he]
-  exact (hs.isClosedMap_add ht hsc htc).isClosed_range
-
-/-- Closure commutes with addition of well-ordered supports when the ambient ordered uniform group
-is Cauchy complete. -/
-theorem Set.IsPWO.closure_add_eq [CompleteSpace G] {s t : Set G}
-    (hs : s.IsPWO) (ht : t.IsPWO) :
-    _root_.closure (s + t) = _root_.closure s + _root_.closure t := by
-  apply Subset.antisymm
-  · exact closure_minimal (Set.add_subset_add subset_closure subset_closure)
-      (hs.closure.isClosed_add ht.closure isClosed_closure isClosed_closure)
-  · rw [← Set.image2_add, ← Set.image2_add, ← Set.image_prod, ← Set.image_prod,
-      ← closure_prod_eq]
-    exact image_closure_subset_closure_image (by fun_prop)
-
 end OrderedGroup

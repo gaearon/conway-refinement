@@ -171,12 +171,6 @@ private theorem length_lt_of_truncAux {x y : SurrealHahnSeries} (hy : IsSuccPrel
   · exact hy.add_one_lt <| length_trunc_lt i.2
   · simp
 
-theorem length_le_of_truncLT {x y : SurrealHahnSeries} (h : x ≺ y) : x.length ≤ y.length :=
-  length_le_of_truncAux h
-
-theorem length_le_of_truncGT {x y : SurrealHahnSeries} (h : x ≻ y) : x.length ≤ y.length :=
-  length_le_of_truncAux h
-
 theorem length_lt_of_truncLT {x y : SurrealHahnSeries} (hy : IsSuccPrelimit y.length) (h : x ≺ y) :
     x.length < y.length :=
   length_lt_of_truncAux hy h
@@ -218,33 +212,8 @@ private theorem truncAux_truncIdx_subset {x : SurrealHahnSeries} {R : ℝ → �
   · exact (truncAux_truncIdx_ssubset hi hR).le
   · rw [truncIdx_of_le hi]
 
-private theorem truncAux_truncIdx_strictMonoOn {x : SurrealHahnSeries} {R : ℝ → ℝ → Prop}
-    (hR : ∀ r, ∃ s ≠ 0, R s r) :
-    StrictMonoOn (fun i ↦ truncAux (truncIdx x i) R) (Iio x.length) := by
-  intro i hi j hj h
-  dsimp
-  rw [← min_eq_right h.le, ← truncIdx_truncIdx]
-  apply truncAux_truncIdx_ssubset _ hR
-  simp_all
-
-private theorem truncAux_truncIdx_mono {x : SurrealHahnSeries} {R : ℝ → ℝ → Prop}
-    (hR : ∀ r, ∃ s ≠ 0, R s r) :
-    Monotone fun i ↦ truncAux (truncIdx x i) R := by
-  intro i j h
-  dsimp
-  rw [← min_eq_right h, ← truncIdx_truncIdx]
-  exact truncAux_truncIdx_subset hR
-
 private theorem truncLT_aux (r : ℝ) : ∃ s ≠ 0, s < r := ⟨min (r - 1) (-1), by grind⟩
 private theorem truncGT_aux (r : ℝ) : ∃ s ≠ 0, r < s := ⟨max (r + 1) 1, by grind⟩
-
-theorem truncLT_truncIdx_ssubset {x : SurrealHahnSeries} {i : Ordinal} (h : i < x.length) :
-    truncLT (truncIdx x i) ⊂ truncLT x :=
-  truncAux_truncIdx_ssubset h truncLT_aux
-
-theorem truncGT_truncIdx_ssubset {x : SurrealHahnSeries} {i : Ordinal} (h : i < x.length) :
-    truncGT (truncIdx x i) ⊂ truncGT x :=
-  truncAux_truncIdx_ssubset h truncGT_aux
 
 theorem truncLT_truncIdx_subset {x : SurrealHahnSeries} {i : Ordinal} :
     truncLT (truncIdx x i) ⊆ truncLT x :=
@@ -253,22 +222,6 @@ theorem truncLT_truncIdx_subset {x : SurrealHahnSeries} {i : Ordinal} :
 theorem truncGT_truncIdx_subset {x : SurrealHahnSeries} {i : Ordinal} :
     truncGT (truncIdx x i) ⊆ truncGT x :=
   truncAux_truncIdx_subset truncGT_aux
-
-theorem truncLT_truncIdx_strictMonoOn {x : SurrealHahnSeries} :
-    StrictMonoOn (fun i ↦ truncLT (truncIdx x i)) (Iio x.length) :=
-  truncAux_truncIdx_strictMonoOn truncLT_aux
-
-theorem truncGT_truncIdx_strictMonoOn {x : SurrealHahnSeries} :
-    StrictMonoOn (fun i ↦ truncGT (truncIdx x i)) (Iio x.length) :=
-  truncAux_truncIdx_strictMonoOn truncGT_aux
-
-theorem truncLT_truncIdx_mono {x : SurrealHahnSeries} :
-    Monotone fun i ↦ truncLT (truncIdx x i) :=
-  truncAux_truncIdx_mono truncLT_aux
-
-theorem truncGT_truncIdx_mono {x : SurrealHahnSeries} :
-    Monotone fun i ↦ truncGT (truncIdx x i) :=
-  truncAux_truncIdx_mono truncGT_aux
 
 /-- An `IGame` representative of the surreal number encoded by a surreal Hahn series. -/
 @[coe]
@@ -521,10 +474,6 @@ theorem toIGame_le_toIGame_iff {x y : SurrealHahnSeries} : toIGame x ≤ toIGame
 theorem toIGame_equiv_toIGame_iff {x y : SurrealHahnSeries} : toIGame x ≈ toIGame y ↔ x = y := by
   simp [AntisymmRel, le_antisymm_iff]
 
-@[simp, norm_cast]
-theorem toIGame_inj {x y : SurrealHahnSeries} : toIGame x = toIGame y ↔ x = y :=
-  toIGame_strictMono.injective.eq_iff
-
 theorem toIGame_equiv (x : SurrealHahnSeries) :
     toIGame x ≈ !{toIGame '' truncLT x | toIGame '' truncGT x} := by
   induction x using lengthRecOn with
@@ -669,14 +618,6 @@ theorem toSurreal_eq' (x : SurrealHahnSeries) :
     toSurreal x = .mk !{toIGame '' truncLT x | toIGame '' truncGT x} :=
   Surreal.mk_eq <| toIGame_equiv x
 
-theorem toSurreal_eq (x : SurrealHahnSeries) :
-    toSurreal x = !{toSurreal '' truncLT x | toSurreal '' truncGT x}'(by
-      rintro _ ⟨i, hi, rfl⟩ _ ⟨j, hj, rfl⟩
-      exact_mod_cast (lt_of_truncLT hi).trans (gt_of_truncGT hj)
-    ) := by
-  rw [toSurreal_eq', Surreal.mk_ofSets]
-  congr <;> aesop
-
 theorem leadingTerm_sub_truncIdx {x : SurrealHahnSeries} {i : Ordinal} :
     Surreal.leadingTerm (x - x.truncIdx i) = x.term i := by
   obtain hi | hi := le_or_gt x.length i
@@ -709,31 +650,11 @@ theorem birthday_truncIdx_lt {x : SurrealHahnSeries} {i : Ordinal} (h : i < x.le
   grw [← toIGame_equiv, toIGame_equiv_toIGame_iff]
   exact (truncIdx_ne h).symm
 
-theorem birthday_truncIdx_mono (x : SurrealHahnSeries) :
-    Monotone fun i ↦ Surreal.birthday (truncIdx x i) := by
-  intro i j h
-  convert birthday_truncIdx_le (x.truncIdx j) i using 3
-  rw [truncIdx_truncIdx, min_eq_right h]
-
-theorem birthday_truncIdx_strictMonoOn (x : SurrealHahnSeries) :
-    StrictMonoOn (fun i ↦ Surreal.birthday (truncIdx x i)) (Iio x.length) := by
-  intro i hi j hj h
-  convert birthday_truncIdx_lt (x := x.truncIdx j) (i := i) _ using 3
-  · rw [truncIdx_truncIdx, min_eq_right h.le]
-  · simp_all
-
 theorem birthday_trunc_le (x : SurrealHahnSeries) (i : Surreal) :
     Surreal.birthday (x.trunc i) ≤ Surreal.birthday x := by
   obtain ⟨j, hj⟩ := trunc_mem_range_truncIdx x i
   rw [← hj]
   exact birthday_truncIdx_le ..
-
-theorem birthday_trunc_anti (x : SurrealHahnSeries) :
-    Antitone fun i ↦ Surreal.birthday (trunc x i) := by
-  intro i j h
-  dsimp
-  convert birthday_trunc_le (x.trunc i) j using 2
-  rw [trunc_trunc, max_eq_right h]
 
 end SurrealHahnSeries
 
@@ -755,9 +676,6 @@ variable {x : Surreal.{u}}
 
 open SurrealHahnSeries
 
-instance : Bot (PartialSum x) where
-  bot := ⟨0, by simp⟩
-
 theorem carrier_injective : Function.Injective (carrier (x := x)) := by
   intro i j h
   ext
@@ -766,10 +684,6 @@ theorem carrier_injective : Function.Injective (carrier (x := x)) := by
 @[simp]
 theorem carrier_inj {y z : PartialSum x} : y.carrier = z.carrier ↔ y = z :=
   carrier_injective.eq_iff
-
-@[simp]
-theorem carrier_bot : carrier (⊥ : PartialSum x) = 0 :=
-  rfl
 
 /-- The length of the carrier. -/
 def length (y : PartialSum x) : Ordinal :=
@@ -780,9 +694,6 @@ def length (y : PartialSum x) : Ordinal :=
 theorem length_eq_carrier_length (y : PartialSum x) : y.length = y.carrier.length :=
   (rfl)
 
-theorem length_bot : length (⊥ : PartialSum x) = 0 := by
-  simp [length]
-
 instance : Preorder (PartialSum x) :=
   .lift length
 
@@ -791,9 +702,6 @@ instance : WellFoundedLT (PartialSum x) where
 
 instance : WellFoundedRelation (PartialSum x) :=
   ⟨_, wellFounded_lt⟩
-
-theorem length_strictMono : StrictMono (length (x := x)) :=
-  fun _ _ ↦ id
 
 theorem length_lt_length {y z : PartialSum x} : length y < length z ↔ y < z := .rfl
 theorem length_le_length {y z : PartialSum x} : length y ≤ length z ↔ y ≤ z := .rfl
@@ -878,11 +786,6 @@ theorem term_congr {y z : PartialSum x} {i : Ordinal} (hy : i < y.length) (hz : 
     term y.carrier i = term z.carrier i := by
   obtain hyz | hyz := le_total y z <;>
     rwa [← truncIdx_length_of_le hyz, carrier_truncIdx, term_truncIdx_of_lt]
-
-theorem exp_congr {y z : PartialSum x} {i : Ordinal} (hy : i < y.length) (hz : i < z.length) :
-    (exp y.carrier ⟨i, by rwa [← length_eq_carrier_length]⟩).1 =
-      exp z.carrier ⟨i, by rwa [← length_eq_carrier_length]⟩ := by
-  simp_rw [← wlog_term, term_congr hy hz]
 
 theorem birthday_strictMono : StrictMono fun y : PartialSum x ↦ birthday y.carrier := by
   intro y z h
@@ -989,15 +892,6 @@ instance : CompleteLinearOrder (PartialSum x) where
   __ := instCompleteLattice
   __ := instLinearOrder
 
-theorem leadingTerm_sub {y z : PartialSum x} (h : y < z) :
-    (x - y.carrier).leadingTerm = leadingTerm (z.carrier - y.carrier) := by
-  rw [← truncIdx_length_of_le h.le, carrier_truncIdx, ← z.term_eq_leadingTerm_sub h,
-    leadingTerm_sub_truncIdx]
-
-theorem mk_sub {y z : PartialSum x} (h : y < z) :
-    ArchimedeanClass.mk (x - y.carrier) = .mk (z.carrier - y.carrier) := by
-  rw [← mk_leadingTerm, leadingTerm_sub h, mk_leadingTerm]
-
 theorem mk_le_mk_of_sub {x y : Surreal} (h : ArchimedeanClass.mk x ≤ ArchimedeanClass.mk (x - y)) :
     ArchimedeanClass.mk x ≤ .mk y := by
   simpa using ArchimedeanClass.mk_left_le_mk_sub h
@@ -1088,12 +982,6 @@ instance : SuccOrder (PartialSum x) :=
     rwa [← carrier_inj, ← toSurreal_inj, coe_carrier_top, eq_comm]
   ) (by simp [succ', coe_carrier_top])
 
-theorem length_succ_of_ne_top (y : PartialSum x) (h : y ≠ ⊤) :
-    (succ y).length = y.length + 1 := by
-  apply length_succ'_of_ne
-  conv_lhs => rw [← coe_carrier_top x]
-  rwa [ne_eq, toSurreal_inj, carrier_inj, eq_comm]
-
 theorem term_succ_length (y : PartialSum x) :
     (succ y).carrier.term y.length = (x - y.carrier).leadingTerm := by
   obtain rfl | hy := eq_top_or_lt_top y
@@ -1143,10 +1031,6 @@ theorem toHahnSeries_strictMono : StrictMono toHahnSeries :=
   toHahnSeriesOrderIso.strictMono
 
 @[simp, norm_cast]
-theorem toHahnSeries_lt_toHahnSeries_iff : toHahnSeries x < toHahnSeries y ↔ x < y :=
-  toHahnSeries_strictMono.lt_iff_lt
-
-@[simp, norm_cast]
 theorem toHahnSeries_le_toHahnSeries_iff : toHahnSeries x ≤ toHahnSeries y ↔ x ≤ y :=
   toHahnSeries_strictMono.le_iff_le
 
@@ -1167,10 +1051,6 @@ theorem toHahnSeries_ratCast (q : ℚ) : toHahnSeries q = .single 0 q :=
   mod_cast toHahnSeries_realCast q
 
 @[simp, norm_cast]
-theorem toHahnSeries_intCast (n : ℤ) : toHahnSeries n = .single 0 n :=
-  mod_cast toHahnSeries_realCast n
-
-@[simp, norm_cast]
 theorem toHahnSeries_natCast (n : ℕ) : toHahnSeries n = .single 0 n :=
   mod_cast toHahnSeries_realCast n
 
@@ -1181,9 +1061,5 @@ theorem toHahnSeries_zero : toHahnSeries 0 = 0 := by
 @[simp]
 theorem toHahnSeries_wpow (x : Surreal) : toHahnSeries (ω^ x) = .single x 1 :=
   toHahnSeries_eq (by simp)
-
-@[simp, norm_cast]
-theorem toHahnSeries_eq_zero {x : Surreal} : toHahnSeries x = 0 ↔ x = 0 := by
-  rw [← toHahnSeries_zero, toHahnSeries_inj]
 
 end Surreal

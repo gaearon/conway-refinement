@@ -80,10 +80,6 @@ theorem isPrimal (hR : HasFourFactorRefinement R) (a : R) : IsPrimal a := by
   obtain ⟨e, f, g, h, ha, _, hb, hc⟩ := hR.refine hq.symm
   exact ⟨e, f, ⟨g, hb⟩, ⟨h, hc⟩, ha⟩
 
-/-- A commutative monoid with four-factor refinement is a decomposition monoid. -/
-theorem decompositionMonoid (hR : HasFourFactorRefinement R) : DecompositionMonoid R :=
-  ⟨hR.isPrimal⟩
-
 end HasFourFactorRefinement
 
 /-- Multiplicatively equivalent commutative monoids have four-factor refinement simultaneously. -/
@@ -95,51 +91,6 @@ theorem MulEquiv.hasFourFactorRefinement_iff
 section CancelMulZero
 
 variable {R : Type u} [CommMonoidWithZero R] [IsCancelMulZero R]
-
-/-- A product equality with one nonzero primal factor has a four-factor refinement. -/
-theorem exists_fourFactorRefinement_of_isPrimal
-    {a b c d : R} (ha0 : a ≠ 0) (ha : IsPrimal a) (habcd : a * b = c * d) :
-    ∃ e f g h : R, a = e * f ∧ b = g * h ∧ c = e * g ∧ d = f * h := by
-  have hadvd : a ∣ c * d := ⟨b, habcd.symm⟩
-  obtain ⟨e, f, hec, hfd, haef⟩ := ha hadvd
-  obtain ⟨g, hcg⟩ := hec
-  obtain ⟨h, hdh⟩ := hfd
-  refine ⟨e, f, g, h, haef, ?_, hcg, hdh⟩
-  apply mul_left_cancel₀ ha0
-  calc
-    a * b = c * d := habcd
-    _ = (e * g) * (f * h) := by rw [hcg, hdh]
-    _ = (e * f) * (g * h) := by ac_rfl
-    _ = a * (g * h) := by rw [← haef]
-
-/-- Splice an equation-local refinement of one factor with primality of the complementary factor.
-If `a = t * w`, the retained factor `t` has been split as `e * f` with `e ∣ c` and `f ∣ d`,
-and `w` is primal, then the original divisibility `a ∣ c * d` has a primal refinement. -/
-theorem exists_primalRefinement_of_factor_refinement
-    {a b c d t w e f : R} (ha0 : a ≠ 0) (hab : a * b = c * d)
-    (hatw : a = t * w) (htef : t = e * f) (hec : e ∣ c) (hfd : f ∣ d)
-    (hw : IsPrimal w) :
-    ∃ a₁ a₂, a₁ ∣ c ∧ a₂ ∣ d ∧ a = a₁ * a₂ := by
-  obtain ⟨g, hcg⟩ := hec
-  obtain ⟨h, hdh⟩ := hfd
-  have ht0 : t ≠ 0 := fun ht ↦ ha0 (by rw [hatw, ht, zero_mul])
-  have hwdiv : w ∣ g * h := by
-    refine ⟨b, ?_⟩
-    apply mul_left_cancel₀ ht0
-    calc
-      t * (g * h) = (e * f) * (g * h) := by rw [htef]
-      _ = (e * g) * (f * h) := by ac_rfl
-      _ = c * d := by rw [← hcg, ← hdh]
-      _ = a * b := hab.symm
-      _ = t * (w * b) := by rw [hatw]; ac_rfl
-  obtain ⟨w₁, w₂, ⟨u, hgu⟩, ⟨v, hhv⟩, hww⟩ := hw hwdiv
-  refine ⟨e * w₁, f * w₂, ⟨u, ?_⟩, ⟨v, ?_⟩, ?_⟩
-  · rw [hcg, hgu]
-    ac_rfl
-  · rw [hdh, hhv]
-    ac_rfl
-  · rw [hatw, htef, hww]
-    ac_rfl
 
 /-- A commutative decomposition monoid with cancellation away from zero has four-factor
 refinement. -/
