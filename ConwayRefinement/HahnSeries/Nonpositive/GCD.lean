@@ -52,22 +52,20 @@ is stated through `Nonempty` because `GCDMonoid` contains a choice of gcd operat
   (phase := "Polynomial presentations")
   (title := "Greatest common divisors in $K((\\mathbb R^{\\le 0}))$")
   (statement := /--
-    Let $K$ be a field of characteristic $0$.  The ring
-    $K((\mathbb R^{\le 0}))$ of generalised power series with nonpositive real
-    exponents is a GCD domain.
+    Let $K$ have characteristic $0$. Then $K((\mathbb R^{\le 0}))$ is a GCD domain. As GCD domains
+    are pre-Schreier [LM24, Fact 2.5.1] and irreducible elements of a GCD domain are prime, this
+    answers the questions of [LM24, §1.2] whether $K((\mathbb R^{\le0}))$ is a pre-Schreier domain,
+    and of [LM24, §7] whether all its irreducible elements are prime.
   -/)
   (proof := /--
-    By \ref{thm:hahn-series-polynomial-algebra}, $K((\mathbb R^{\le 0}))$ is
-    a polynomial ring over the finite-support subring $K(\mathbb R^{\le 0})$,
-    which is a GCD domain by \ref{fact:finite-support-hahn-gcd}.  Normalise
-    each nonzero greatest common divisor in $K(\mathbb R^{\le0})$ to have
-    coefficient $1$ at its greatest exponent.  Gauss's lemma makes a
-    polynomial ring over a GCD domain in finitely many variables a GCD domain;
-    two polynomials involve only finitely many variables, and a greatest common
-    divisor in the polynomial ring in those variables remains one in the full
-    polynomial ring, because a common divisor of two polynomials that are not
-    both $0$ involves no further variables.  Transport the gcd across the
-    isomorphism.
+    By \ref{thm:hahn-series-polynomial-algebra}, $K((\mathbb R^{\le 0}))$ is isomorphic to a
+    polynomial ring over $K(\mathbb R^{\le 0})$, which is a GCD domain by
+    \ref{fact:finite-support-hahn-gcd}. A polynomial ring in finitely many variables over a GCD
+    domain is a GCD domain, by Gauss's lemma and induction on the number of variables. This extends
+    to any set of variables: two polynomials lie in the polynomial ring in finitely many of the
+    variables, and a greatest common divisor there is one in the full polynomial ring, because a
+    common divisor of two polynomials that are not both $0$ involves only variables occurring in
+    them.
   -/)
   (highlight)]
 theorem nonemptyGCDMonoid : Nonempty (GCDMonoid (Nonpositive ℝ K)) := by

@@ -41,21 +41,17 @@ variable {G : Type u} {K : Type v} [AddCommGroup G] [LinearOrder G] [IsOrderedAd
   (phase := "Germs of translated truncations")
   (title := "Exponents with nonzero germ")
   (statement := /--
-    Let $K$ be a field and $G$ a nontrivial ordered abelian group with its order
-    topology and the associated group uniformity.  For
-    $b\in K((G^{\le0}))$ and $\gamma\in G$, the germ $[b^{|\gamma}]$ of $b$
-    at $\gamma$ is nonzero if and only if $\gamma$ lies in the closure of
+    For $b\in K((G^{\le0}))$ and $\gamma\in G$, the germ $[b^{|\gamma}]$ is
+    nonzero if and only if $\gamma$ lies in the closure of
     $\operatorname{supp}(b)$.
   -/)
   (proof := /--
-    For $d\in K((G^{\le0}))$, $d\in J$ exactly when $0$ is not in the closure
-    of $\operatorname{supp}(d)$, that is, when $V_{\mathrm{CB}}(d)=0$
-    (\ref{def:cantor-bendixson-value}).  Truncation at $\gamma$ does not change
-    the closed support near $\gamma$, and translation by $-\gamma$ moves
-    $\gamma$ to $0$; so $0$ lies in the closure of
-    $\operatorname{supp}(b^{|\gamma})$ exactly when $\gamma$ lies in the closure
-    of $\operatorname{supp}(b)$.  Apply this to the class of
-    \ref{def:germ-at}.
+    For $d\in K((G^{\le0}))$, $d\in J$ exactly when $0$ is not in the closed support of $d$, that
+    is, when $V_{\mathrm{CB}}(d)=0$ (\ref{def:cantor-bendixson-value}). The points of
+    $\operatorname{supp}(b)$ above $\gamma$, if any, have a least element, so the closed supports of
+    $b_{|\gamma}$ and $b$ agree near $\gamma$; translation by $-\gamma$ moves $\gamma$ to $0$. So
+    $0$ lies in the closed support of $b^{|\gamma}$ exactly when $\gamma$ lies in the closed support
+    of $b$. Apply this to the class of \ref{def:germ-at}.
   -/)]
 theorem germAt_ne_zero_iff (b : Nonpositive G K) (γ : G) :
     germAt γ b ≠ 0 ↔ γ ∈ closure (b : HahnSeries G K).support := by
@@ -83,15 +79,19 @@ theorem eq_zero_of_forall_germAt_eq_zero (b : Nonpositive G K) (h : ∀ γ, germ
   by_contra hδ
   exact (germAt_ne_zero_iff b δ).mpr (subset_closure hδ) (h δ)
 
-/-- The truncation `b_{|η}` of a nonpositive series, again a nonpositive series. -/
-private def truncation (η : G) (b : Nonpositive G K) : Nonpositive G K :=
+/-- The truncation `b_{|η}` of a nonpositive series, the part of `b` with exponents at most `η`. -/
+def truncation (η : G) (b : Nonpositive G K) : Nonpositive G K :=
   ⟨truncLE η (b : HahnSeries G K), by
     rw [mem_nonpositiveSubring]; exact (support_truncLE_subset η _).trans (support_subset b)⟩
 
+omit [UniformSpace G] [IsUniformAddGroup G] [OrderTopology G] [Nontrivial G] in
+@[simp]
+theorem coe_truncation (η : G) (b : Nonpositive G K) :
+    (truncation η b : HahnSeries G K) = truncLE η (b : HahnSeries G K) := (rfl)
+
 /-- The truncation of `b` at `η` keeps the germs at exponents `≤ η` and kills the others. -/
-theorem exists_germAt_truncation (b : Nonpositive G K) (η : G) :
-    ∃ b' : Nonpositive G K, ∀ ξ, germAt ξ b' = if ξ ≤ η then germAt ξ b else 0 := by
-  refine ⟨truncation η b, fun ξ => ?_⟩
+theorem germAt_truncation (b : Nonpositive G K) (η ξ : G) :
+    germAt ξ (truncation η b) = if ξ ≤ η then germAt ξ b else 0 := by
   split_ifs with hξ
   · rw [germAt_apply, germAt_apply]
     congr 1
@@ -110,6 +110,11 @@ theorem exists_germAt_truncation (b : Nonpositive G K) (η : G) :
       by_contra h
       exact hδ (if_neg h)
     exact hξ (closure_minimal hsub isClosed_Iic hmem)
+
+/-- The truncation of `b` at `η` keeps the germs at exponents `≤ η` and kills the others. -/
+theorem exists_germAt_truncation (b : Nonpositive G K) (η : G) :
+    ∃ b' : Nonpositive G K, ∀ ξ, germAt ξ b' = if ξ ≤ η then germAt ξ b else 0 :=
+  ⟨truncation η b, germAt_truncation b η⟩
 
 omit [UniformSpace G] [IsUniformAddGroup G] [OrderTopology G] in
 /-- Multiplication by the monomial `t^γ`, `γ ≤ 0`, translates germs by `γ`. -/
@@ -137,25 +142,22 @@ neighbourhood of `γ`. -/
   (phase := "Germs of translated truncations")
   (title := "Characterisation of constant germs")
   (statement := /--
-    Let $K$ be a field and $G$ a nontrivial ordered abelian group with its order
-    topology and the associated group uniformity.  For
-    $b\in K((G^{\le0}))$ and $\gamma\in G$, the germ $[b^{|\gamma}]$ lies in
-    the image of $K$ in $K((G^{\le0}))/J$ if and only if there is
-    $\varepsilon<0$ such that $[b^{|\gamma+\zeta}]=0$ for every
-    $\zeta\in(\varepsilon,0)$.
+    For $b\in K((G^{\le0}))$ and $\gamma\in G$, the germ $[b^{|\gamma}]$ lies in
+    $K$ if and only if there is $\varepsilon<0$ with $[b^{|\gamma+\zeta}]=0$ for
+    all $\zeta\in(\varepsilon,0)$.
   -/)
   (proof := /--
-    By \ref{lem:germs-of-translated-truncation} the germs of $b^{|\gamma}$ at
-    $\zeta\le0$ are the germs of $b$ at $\gamma+\zeta$, so it suffices to treat
-    $\gamma=0$.  If $b-k\in J$ for some $k\in K$, say with support in
-    $(-\infty,c]$, $c<0$, then for $\xi\in(c,0)$ the translated truncation
-    $(b-k)^{|\xi}=t^{-\xi}(b-k)$ has support bounded away from $0$ and
-    $k^{|\xi}=0$; so the germs of $b$ vanish on $(c,0)$.  Conversely, if the
-    germ at $\xi$ vanishes, then $V_{\mathrm{CB}}(b^{|\xi})=0$, so $0$ is not in
-    the support of $b^{|\xi}$ and the coefficient of $t^\xi$ in $b$ is $0$
-    (\ref{def:cantor-bendixson-value}).  If this holds for all
-    $\xi\in(\varepsilon,0)$, then $b$ minus its constant coefficient has support
-    in $(-\infty,\varepsilon]$ and lies in $J$.
+    By \ref{lem:germs-of-translated-truncation} the germs of $b^{|\gamma}$ at $\zeta\le0$ are the
+    germs of $b$ at $\gamma+\zeta$, for every $\gamma\in G$, so it suffices to treat $\gamma=0$.
+    (For $\gamma>0$ both sides hold: $b^{|\gamma}=t^{-\gamma}b$ has support in $(-\infty,-\gamma]$,
+    so the germs of $b$ at positive exponents vanish.) If $b-k\in J$ for some $k\in K$, say with
+    support in $(-\infty,c]$, $c<0$, then for $\xi\in(c,0)$ the translated truncation
+    $(b-k)^{|\xi}=t^{-\xi}(b-k)$ has support bounded away from $0$ and $k^{|\xi}=0$; so the germs of
+    $b$ vanish on $(c,0)$. Conversely, if the germ of $b$ at $\xi<0$ vanishes, then
+    $V_{\mathrm{CB}}(b^{|\xi})=0$, so $0$ is not in the support of $b^{|\xi}$, and the coefficient
+    of $t^\xi$ in $b$ is $0$ (\ref{def:cantor-bendixson-value}). If this holds for all
+    $\xi\in(\varepsilon,0)$, then $b$ minus its constant coefficient has support in
+    $(-\infty,\varepsilon]$ and lies in $J$.
   -/)]
 theorem germAt_mem_range_algebraMap_iff (b : Nonpositive G K) (γ : G) :
     germAt γ b ∈ Set.range (algebraMap K (Nonpositive G K ⧸

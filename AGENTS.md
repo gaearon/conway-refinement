@@ -123,8 +123,12 @@ For every selected node:
   or “… decomposition”. Never invent terminology merely to title a node, restate the whole theorem
   in the title, use proof narration as a title, or rely on pronouns and surrounding nodes;
 - multiple conclusions appear only when the Lean type returns them together;
-- statement and proof prose exactly match the full Lean signature and actual proof;
-- proof prose cites exactly the visible immediate blueprint predecessors;
+- statement and proof prose exactly match the full Lean signature and actual proof. A statement may
+  rely on its chapter's standing setting (`setting` in `blueprint/phases.json`) and states every
+  further hypothesis; setting plus statement match the full Lean signature;
+- a statement does not assume the conclusion of another node; the proof cites that node instead;
+- proof prose cites every visible immediate blueprint predecessor, and may also cite other
+  results from which the node is reachable in the dependency graph, but nothing else;
 - the vocabulary is standard and source attributions are checked at their primary pinpoints.
 
 Never add dummy theorem uses or prose references to shape the dependency graph. When an implication

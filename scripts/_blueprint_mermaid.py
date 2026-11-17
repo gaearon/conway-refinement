@@ -46,6 +46,8 @@ TEX_COMMANDS = {
     r"\ominus": "⊖",
     r"\nsum": "⊕",
     r"\nsub": "⊖",
+    r"\preceq": "⪯",
+    r"\prec": "≺",
     r"\leq": "≤",
     r"\le": "≤",
     r"\geq": "≥",

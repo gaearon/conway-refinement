@@ -86,10 +86,10 @@ theorem exists_nonzeroSupportClass_bound_tailQuotient
 /-- If the support meets every class of a limit block, its nonzero outer classes after tail
 regrouping are cofinal in the tail quotient. -/
 theorem isCofinal_supportArchimedeanClasses_convexQuotientSplit
-    (T₀ T₁ : Set (ArchimedeanClass G))
+    (T₀ : Set (ArchimedeanClass G))
     (hT₀gt : ∀ a ∈ T₀, ∃ b ∈ T₀, a < b)
     (x : HahnSeries G R)
-    (hxclasses : ArchimedeanClass.mk '' x.support = T₀ ∪ T₁) :
+    (hT₀sub : T₀ ⊆ ArchimedeanClass.mk '' x.support) :
     let T : Set (FiniteArchimedeanClass G) := {c | c.1 ∈ T₀}
     let P := FiniteArchimedeanClass.tailSubmodule ℚ T
     let y := convexQuotientSplitRingEquiv P x
@@ -104,9 +104,7 @@ theorem isCofinal_supportArchimedeanClasses_convexQuotientSplit
     obtain ⟨d, hdT₀, hcd⟩ := hT₀gt c.1 c.2
     obtain ⟨e, heT₀, hde⟩ := hT₀gt d hdT₀
     obtain ⟨f, _hfT₀, hef⟩ := hT₀gt e heT₀
-    have hdOcc : d ∈ ArchimedeanClass.mk '' x.support := by
-      rw [hxclasses]
-      exact Or.inl hdT₀
+    have hdOcc : d ∈ ArchimedeanClass.mk '' x.support := hT₀sub hdT₀
     obtain ⟨g, hg, hgd⟩ := hdOcc
     let P := FiniteArchimedeanClass.tailSubmodule ℚ
       {c : FiniteArchimedeanClass G | c.1 ∈ T₀}
@@ -177,31 +175,24 @@ nonzero support classes of the complementary factor. -/
   (phase := "Reduction along Archimedean classes")
   (title := "Factorisation at an Archimedean class of a quotient")
   (statement := /--
-    Let $G$ be an ordered rational vector space, $R$ a field, $Z\subseteq R$ a
-    subring and $\kappa>\aleph_0$.  Let $T$ be a set of nonzero Archimedean
-    classes of $G$, let $H_T=\bigcap_{\sigma\in T}G_{\preceq\sigma}$, and let
-    $q$ be a nonzero Archimedean class of $G/H_T$.  Let
-    $b\in Z+R((G^{<0}))_\kappa$ be such that the image of
-    $\operatorname{supp}(b)$ in $G/H_T$ meets $q$ and the restriction $t$ of
-    $b$ to the inverse image of $(G/H_T)_{\preceq q}$ is nonzero.  Then
-    \[
-      b=tw,
-    \]
-    where $w\in Z+R((G^{<0}))_\kappa$ has constant coefficient $1$ and the set
-    of nonzero Archimedean classes met by $\operatorname{supp}(w)$ has strictly
-    smaller order type than that of $b$.
+    Let $G$ be an ordered $\mathbb Q$-vector space, $T$ a set of nonzero Archimedean classes of $G$,
+    and $b\in Z+R((G^{<0}))_\kappa$. Let $q$ be a nonzero class of $G/G_T$ met by the image of
+    $\operatorname{supp}(b)$, and let $C\subseteq G$ be the inverse image of $(G/G_T)_{\preceq q}$.
+    Then $b=\rho_C(b)\,w$ for some $w\in Z+R((G^{<0}))_\kappa$ with constant coefficient $1$ and
+    $\operatorname{ot}\mathcal C(w)<\operatorname{ot}\mathcal C(b)$.
   -/)
   (proof := /--
-    The inverse image of $(G/H_T)_{\preceq q}$ is a convex subgroup of $G$, so
-    \ref{lem:factorisation-by-convex-restriction} gives $b=tw$ with $w$ of
-    constant coefficient $1$, every nonzero exponent of $w$ outside that
-    subgroup and of an Archimedean class met by $\operatorname{supp}(b)$.  Pick
-    $y\in\operatorname{supp}(b)$ whose image has class $q$.  An exponent of $w$
-    outside the inverse image of $(G/H_T)_{\preceq q}$ has image of larger
-    magnitude than the image of $y$, and since $H_T$ is convex the same strict
-    comparison holds in $G$.  Thus the classes met by $w$ form a subset of the
-    classes met by $b$ lying strictly beyond the class of $y$ in magnitude, and
-    a proper initial segment of a well-ordered set has smaller order type.
+    The quotient map is monotone, so $C$ is a convex subgroup of $G$. Pick
+    $y\in\operatorname{supp}(b)$ whose image $\bar y$ has class $q$; then $y\in C$, so
+    $\rho_C(b)\ne0$, and $y\ne0$. By \ref{lem:factorisation-by-convex-restriction},
+    $b=\rho_C(b)\,w$, where $w$ has constant coefficient $1$ and every nonzero exponent $g$ of $w$
+    lies outside $C$ and in a class met by $b$. For such $g$ the image $\bar g$ has class $\succ q$,
+    that is, $n|\bar y|<|\bar g|$ for all $n\ge1$; since the quotient map is monotone, $n|y|<|g|$
+    for all $n$, that is, $[g]\succ[y]$. So $\mathcal C(w)$ is contained in the initial segment
+    $\{\tau\in\mathcal C(b):\tau\succ[y]\}$ of $\mathcal C(b)$, which is proper because
+    $[y]\in\mathcal C(b)$. A subset of a well-ordered set has order type at most that of the set,
+    and a proper initial segment has smaller order type. Hence $\operatorname{ot}\mathcal
+    C(w)<\operatorname{ot}\mathcal C(b)$.
   -/)]
 theorem exists_factor_with_smaller_support_class_orderType
     {G : Type u} {R : Type v}
@@ -216,11 +207,7 @@ theorem exists_factor_with_smaller_support_class_orderType
       (G := G) (R := R) (κ := κ) Z)
     (hqocc : q.1 ∈ ArchimedeanClass.mk ''
       (Submodule.Quotient.mk (p := FiniteArchimedeanClass.tailSubmodule ℚ T) ''
-        (b : HahnSeries G R).support))
-    (hne : HahnSeries.filter
-      (· ∈ (FiniteArchimedeanClass.closedBallAddSubgroup q).comap
-        (FiniteArchimedeanClass.tailSubmodule ℚ T).mkQ.toAddMonoidHom)
-      (b : HahnSeries G R) ≠ 0) :
+        (b : HahnSeries G R).support)) :
     ∃ t w : HahnSeries.cardSuppLTTruncationIntegerPart
         (G := G) (R := R) (κ := κ) Z,
       (t : HahnSeries G R) = HahnSeries.filter
@@ -236,6 +223,18 @@ theorem exists_factor_with_smaller_support_class_orderType
   let P := FiniteArchimedeanClass.tailSubmodule ℚ T
   let C : AddSubgroup G :=
     (FiniteArchimedeanClass.closedBallAddSubgroup q).comap P.mkQ.toAddMonoidHom
+  have hne : HahnSeries.filter (· ∈ C) (b : HahnSeries G R) ≠ 0 := by
+    obtain ⟨z, ⟨r, hr, hqr⟩, hzq⟩ := hqocc
+    intro hzero
+    have hcoeff := congrArg (fun y : HahnSeries G R ↦ y.coeff r) hzero
+    rw [HahnSeries.coeff_filter, if_pos] at hcoeff
+    · exact (HahnSeries.mem_support _ _).mp hr hcoeff
+    · change P.mkQ r ∈ FiniteArchimedeanClass.closedBallAddSubgroup q
+      apply FiniteArchimedeanClass.mem_closedBallAddSubgroup_iff.mpr
+      intro _hr0
+      change q.1 ≤ ArchimedeanClass.mk (P.mkQ r)
+      change P.mkQ r = z at hqr
+      rw [hqr, hzq]
   letI : C.IsConvex := by
     constructor
     exact (FiniteArchimedeanClass.closedBall_ordConnected q).preimage_mono

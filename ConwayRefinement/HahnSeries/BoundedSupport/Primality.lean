@@ -8,6 +8,7 @@ module
 public import ConwayRefinement.HahnSeries.BoundedSupport.Residue
 import ConwayRefinement.Algebra.Divisibility.PrimalPreimage
 import Mathlib.Algebra.Field.IsField
+import ConwayRefinement.Blueprint
 
 /-!
 # Primality in bounded truncation integer parts
@@ -73,8 +74,8 @@ private theorem isPrimal_residueSubring_of_isUnit
     (π : A →ₐ[F] F) (S : Subring F) [DecompositionMonoid S]
     {x : A} (hx : π x ∈ S) (hx0 : π x ≠ 0) (hunit : IsUnit x) :
     IsPrimal (⟨x, hx⟩ : Subring.residueSubring π S) :=
-  Subring.isPrimal_residueSubring_of_isPrimal
-    hx hx0 (DecompositionMonoid.primal _) hunit.isPrimal
+  Subring.isPrimal_residueSubring_of_isPrimal_of_residue
+    hx hunit.isPrimal (fun _ ↦ DecompositionMonoid.primal _) (fun h ↦ absurd h hx0)
 
 private theorem isPrimal_equiv_preimage
     {A B : Type*} [CommRing A] [CommRing B] (e : A ≃+* B) {x : A}
@@ -83,6 +84,21 @@ private theorem isPrimal_equiv_preimage
 
 /-- An order-zero element of a cardinal-bounded truncation integer part is primal when its
 coefficient subring is pre-Schreier. -/
+@[blueprint "lem:primality-of-constants"
+  (phase := "Reduction along Archimedean classes")
+  (title := "Primality of constants")
+  (statement := /--
+    Let $Z$ be pre-Schreier and let $x\in Z+R((G^{<0}))_\kappa$ have $v(x)=0$, that is, $x\in Z$.
+    Then $x$ is primal in $Z+R((G^{<0}))_\kappa$.
+  -/)
+  (proof := /--
+    If $x=0$, then $x$ is primal. Otherwise $v(x)=0$ and $\operatorname{supp}(x)\subseteq G^{\le0}$
+    force $\operatorname{supp}(x)=\{0\}$, so $x$ is a nonzero constant $c\in Z$. Let
+    $A=R((G^{\le0}))_\kappa$, a domain and an $R$-algebra, and $\pi:A\to R$ the constant
+    coefficient. In $A$ the element $x$ is a unit, hence primal; its residue $\pi(x)=c$ is primal in
+    $Z$, as $Z$ is pre-Schreier. Since $Z+R((G^{<0}))_\kappa=\pi^{-1}(Z)$,
+    \ref{lem:primality-in-d-plus-m} shows that $x$ is primal there.
+  -/)]
 theorem isPrimal_of_order_eq_zero
     (S : Subring L) [DecompositionMonoid S]
     (x : cardSuppLTTruncationIntegerPart (G := G) (R := L) (κ := κ) S)

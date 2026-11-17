@@ -17,7 +17,7 @@ public import Mathlib.Topology.UniformSpace.Cauchy
 import ConwayRefinement.HahnSeries.CharZero
 import ConwayRefinement.HahnSeries.IntegerPart.CommonTailGerms
 import ConwayRefinement.HahnSeries.IntegerPart.FiniteClasses
-import ConwayRefinement.HahnSeries.IntegerPart.Regrouping
+public import ConwayRefinement.HahnSeries.IntegerPart.Regrouping
 import ConwayRefinement.HahnSeries.IntegerPart.SupportClassFactorization
 
 /-!
@@ -163,20 +163,7 @@ private theorem restriction_mul_isPrimal_at_support_class
       x = t * w ∧ IsPrimal w ∧ (w : R⟦G⟧).coeff 0 ≠ 0 := by
   let C : AddSubgroup G := (FiniteArchimedeanClass.closedBallAddSubgroup q).comap
     (FiniteArchimedeanClass.tailSubmodule ℚ T).mkQ.toAddMonoidHom
-  have hfilter0 : HahnSeries.filter (· ∈ C) (x : HahnSeries G R) ≠ 0 := by
-    obtain ⟨z, ⟨r, hr, hqr⟩, hzq⟩ := hqocc
-    intro hzero
-    have hcoeff := congrArg (fun y : HahnSeries G R ↦ y.coeff r) hzero
-    rw [HahnSeries.coeff_filter, if_pos] at hcoeff
-    · exact (HahnSeries.mem_support _ _).mp hr hcoeff
-    · change (FiniteArchimedeanClass.tailSubmodule ℚ T).mkQ r ∈
-        FiniteArchimedeanClass.closedBallAddSubgroup q
-      apply FiniteArchimedeanClass.mem_closedBallAddSubgroup_iff.mpr
-      intro _hr0
-      change q.1 ≤ ArchimedeanClass.mk ((FiniteArchimedeanClass.tailSubmodule ℚ T).mkQ r)
-      change (FiniteArchimedeanClass.tailSubmodule ℚ T).mkQ r = z at hqr
-      rw [hqr, hzq]
-  have hfactor := exists_factor_with_smaller_support_class_orderType Z T q x hqocc hfilter0
+  have hfactor := exists_factor_with_smaller_support_class_orderType Z T q x hqocc
   obtain ⟨t, w, ht, hfac, hw1, hrank⟩ := hfactor
   refine ⟨t, w, ?_, hfac, ih w hrank, by rw [hw1]; exact one_ne_zero⟩
   apply Subtype.ext
@@ -214,19 +201,54 @@ private theorem limit_family_card_lt {G : Type u} {R : Type v}
     _ ≤ #(x : HahnSeries G R).support := Cardinal.mk_image_le
     _ < κ := x.1.2
 
-/-- Under the hypotheses of the limit step, the regrouped series is primal in
-`L((Γ^{≤0}))_κ`. -/
-private theorem isPrimal_regroupAmbient_of_limit_tail
+/-- Let `T₀` be a nonempty set of Archimedean classes met by the support of `x ≠ 0`, without least
+member in magnitude, and let the quotient `Γ` of `G` by the common tail below `T₀` be Cauchy
+complete. If every series of smaller support-class order type is primal, then the
+regrouping of `x` along the common tail is primal in `L((Γ^{≤0}))_κ`. -/
+@[blueprint "lem:regrouped-primality-at-limit"
+  (phase := "Reduction along Archimedean classes")
+  (title := "Primality of the regrouping at a limit of Archimedean classes")
+  (statement := /--
+    Let $G$ be an ordered $\mathbb Q$-vector space, $R$ of characteristic $0$, and $\kappa$ regular.
+    Let $0\ne x\in Z+R((G^{<0}))_\kappa$, and let $T_0$ be a nonempty set of classes met by $x$,
+    without $\prec$-least element and satisfying (B2)$_{T_0}$. Suppose that every
+    $y\in Z+R((G^{<0}))_\kappa$ with $\operatorname{ot}\mathcal C(y)<\operatorname{ot}\mathcal C(x)$
+    is primal. Then the regrouping $\hat x$ of $x$ along the $\mathbb Q$-subspace $G_{T_0}$ is
+    primal in $L((\Gamma^{\le0}))_\kappa$, where $\Gamma=G/G_{T_0}$ and $L=R((G_{T_0}))_\kappa$.
+  -/)
+  (proof := /--
+    Since $[0]$ is the $\prec$-least class, $T_0$ consists of nonzero classes. We apply
+    \ref{lem:primality-from-germs} with $f=\hat x$ and $T=T_0$; the field $L$ has characteristic
+    $0$. Let $q_0$ be a nonzero class of $\Gamma$. We find a nonzero class $q\preceq q_0$ with
+    $\rho_q(\hat x)\ne0$ and $\hat x=\rho_q(\hat x)\,\hat w$, $\hat w$ primal.
+
+    The class $q_0$ is the class of the image of some $g\notin G_{T_0}$, so $\sigma\prec[g]$ for
+    some $\sigma\in T_0$. Choose $\tau,\tau'\in T_0$ with $\tau'\prec\tau\prec\sigma$, and
+    $y\in\operatorname{supp}(x)$ of class $\tau$. Then $y\notin G_{T_0}$, and the class $q$ of the
+    image of $y$ is nonzero and satisfies $q\preceq q_0$. By \ref{lem:support-class-factorisation},
+    applied with $T=T_0$, we have $x=\rho_C(x)\,w$, where $C$ is the inverse image of
+    $\Gamma_{\preceq q}$, $w$ has constant coefficient $1$, and $\operatorname{ot}\mathcal
+    C(w)<\operatorname{ot}\mathcal C(x)$. So $w$ is primal by hypothesis.
+
+    Regrouping is a ring isomorphism onto $D+L((\Gamma^{<0}))_\kappa$, which takes $\rho_C(x)$ to
+    $\rho_q(\hat x)$; this is nonzero because $y\in C$. The regrouping $\hat w$ is primal in
+    $D+L((\Gamma^{<0}))_\kappa$, with constant coefficient $1$. So it is primal in
+    $L((\Gamma^{\le0}))_\kappa$: every element of that ring is a nonzero constant times one with
+    constant coefficient $0$ or $1$, and this reduces a divisibility relation in
+    $L((\Gamma^{\le0}))_\kappa$ to one in $D+L((\Gamma^{<0}))_\kappa$. Thus
+    $\hat x=\rho_q(\hat x)\,\hat w$ as required.
+  -/)]
+theorem isPrimal_regroupAmbient_of_limit_tail
     {G : Type u} {R : Type v}
     [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G]
     [Module ℚ G] [PosSMulMono ℚ G]
     [Field R] [CharZero R]
     {κ : Cardinal} [Fact (ℵ₀ < κ)] [Fact κ.IsRegular]
     (Z : Subring R)
-    (T₀ T₁ : Set (ArchimedeanClass G)) (hT₀gt : ∀ a ∈ T₀, ∃ b ∈ T₀, a < b)
+    (T₀ : Set (ArchimedeanClass G)) (hT₀ne : T₀.Nonempty)
+    (hT₀gt : ∀ a ∈ T₀, ∃ b ∈ T₀, a < b)
     (x : HahnSeries.cardSuppLTTruncationIntegerPart (G := G) (R := R) (κ := κ) Z)
-    (hxclasses : ArchimedeanClass.mk '' (x : HahnSeries G R).support = T₀ ∪ T₁)
-    [Nonempty {c : FiniteArchimedeanClass G | c.1 ∈ T₀}]
+    (hT₀sub : T₀ ⊆ ArchimedeanClass.mk '' (x : HahnSeries G R).support)
     [CompleteSpace (FiniteArchimedeanClass.TailQuotient
       {c : FiniteArchimedeanClass G | c.1 ∈ T₀})]
     (hx0 : x ≠ 0)
@@ -240,6 +262,11 @@ private theorem isPrimal_regroupAmbient_of_limit_tail
   let T : Set (FiniteArchimedeanClass G) := {c | c.1 ∈ T₀}
   let P := FiniteArchimedeanClass.tailSubmodule ℚ T
   have hT := limit_family_exists_gt T₀ hT₀gt
+  haveI : Nonempty T := by
+    obtain ⟨a, ha⟩ := hT₀ne
+    obtain ⟨b, hb, hab⟩ := hT₀gt a ha
+    obtain ⟨c, _hc, hbc⟩ := hT₀gt b hb
+    exact ⟨⟨⟨b, ne_top_of_lt hbc⟩, hb⟩⟩
   haveI : Nonempty (FiniteArchimedeanClass (FiniteArchimedeanClass.TailQuotient T)) := by
     letI := FiniteArchimedeanClass.nontrivial_tailQuotient T hT
     obtain ⟨y, hy⟩ := exists_ne (0 : FiniteArchimedeanClass.TailQuotient T)
@@ -252,7 +279,7 @@ private theorem isPrimal_regroupAmbient_of_limit_tail
       q.1 ∈ ArchimedeanClass.mk ''
         (HahnSeries.convexQuotientSplitRingEquiv P (x : HahnSeries G R)).support} :=
     HahnSeries.isCofinal_supportArchimedeanClasses_convexQuotientSplit
-      T₀ T₁ hT₀gt (x : HahnSeries G R) hxclasses
+      T₀ hT₀gt (x : HahnSeries G R) hT₀sub
   have hq₀ : ∃ q ∈ {q : FiniteArchimedeanClass (FiniteArchimedeanClass.TailQuotient T) |
       q.1 ∈ ArchimedeanClass.mk ''
         (HahnSeries.convexQuotientSplitRingEquiv P (x : HahnSeries G R)).support}, q₀ ≤ q :=
@@ -269,153 +296,6 @@ private theorem isPrimal_regroupAmbient_of_limit_tail
   obtain ⟨t, w, ht, hfac, hw, hw0⟩ := hfactor
   exact ⟨q, hq₀q, restriction_mul_isPrimal_of_factorization P Z _ x t w hx0 ht hfac hw hw0⟩
 
-/-- **The limit step.** Suppose the Archimedean classes met by the support of `x` are `T₀ ∪ T₁`
-with `T₁` finite and `T₀` without least member in the magnitude order. If the quotient by the
-common tail below `T₀` is Cauchy complete, the bounded Hahn field on that tail is the fraction
-field of its bounded integer part, finite-class primality holds, and every series of smaller
-support-class order type is primal, then `x` is primal. -/
-@[blueprint "thm:limit-tail-step"
-  (phase := "Reduction along Archimedean classes")
-  (title := "Primality at a limit of Archimedean classes")
-  (statement := /--
-    Let $G$ be an ordered rational vector space, $R$ a field of characteristic
-    zero, $\kappa>\aleph_0$ a regular cardinal, and $Z\subseteq R$ a subring.
-    Assume that every element of $Z+R((G^{<0}))_\kappa$ whose support meets
-    only finitely many Archimedean classes is primal.  Let
-    $x\in Z+R((G^{<0}))_\kappa$, and suppose the set of Archimedean classes
-    met by $\operatorname{supp}(x)$ is $T_0\cup T_1$, where $T_1$ is finite and
-    $T_0$ contains a nonzero class and has no least element in magnitude.  Let
-    $H=\bigcap_{\sigma\in T_0}G_{\preceq\sigma}$, taken over the nonzero classes
-    of $T_0$.  Assume that $G/H$ is Cauchy complete for the group uniformity of
-    its order topology, that $R((H))_\kappa=\operatorname{Frac}(Z+R((H^{<0}))_\kappa)$,
-    and that every element of $Z+R((G^{<0}))_\kappa$ for which the set of
-    nonzero Archimedean classes met by its support has smaller order type than
-    for $x$ is primal.  Then $x$ is primal.
-  -/)
-  (proof := /--
-    Put $\Gamma=G/H$, $L=R((H))_\kappa$, $D=Z+R((H^{<0}))_\kappa$ and
-    $T=L((\Gamma^{\le0}))_\kappa$.  We use
-    \ref{lem:primality-through-regrouping}.  The restriction $x_{\vert H}$ meets
-    only classes of $T_1$, so it is primal by the finite-class hypothesis, and
-    primal in $D$ because restriction to $H$ is a ring endomorphism
-    (\ref{lem:convex-restriction-ring-hom}) that tests divisibility
-    (\ref{lem:divisibility-from-convex-restriction}).  It remains to show that
-    the regrouping $\hat x$ of $x$ is primal in $T$.
-
-    Apply \ref{lem:primality-from-germs-and-restrictions} in $T$, with $J$ the
-    ideal of series whose support is bounded away from $0$, and with the
-    restrictions $\rho_q$ to the closed balls $\Gamma_{\preceq q}$, $q$ ranging
-    over the nonzero Archimedean classes of $\Gamma$ ordered towards $0$.  These
-    are ring endomorphisms that test divisibility by the same two lemmas, and
-    every element of $J$ is killed by $\rho_q$ once $q$ is small enough.  By
-    \ref{thm:bounded-hahn-germ-polynomial-algebra}, applied to the Cauchy
-    complete group $\Gamma$ and the field $L$, the ring $T/J$ is a polynomial
-    ring over a field, hence a unique factorisation domain, so every element
-    is primal.  Since $T_0$ has no least element, the classes of $\Gamma$ met
-    by the support of $\hat x$ are arbitrarily small.  For such a class $q$,
-    \ref{lem:support-class-factorisation} gives $x=tw$, where $t$ corresponds
-    to $\rho_q(\hat x)$ and $w$ has constant coefficient $1$ and smaller order
-    type of classes.  By hypothesis $w$ is primal in
-    $Z+R((G^{<0}))_\kappa\simeq D+L((\Gamma^{<0}))_\kappa$, and since its
-    constant coefficient is a unit of $L$ it is primal in $T$.
-  -/)]
-theorem isPrimal_of_limit_tail
-    {G : Type u} {R : Type v}
-    [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G]
-    [Module ℚ G] [PosSMulMono ℚ G]
-    [Field R] [CharZero R]
-    {κ : Cardinal} [Fact (ℵ₀ < κ)] [Fact κ.IsRegular]
-    (Z : Subring R)
-    (hfinite : ∀ y : HahnSeries.cardSuppLTTruncationIntegerPart
-        (G := G) (R := R) (κ := κ) Z,
-      (ArchimedeanClass.mk '' (y : HahnSeries G R).support).Finite → IsPrimal y)
-    (T₀ T₁ : Set (ArchimedeanClass G))
-    (hT₀gt : ∀ a ∈ T₀, ∃ b ∈ T₀, a < b) (hT₁ : T₁.Finite)
-    (x : HahnSeries.cardSuppLTTruncationIntegerPart (G := G) (R := R) (κ := κ) Z)
-    (hxclasses : ArchimedeanClass.mk '' (x : HahnSeries G R).support = T₀ ∪ T₁)
-    [Nonempty {c : FiniteArchimedeanClass G | c.1 ∈ T₀}]
-    [CompleteSpace (FiniteArchimedeanClass.TailQuotient
-      {c : FiniteArchimedeanClass G | c.1 ∈ T₀})]
-    (htailfrac : Subring.fracSubring (HahnSeries.cardSuppLTTruncationIntegerPart
-      (G := FiniteArchimedeanClass.tailSubmodule ℚ {c : FiniteArchimedeanClass G | c.1 ∈ T₀})
-      (R := R) (κ := κ) Z) = ⊤)
-    (ih : ∀ w : HahnSeries.cardSuppLTTruncationIntegerPart (G := G) (R := R) (κ := κ) Z,
-      (HahnSeries.Nonpositive.isPWO_nonzeroSupportArchimedeanClasses
-          (toNonpositiveRingHom Z w)).orderType <
-        (HahnSeries.Nonpositive.isPWO_nonzeroSupportArchimedeanClasses
-          (toNonpositiveRingHom Z x)).orderType → IsPrimal w) :
-    IsPrimal x := by
-  by_cases hx0 : x = 0
-  · rw [hx0]
-    exact isPrimal_zero
-  exact isPrimal_of_isPrimal_regroupAmbient _ Z x
-    (isPrimal_regroupAmbient_of_limit_tail Z T₀ T₁ hT₀gt x hxclasses hx0 ih)
-    (isPrimal_restrictDomain_tailSubmodule_of_ambient_finiteClasses
-      Z hfinite T₀ T₁ hT₀gt hT₁ x hxclasses.le)
-    (fun _ ↦ htailfrac)
-
-/-- The common-tail hypotheses extend finite-class primality to every cardinal-bounded Hahn
-integer-part series. -/
-theorem isPrimal_of_finite_classes_and_limit_tail_conditions
-    {G : Type u} {R : Type v}
-    [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G]
-    [Module ℚ G] [PosSMulMono ℚ G]
-    [Field R] [CharZero R]
-    {κ : Cardinal} [Fact (ℵ₀ < κ)] [Fact κ.IsRegular]
-    (Z : Subring R)
-    (hfinite : ∀ y : HahnSeries.cardSuppLTTruncationIntegerPart
-        (G := G) (R := R) (κ := κ) Z,
-      (ArchimedeanClass.mk '' (y : HahnSeries G R).support).Finite → IsPrimal y)
-    (hcomplete : ∀ (T : Set (FiniteArchimedeanClass G)), T.Nonempty →
-      (∀ c ∈ T, ∃ d ∈ T, c < d) →
-      (#T < κ) →
-      Nonempty (CompleteSpace (FiniteArchimedeanClass.TailQuotient T)))
-    (htailfrac : ∀ (T : Set (FiniteArchimedeanClass G)), T.Nonempty →
-      (∀ c ∈ T, ∃ d ∈ T, c < d) →
-      (#T < κ) →
-      Subring.fracSubring (HahnSeries.cardSuppLTTruncationIntegerPart
-        (G := FiniteArchimedeanClass.tailSubmodule ℚ T)
-        (R := R) (κ := κ) Z) = ⊤)
-    (a : HahnSeries.cardSuppLTTruncationIntegerPart
-      (G := G) (R := R) (κ := κ) Z) : IsPrimal a := by
-  let S := HahnSeries.cardSuppLTTruncationIntegerPart (G := G) (R := R) (κ := κ) Z
-  let rank : S → Ordinal := fun x ↦
-    (HahnSeries.Nonpositive.isPWO_nonzeroSupportArchimedeanClasses
-      (toNonpositiveRingHom Z x)).orderType
-  have hind : ∀ o : Ordinal, ∀ x : S, rank x = o → IsPrimal x := by
-    intro o
-    induction o using WellFoundedLT.induction with
-    | ind o ih =>
-        intro x hxrank
-        rcases (toNonpositiveRingHom Z x).isPWO_supportArchimedeanClasses
-            |>.finite_or_exists_limit_initial_finite_final
-            with hfiniteClasses | ⟨T₀, T₁, hT₀pwo, _hT₁pwo, _hT₀sub, _hT₁sub, _hbefore,
-              hT₀limit, hT₁finite, hclasses⟩
-        · apply hfinite x
-          simpa only [coe_toNonpositiveRingHom] using hfiniteClasses
-        · have hT₀gt : ∀ c ∈ T₀, ∃ d ∈ T₀, c < d := fun c hc ↦
-            hT₀pwo.exists_gt_of_isSuccLimit_orderType hT₀limit hc
-          have hxclasses : ArchimedeanClass.mk '' (x : HahnSeries G R).support = T₀ ∪ T₁ := by
-            simpa only [coe_toNonpositiveRingHom] using hclasses
-          let T : Set (FiniteArchimedeanClass G) := {c | c.1 ∈ T₀}
-          have hTne : T.Nonempty := by
-            have hT₀ne : T₀.Nonempty := by
-              by_contra hne
-              rw [Set.not_nonempty_iff_eq_empty] at hne
-              exact hT₀limit.ne_bot (hT₀pwo.orderType_eq_zero.mpr hne)
-            obtain ⟨c, hc⟩ := hT₀ne
-            obtain ⟨d, _hd, hcd⟩ := hT₀gt c hc
-            exact ⟨⟨c, ne_top_of_lt hcd⟩, hc⟩
-          letI : Nonempty T := hTne.to_subtype
-          have hTgt := limit_family_exists_gt T₀ hT₀gt
-          have hTcard := limit_family_card_lt T₀ T₁ x hxclasses
-          letI : CompleteSpace (FiniteArchimedeanClass.TailQuotient T) :=
-            Classical.choice (hcomplete T hTne hTgt hTcard)
-          exact isPrimal_of_limit_tail Z hfinite T₀ T₁ hT₀gt hT₁finite x hxclasses
-            (htailfrac T hTne hTgt hTcard)
-            (fun w hw ↦ ih (rank w) (hxrank ▸ hw) w rfl)
-  exact hind (rank a) a rfl
-
 /-- **Primality in bounded Hahn integer parts.** Let `K` be an Archimedean ordered field, `G` an
 ordered `K`-vector space, `R` a field of characteristic zero, `κ > ℵ₀` a regular cardinal, and
 `Z ⊆ R` a pre-Schreier subring. Suppose that every Archimedean stratum of `G` is order-isomorphic
@@ -430,42 +310,33 @@ Mantova (LM24, Theorem 9.0.1); primality of `Z` is their `(A3)`. -/
   (phase := "Reduction along Archimedean classes")
   (title := "Primality in $Z+R((G^{<0}))_\\kappa$")
   (statement := /--
-    Let $K$ be an Archimedean ordered field and $G$ an ordered $K$-vector
-    space that is also an ordered $\mathbb Q$-vector space; let $R$ be a field
-    of characteristic zero, $\kappa>\aleph_0$ a regular cardinal, and
-    $Z\subseteq R$ a pre-Schreier subring.  For each nonzero Archimedean class
-    $\sigma$ fix a complement $H_\sigma$ of $G_{\prec\sigma}$ in
-    $G_{\preceq\sigma}$.  For a nonempty set $T$ of nonzero Archimedean classes
-    with no least element in magnitude, put
-    $H_T=\bigcap_{\sigma\in T}G_{\preceq\sigma}$.  Assume:
-    \begin{enumerate}
-      \item each $H_\sigma$ is isomorphic to $\mathbb R$ as an ordered group;
-      \item each $G_{\prec\sigma}$ has cofinality at least $\kappa$, or
-        $G_{\prec\sigma}=\{0\}$ and $R=\operatorname{Frac}(Z)$;
-      \item for every such $T$ of cardinality less than $\kappa$, $H_T$ has
-        cofinality at least $\kappa$, or $H_T=\{0\}$ and
-        $R=\operatorname{Frac}(Z)$;
-      \item for every such $T$ of cardinality less than $\kappa$, the quotient
-        $G/H_T$ is Cauchy complete for the group uniformity of its order
-        topology.
-    \end{enumerate}
-    Then every element of $Z+R((G^{<0}))_\kappa$ is primal, so
-    $Z+R((G^{<0}))_\kappa$ is pre-Schreier.  Conditions (1) and (2) are
-    (A1)$_\sigma$ and (A2)$_\sigma$ of [LM24, Thm. 9.0.1], which together with
-    (A3), that $Z$ is pre-Schreier, are shown there to be necessary.
+    Let $F$ be an Archimedean ordered field and $G$ an ordered $F$-vector space (hence an ordered
+    $\mathbb Q$-vector space), with $F$-linear complements $H_\sigma$; let $R$ have characteristic
+    $0$ and $\kappa$ be regular. Assume (A1)$_\sigma$ and (A2)$_\sigma$ for every nonzero class
+    $\sigma$, (A3), and (B1)$_T$ and (B2)$_T$ for every nonempty set $T$ of fewer than $\kappa$
+    nonzero classes without $\prec$-least element. Then every element of $Z+R((G^{<0}))_\kappa$ is
+    primal. Conditions (A1)--(A3) are necessary by [LM24, Thm. 9.0.1].
   -/)
   (proof := /--
-    Induct on the order type of the set of nonzero Archimedean classes met by
-    the support, a well-ordered set.  If the support meets only finitely many
-    classes, apply \ref{thm:finite-support-classes-primality}, whose hypotheses
-    are (1) and (2).  Otherwise the well-ordered set of classes met by the
-    support splits into an initial segment $T_0$ whose order type is a limit
-    ordinal, which has no least element in magnitude and fewer than $\kappa$
-    elements, and a finite final segment $T_1$.  Condition (3) makes
-    $R((H_{T_0}))_\kappa$ the fraction field of $Z+R((H_{T_0}^{<0}))_\kappa$,
-    because a support of cardinality less than $\kappa$ is bounded above in a
-    group of cofinality at least $\kappa$ [LM24, Prop. 2.4.5].  With (4) and the
-    induction hypothesis, \ref{thm:limit-tail-step} applies.
+    Induct on $\operatorname{ot}\mathcal C(x)$. If $\mathcal C(x)$ is finite, $x$ meets only
+    finitely many classes and is primal by \ref{thm:finite-support-classes-primality}, from (A1),
+    (A2) and (A3).
+
+    Let $\mathcal C(x)$ be infinite; then $x\ne0$. It splits as $T_0\cup T_1$, with $T_1$ a finite
+    final segment and $T_0$ an initial segment whose order type is a limit ordinal. So $T_0$ is
+    nonempty and has no $\prec$-least element, and it has fewer than $\kappa$ elements because
+    $\operatorname{supp}(x)$ does. Put $C=G_{T_0}$, a convex $\mathbb Q$-subspace, and apply
+    \ref{lem:primality-through-regrouping} with $F=\mathbb Q$. Its hypotheses hold.
+
+    $\hat x$ is primal, by \ref{lem:regrouped-primality-at-limit}, using (B2)$_{T_0}$ and the
+    induction hypothesis.
+
+    $\rho_C(x)$ is primal in $D$. Its exponents have classes in $T_1$ or the class $[0]$, so it
+    meets only finitely many classes and is primal in $Z+R((G^{<0}))_\kappa$ by
+    \ref{thm:finite-support-classes-primality}. It is then primal in the subring $D$ of elements
+    supported in $C$, as in the proof of \ref{lem:primality-at-leading-class}.
+
+    $L=\operatorname{Frac}(D)$, by (B1)$_{T_0}$ and \ref{lem:fraction-field-from-cofinality}.
   -/)
   (highlight)]
 theorem isPrimal
@@ -488,11 +359,49 @@ theorem isPrimal
         CompleteSpace (FiniteArchimedeanClass.TailQuotient T))
     (a : HahnSeries.cardSuppLTTruncationIntegerPart
       (G := G) (R := R) (κ := κ) Z) : IsPrimal a := by
-  apply isPrimal_of_finite_classes_and_limit_tail_conditions Z
-  · exact isPrimal_of_supportArchimedeanClasses_finite Z s hstratum hball
-  · exact fun T hT hTgt hTcard ↦ ⟨hcomplete T hT hTgt hTcard⟩
-  · exact fun T hT hTgt hTcard ↦
-      fracSubring_cardSuppLTTruncationIntegerPart_eq_top_of_le_cof_or_subsingleton Z
-        (htail T hT hTgt hTcard)
+  let S := HahnSeries.cardSuppLTTruncationIntegerPart (G := G) (R := R) (κ := κ) Z
+  let rank : S → Ordinal := fun x ↦
+    (HahnSeries.Nonpositive.isPWO_nonzeroSupportArchimedeanClasses
+      (toNonpositiveRingHom Z x)).orderType
+  have hfinite := isPrimal_of_supportArchimedeanClasses_finite Z s hstratum hball
+  suffices hind : ∀ o : Ordinal, ∀ x : S, rank x = o → IsPrimal x from hind (rank a) a rfl
+  intro o
+  induction o using WellFoundedLT.induction with
+  | ind o ih =>
+      intro x hxrank
+      rcases (toNonpositiveRingHom Z x).isPWO_supportArchimedeanClasses
+          |>.finite_or_exists_limit_initial_finite_final
+          with hfiniteClasses | ⟨T₀, T₁, hT₀pwo, _hT₁pwo, _hT₀sub, _hT₁sub, _hbefore,
+            hT₀limit, hT₁finite, hclasses⟩
+      · apply hfinite x
+        simpa only [coe_toNonpositiveRingHom] using hfiniteClasses
+      have hT₀gt : ∀ c ∈ T₀, ∃ d ∈ T₀, c < d := fun c hc ↦
+        hT₀pwo.exists_gt_of_isSuccLimit_orderType hT₀limit hc
+      have hxclasses : ArchimedeanClass.mk '' (x : HahnSeries G R).support = T₀ ∪ T₁ := by
+        simpa only [coe_toNonpositiveRingHom] using hclasses
+      let T : Set (FiniteArchimedeanClass G) := {c | c.1 ∈ T₀}
+      have hTne : T.Nonempty := by
+        have hT₀ne : T₀.Nonempty := by
+          by_contra hne
+          rw [Set.not_nonempty_iff_eq_empty] at hne
+          exact hT₀limit.ne_bot (hT₀pwo.orderType_eq_zero.mpr hne)
+        obtain ⟨c, hc⟩ := hT₀ne
+        obtain ⟨d, _hd, hcd⟩ := hT₀gt c hc
+        exact ⟨⟨c, ne_top_of_lt hcd⟩, hc⟩
+      letI : Nonempty T := hTne.to_subtype
+      have hTgt := limit_family_exists_gt T₀ hT₀gt
+      have hTcard := limit_family_card_lt T₀ T₁ x hxclasses
+      letI : CompleteSpace (FiniteArchimedeanClass.TailQuotient T) :=
+        hcomplete T hTne hTgt hTcard
+      by_cases hx0 : x = 0
+      · rw [hx0]
+        exact isPrimal_zero
+      exact isPrimal_of_isPrimal_regroupAmbient _ Z x
+        (isPrimal_regroupAmbient_of_limit_tail Z T₀ ⟨hTne.some.1, hTne.some_mem⟩ hT₀gt x
+          (fun c hc ↦ hxclasses ▸ Or.inl hc) hx0
+          (fun w hw ↦ ih (rank w) (hxrank ▸ hw) w rfl))
+        (isPrimal_restrictDomain_tailSubmodule_of_ambient_finiteClasses
+          Z hfinite T₀ T₁ hT₀gt hT₁finite x hxclasses.le)
+        (fun _ ↦ fracSubring_eq_top_of_le_cof_or_subsingleton Z (htail T hTne hTgt hTcard))
 
 end HahnSeries.CardSuppLTTruncationIntegerPart

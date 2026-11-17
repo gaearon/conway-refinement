@@ -273,6 +273,9 @@ dialog::backdrop { background: rgba(255, 255, 255, .86); }
 .hero p, .phase-introduction { max-width: 660px; margin: 0; color: #3c3c3c; font-size: 16px; line-height: 1.52; }
 .phase-introduction p { margin: 0; }
 .phase-introduction p + p { margin-top: 12px; }
+.phase-setting { margin-top: 20px; }
+.phase-setting h2 { margin: 0 0 6px; font-size: 13px; font-weight: 600; letter-spacing: 0.04em;
+  text-transform: uppercase; color: #5a5a5a; }
 .formal-intro-list { max-width: 660px; margin: 12px 0 0; padding-left: 22px; color: #3c3c3c;
   font-size: 16px; line-height: 1.52; }
 .formal-intro-list li + li { margin-top: 4px; }

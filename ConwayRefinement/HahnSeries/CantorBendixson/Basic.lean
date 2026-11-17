@@ -70,23 +70,25 @@ variable [Zero Γ]
   (phase := "Germs of translated truncations")
   (title := "Cantor--Bendixson value")
   (statement := /--
-    Let $G$ be a linearly ordered set with zero and its order topology, let
-    $R$ be a set with zero, and let $b\in R((G))$ be a generalised power
-    series.  Write $C=\operatorname{cl}(\operatorname{supp}(b))$.  If
-    $\operatorname{rk}_C(0)$ denotes the Cantor--Bendixson rank of $0$ in
-    $C$, define
+    For $b\in K((G))$ let $C$ be its closed support. Define
     \[
       V_{\mathrm{CB}}(b)=
       \begin{cases}
-        \omega^{\operatorname{rk}_C(0)},&0\in C,\\
-        0,&0\notin C.
+      \omega^{\operatorname{rk}_C(0)},&0\in C,\\
+      0,&0\notin C.
       \end{cases}
     \]
+    (The definition makes sense for coefficients in any set with a zero and exponents in any
+    linearly ordered set with a zero.)
   -/)
   (proof := /--
-    The closure of a well-ordered support is again well ordered, so its
-    Cantor--Bendixson point rank is defined.  The displayed alternatives are
-    the two branches of the definition.
+    We check that $\operatorname{rk}_C(0)$ is defined. The set $C$ is well ordered. Indeed, points
+    of $\operatorname{supp}(b)$ do not accumulate at any point from above, since the points of the
+    support above a given point have a least element. So if $x_0>x_1>\cdots$ lay in $C$, we could
+    choose $s_n\in\operatorname{supp}(b)$ with $x_{n+1}<s_n\le x_n$, and $(s_n)$ would be a strictly
+    decreasing sequence in $\operatorname{supp}(b)$. In a well-ordered set every nonempty subset has
+    a point isolated in it, namely its least element. So the derived sets $C^{(r)}$ decrease
+    strictly until they are empty, and every point of $C$ has a rank.
   -/)]
 def cantorBendixsonValue (b : HahnSeries Γ R) : Ordinal.{u} := by
   classical

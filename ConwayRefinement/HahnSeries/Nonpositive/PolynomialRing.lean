@@ -11,7 +11,7 @@ public import ConwayRefinement.RingTheory.TruncationGerms.Series
 
 import ConwayRefinement.Blueprint
 public import Mathlib.Data.Real.Basic
-import ConwayRefinement.HahnSeries.Germ.GermSupport
+public import ConwayRefinement.HahnSeries.Germ.GermSupport
 import ConwayRefinement.RingTheory.TruncationGerms.Transcendence
 import Mathlib.Algebra.MvPolynomial.Equiv
 import Mathlib.Topology.Algebra.Ring.Real
@@ -98,22 +98,18 @@ support. -/
   (phase := "Polynomial presentations")
   (title := "Series with constant germs")
   (statement := /--
-    Let $K$ be a field.  A series $b\in K((\mathbb R^{\le0}))$ has a constant
-    germ $[b^{|\gamma}]\in K$ at every exponent $\gamma$ if and only if
+    Let $G=\mathbb R$. A series $b\in A$ has all its germs in $K$ if and only if
     $\operatorname{supp}(b)$ is finite.
   -/)
   (proof := /--
-    If the support is finite, then to the left of each $\gamma$ there is an
-    interval containing no point of the closed support, so by
-    \ref{lem:nonzero-germs} the germs at $\gamma+\zeta$ vanish for $\zeta<0$
-    close to $0$, and the germ at $\gamma$ is constant by
-    \ref{lem:constant-germs}.  Conversely, if every germ is constant, then by
-    \ref{lem:constant-germs} and \ref{lem:nonzero-germs} every
-    $\gamma\in\mathbb R$ has a left interval free of support points.  An
-    infinite support would be bounded, hence have an accumulation point
-    $\gamma$ in a compact interval; points of the support accumulate at
-    $\gamma$ neither from the left, by the gap, nor from the right, because the
-    support is well ordered.  So the support is finite.
+    If the support is finite, then to the left of each $\gamma$ there is an interval containing no
+    point of the closed support, so by \ref{lem:nonzero-germs} the germs at $\gamma+\zeta$ vanish
+    for $\zeta<0$ close to $0$, and the germ at $\gamma$ is constant by \ref{lem:constant-germs}.
+    Conversely, if every germ is constant, then by \ref{lem:constant-germs} and
+    \ref{lem:nonzero-germs} every $\gamma\in\mathbb R$ has a left interval free of support points.
+    An infinite support would be bounded, hence have an accumulation point $\gamma$ in a compact
+    interval. Points of the support accumulate at $\gamma$ neither from the left, by the gap, nor
+    from the right, because the support is well ordered. So the support is finite.
   -/)]
 theorem forall_germAt_mem_range_iff_support_finite (b : Nonpositive ℝ K) :
     (∀ ξ, germAt ξ b ∈ Set.range (algebraMap K (Nonpositive ℝ K ⧸
@@ -122,42 +118,194 @@ theorem forall_germAt_mem_range_iff_support_finite (b : Nonpositive ℝ K) :
   ⟨support_finite_of_forall_germAt_mem_range b, germAt_mem_range_algebraMap_of_finite b⟩
 
 variable (K) in
+/-- For real exponents, the germs of nonpositive series satisfy the axioms of `SeriesGerms` on
+`K((ℝ^{≤0}))`. -/
+def seriesGerms : SeriesGerms K ℝ (Nonpositive ℝ K) (Nonpositive ℝ K ⧸ boundedAwayIdeal ℝ K) where
+  __ := convolutionGerms ℝ K
+  eq_zero_of_germAt := by
+    simp only [convolutionGerms_germAt]; exact eq_zero_of_forall_germAt_eq_zero
+  exists_truncation := by simp only [convolutionGerms_germAt]; exact exists_germAt_truncation
+  exists_monomial γ hγ := ⟨single γ 1 hγ, by
+    simp only [convolutionGerms_germAt]; exact germAt_single_mul γ hγ⟩
+  germSupport_isWF := by simp only [convolutionGerms_germAt]; exact isWF_setOf_germAt_ne_zero
+  germSupport_exists_max := by
+    simp only [convolutionGerms_germAt]; exact exists_isGreatest_setOf_germAt_ne_zero_inter_Iic
+
+omit [CharZero K] in
+@[simp]
+theorem seriesGerms_germAt (γ : ℝ) : (seriesGerms K).germAt γ = germAt γ :=
+  convolutionGerms_germAt γ
+
+omit [CharZero K] in
+@[simp]
+theorem seriesGerms_germ (b : Nonpositive ℝ K) :
+    (seriesGerms K).germ b = Ideal.Quotient.mk (boundedAwayIdeal ℝ K) b :=
+  convolutionGerms_germ b
+
+omit [CharZero K] in
+@[simp]
+theorem seriesGerms_truncation (b : Nonpositive ℝ K) (η : ℝ) :
+    (seriesGerms K).truncation b η = truncation η b :=
+  (seriesGerms K).truncation_eq fun ξ ↦ by simpa using germAt_truncation b η ξ
+
+omit [CharZero K] in
+theorem seriesGerms_isTruncationClosed_iff {R : Subalgebra K (Nonpositive ℝ K)} :
+    (seriesGerms K).IsTruncationClosed R ↔ ∀ b ∈ R, ∀ η : ℝ, truncation η b ∈ R := by
+  simp [SeriesGerms.isTruncationClosed_iff]
+
+variable (K) in
 /-- For real exponents, the germs of nonpositive series satisfy the axioms of
 `SeriesTruncationGerms` on `K((ℝ^{≤0}))`. -/
 def seriesTruncationGerms : SeriesTruncationGerms K ℝ (Nonpositive ℝ K)
-    (Nonpositive ℝ K ⧸ boundedAwayIdeal ℝ K) where
-  __ := truncationGerms ℝ K
-  eq_zero_of_germAt := by
-    simpa only [truncationGerms_germAt] using eq_zero_of_forall_germAt_eq_zero
-  exists_truncation := by simpa only [truncationGerms_germAt] using exists_germAt_truncation
-  exists_monomial γ hγ := ⟨single γ 1 hγ, by
-    simpa only [truncationGerms_germAt] using germAt_single_mul γ hγ⟩
-  germSupport_isWF := by simpa only [truncationGerms_germAt] using isWF_setOf_germAt_ne_zero
-  germSupport_exists_max := by
-    simpa only [truncationGerms_germAt] using exists_isGreatest_setOf_germAt_ne_zero_inter_Iic
+    (Nonpositive ℝ K ⧸ boundedAwayIdeal ℝ K) :=
+  { seriesGerms K with
+    exists_translatedTruncation b ξ _ := ⟨translatedTruncation ξ b, fun _ hζ => by
+      simpa using germAt_translatedTruncation b ξ hζ⟩
+    germAt_eventually_eq_zero b hb := by
+      simpa using (germAt_mem_range_algebraMap_iff b 0).mp (by simpa using hb)
+    germ_mem_range_of_eventually b hb := by
+      simpa using (germAt_mem_range_algebraMap_iff b 0).mpr (by simpa using hb) }
 
-@[simp]
-theorem seriesTruncationGerms_germAt (γ : ℝ) :
-    (seriesTruncationGerms K).germAt γ = germAt γ :=
-  truncationGerms_germAt γ
-
+omit [CharZero K] in
 @[simp]
 theorem seriesTruncationGerms_germ (b : Nonpositive ℝ K) :
     (seriesTruncationGerms K).germ b = Ideal.Quotient.mk (boundedAwayIdeal ℝ K) b :=
-  truncationGerms_germ b
+  seriesGerms_germ b
 
+omit [CharZero K] in
 /-- The series all of whose germs are constants are exactly the series with finite support. -/
 theorem mem_seriesWithConstantGerms_iff (b : Nonpositive ℝ K) :
-    b ∈ (seriesTruncationGerms K).seriesWithConstantGerms ↔
+    b ∈ (seriesGerms K).seriesWithConstantGerms ↔
       b ∈ (finiteSupportSubring : Subring (Nonpositive ℝ K)) := by
-  rw [SeriesTruncationGerms.mem_seriesWithConstantGerms, mem_finiteSupportSubring_iff,
+  rw [SeriesGerms.mem_seriesWithConstantGerms, mem_finiteSupportSubring_iff,
     ← forall_germAt_mem_range_iff_support_finite]
-  simp only [seriesTruncationGerms_germAt]
+  simp only [seriesGerms_germAt]
 
+omit [CharZero K] in
 private theorem toSubring_seriesWithConstantGerms :
     (finiteSupportSubring : Subring (Nonpositive ℝ K)) =
-      (seriesTruncationGerms K).seriesWithConstantGerms.toSubring :=
+      (seriesGerms K).seriesWithConstantGerms.toSubring :=
   Subring.ext fun b => (mem_seriesWithConstantGerms_iff b).symm
+
+omit [CharZero K] in
+/-- Let `R` be a subalgebra of `K((ℝ^{≤0}))` closed under the truncations `b ↦ b_{|η}`, and `X` a
+series whose truncations at negative exponents lie in `R`. Then `R[X]` is closed under the
+truncations. -/
+@[blueprint "lem:truncations-of-simple-extension"
+  (phase := "Polynomial presentations")
+  (title := "Truncations in a simple extension")
+  (statement := /--
+    Let $G=\mathbb R$. Let $E\subseteq A$ be a $K$-subalgebra closed under truncation, and $X\in A$
+    with $X_{|\zeta}\in E$ for all $\zeta<0$. Then $E[X]$ is closed under truncation.
+  -/)
+  (proof := /--
+    Truncation at $\eta$ is $K$-linear, and $E[X]$ is spanned by the products $aX^n$ with $a\in E$.
+    By induction on $n$ it suffices to show: if $u\in A$ satisfies $u_{|\eta}\in E[X]$ for all
+    $\eta$, then $(uX)_{|\eta}\in E[X]$ for all $\eta$. Let $u\ne0$. By \ref{lem:nonzero-germs}, the
+    exponents at which $u$ has a nonzero germ form the closed support $D$ of $u$, a well-ordered
+    closed subset of $(-\infty,0]$. Applied to a difference, the same lemma shows that two series
+    with the same germs are equal; and $u_{|\beta}=u_{|\zeta}$ if $\zeta$ is the greatest element of
+    $D\cap(-\infty,\beta]$. Fix $\eta$. We show $(u_{|\beta}X)_{|\eta}\in E[X]$ for $\beta\in D$ by
+    induction on $\beta$; for $\beta=\max D$ this is $(uX)_{|\eta}$.
+
+    If $\beta\le\eta$, then by \ref{lem:convolution-formula}, a finite sum by
+    \ref{lem:convolution-finite}, the series $u_{|\beta}X$ has no nonzero germ above $\eta$, so it
+    equals its truncation at $\eta$, and it lies in $E[X]$.
+
+    Let $\beta>\eta$. Choose $\beta'\in[\eta,\beta)$ such that $X$ has no nonzero germ at the
+    exponents in $(\eta-\beta,\eta-\beta')$: let $\eta-\beta'$ be the least exponent above
+    $\eta-\beta$ at which $X$ has a nonzero germ, or $\beta'=\eta$ if there is none. The series
+    $v=u_{|\beta}-u_{|\beta'}\in E[X]$ has nonzero germs only in $(\beta',\beta]$. By
+    \ref{lem:convolution-formula}, the germs of $(vX)_{|\eta}$ and $v\,X_{|\eta-\beta}$ at $\xi$ are
+    sums of terms $[v^{|y}]\,[X^{|\xi-y}]$ with $y\in(\beta',\beta]$. For $\xi\le\eta$ we have
+    $\xi-y<\eta-\beta'$, so the terms with $\xi-y>\eta-\beta$ vanish in both, and the remaining
+    terms agree. For $\xi>\eta$ both germs vanish. Hence $(vX)_{|\eta}=v\,X_{|\eta-\beta}$, which
+    lies in $E[X]$ because $X_{|\eta-\beta}\in E$, as $\eta-\beta<0$. Finally
+    $u_{|\beta}X=u_{|\beta'}X+vX$, and $u_{|\beta'}$ is $0$ or $u_{|\zeta}$ for some $\zeta\in D$
+    with $\zeta<\beta$, so $(u_{|\beta'}X)_{|\eta}\in E[X]$ by induction.
+  -/)]
+theorem truncation_mem_adjoin_insert {R : Subalgebra K (Nonpositive ℝ K)}
+    (hR : ∀ b ∈ R, ∀ η : ℝ, truncation η b ∈ R) (X : Nonpositive ℝ K)
+    (hX : ∀ ζ : ℝ, ζ < 0 → truncation ζ X ∈ R) :
+    ∀ b ∈ Algebra.adjoin K (insert X (R : Set (Nonpositive ℝ K))), ∀ η : ℝ,
+      truncation η b ∈ Algebra.adjoin K (insert X (R : Set (Nonpositive ℝ K))) := by
+  have h := (seriesGerms K).isTruncationClosed_adjoin_insert
+    (seriesGerms_isTruncationClosed_iff.mpr hR) X (by simpa using hX)
+  exact seriesGerms_isTruncationClosed_iff.mp h
+
+omit [CharZero K] in
+/-- If the germ of `X` is transcendental over `S`, then `X` is transcendental over every
+subalgebra, over the series with constant germs, of series all of whose germs lie in `S`. -/
+@[blueprint "lem:transcendental-series"
+  (phase := "Polynomial presentations")
+  (title := "Transcendence of a series with transcendental germ")
+  (statement := /--
+    Let $G=\mathbb R$. Let $S\subseteq Q$ be a $K$-subalgebra, $E_0\subseteq A(S)$ an
+    $A(K)$-subalgebra of $A$, and $X\in A$ with $[X]$ transcendental over $S$. Then $X$ is
+    transcendental over $E_0$.
+  -/)
+  (proof := /--
+    Let $\sum_kc_kX^k=0$ with $c_k\in E_0$ not all $0$. By \ref{lem:nonzero-germs}, each nonzero
+    $c_k$ has a greatest exponent at which its germ is nonzero, namely the greatest element of its
+    closed support. Let $\eta$ be the largest of these exponents. No $c_k$ has a nonzero germ above
+    $\eta$. So in the convolution formula \ref{lem:convolution-formula}, a finite sum by
+    \ref{lem:convolution-finite}, for the germ of $c_kX^k$ at $\eta$, the terms at $\beta>\eta$
+    vanish, and so do those at $\beta<\eta$, where $X^k$ has exponent $\eta-\beta>0$. Hence
+    $[(c_kX^k)^{|\eta}]=[c_k^{|\eta}]\,[X]^k$, and
+    \[
+      \textstyle\sum_k[c_k^{|\eta}]\,[X]^k=0.
+    \]
+    The coefficients lie in $S$ because $c_k\in A(S)$, and they are not all $0$ by the choice of
+    $\eta$. This contradicts the transcendence of $[X]$ over $S$.
+  -/)]
+theorem transcendental_of_transcendental_mk
+    {S : Subalgebra K (Nonpositive ℝ K ⧸ boundedAwayIdeal ℝ K)}
+    {R₀ : Subalgebra (seriesGerms K).seriesWithConstantGerms (Nonpositive ℝ K)}
+    (hsub : (R₀ : Set (Nonpositive ℝ K)) ⊆ (seriesGerms K).seriesWithGermsIn S)
+    {X : Nonpositive ℝ K} (htr : Transcendental S (Ideal.Quotient.mk (boundedAwayIdeal ℝ K) X)) :
+    Transcendental R₀ X :=
+  (seriesGerms K).transcendental_of_transcendental_germ hsub (by simpa using htr)
+
+omit [CharZero K] in
+/-- A subalgebra closed under the truncations `b ↦ b_{|η}`, containing the series with constant
+germs and representatives of every element of `S`, contains every series all of whose germs lie
+in `S`. -/
+@[blueprint "lem:series-generation"
+  (phase := "Polynomial presentations")
+  (title := "Generation by truncations and representatives")
+  (statement := /--
+    Let $G=\mathbb R$. Let $S\subseteq Q$ be a $K$-subalgebra, and $E\subseteq A$ a $K$-subalgebra
+    that is closed under truncation, contains $A(K)$, and satisfies $S\subseteq[E]$. Then
+    $A(S)\subseteq E$.
+  -/)
+  (proof := /--
+    Let $b\in A(S)$ be nonzero, and let $D$ be the set of exponents at which $b$ has a nonzero germ.
+    By \ref{lem:nonzero-germs}, $D$ is the closed support of $b$, so it is well ordered, has a
+    greatest element, and every nonempty $D\cap(-\infty,\varepsilon]$ has a greatest element; also
+    $b=b_{|\max D}$. We show $b_{|\eta}\in E$ for $\eta\in D$ by induction on $\eta$.
+
+    Let $\eta\in D$. As $[b^{|\eta}]\in S\subseteq[E]$, choose $r\in E$ with $[r]=[b^{|\eta}]$, and
+    put $c=t^\eta r$. By \ref{lem:convolution-formula}, whose sum is finite by
+    \ref{lem:convolution-finite}, the germ of $t^\eta e$ at $\xi$ is the germ of $e$ at $\xi-\eta$,
+    for every $e\in A$; with $e=1$ this shows $t^\eta\in A(K)\subseteq E$, so $c\in E$. The germ of
+    $c$ at $\xi$ is the germ of $r$ at $\xi-\eta$; so $c$ has no nonzero germ above $\eta$, and
+    $[c^{|\eta}]=[r]=[b^{|\eta}]$.
+
+    Hence $u=b_{|\eta}-c$ has no nonzero germ above $\eta$, and $[u^{|\eta}]=0$. By
+    \ref{lem:constant-germs} the germs of $u$ vanish on some interval $(\varepsilon,\eta]$. Two
+    series with the same germs are equal (\ref{lem:nonzero-germs}), so
+    $u=u_{|\varepsilon}=b_{|\varepsilon}-c_{|\varepsilon}$. Here $c_{|\varepsilon}\in E$, as $E$ is
+    closed under truncation; and $b_{|\varepsilon}$ is $0$ or $b_{|\zeta}$ for the greatest
+    $\zeta\in D$ with $\zeta\le\varepsilon$, which lies in $E$ by induction. So
+    $b_{|\eta}=c+u\in E$.
+  -/)]
+theorem seriesWithGermsIn_le {S : Subalgebra K (Nonpositive ℝ K ⧸ boundedAwayIdeal ℝ K)}
+    {R : Subalgebra K (Nonpositive ℝ K)} (hR : ∀ b ∈ R, ∀ η : ℝ, truncation η b ∈ R)
+    (hBR : (seriesGerms K).seriesWithConstantGerms ≤ R)
+    (hlift : ∀ a ∈ S, ∃ r ∈ R, Ideal.Quotient.mk (boundedAwayIdeal ℝ K) r = a) :
+    (seriesGerms K).seriesWithGermsIn S ≤ R :=
+  (seriesTruncationGerms K).seriesWithGermsIn_le (seriesGerms_isTruncationClosed_iff.mpr hR)
+    hBR (by simpa using hlift)
 
 /-- The nonpositive real series ring over a field of characteristic zero is a polynomial ring
 over its finite-support subring `K(ℝ^{≤0})`. -/
@@ -165,99 +313,52 @@ over its finite-support subring `K(ℝ^{≤0})`. -/
   (phase := "Polynomial presentations")
   (title := "Polynomial presentation of $K((\\mathbb R^{\\le 0}))$")
   (statement := /--
-    Let $K$ be a field of characteristic $0$ and $K(\mathbb R^{\le0})$ the
-    subring of $K((\mathbb R^{\le0}))$ consisting of the series with finite
-    support.  For some set $I$ there is a $K(\mathbb R^{\le0})$-algebra
-    isomorphism
+    Let $G=\mathbb R$ and let $K$ have characteristic $0$. For some set $I$ there is a
+    $K(\mathbb R^{\le0})$-algebra isomorphism
     \[
-      K(\mathbb R^{\le0})[X_i:i\in I]\simeq K((\mathbb R^{\le0})).
+      K(\mathbb R^{\le0})[Y_i:i\in I]\simeq K((\mathbb R^{\le0})).
     \]
   -/)
   (proof := /--
-    Write $A=K((\mathbb R^{\le0}))$ and $Q=A/J$. For a $K$-subalgebra
-    $S\subseteq Q$ let $A_S$ be the $K$-subalgebra of series all of whose
-    germs lie in $S$; by \ref{lem:constant-germs-finite-support},
-    $A_K=K(\mathbb R^{\le0})$. A $K$-subalgebra $R\subseteq A$ is closed
-    under truncation if $b_{|\eta}\in R$ for all $b\in R$ and
-    $\eta\in\mathbb R$; each $A_S$ is. For real exponents, a series all of
-    whose germs vanish is $0$; the truncation $b_{|\eta}$ keeps exactly the
-    germs of $b$ at exponents $\le\eta$; multiplication by $t^\gamma$
-    translates germs by $\gamma$; and the exponents at which $b$ has a
-    nonzero germ form the closure of $\operatorname{supp}(b)$, a closed
-    well-ordered subset of $(-\infty,0]$ whose intersection with any ray
-    $(-\infty,\varepsilon]$ has a greatest element when nonempty.
+    By \ref{lem:constant-germs-finite-support}, $A(K)=K(\mathbb R^{\le0})$. By Zorn's lemma choose a
+    set $\mathcal X\subseteq A$, algebraically independent over $A(K)$, that is maximal such that
+    $E=A(K)[\mathcal X]$ is closed under truncation and $E\subseteq A(S)$, where
+    $S=K[\{[X]:X\in\mathcal X\}]$. The empty set qualifies, and so does the union of a chain. Every
+    element of $S$ is the class of a polynomial over $K$ in the elements of $\mathcal X$, which lies
+    in $E$; so $S\subseteq[E]$, and \ref{lem:series-generation} gives $E=A(S)$. In particular
+    $S\subseteq[A(S)]$.
 
-    Step 1: closure under truncation of a simple extension. Let $R$ be
-    closed under truncation and let $X\in A$ with $X_{|\zeta}\in R$ for
-    every $\zeta<0$; then $E=R[X]$ is closed under truncation. It suffices
-    to show that if all truncations of $w$ lie in $E$, then so do all
-    truncations of $wX$; induction on $n$ then handles $aX^n$ with $a\in R$,
-    and these span $E$. Fix $\eta$, and show $(w_{|\beta}X)_{|\eta}\in E$ by
-    well-founded induction on the exponents $\beta$ at which $w$ has a
-    nonzero germ. If $\beta\le\eta$, then $w_{|\beta}X$ has no germs above
-    $\eta$ and equals its own truncation. If $\beta>\eta$, well-foundedness
-    gives $\beta'\in[\eta,\beta)$ such that $X$ has no nonzero germ at
-    exponents in $(\eta-\beta,\eta-\beta')$. The series
-    $v=w_{|\beta}-w_{|\beta'}$ has germs only in $(\beta',\beta]$, and the
-    convolution formula gives $(vX)_{|\eta}=v\,X_{|\eta-\beta}\in E$ since
-    $\eta-\beta<0$. The remaining term $(w_{|\beta'}X)_{|\eta}$ is covered
-    by the induction hypothesis, because $w_{|\beta'}=w_{|\zeta}$ for the
-    greatest $\zeta\le\beta'$ at which $w$ has a nonzero germ.
+    Suppose that $S\ne Q$. By \ref{lem:new-germ} there is $X\in A$ whose germs at negative exponents
+    lie in $S$, with $x=[X]\notin S$. By \ref{thm:bounded-away-ideal-prime}, $Q$ is a domain, hence
+    so is $S$. As $\mathbb R$ is Cauchy complete, (H) holds, and \ref{lem:transcendence} makes $x$
+    transcendental over $S$. By \ref{lem:transcendental-series}, applied with $E_0=E$, $X$ is
+    transcendental over $E$. For $\zeta<0$ all germs of $X_{|\zeta}$ lie in $S$, so
+    $X_{|\zeta}\in A(S)=E$, and by \ref{lem:truncations-of-simple-extension} $E[X]$ is closed under
+    truncation. By \ref{lem:convolution-formula} the series whose germs lie in $S[x]$ form a
+    subalgebra, which contains $E$ and $X$; so $E[X]\subseteq A(S[x])$. Thus $\mathcal X\cup\{X\}$
+    contradicts the maximality of $\mathcal X$.
 
-    Step 2: a series with transcendental germ is transcendental. Let
-    $S\subseteq Q$ be a $K$-subalgebra, $R_0\subseteq A_S$ an
-    $A_K$-subalgebra, and $X\in A$ with $[X]$ transcendental over $S$; then
-    $X$ is transcendental over $R_0$. Indeed, let $\sum_kc_kX^k=0$ with
-    $c_k\in R_0$ not all zero, and let $\eta$ be the greatest exponent at
-    which some $c_k$ has a nonzero germ. No $c_k$ has germs above $\eta$, so
-    the convolution formula gives $[(c_kX^k)^{|\eta}]=[c_k^{|\eta}]\,[X]^k$.
-    Hence $\sum_k[c_k^{|\eta}]\,[X]^k=0$ is a nontrivial polynomial relation
-    for $[X]$ over $S$.
-
-    Step 3: generation. Let $S\subseteq Q$ be a $K$-subalgebra, and let
-    $R\subseteq A$ be a $K$-subalgebra that is closed under truncation,
-    contains $A_K$, and contains for every $a\in S$ some $r$ with $[r]=a$;
-    then $A_S\subseteq R$. Let $b\in A_S$, and show $b_{|\eta}\in R$ by
-    well-founded induction on the exponents $\eta$ at which $b$ has a
-    nonzero germ. Choose $r\in R$ with $[r]=[b^{|\eta}]$ and put $c=t^\eta
-    r$. The monomial $t^\eta$ has finite support, so $c\in R$, and $c$ has
-    no germs above $\eta$. The difference $d=b_{|\eta}-c$ has
-    $[d^{|\eta}]=0$ and no germs above $\eta$; by the characterisation of
-    constant germs its germs vanish on some $(\varepsilon,\eta]$, so
-    $d=b_{|\varepsilon}-c_{|\varepsilon}$. Here $c_{|\varepsilon}\in R$ by
-    closure under truncation, and $b_{|\varepsilon}=b_{|\zeta}$ for the
-    greatest $\zeta\le\varepsilon$ at which $b$ has a nonzero germ, which
-    lies in $R$ by induction. Finally $b=b_{|\eta}$ for the greatest $\eta$
-    at which $b$ has a nonzero germ.
-
-    By Zorn's lemma choose a maximal set $\mathcal X\subseteq A$,
-    algebraically independent over $A_K$, such that $R=A_K[\mathcal X]$ is
-    closed under truncation and $R\subseteq A_S$ for $S=K[\{[X]:X\in\mathcal
-    X\}]$. By Step 3, $R=A_S$. Suppose that $S\ne Q$. As in the polynomial
-    presentation of the ring of germs, a germ outside $S$ with least
-    Cantor--Bendixson value is $[X]$ for a series $X$ whose germs at
-    negative exponents lie in $S$. By \ref{thm:bounded-away-ideal-prime},
-    $Q$ is an integral domain, hence so is $S$. Every element of $S$ is the
-    germ of an element of $R=A_S$, so the transcendence lemma makes $[X]$
-    transcendental over $S$. By Step 2, $X$ is transcendental over $R$. For
-    $\zeta<0$ all germs of $X_{|\zeta}$ lie in $S$, so $X_{|\zeta}\in
-    A_S=R$, and by Step 1 $R[X]$ is closed under truncation. Thus $\mathcal
-    X\cup\{X\}$ contradicts the maximality of $\mathcal X$. Hence $S=Q$ and
-    $R=A_Q=A$, and evaluation at $\mathcal X$ is an isomorphism
-    $A_K[X_i:i\in\mathcal X]\simeq A$ of $A_K$-algebras, with $A_K=K(\mathbb
-    R^{\le0})$.
+    Hence $S=Q$ and $E=A(Q)=A$, and evaluation at $\mathcal X$ is an isomorphism
+    $A(K)[Y_X:X\in\mathcal X]\simeq A$ of $A(K)$-algebras.
   -/)
   (highlight)]
 theorem exists_mvPolynomial_algEquiv_finiteSupportRing :
     ∃ ι : Type (max v w), Nonempty (MvPolynomial ι (FiniteSupportRing (G := ℝ) (K := K)) ≃ₐ[
       FiniteSupportRing (G := ℝ) (K := K)] Nonpositive ℝ K) := by
-  set B := (seriesTruncationGerms K).seriesWithConstantGerms
+  set B := (seriesGerms K).seriesWithConstantGerms
   obtain ⟨𝒳, hind, htop⟩ :=
-    (seriesTruncationGerms K).exists_algebraicIndependent_series_generators
-      fun S hS X hX hx ↦ by
-        simp only [TruncationGerms.HasRepresentativesWithGermsIn, seriesTruncationGerms_germ,
-          seriesTruncationGerms_germAt] at hS hX hx ⊢
-        exact (transcendental_mk_of_germAt_mem S hS X hX hx).1
+    (seriesGerms K).exists_algebraicIndependent_series_generators
+      (fun S hS ↦ by simpa using exists_germAt_mem_mk_notMem S hS)
+      (fun S hS X hX hx ↦ by
+        simp only [GermMaps.HasRepresentativesWithGermsIn, seriesGerms_germ,
+          seriesGerms_germAt] at hS hX hx ⊢
+        exact transcendental_mk_of_germAt_mem S hS X hX hx)
+      (fun R hR X hX ↦ seriesGerms_isTruncationClosed_iff.mpr
+        (truncation_mem_adjoin_insert (seriesGerms_isTruncationClosed_iff.mp hR) X
+          (by simpa using hX)))
+      (fun _ _ hsub _ htr ↦ transcendental_of_transcendental_mk hsub (by simpa using htr))
+      (fun _ _ hR hBR hlift ↦ seriesWithGermsIn_le (seriesGerms_isTruncationClosed_iff.mp hR)
+        hBR (by simpa using hlift))
   let e : MvPolynomial 𝒳 B ≃ₐ[B] Nonpositive ℝ K := hind.mvPolynomialAlgEquivOfAdjoinEqTop htop
   let φ : FiniteSupportRing (G := ℝ) (K := K) ≃+* B :=
     RingEquiv.subringCongr toSubring_seriesWithConstantGerms

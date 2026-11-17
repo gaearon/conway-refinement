@@ -14,6 +14,7 @@ import all CombinatorialGames.Surreal.HahnSeries.Basic
 public import ConwayRefinement.Surreal.HahnSeries.NormalForm
 import ConwayRefinement.Surreal.HahnSeries.NormalFormAdd
 import ConwayRefinement.Surreal.HahnSeries.NormalFormRecursion
+import ConwayRefinement.Blueprint
 
 /-!
 # Multiplicative compatibility of the surreal Conway normal form
@@ -1018,6 +1019,39 @@ theorem _root_.Surreal.toHahnSeries_mul (x y : Surreal.{u}) :
     Surreal.toSurreal_toHahnSeries, Surreal.toSurreal_toHahnSeries]
 
 /-- Conway normal form as a ring equivalence between surreals and small surreal Hahn series. -/
+@[blueprint "fact:conway-normal-form"
+  (phase := "Surreal numbers and omnific integers")
+  (title := "Conway normal form")
+  (statement := /--
+    Conway normal form $x=\sum_yr_y\omega^y$ is a ring isomorphism from $\mathbf{No}$ onto the ring
+    of formal sums $\sum_{y\in\mathbf{No}}r_y\omega^y$ with real coefficients whose support is a
+    small reverse well-ordered subset of $\mathbf{No}$ [Con76]; see [LM24, §2.3].
+  -/)
+  (proof := /--
+    For a formal sum $s$ define its value $\operatorname{val}(s)$ by recursion on the order type of
+    the support. If the support has a least element $e$, write $s=s'+r\omega^e$ and put
+    $\operatorname{val}(s)=\operatorname{val}(s')+r\omega^e$. Otherwise put
+    $\operatorname{val}(s)=\{L\mid R\}$, where $L$ (respectively $R$) consists of the values of the
+    sums $s_{>e}+r\omega^e$ with $e$ in the support and $r$ less (respectively greater) than the
+    coefficient of $\omega^e$ in $s$; here $s_{>e}$ is the sum of the terms of $s$ with exponent
+    greater than $e$. A simultaneous induction shows that $L<R$, so that $\operatorname{val}(s)$ is
+    a surreal number, and that $\operatorname{val}$ is strictly increasing.
+
+    Every surreal number $x$ is a value. Call $s$ a partial sum of $x$ if each term of $s$ is the
+    leading term of $x$ minus the earlier terms of $s$. The partial sums of $x$ form a small set,
+    linearly ordered by extension and closed under unions of chains. The largest one has value $x$,
+    since otherwise the leading term of $x-\operatorname{val}(s)$ would extend it. So
+    $\operatorname{val}$ is a bijection, and its inverse is the normal form.
+
+    Additivity. The coefficient of $\omega^i$ in $x$ is the standard part of $(x-x_{>i})/\omega^i$,
+    and if all exponents of $x$ and of $y$ exceed $i$, then so do those of $x+y$; hence the normal
+    form of $x+y$ is the sum of those of $x$ and $y$, coefficient by coefficient. Multiplicativity
+    is proved by induction on the order types of the two supports. When a support has a least
+    element, it follows from additivity and $\operatorname{val}(r\omega^e
+    s)=r\omega^e\operatorname{val}(s)$. When neither has, each truncation of the product on either
+    side is separated from the product by one of Conway's multiplication options built from
+    truncations of the factors, which identifies the two cuts.
+  -/)]
 def _root_.Surreal.toHahnSeriesRingEquiv :
     Surreal.{u} ≃+* SurrealHahnSeries.{u} where
   toEquiv := Surreal.toHahnSeriesOrderIso.toEquiv

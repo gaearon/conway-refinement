@@ -64,10 +64,10 @@ class Node:
     highlight: bool
 
 
-def shallow_dependencies(nodes: dict[str, Node]) -> dict[str, frozenset[str]]:
-    """Dependencies left after contracting every path through another selected node."""
+def ancestor_sets(nodes: dict[str, Node]) -> dict[str, frozenset[str]]:
+    """Every selected node from which each node is reachable in the dependency graph."""
 
-    def ancestors(label: str) -> set[str]:
+    def ancestors(label: str) -> frozenset[str]:
         seen: set[str] = set()
         pending = list(nodes[label].dependencies)
         while pending:
@@ -76,15 +76,21 @@ def shallow_dependencies(nodes: dict[str, Node]) -> dict[str, frozenset[str]]:
                 continue
             seen.add(dependency)
             pending.extend(nodes[dependency].dependencies)
-        return seen
+        return frozenset(seen)
 
-    ancestor_sets = {label: ancestors(label) for label in nodes}
+    return {label: ancestors(label) for label in nodes}
+
+
+def shallow_dependencies(nodes: dict[str, Node]) -> dict[str, frozenset[str]]:
+    """Dependencies left after contracting every path through another selected node."""
+
+    ancestor_sets_by_label = ancestor_sets(nodes)
     return {
         label: frozenset(
             dependency
             for dependency in node.dependencies
             if not any(
-                dependency in ancestor_sets[other]
+                dependency in ancestor_sets_by_label[other]
                 for other in node.dependencies
                 if other != dependency
             )
@@ -109,10 +115,31 @@ def read_nodes() -> dict[str, Node]:
         )
     names = {record["name"]: record["label"] for record in records}
     nodes: dict[str, Node] = {}
+    depth = module_import_depths()
+    for phase in PHASE_METADATA:
+        unknown = sorted(
+            set(phase.order)
+            - {record["label"] for record in records if record["phase"] == phase.key}
+        )
+        if unknown:
+            raise SystemExit(
+                f"blueprint: order of phase {phase.slug!r} lists labels outside it: "
+                + ", ".join(unknown)
+            )
+
+    def preferred(record: dict) -> int:
+        order = PHASE_BY_KEY[record["phase"]].order
+        return order.index(record["label"]) if record["label"] in order else len(order)
+
+    # Within a phase, ties in the dependency order are broken by the phase's explicit reading
+    # order, then by import depth (a module is read after the project modules it imports), and
+    # then by source position.
     ordered_records = sorted(
         records,
         key=lambda record: (
             PHASES.index(record["phase"]),
+            preferred(record),
+            depth.get(record["module"], 0),
             record["source"],
             record["range"]["start"]["line"],
             record["name"],
@@ -209,6 +236,33 @@ def project_imports() -> dict[str, frozenset[str]]:
     return imports
 
 
+def module_import_depths() -> dict[str, int]:
+    """Length of the longest chain of project imports below each module."""
+
+    imports = project_imports()
+    depths: dict[str, int] = {}
+
+    def depth(module: str, active: frozenset[str] = frozenset()) -> int:
+        if module in depths:
+            return depths[module]
+        if module in active:
+            return 0
+        result = 1 + max(
+            (
+                depth(child, active | {module})
+                for child in imports.get(module, ())
+                if child in imports
+            ),
+            default=-1,
+        )
+        depths[module] = result
+        return result
+
+    for module in imports:
+        depth(module)
+    return depths
+
+
 def later_phase_import_paths(
     module_phase: dict[str, str], phase_index: dict[str, int]
 ) -> list[tuple[tuple[str, ...], str, str]]:
@@ -292,16 +346,19 @@ def validate_phase_contract(nodes: dict[str, Node]) -> None:
 def reference_mismatches(
     nodes: dict[str, Node],
 ) -> tuple[list[tuple[str, list[str]]], list[tuple[str, list[str]]]]:
+    """A proof must cite every immediate predecessor and may cite only transitive ancestors."""
+
     shallow = shallow_dependencies(nodes)
+    ancestors = ancestor_sets(nodes)
     missing_references = sorted(
         (node.label, sorted(shallow[node.label] - node.proof_references))
         for node in nodes.values()
         if shallow[node.label] - node.proof_references
     )
     unexpected_references = sorted(
-        (node.label, sorted(node.proof_references - shallow[node.label]))
+        (node.label, sorted(node.proof_references - ancestors[node.label]))
         for node in nodes.values()
-        if node.proof_references - shallow[node.label]
+        if node.proof_references - ancestors[node.label]
     )
     return missing_references, unexpected_references
 
@@ -393,11 +450,11 @@ def validate_reference_contract(nodes: dict[str, Node]) -> None:
         for label, references in missing_references
     )
     details.extend(
-        f"{label} cites non-dependencies {', '.join(references)}"
+        f"{label} cites non-ancestors {', '.join(references)}"
         for label, references in unexpected_references
     )
     raise SystemExit(
-        "blueprint: proof references must equal shallow blueprint dependencies: "
+        "blueprint: proof references must cite every immediate dependency and only ancestors: "
         + "; ".join(details)
         + (
             "; inserted dependency-explanation TODOs in " + ", ".join(inserted)
@@ -461,7 +518,14 @@ def render_content(nodes: dict[str, Node]) -> str:
         labels = by_section.get(phase.key)
         if not labels:
             continue
-        lines.extend([f"\\section{{{phase.title}}}", "", phase.description, ""])
+        lines.extend([
+            f"\\section{{{phase.title}}}",
+            "",
+            phase.description,
+            "",
+            f"\\paragraph{{Setting.}} {phase.setting}",
+            "",
+        ])
         for label in labels:
             node = nodes[label]
             declaration = tex_identifier(node.declarations[0])

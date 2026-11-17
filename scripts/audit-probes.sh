@@ -173,6 +173,26 @@ audit_expect_rejection blueprint-proof 'nodes have no proof prose: lem:transcend
 cp "$audit_blueprint_data_backup" "$audit_blueprint_data_source"
 audit_blueprint_data_changed=false
 
+# Blueprint: a proof may cite only results from which it is reachable in the dependency graph.
+cp "$audit_blueprint_data_source" "$audit_blueprint_data_backup"
+audit_blueprint_data_changed=true
+python3 - "$audit_blueprint_data_source" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+path = Path(sys.argv[1])
+records = json.loads(path.read_text())
+record = next(record for record in records if record["label"] == "lem:transcendence")
+record["proof"] += r" Compare \ref{thm:conway-refinement}."
+path.write_text(json.dumps(records))
+PY
+audit_expect_rejection blueprint-reference-ancestor \
+  'cites non-ancestors thm:conway-refinement' \
+  scripts/blueprint.sh check
+cp "$audit_blueprint_data_backup" "$audit_blueprint_data_source"
+audit_blueprint_data_changed=false
+
 # Blueprint: every visible dependency is cited in the corresponding proof prose.
 cp "$audit_blueprint_data_source" "$audit_blueprint_data_backup"
 audit_blueprint_data_changed=true
@@ -197,7 +217,7 @@ record["proof"] = record["proof"].replace(needle, "the preceding theorem", 1)
 path.write_text(json.dumps(records))
 PY
 audit_expect_rejection blueprint-reference-write \
-  'proof references must equal shallow blueprint dependencies' \
+  'proof references must cite every immediate dependency and only ancestors' \
   scripts/blueprint.sh check
 if ! grep -Fq \
     'FIXME_blueprint_review_why_does_proof_depend_on := ' \
@@ -247,6 +267,42 @@ path.write_text(json.dumps(payload))
 PY
 audit_expect_rejection blueprint-highlights-manifest \
   'manifest root must contain exactly' scripts/blueprint.sh check
+cp "$audit_blueprint_phases_backup" "$audit_blueprint_phases_source"
+audit_blueprint_phases_changed=false
+
+# Blueprint: every phase carries a standing setting.
+cp "$audit_blueprint_phases_source" "$audit_blueprint_phases_backup"
+audit_blueprint_phases_changed=true
+python3 - "$audit_blueprint_phases_source" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+path = Path(sys.argv[1])
+payload = json.loads(path.read_text())
+del payload["phases"][0]["setting"]
+path.write_text(json.dumps(payload))
+PY
+audit_expect_rejection blueprint-phase-setting \
+  'phase 1 must contain exactly' scripts/blueprint.sh check
+cp "$audit_blueprint_phases_backup" "$audit_blueprint_phases_source"
+audit_blueprint_phases_changed=false
+
+# Blueprint: a phase reading order lists only labels of that phase.
+cp "$audit_blueprint_phases_source" "$audit_blueprint_phases_backup"
+audit_blueprint_phases_changed=true
+python3 - "$audit_blueprint_phases_source" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+path = Path(sys.argv[1])
+payload = json.loads(path.read_text())
+payload["phases"][0]["order"] = ["lem:transcendence"]
+path.write_text(json.dumps(payload))
+PY
+audit_expect_rejection blueprint-phase-order \
+  'lists labels outside it' scripts/blueprint.sh check
 cp "$audit_blueprint_phases_backup" "$audit_blueprint_phases_source"
 audit_blueprint_phases_changed=false
 
