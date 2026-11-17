@@ -34,17 +34,6 @@ variable {R : Type v} {K : Type w} {G : Type u} [Semiring R]
 variable [Field K] [AddCommGroup G] [Module K G]
 variable [LinearOrder G] [IsOrderedAddMonoid G]
 
-noncomputable instance quotientLinearOrder (P : Submodule K G)
-    [P.toAddSubgroup.IsConvex] : LinearOrder (G ⧸ P) :=
-  ConvexQuotient.instLinearOrder (H := P.toAddSubgroup)
-
-instance quotientIsOrderedAddMonoid (P : Submodule K G) [P.toAddSubgroup.IsConvex] :
-    IsOrderedAddMonoid (G ⧸ P) :=
-  ConvexQuotient.instIsOrderedAddMonoid (H := P.toAddSubgroup)
-
-local instance submoduleIsOrderedAddMonoid (P : Submodule K G) : IsOrderedAddMonoid P :=
-  AddSubgroup.instIsOrderedAddMonoid P.toAddSubgroup
-
 /-- Regroup Hahn series by the cosets of a convex subspace. The quotient exponent is the outer,
 dominant coordinate, while exponents in the subspace form the coefficient Hahn series. -/
 def convexQuotientSplitRingEquiv (P : Submodule K G) [P.toAddSubgroup.IsConvex] :
@@ -396,19 +385,6 @@ universe u v w
 variable {R : Type v} {K : Type w} {G : Type u} [Field R]
 variable [Field K] [AddCommGroup G] [Module K G]
 variable [LinearOrder G] [IsOrderedAddMonoid G]
-
-noncomputable local instance boundedQuotientLinearOrder (P : Submodule K G)
-    [P.toAddSubgroup.IsConvex] : LinearOrder (G ⧸ P) :=
-  ConvexQuotient.instLinearOrder (H := P.toAddSubgroup)
-
-local instance boundedQuotientIsOrderedAddMonoid
-    (P : Submodule K G) [P.toAddSubgroup.IsConvex] :
-    IsOrderedAddMonoid (G ⧸ P) :=
-  ConvexQuotient.instIsOrderedAddMonoid (H := P.toAddSubgroup)
-
-local instance boundedSubmoduleIsOrderedAddMonoid (P : Submodule K G) :
-    IsOrderedAddMonoid P :=
-  AddSubgroup.instIsOrderedAddMonoid P.toAddSubgroup
 
 variable {κ : Cardinal.{u}} [Fact (aleph0 < κ)] [Fact κ.IsRegular]
 

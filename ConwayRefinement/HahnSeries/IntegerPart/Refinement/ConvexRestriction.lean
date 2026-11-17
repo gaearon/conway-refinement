@@ -7,6 +7,7 @@ module
 
 public import ConwayRefinement.HahnSeries.CardinalTruncation
 public import ConwayRefinement.HahnSeries.SubgroupSupport
+public import ConwayRefinement.HahnSeries.IntegerPart.ClassTruncation
 public import Mathlib.Algebra.Group.Subgroup.Order
 public import Mathlib.Algebra.Order.Archimedean.Class
 public import Mathlib.Order.Interval.Set.OrdConnected
@@ -14,15 +15,17 @@ public import Mathlib.Order.Interval.Set.OrdConnected
 import ConwayRefinement.Blueprint
 
 /-!
-# Divisibility descends from a convex restriction
+# Restriction to a convex subgroup of the exponents
 
-A divisor supported in a convex subgroup of the exponents divides a series as soon as it divides
-the convex restriction: the discarded part has all its exponents nonpositive and outside the
-subgroup, so multiplying it by the inverse of the divisor keeps every exponent nonpositive and
-outside the subgroup, hence away from zero. The cofactor therefore stays in the integral part.
+For a convex subgroup `C` of the exponent group, restriction of the support to `C` is a ring
+endomorphism of the bounded integer part `Z + K((G^{<0}))_κ`: for nonpositive exponents, a sum
+lies in `C` exactly when both summands do.
 
-This is the step by which a refinement obtained after restricting at a support class is
-transported back to the original divisibility.
+A divisor supported in `C` divides a series as soon as it divides the restriction: the discarded
+part has all its exponents nonpositive and outside `C`, so multiplying it by the inverse of the
+divisor keeps every exponent nonpositive and outside `C`, hence away from zero. The cofactor
+therefore stays in the integral part. Dually, a series with nonzero restriction factors as that
+restriction times a series of constant coefficient one supported away from `C`.
 -/
 
 public noncomputable section
@@ -215,29 +218,81 @@ theorem coe_restrictToAddSubgroup (Z : Subring K) (C : AddSubgroup G)
     (restrictToAddSubgroup Z C x : K⟦G⟧) = HahnSeries.filter (· ∈ C) (x : K⟦G⟧) :=
   (rfl)
 
+/-- For nonpositive exponents, a sum lies in a convex subgroup exactly when both summands do. -/
+theorem add_mem_iff_of_nonpos {C : AddSubgroup G} (hC : (C : Set G).OrdConnected)
+    {i j : G} (hi : i ≤ 0) (hj : j ≤ 0) : i + j ∈ C ↔ i ∈ C ∧ j ∈ C := by
+  refine ⟨fun h ↦ ?_, fun h ↦ C.add_mem h.1 h.2⟩
+  have hiC : i ∈ C := hC.out h C.zero_mem ⟨by simpa using add_le_add_left hj i, hi⟩
+  exact ⟨hiC, by simpa using C.sub_mem h hiC⟩
+
+open Classical in
+/-- Restriction to a convex subgroup of the exponents, as a ring endomorphism of the bounded
+integer part. -/
+@[blueprint "lem:convex-restriction-ring-hom"
+  (phase := "Refinement over Archimedean classes")
+  (title := "Restriction to a convex subgroup")
+  (statement := /--
+    Let $C$ be a convex subgroup of an ordered abelian group $G$.  Restriction
+    $x\mapsto x_{\vert C}$ of the support to $C$ is a ring endomorphism of
+    $Z+K((G^{<0}))_\kappa$.
+  -/)
+  (proof := /--
+    Restriction is additive, fixes $1$, and preserves the constant
+    coefficient.  For $i,j\le0$, convexity gives $i+j\in C$ if and only if
+    $i\in C$ and $j\in C$: indeed $i+j\le i\le0$.  Hence the coefficient of
+    $(xy)_{\vert C}$ at $g\in C$ involves only pairs of exponents in $C$, and
+    is the coefficient of $x_{\vert C}\,y_{\vert C}$.
+  -/)]
+def restrictToAddSubgroupRingHom (Z : Subring K) {C : AddSubgroup G}
+    (hC : (C : Set G).OrdConnected) :
+    HahnSeries.cardSuppLTTruncationIntegerPart (G := G) (R := K) (κ := κ) Z →+*
+      HahnSeries.cardSuppLTTruncationIntegerPart (G := G) (R := K) (κ := κ) Z where
+  toFun := restrictToAddSubgroup Z C
+  map_zero' := by
+    apply Subtype.ext; apply Subtype.ext
+    exact map_zero (HahnSeries.filter (· ∈ C))
+  map_one' := by
+    apply Subtype.ext; apply Subtype.ext
+    ext g
+    change (HahnSeries.filter (· ∈ C) (1 : K⟦G⟧)).coeff g = (1 : K⟦G⟧).coeff g
+    rw [HahnSeries.coeff_filter, HahnSeries.coeff_one]
+    split_ifs with h1 h2 <;> simp_all [C.zero_mem]
+  map_add' x y := by
+    apply Subtype.ext; apply Subtype.ext
+    exact HahnSeries.filter_add _ (x : K⟦G⟧) (y : K⟦G⟧)
+  map_mul' x y := by
+    have h := HahnSeries.Nonpositive.filter_mul_of_add_iff (· ∈ C)
+      (fun hi hj ↦ add_mem_iff_of_nonpos hC hi hj)
+      (toNonpositiveRingHom Z x) (toNonpositiveRingHom Z y)
+    rw [← map_mul] at h
+    simp only [coe_toNonpositiveRingHom] at h
+    apply Subtype.ext; apply Subtype.ext
+    change _ = (restrictToAddSubgroup Z C x : K⟦G⟧) * (restrictToAddSubgroup Z C y : K⟦G⟧)
+    simp only [coe_restrictToAddSubgroup]
+    exact h
+
+@[simp]
+theorem restrictToAddSubgroupRingHom_apply (Z : Subring K) {C : AddSubgroup G}
+    (hC : (C : Set G).OrdConnected)
+    (x : HahnSeries.cardSuppLTTruncationIntegerPart (G := G) (R := K) (κ := κ) Z) :
+    restrictToAddSubgroupRingHom Z hC x = restrictToAddSubgroup Z C x :=
+  (rfl)
+
+/-- Restriction to a subgroup is idempotent. -/
+@[simp]
+theorem restrictToAddSubgroup_restrictToAddSubgroup (Z : Subring K) (C : AddSubgroup G)
+    (x : HahnSeries.cardSuppLTTruncationIntegerPart (G := G) (R := K) (κ := κ) Z) :
+    restrictToAddSubgroup Z C (restrictToAddSubgroup Z C x) = restrictToAddSubgroup Z C x := by
+  classical
+  apply Subtype.ext; apply Subtype.ext
+  ext g
+  simp only [coe_restrictToAddSubgroup, HahnSeries.coeff_filter]
+  split_ifs <;> rfl
+
 open Classical in
 /-- A nonzero bounded integer-part factor supported in a convex subgroup divides an ambient
 bounded integer-part series as soon as it factors the convex restriction. -/
-@[blueprint "lem:divisibility-from-convex-restriction"
-  (phase := "Refinement over Archimedean classes")
-  (title := "Divisibility from a convex restriction")
-  (statement := /--
-    Let $C$ be a convex subgroup of an ordered abelian group $G$, and let
-    $q,w,x\in Z+K((G^{<0}))_\kappa$.  Suppose $q\ne0$,
-    $\operatorname{supp}(q)\subseteq C$, and
-    \[
-      x_{\vert C}=qw.
-    \]
-    Then $q\mid x$ in $Z+K((G^{<0}))_\kappa$.
-  -/)
-  (proof := /--
-    Divide $x$ by $q$ in the bounded Hahn field.  On $C$ the quotient is $w$.
-    Outside $C$, convexity and nonpositivity keep every exponent of the
-    quotient strictly negative; the constant coefficient is therefore the
-    constant coefficient of $w$ and lies in $Z$.  Hence the quotient belongs
-    to the bounded Hahn integer part.
-  -/)]
-theorem dvd_of_restriction_factorization
+private theorem dvd_of_restriction_factorization
     (Z : Subring K) {C : AddSubgroup G} (hC : (C : Set G).OrdConnected)
     (q w x : HahnSeries.cardSuppLTTruncationIntegerPart
       (G := G) (R := K) (κ := κ) Z)
@@ -267,6 +322,38 @@ theorem dvd_of_restriction_factorization
   have hqfield : (q : HahnSeries.CardSuppLTField (G := G) (R := K) (κ := κ)) ≠ 0 :=
     fun h ↦ hq0 (Subtype.ext h)
   rw [mul_comm, div_mul_cancel₀ _ hqfield]
+
+/-- **Divisibility from a convex restriction.** A nonzero element fixed by restriction to a
+convex subgroup divides a series as soon as it divides the restriction of that series. -/
+@[blueprint "lem:divisibility-from-convex-restriction"
+  (phase := "Refinement over Archimedean classes")
+  (title := "Divisibility from a convex restriction")
+  (statement := /--
+    Let $C$ be a convex subgroup of an ordered abelian group $G$, and let
+    $q,x\in Z+K((G^{<0}))_\kappa$.  If $q\ne0$, $q_{\vert C}=q$ and
+    $q\mid x_{\vert C}$, then $q\mid x$ in $Z+K((G^{<0}))_\kappa$.
+  -/)
+  (proof := /--
+    Write $x_{\vert C}=qw$ and divide $x$ by $q$ in the bounded Hahn field.
+    The inverse of $q$ is supported in $C$, so the quotient is $w$ plus
+    $q^{-1}(x-x_{\vert C})$, whose exponents are sums of an element of $C$ and
+    a nonpositive exponent outside $C$.  Convexity keeps every such sum
+    strictly negative.  Hence the quotient has nonpositive support and the
+    constant coefficient of $w$, so it lies in $Z+K((G^{<0}))_\kappa$.
+  -/)]
+theorem dvd_of_dvd_restrictToAddSubgroup
+    (Z : Subring K) {C : AddSubgroup G} (hC : (C : Set G).OrdConnected)
+    {q x : HahnSeries.cardSuppLTTruncationIntegerPart (G := G) (R := K) (κ := κ) Z}
+    (hq : restrictToAddSubgroup Z C q = q) (hq0 : q ≠ 0)
+    (hqx : q ∣ restrictToAddSubgroup Z C x) : q ∣ x := by
+  classical
+  obtain ⟨w, hw⟩ := hqx
+  have hsupp : (q : K⟦G⟧).support ⊆ (C : Set G) := by
+    rw [← hq, coe_restrictToAddSubgroup, HahnSeries.support_filter]
+    exact fun _ hg ↦ hg.2
+  refine dvd_of_restriction_factorization Z hC q w x hsupp hq0 ?_
+  rw [← coe_restrictToAddSubgroup, hw]
+  rfl
 
 open Classical in
 /-- Factor a bounded truncation-integer-part series by its nonzero restriction to a convex

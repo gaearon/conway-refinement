@@ -8,7 +8,7 @@ module
 import ConwayRefinement.Blueprint
 public import ConwayRefinement.Surreal.OmnificInteger.Primality.OmnificIntegers
 public import ConwayRefinement.HahnSeries.IntegerPart.CardinalFiniteClassReduction
-public import ConwayRefinement.HahnSeries.IntegerPart.Reduction
+public import ConwayRefinement.HahnSeries.IntegerPart.ClassReduction
 public import ConwayRefinement.HahnSeries.IntegerPart.ReducedCharacterization
 public import ConwayRefinement.HahnSeries.IntegerPart.ReducedDivisibility
 public import ConwayRefinement.HahnSeries.Monomial

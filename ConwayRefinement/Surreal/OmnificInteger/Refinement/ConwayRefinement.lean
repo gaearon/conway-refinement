@@ -6,6 +6,7 @@ Authors: Dan Abramov
 module
 
 public import ConwayRefinement.HahnSeries.IntegerPart.LimitTailPrimality
+public import ConwayRefinement.Algebra.Divisibility.Refinement
 public import ConwayRefinement.Surreal.HahnSeries.CardinalIntegerPart
 public import ConwayRefinement.Surreal.OmnificInteger.RefinementConjecture
 public import ConwayRefinement.Surreal.RationalTailQuotient

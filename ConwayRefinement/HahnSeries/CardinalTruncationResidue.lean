@@ -128,51 +128,31 @@ theorem coe_truncationIntegerPartEquivResidueSubring (S : Subring L)
       (x : L⟦G⟧) :=
   (rfl)
 
-/-- An exact ambient refinement of bounded nonpositive series can be normalized into the bounded
-truncation integer part using primality of the first constant coefficient. -/
-theorem exists_refinement_truncationIntegerPart_of_ambient
-    (S : Subring L)
-    {a b c d : cardSuppLTTruncationIntegerPart
-      (G := G) (R := L) (κ := κ) S}
-    (haS : IsPrimal (⟨(a : L⟦G⟧).coeff 0,
-      ((mem_cardSuppLTTruncationIntegerPart (Z := S)).mp a.2).2⟩ : S))
-    (hfrac : Subring.fracSubring S = ⊤) (ha0 : a ≠ 0)
-    (habcd : a * b = c * d)
-    {e f g h : CardSuppLTNonpositive (G := G) (L := L) (κ := κ)}
-    (ha : ((truncationIntegerPartEquivResidueSubring S a :
+/-- Primality in the bounded truncation integer part `S + L((G^{<0}))_κ` follows from primality
+in `L((G^{≤0}))_κ`, primality of the constant coefficient in `S`, and the fraction-field
+condition on `S`. -/
+theorem isPrimal_of_isPrimal_ambient (S : Subring L)
+    (x : cardSuppLTTruncationIntegerPart (G := G) (R := L) (κ := κ) S)
+    (hA : IsPrimal ((truncationIntegerPartEquivResidueSubring S x :
       Subring.residueSubring constantCoeffAlgHom S) :
-        CardSuppLTNonpositive (G := G) (L := L) (κ := κ)) = e * f)
-    (hb : ((truncationIntegerPartEquivResidueSubring S b :
+        CardSuppLTNonpositive (G := G) (L := L) (κ := κ)))
+    (hres : IsPrimal (⟨(x : L⟦G⟧).coeff 0,
+      ((mem_cardSuppLTTruncationIntegerPart (Z := S)).mp x.2).2⟩ : S))
+    (hfrac : Subring.fracSubring S = ⊤) : IsPrimal x := by
+  rw [← RingEquiv.isPrimal_iff (truncationIntegerPartEquivResidueSubring S)]
+  exact Subring.isPrimal_residueSubring_of_isPrimal_of_residue _ hA (fun _ ↦ hres)
+    (fun _ ↦ hfrac)
+
+/-- An element of the bounded truncation integer part with nonzero constant coefficient that is
+primal there is primal in `L((G^{≤0}))_κ`. -/
+theorem isPrimal_ambient_of_isPrimal (S : Subring L)
+    (x : cardSuppLTTruncationIntegerPart (G := G) (R := L) (κ := κ) S) (hx : IsPrimal x)
+    (hx0 : (x : L⟦G⟧).coeff 0 ≠ 0) :
+    IsPrimal ((truncationIntegerPartEquivResidueSubring S x :
       Subring.residueSubring constantCoeffAlgHom S) :
-        CardSuppLTNonpositive (G := G) (L := L) (κ := κ)) = g * h)
-    (hc : ((truncationIntegerPartEquivResidueSubring S c :
-      Subring.residueSubring constantCoeffAlgHom S) :
-        CardSuppLTNonpositive (G := G) (L := L) (κ := κ)) = e * g)
-    (hd : ((truncationIntegerPartEquivResidueSubring S d :
-      Subring.residueSubring constantCoeffAlgHom S) :
-        CardSuppLTNonpositive (G := G) (L := L) (κ := κ)) = f * h) :
-    ∃ E F H₁ H₂ : cardSuppLTTruncationIntegerPart
-        (G := G) (R := L) (κ := κ) S,
-      a = E * F ∧ b = H₁ * H₂ ∧ c = E * H₁ ∧ d = F * H₂ := by
-  let Φ := truncationIntegerPartEquivResidueSubring
-    (G := G) (L := L) (κ := κ) S
-  have haS' : IsPrimal
-      (⟨constantCoeffAlgHom ((Φ a : Subring.residueSubring constantCoeffAlgHom S) :
-          CardSuppLTNonpositive (G := G) (L := L) (κ := κ)), (Φ a).2⟩ : S) := by
-    convert haS using 1
-    apply Subtype.ext
-    rfl
-  have ha0' : Φ a ≠ 0 := Φ.injective.ne ha0
-  have habcd' : Φ a * Φ b = Φ c * Φ d := by
-    simpa only [map_mul] using congrArg Φ habcd
-  obtain ⟨E, F, H₁, H₂, ha', hb', hc', hd'⟩ :=
-    Subring.exists_refinement_residueSubring_of_ambient haS' hfrac ha0' habcd'
-      ha hb hc hd
-  exact ⟨Φ.symm E, Φ.symm F, Φ.symm H₁, Φ.symm H₂,
-    by simpa using congrArg Φ.symm ha',
-    by simpa using congrArg Φ.symm hb',
-    by simpa using congrArg Φ.symm hc',
-    by simpa using congrArg Φ.symm hd'⟩
+        CardSuppLTNonpositive (G := G) (L := L) (κ := κ)) :=
+  Subring.isPrimal_of_isPrimal_residueSubring _
+    ((RingEquiv.isPrimal_iff (truncationIntegerPartEquivResidueSubring S) x).mpr hx) hx0
 
 end CardSuppLTNonpositive
 

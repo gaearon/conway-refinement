@@ -9,7 +9,7 @@ import ConwayRefinement.Algebra.Divisibility.PrimalPreimage
 import ConwayRefinement.HahnSeries.Germ.GermAt
 import ConwayRefinement.HahnSeries.IntegerPart.Reduced
 import ConwayRefinement.HahnSeries.Tests.FiniteSupportGCD
-import ConwayRefinement.HahnSeries.IntegerPart.Tests.CardinalProposition922
+import ConwayRefinement.HahnSeries.IntegerPart.Tests.CardinalLeadingClassPrimality
 import ConwayRefinement.HahnSeries.IntegerPart.Tests.Reduced
 import ConwayRefinement.Surreal.HahnSeries.Tests.CardinalIntegerPart
 import ConwayRefinement.HahnSeries.FiniteSupportGCDProof

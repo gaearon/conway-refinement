@@ -5,7 +5,7 @@ Authors: Dan Abramov
 -/
 module
 
-public import ConwayRefinement.HahnSeries.IntegerPart.CardinalProposition922
+public import ConwayRefinement.HahnSeries.IntegerPart.CardinalLeadingClassPrimality
 
 /-!
 # API checks for cardinal-bounded LM24 Proposition 9.2.2

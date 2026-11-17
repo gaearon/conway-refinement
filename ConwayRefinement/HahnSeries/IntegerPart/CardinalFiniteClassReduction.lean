@@ -5,7 +5,7 @@ Authors: Dan Abramov
 -/
 module
 
-public import ConwayRefinement.HahnSeries.IntegerPart.Reduction
+public import ConwayRefinement.HahnSeries.IntegerPart.ClassReduction
 public import ConwayRefinement.HahnSeries.CardinalTruncation
 
 /-!

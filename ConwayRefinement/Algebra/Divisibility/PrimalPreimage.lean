@@ -5,7 +5,6 @@ Authors: Dan Abramov
 -/
 module
 
-public import ConwayRefinement.Algebra.Divisibility.Refinement
 public import Mathlib.Algebra.Algebra.Subalgebra.Basic
 public import Mathlib.Algebra.Ring.Subring.Basic
 public import Mathlib.Algebra.Field.Subfield.Basic
@@ -90,13 +89,6 @@ theorem exists_den {x : L} (hx : x ∈ fracSubring S) :
 
 theorem inv_mem_fracSubring {x : L} (hx : x ∈ fracSubring S) : x⁻¹ ∈ fracSubring S :=
   Subfield.inv_mem _ hx
-
-/-- Divisibility inside `π ⁻¹ S`, unfolded to the ambient algebra. -/
-theorem dvd_residueSubring_iff {x y : residueSubring π S} :
-    x ∣ y ↔ ∃ z : A, π z ∈ S ∧ (y : A) = x * z := by
-  constructor
-  · rintro ⟨z, rfl⟩; exact ⟨z, z.2, rfl⟩
-  · rintro ⟨z, hz, h⟩; exact ⟨⟨z, hz⟩, Subtype.ext h⟩
 
 /-! ### Normalising a factor so that its residue is `0` or `1` -/
 
@@ -578,6 +570,51 @@ theorem isPrimal_residueSubring_of_isPrimal_pre_fracSubring {b : A} (hb : π b �
 
 /-! ### Lemma 9.2.1 -/
 
+/-- **Primality in a `D + M` construction.** An element of `π ⁻¹ S` that is primal in `A` is
+primal in `π ⁻¹ S`, provided its residue is primal in `S` when it is nonzero, and `L` is the
+fraction field of `S` when the residue is zero. -/
+@[blueprint "lem:primality-in-d-plus-m"
+  (phase := "Algebraic and ordinal preliminaries")
+  (title := "Primality in a $D+M$ construction")
+  (statement := /--
+    Let $L$ be a field, let $A$ be a domain and an $L$-algebra, and let
+    $\pi:A\to L$ be an $L$-algebra retraction, so that $A=L+M$ with
+    $M=\ker\pi$.  Let $S\subseteq L$ be a subring and let
+    $b\in\pi^{-1}(S)=S+M$.  Suppose that $b$ is primal in $A$, that $\pi(b)$
+    is primal in $S$ if $\pi(b)\ne0$, and that $L$ is the fraction field of
+    $S$ if $\pi(b)=0$.  Then $b$ is primal in $\pi^{-1}(S)$.
+  -/)
+  (proof := /--
+    Let $b\mid cd$ in $\pi^{-1}(S)$ and refine in $A$: $b=b_1b_2$, $b_1\mid c$,
+    $b_2\mid d$, with cofactors $f,g$; cancellation of $b$ gives that the
+    cofactor of $b$ is $fg$.  If $\pi(b)\ne0$, apply $\pi$: then $\pi(b)\mid
+    \pi(c)\pi(d)$ in $S$, and primality of $\pi(b)$ gives
+    $\pi(b)=b_1'b_2'$ with $b_1'\mid\pi(c)$ and $b_2'\mid\pi(d)$ in $S$.  The
+    scalar $\eta=\pi(b_1)/b_1'\in L^\times$ turns $b_1\eta^{-1}$, $b_2\eta$,
+    $f\eta$, $g\eta^{-1}$ into elements of $\pi^{-1}(S)$ with residues
+    $b_1',b_2'$ and the two cofactors in $S$.  If $\pi(b)=0$, one factor, say
+    $b_1$, has zero residue.  Choose $\eta\in L^\times$ with $\eta\pi(b_2)$,
+    $\eta\pi(f)\in S$ and $\pi(g)\eta^{-1}\in S$: take $\eta=\pi(g)$ if this is
+    nonzero, and otherwise a common denominator in $S$ of $\pi(b_2)$ and
+    $\pi(f)$.  Then $b_1\eta^{-1}$, $b_2\eta$, $f\eta$, $g\eta^{-1}$ lie in
+    $\pi^{-1}(S)$ and refine the original divisibility.
+  -/)]
+theorem isPrimal_residueSubring_of_isPrimal_of_residue {b : A} (hb : π b ∈ S)
+    (hA : IsPrimal b) (hres : π b ≠ 0 → IsPrimal (⟨π b, hb⟩ : S))
+    (hfrac : π b = 0 → fracSubring S = ⊤) :
+    IsPrimal (⟨b, hb⟩ : residueSubring π S) := by
+  rcases eq_or_ne (π b) 0 with h0 | h0
+  · apply isPrimal_residueSubring_of_isPrimal_pre_fracSubring hb h0
+    let e : residueSubring π (fracSubring S) ≃+* A := {
+      toFun x := x
+      invFun x := ⟨x, by rw [mem_residueSubring, hfrac h0]; exact Subring.mem_top _⟩
+      left_inv _ := rfl
+      right_inv _ := rfl
+      map_mul' _ _ := rfl
+      map_add' _ _ := rfl }
+    exact (e.isPrimal_iff _).mp hA
+  · exact isPrimal_residueSubring_of_isPrimal hb h0 (hres h0) hA
+
 /-- LM24, Lemma 9.2.1, with the repairs its errata require: `A` must be a domain, and the two
 left-to-right steps must clear a denominator before primality in `π ⁻¹ S` is invoked. -/
 theorem isPrimal_residueSubring_iff {b : A} (hb : π b ∈ S) :
@@ -594,209 +631,5 @@ theorem isPrimal_residueSubring_iff {b : A} (hb : π b ∈ S) :
     · rintro (⟨-, hS, hA⟩ | ⟨h, -⟩)
       · exact isPrimal_residueSubring_of_isPrimal hb h0 hS hA
       · exact absurd h h0
-
-omit [IsDomain A] in
-/-- An exact ambient four-factor refinement whose first input has nonzero residue can be
-rescaled into the residue subring, provided that residue is primal. Only this one ambient
-refinement and this one primal residue are required. -/
-theorem exists_refinement_residueSubring_of_ambient_of_residue_ne_zero
-    {a b c d : residueSubring π S}
-    (haS : IsPrimal (⟨π (a : A), a.2⟩ : S)) (haπ : π (a : A) ≠ 0)
-    (habcd : a * b = c * d)
-    {e f g h : A}
-    (ha : (a : A) = e * f) (hb : (b : A) = g * h)
-    (hc : (c : A) = e * g) (hd : (d : A) = f * h) :
-    ∃ E F G H : residueSubring π S,
-      a = E * F ∧ b = G * H ∧ c = E * G ∧ d = F * H := by
-  have habcdS :
-      (⟨π (a : A), a.2⟩ : S) * ⟨π (b : A), b.2⟩ =
-        ⟨π (c : A), c.2⟩ * ⟨π (d : A), d.2⟩ := by
-    apply Subtype.ext
-    change π (a : A) * π (b : A) = π (c : A) * π (d : A)
-    rw [← map_mul, ← map_mul]
-    exact congrArg π (congrArg Subtype.val habcd)
-  have haS0 : (⟨π (a : A), a.2⟩ : S) ≠ 0 := by
-    intro hzero
-    apply haπ
-    exact congrArg Subtype.val hzero
-  obtain ⟨e₀, f₀, g₀, h₀, ha₀, hb₀, hc₀, hd₀⟩ :=
-    exists_fourFactorRefinement_of_isPrimal haS0 haS habcdS
-  have ha₀' : π (a : A) = (e₀ : L) * f₀ := congrArg Subtype.val ha₀
-  have hc₀' : π (c : A) = (e₀ : L) * g₀ := congrArg Subtype.val hc₀
-  have hd₀' : π (d : A) = (f₀ : L) * h₀ := congrArg Subtype.val hd₀
-  have he0 : π e ≠ 0 := by
-    intro he
-    apply haπ
-    rw [ha, map_mul, he, zero_mul]
-  have hf0 : π f ≠ 0 := by
-    intro hf
-    apply haπ
-    rw [ha, map_mul, hf, mul_zero]
-  have he₀0 : (e₀ : L) ≠ 0 := by
-    intro he₀
-    apply haπ
-    rw [ha₀', he₀, zero_mul]
-  have hf₀0 : (f₀ : L) ≠ 0 := by
-    intro hf₀
-    apply haπ
-    rw [ha₀', hf₀, mul_zero]
-  let η : L := π e * (e₀ : L)⁻¹
-  have hη0 : η ≠ 0 := mul_ne_zero he0 (inv_ne_zero he₀0)
-  have hE : π (e * algebraMap L A η⁻¹) = e₀ := by
-    simp only [map_mul, AlgHom.commutes, Algebra.algebraMap_self, RingHom.id_apply]
-    dsimp only [η]
-    field_simp
-  have hF : π (f * algebraMap L A η) = f₀ := by
-    simp only [map_mul, AlgHom.commutes, Algebra.algebraMap_self, RingHom.id_apply]
-    dsimp only [η]
-    have hae : π (a : A) = π e * π f := by rw [ha, map_mul]
-    calc
-      π f * (π e * (e₀ : L)⁻¹) = (π e * π f) * (e₀ : L)⁻¹ := by ring
-      _ = π (a : A) * (e₀ : L)⁻¹ := by rw [hae]
-      _ = (e₀ : L) * f₀ * (e₀ : L)⁻¹ := by rw [ha₀']
-      _ = f₀ := by field_simp
-  have hG : π (g * algebraMap L A η) = g₀ := by
-    simp only [map_mul, AlgHom.commutes, Algebra.algebraMap_self, RingHom.id_apply]
-    dsimp only [η]
-    have hce : π (c : A) = π e * π g := by rw [hc, map_mul]
-    rw [show π g * (π e * (e₀ : L)⁻¹) = (π e * π g) * (e₀ : L)⁻¹ by ring,
-      ← hce, hc₀']
-    field_simp
-  have hH : π (h * algebraMap L A η⁻¹) = h₀ := by
-    simp only [map_mul, AlgHom.commutes, Algebra.algebraMap_self, RingHom.id_apply]
-    have hFscalar : π f * η = (f₀ : L) := by simpa using hF
-    have hdh : π (d : A) = π f * π h := by rw [hd, map_mul]
-    apply mul_left_cancel₀ hf₀0
-    calc
-      (f₀ : L) * (π h * η⁻¹) = (π f * η) * (π h * η⁻¹) := by rw [hFscalar]
-      _ = π f * π h := by field_simp
-      _ = π (d : A) := hdh.symm
-      _ = (f₀ : L) * h₀ := hd₀'
-  refine ⟨⟨e * algebraMap L A η⁻¹, mem_residueSubring.mpr (by rw [hE]; exact e₀.2)⟩,
-    ⟨f * algebraMap L A η, mem_residueSubring.mpr (by rw [hF]; exact f₀.2)⟩,
-    ⟨g * algebraMap L A η, mem_residueSubring.mpr (by rw [hG]; exact g₀.2)⟩,
-    ⟨h * algebraMap L A η⁻¹, mem_residueSubring.mpr (by rw [hH]; exact h₀.2)⟩,
-    ?_, ?_, ?_, ?_⟩
-  all_goals
-    apply Subtype.ext
-    simp only [Subring.coe_mul]
-  · rw [ha]
-    rw [show (e * algebraMap L A η⁻¹) * (f * algebraMap L A η) =
-      e * f * (algebraMap L A η⁻¹ * algebraMap L A η) by ring,
-      ← map_mul, inv_mul_cancel₀ hη0, map_one, mul_one]
-  · rw [hb]
-    rw [show (g * algebraMap L A η) * (h * algebraMap L A η⁻¹) =
-      g * h * (algebraMap L A η * algebraMap L A η⁻¹) by ring,
-      ← map_mul, mul_inv_cancel₀ hη0, map_one, mul_one]
-  · rw [hc]
-    rw [show (e * algebraMap L A η⁻¹) * (g * algebraMap L A η) =
-      e * g * (algebraMap L A η⁻¹ * algebraMap L A η) by ring,
-      ← map_mul, inv_mul_cancel₀ hη0, map_one, mul_one]
-  · rw [hd]
-    rw [show (f * algebraMap L A η) * (h * algebraMap L A η⁻¹) =
-      f * h * (algebraMap L A η * algebraMap L A η⁻¹) by ring,
-      ← map_mul, mul_inv_cancel₀ hη0, map_one, mul_one]
-
-/-- A nonzero exact ambient four-factor refinement can be rescaled into the residue subring when
-the first residue is primal and that subring generates the coefficient field. This is the
-equation-local form needed after an exact germ refinement; no global refinement property of the
-residue ring is assumed. -/
-theorem exists_refinement_residueSubring_of_ambient
-    {a b c d : residueSubring π S}
-    (haS : IsPrimal (⟨π (a : A), a.2⟩ : S)) (hfrac : fracSubring S = ⊤)
-    (ha0 : a ≠ 0) (habcd : a * b = c * d)
-    {e f g h : A}
-    (ha : (a : A) = e * f) (hb : (b : A) = g * h)
-    (hc : (c : A) = e * g) (hd : (d : A) = f * h) :
-    ∃ E F G H : residueSubring π S,
-      a = E * F ∧ b = G * H ∧ c = E * G ∧ d = F * H := by
-  by_cases haπ : π (a : A) = 0
-  · have haA0 : (a : A) ≠ 0 := fun h ↦ ha0 (Subtype.ext h)
-    have hef0 : π e = 0 ∨ π f = 0 := by
-      apply mul_eq_zero.mp
-      rw [← map_mul, ← ha]
-      exact haπ
-    rcases hef0 with he0 | hf0
-    · obtain ⟨E, F, hEc, hFd, haEF⟩ := eta_rescale a.2 c.2 d.2 b.2
-          (by rw [hfrac]; exact Subring.mem_top _)
-          (by rw [hfrac]; exact Subring.mem_top _)
-          ha hc hd hb he0
-      obtain ⟨G, hcEG⟩ := hEc
-      obtain ⟨H, hdFH⟩ := hFd
-      refine ⟨E, F, G, H, haEF, ?_, hcEG, hdFH⟩
-      apply Subtype.ext
-      apply mul_left_cancel₀ haA0
-      change (a : A) * (b : A) = (a : A) * ((G : A) * H)
-      have habcd' := congrArg Subtype.val habcd
-      have hcEG' := congrArg Subtype.val hcEG
-      have hdFH' := congrArg Subtype.val hdFH
-      have haEF' := congrArg Subtype.val haEF
-      simp only [Subring.coe_mul] at habcd' hcEG' hdFH' haEF'
-      rw [habcd', hcEG', hdFH', haEF']
-      ring
-    · obtain ⟨F, E, hFd, hEc, haFE⟩ := eta_rescale a.2 d.2 c.2 b.2
-          (by rw [hfrac]; exact Subring.mem_top _)
-          (by rw [hfrac]; exact Subring.mem_top _)
-          (by rw [ha]; ring) hd hc (by rw [hb]; ring) hf0
-      obtain ⟨H, hdFH⟩ := hFd
-      obtain ⟨G, hcEG⟩ := hEc
-      refine ⟨E, F, G, H, ?_, ?_, hcEG, hdFH⟩
-      · exact haFE.trans (mul_comm F E)
-      · apply Subtype.ext
-        apply mul_left_cancel₀ haA0
-        change (a : A) * (b : A) = (a : A) * ((G : A) * H)
-        have habcd' := congrArg Subtype.val habcd
-        have hcEG' := congrArg Subtype.val hcEG
-        have hdFH' := congrArg Subtype.val hdFH
-        have haFE' := congrArg Subtype.val haFE
-        simp only [Subring.coe_mul] at habcd' hcEG' hdFH' haFE'
-        rw [habcd', hcEG', hdFH', haFE']
-        ring
-  · exact exists_refinement_residueSubring_of_ambient_of_residue_ne_zero
-      haS haπ habcd ha hb hc hd
-
-/-- A nonzero element of a residue subring is primal when its residue is primal, the coefficient
-subring generates the whole coefficient field, and the element is primal in the ambient algebra.
-This equation-local form avoids assuming refinement for every ambient element. -/
-theorem isPrimal_residueSubring_of_isPrimal_ambient
-    {b : residueSubring π S} (hb0 : b ≠ 0)
-    (hbS : IsPrimal (⟨π (b : A), b.2⟩ : S)) (hfrac : fracSubring S = ⊤)
-    (hbA : IsPrimal (b : A)) : IsPrimal b := by
-  intro c d hdvd
-  obtain ⟨q, hq⟩ := hdvd
-  have hprod : b * q = c * d := hq.symm
-  obtain ⟨e, f, g, h, hb, hq, hc, hd⟩ :=
-    exists_fourFactorRefinement_of_isPrimal
-      (fun hzero ↦ hb0 (Subtype.ext hzero)) hbA (congrArg Subtype.val hprod)
-  obtain ⟨E, F, G, H, hb', -, hc', hd'⟩ :=
-    exists_refinement_residueSubring_of_ambient hbS hfrac hb0 hprod hb hq hc hd
-  exact ⟨E, F, ⟨G, hc'⟩, ⟨H, hd'⟩, hb'⟩
-
-/-- Four-factor refinement ascends from the ambient algebra and the residue subring when the
-residue subring generates the whole coefficient field. The zero-residue branch uses ambient
-refinement after identifying the enlarged residue pullback with the ambient algebra. -/
-theorem hasFourFactorRefinement_residueSubring
-    (hA : HasFourFactorRefinement A) (hS : HasFourFactorRefinement S)
-    (hfrac : fracSubring S = ⊤) :
-    HasFourFactorRefinement (residueSubring π S) := by
-  rw [hasFourFactorRefinement_iff_forall_isPrimal]
-  intro b
-  rw [isPrimal_residueSubring_iff b.2]
-  by_cases hb : π b = 0
-  · right
-    refine ⟨hb, ?_⟩
-    let b' : residueSubring π (fracSubring S) := ⟨b, le_fracSubring b.2⟩
-    let e : residueSubring π (fracSubring S) ≃+* A := {
-      toFun x := x
-      invFun x := ⟨x, by rw [mem_residueSubring, hfrac]; exact Subring.mem_top _⟩
-      left_inv _ := rfl
-      right_inv _ := rfl
-      map_mul' _ _ := rfl
-      map_add' _ _ := rfl }
-    apply (e.isPrimal_iff b').mp
-    change IsPrimal (b : A)
-    exact hA.isPrimal (b : A)
-  · left
-    exact ⟨hb, hS.isPrimal _, hA.isPrimal b⟩
 
 end Subring

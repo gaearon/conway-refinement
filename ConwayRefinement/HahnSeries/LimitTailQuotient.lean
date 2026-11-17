@@ -34,14 +34,6 @@ variable {G : Type u} [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G]
 classes. -/
 abbrev TailQuotient (T : Set (FiniteArchimedeanClass G)) := G ⧸ tailSubmodule ℚ T
 
-noncomputable instance tailQuotientLinearOrder (T : Set (FiniteArchimedeanClass G)) :
-    LinearOrder (TailQuotient T) :=
-  ConvexQuotient.instLinearOrder (H := (tailSubmodule ℚ T).toAddSubgroup)
-
-instance tailQuotientIsOrderedAddMonoid (T : Set (FiniteArchimedeanClass G)) :
-    IsOrderedAddMonoid (TailQuotient T) :=
-  ConvexQuotient.instIsOrderedAddMonoid (H := (tailSubmodule ℚ T).toAddSubgroup)
-
 instance tailQuotientPosSMulMono (T : Set (FiniteArchimedeanClass G)) :
     PosSMulMono ℚ (TailQuotient T) where
   smul_le_smul_of_nonneg_left q hq x y hxy := by

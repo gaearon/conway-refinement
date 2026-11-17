@@ -6,7 +6,7 @@ Authors: Dan Abramov
 module
 
 public import ConwayRefinement.HahnSeries.Primality.Primality
-public import ConwayRefinement.HahnSeries.IntegerPart.CardinalProposition922
+public import ConwayRefinement.HahnSeries.IntegerPart.CardinalLeadingClassPrimality
 public import ConwayRefinement.HahnSeries.NonpositiveDomainEquiv
 public import ConwayRefinement.Algebra.Divisibility.PrimalPreimage
 

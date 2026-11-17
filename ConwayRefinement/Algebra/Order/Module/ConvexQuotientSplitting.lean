@@ -114,11 +114,17 @@ theorem quotientProdLinearEquiv_zero_left (p : P) :
     Submodule.coe_prodEquivOfIsCompl']
   simp [quotientLinearEquivComplement]
 
-noncomputable local instance quotientLinearOrder [P.toAddSubgroup.IsConvex] :
+/-- The quotient by a convex subspace, with the order induced from `G`. -/
+noncomputable instance convexQuotientLinearOrder [P.toAddSubgroup.IsConvex] :
     LinearOrder (G ⧸ P) :=
   ConvexQuotient.instLinearOrder (H := P.toAddSubgroup)
 
-local instance submoduleIsOrderedAddMonoid : IsOrderedAddMonoid P :=
+instance convexQuotientIsOrderedAddMonoid [P.toAddSubgroup.IsConvex] :
+    IsOrderedAddMonoid (G ⧸ P) :=
+  ConvexQuotient.instIsOrderedAddMonoid (H := P.toAddSubgroup)
+
+/-- A subspace of an ordered vector space, with the induced order. -/
+instance isOrderedAddMonoid : IsOrderedAddMonoid P :=
   AddSubgroup.instIsOrderedAddMonoid P.toAddSubgroup
 
 /-- A linearly ordered vector space is the lexicographic product of the quotient by a convex

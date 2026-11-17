@@ -7,6 +7,7 @@ module
 
 public import ConwayRefinement.HahnSeries.IntegerPart.Refinement.CompleteGermRefinement
 public import ConwayRefinement.HahnSeries.TruncationIntegerPartPrimal
+public import ConwayRefinement.Algebra.Divisibility.Refinement
 public import Mathlib.Algebra.Order.Archimedean.Class
 
 import ConwayRefinement.Topology.Order.ArchimedeanBallBase

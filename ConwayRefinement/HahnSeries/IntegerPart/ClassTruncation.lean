@@ -89,7 +89,9 @@ private theorem mem_ball_add_iff (c : FiniteArchimedeanClass G)
           (add_ne_zero_of_nonpos hi hj (Or.inr hj0))).trans_le (mk_add_le_right hi hj)
   · exact fun h ↦ add_mem h.1 h.2
 
-private theorem filter_mul (p : G → Prop) [DecidablePred p]
+/-- A coefficient restriction is multiplicative on nonpositive series when membership of a sum
+of two nonpositive exponents is equivalent to membership of both summands. -/
+theorem filter_mul_of_add_iff (p : G → Prop) [DecidablePred p]
     (hpadd : ∀ {i j : G}, i ≤ 0 → j ≤ 0 → (p (i + j) ↔ p i ∧ p j))
     (x y : Nonpositive G R) :
     HahnSeries.filter p ((x * y : Nonpositive G R) : R⟦G⟧) =
@@ -135,7 +137,7 @@ private def classTruncation (p : G → Prop) [DecidablePred p]
     exact HahnSeries.filter_add p (x : R⟦G⟧) (y : R⟦G⟧)
   map_mul' x y := by
     apply Subtype.ext
-    exact filter_mul p hpadd x y
+    exact filter_mul_of_add_iff p hpadd x y
 
 /-- LM24's `T_σ`: retain coefficients whose exponents lie in the closed ball at `c`. -/
 def T (c : FiniteArchimedeanClass G) : Nonpositive G R →+* Nonpositive G R :=
