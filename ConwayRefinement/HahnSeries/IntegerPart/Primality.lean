@@ -466,7 +466,8 @@ Mantova (LM24, Theorem 9.0.1); primality of `Z` is their `(A3)`. -/
     because a support of cardinality less than $\kappa$ is bounded above in a
     group of cofinality at least $\kappa$ [LM24, Prop. 2.4.5].  With (4) and the
     induction hypothesis, \ref{thm:limit-tail-step} applies.
-  -/)]
+  -/)
+  (highlight)]
 theorem isPrimal
     {K : Type*} {G : Type u} {R : Type v}
     [Field K] [LinearOrder K] [IsOrderedRing K] [Archimedean K]

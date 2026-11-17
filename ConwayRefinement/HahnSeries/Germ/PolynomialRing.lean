@@ -123,11 +123,11 @@ bounded away from zero is a polynomial algebra over `K`. -/
   (phase := "Polynomial presentations")
   (title := "Polynomial presentation of the ring of germs")
   (statement := /--
-    Let $K$ be a field of characteristic zero and let $G$ be a nontrivial
-    ordered abelian group which is Cauchy complete for its additive
-    uniformity.  If $J$ is the ideal of series in $K((G^{\le 0}))$ whose
-    support is bounded away from zero, then for some set $I$ there is a
-    $K$-algebra isomorphism
+    Let $K$ be a field of characteristic zero and $G$ a nontrivial ordered
+    abelian group which, with its order topology and the associated group
+    uniformity, is Cauchy complete.  If $J$ is the ideal of series in
+    $K((G^{\le 0}))$ whose support is bounded away from $0$, then for some set
+    $I$ there is a $K$-algebra isomorphism
     \[
       K[X_i:i\in I]\simeq K((G^{\le 0}))/J.
     \]
@@ -138,7 +138,8 @@ bounded away from zero is a polynomial algebra over `K`. -/
     \ref{thm:germ-ring-generators}, $K((G^{\le0}))/J$ has a set $T$ of
     generators that is algebraically independent over $K$, and evaluation at
     $T$ is an isomorphism $K[X_t:t\in T]\simeq K((G^{\le0}))/J$.
-  -/)]
+  -/)
+  (highlight)]
 theorem exists_mvPolynomial_algEquiv_germ :
     ∃ ι : Type (max (u + 1) v), Nonempty
       (MvPolynomial ι K ≃ₐ[K]
@@ -156,20 +157,21 @@ consequence of the polynomial presentation. -/
   (phase := "Polynomial presentations")
   (title := "Primality of $J$")
   (statement := /--
-    Let $K$ be a field of characteristic zero and let $G$ be a nontrivial
-    ordered abelian group which is Cauchy complete for its additive
-    uniformity.  If $J$ is the ideal of series in $K((G^{\le 0}))$ whose
-    support is bounded away from zero, then $K((G^{\le 0}))/J$ is an
-    integral domain; that is, $J$ is a prime ideal.  For $G=\mathbb R$ this
-    is [Ber00, Cor. 9.8]; for general $G$ see [Pit02, Thm. 6.1] and
-    [LM24, Cor. 8.1.5].  Here it is a consequence of the polynomial
-    presentation.
+    Let $K$ be a field of characteristic zero and $G$ a nontrivial ordered
+    abelian group which, with its order topology and the associated group
+    uniformity, is Cauchy complete.  If $J$ is the ideal of series in
+    $K((G^{\le 0}))$ whose support is bounded away from $0$, then
+    $K((G^{\le 0}))/J$ is an integral domain; that is, $J$ is a prime ideal.
+    For $G=\mathbb R$ this is [Ber00, Cor. 9.8]; for dense $G$ it is
+    [Pit02, Thm. 6.1], and for arbitrary $G$ [LM24, Cor. 8.1.5].  Here, for
+    Cauchy-complete $G$, it is a consequence of the polynomial presentation.
   -/)
   (proof := /--
     By \ref{thm:complete-hahn-germ-polynomial-algebra}, $K((G^{\le 0}))/J$
     is isomorphic to a polynomial ring over the field $K$, which is an
     integral domain.
-  -/)]
+  -/)
+  (highlight)]
 theorem isDomain_germ : IsDomain (Nonpositive G K ⧸ boundedAwayIdeal G K) := by
   obtain ⟨ι, ⟨e⟩⟩ := exists_mvPolynomial_algEquiv_germ (G := G) (K := K)
   exact e.symm.toMulEquiv.isDomain _

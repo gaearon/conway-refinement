@@ -523,7 +523,8 @@ over `S`, and `S[germ X]` again has representatives whose germs lie in it. -/
     \ref{lem:proportionality} $[Z]=c\,p_d$ for some $c\in K$, that is,
     $d\,p_d\,x+p_{d-1}-c\,p_d=0$.  As $K$ has characteristic $0$, $d\,p_d\ne0$,
     and this relation of degree one contradicts minimality.
-  -/)]
+  -/)
+  (highlight)]
 theorem transcendental_germ (S : Subalgebra K Q) [IsDomain S]
     (hS : sys.HasRepresentativesWithGermsIn S) (X : A)
     (hX : ∀ ξ < 0, sys.germAt ξ X ∈ S) (hx : sys.germ X ∉ S) :

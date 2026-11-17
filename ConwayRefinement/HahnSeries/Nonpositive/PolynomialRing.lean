@@ -180,7 +180,8 @@ over its finite-support subring `K(ℝ^{≤0})`. -/
     \ref{lem:constant-germs-finite-support}, the series all of whose germs are
     constants form $K(\mathbb R^{\le0})$.  Apply
     \ref{thm:series-ring-generators}.
-  -/)]
+  -/)
+  (highlight)]
 theorem exists_mvPolynomial_algEquiv_finiteSupportRing :
     ∃ ι : Type (max v w), Nonempty (MvPolynomial ι (FiniteSupportRing (G := ℝ) (K := K)) ≃ₐ[
       FiniteSupportRing (G := ℝ) (K := K)] Nonpositive ℝ K) := by

@@ -142,7 +142,8 @@ theorem isPrimal (x : Surreal.OmnificInteger.{u}) : IsPrimal x :=
     By \ref{thm:signed-normal-form-omnific-integer-equivalence} and
     \ref{thm:surreal-hahn-integer-part-primality}, every element of
     $\mathbf{Oz}$ is primal.  An irreducible primal element is prime.
-  -/)]
+  -/)
+  (highlight)]
 theorem prime_of_irreducible {x : Surreal.OmnificInteger.{u}} (hirr : Irreducible x) :
     Prime x :=
   hirr.prime_of_isPrimal (isPrimal x)
