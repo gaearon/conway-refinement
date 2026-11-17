@@ -2,7 +2,8 @@
 
 ## 2.0
 
-A shorter proof of the same theorem.
+- Shorter proof that the ring of germs is a polynomial ring, without associated graded rings.
+- Simpler reduction along Archimedean classes.
 
 ## 1.0
 
