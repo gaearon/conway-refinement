@@ -116,16 +116,6 @@ def read_nodes() -> dict[str, Node]:
     names = {record["name"]: record["label"] for record in records}
     nodes: dict[str, Node] = {}
     depth = module_import_depths()
-    for phase in PHASE_METADATA:
-        unknown = sorted(
-            set(phase.order)
-            - {record["label"] for record in records if record["phase"] == phase.key}
-        )
-        if unknown:
-            raise SystemExit(
-                f"blueprint: order of phase {phase.slug!r} lists labels outside it: "
-                + ", ".join(unknown)
-            )
 
     def preferred(record: dict) -> int:
         order = PHASE_BY_KEY[record["phase"]].order
@@ -293,6 +283,21 @@ def later_phase_import_paths(
                 if dependency not in seen
             )
     return sorted(backwards)
+
+
+def validate_phase_order(nodes: dict[str, Node]) -> None:
+    """Each phase's explicit reading order lists only labels of that phase."""
+
+    for phase in PHASE_METADATA:
+        unknown = sorted(
+            set(phase.order)
+            - {label for label, node in nodes.items() if node.phase == phase.key}
+        )
+        if unknown:
+            raise SystemExit(
+                f"blueprint: order of phase {phase.slug!r} lists labels outside it: "
+                + ", ".join(unknown)
+            )
 
 
 def validate_phase_contract(nodes: dict[str, Node]) -> None:
@@ -633,6 +638,7 @@ def main() -> None:
 
     nodes = read_nodes()
     validate_phase_contract(nodes)
+    validate_phase_order(nodes)
     validate_reference_contract(nodes)
     if args.phase_report:
         print(render_phase_report(nodes))
