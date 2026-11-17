@@ -4,11 +4,14 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Dan Abramov
 -/
 module
-public import ConwayRefinement.HahnSeries.CantorBendixson.Truncation
-public import ConwayRefinement.HahnSeries.Nonpositive
-public import Mathlib.RingTheory.Ideal.Quotient.Basic
+public import ConwayRefinement.HahnSeries.Nonpositive.Basic
 
 import ConwayRefinement.Blueprint
+public import ConwayRefinement.HahnSeries.CantorBendixson.Basic
+public import Mathlib.RingTheory.Ideal.Quotient.Defs
+import ConwayRefinement.HahnSeries.CantorBendixson.Truncation
+import Mathlib.Data.Rat.Floor
+import Mathlib.RingTheory.Ideal.Quotient.Basic
 
 /-!
 # The ideal of series bounded away from zero

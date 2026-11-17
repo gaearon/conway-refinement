@@ -5,7 +5,10 @@ Authors: Dan Abramov
 -/
 module
 
-public import ConwayRefinement.Surreal.OmnificInteger.NormalForm
+public import ConwayRefinement.Surreal.HahnSeries.Transfer
+public import ConwayRefinement.Surreal.OmnificInteger.Basic
+import ConwayRefinement.Surreal.HahnSeries.NormalFormAdd
+import ConwayRefinement.Surreal.OmnificInteger.NormalForm
 
 /-!
 # Checks for Conway normal forms of omnific integers

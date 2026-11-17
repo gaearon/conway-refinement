@@ -5,11 +5,10 @@ Authors: Dan Abramov
 -/
 module
 
-public import Mathlib.Algebra.BigOperators.Finprod
-public import Mathlib.RingTheory.Adjoin.Basic
 public import Mathlib.SetTheory.Ordinal.Basic
 
 import ConwayRefinement.Blueprint
+public import Mathlib.Algebra.Algebra.Subalgebra.Lattice
 
 /-!
 # Germs of translated truncations: the axioms

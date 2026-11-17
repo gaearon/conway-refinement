@@ -6,16 +6,15 @@ Authors: Dan Abramov
 module
 
 public import ConwayRefinement.RingTheory.TruncationGerms.Basic
-public import Mathlib.Algebra.MvPolynomial.Rename
-public import Mathlib.RingTheory.AlgebraicIndependent.Transcendental
 
 import ConwayRefinement.Blueprint
 import Mathlib.Algebra.Algebra.Subalgebra.Directed
 import Mathlib.Algebra.CharP.Algebra
-import Mathlib.Algebra.Polynomial.Derivative
-import Mathlib.Order.Zorn
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.LinearCombination
+public import Mathlib.RingTheory.Algebraic.Defs
+public import Mathlib.RingTheory.AlgebraicIndependent.Defs
+import Mathlib.RingTheory.AlgebraicIndependent.Transcendental
 
 /-!
 # Germs of translated truncations: transcendence and the ring of germs

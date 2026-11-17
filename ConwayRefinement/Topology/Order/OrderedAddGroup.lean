@@ -6,8 +6,9 @@ Authors: Dan Abramov
 module
 
 public import Mathlib.Topology.Algebra.Group.Defs
-public import Mathlib.Topology.Order.MonotoneContinuity
 import Mathlib.Tactic.Abel
+public import Mathlib.Topology.Order.Basic
+import Mathlib.Topology.Order.MonotoneContinuity
 
 /-!
 # The order topology on a densely ordered additive group

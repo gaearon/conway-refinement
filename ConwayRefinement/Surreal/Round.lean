@@ -5,8 +5,8 @@ Authors: Violeta Hernández Palacios
 -/
 module
 
-public import CombinatorialGames.Surreal.Real
-public import ConwayRefinement.Surreal.HahnSeries.NormalFormSupport
+public import CombinatorialGames.Surreal.Birthday.Basic
+import ConwayRefinement.Surreal.HahnSeries.NormalFormSupport
 
 /-!
 # Rounding surreal numbers by a positive radius

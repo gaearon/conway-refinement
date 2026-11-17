@@ -5,11 +5,10 @@ Authors: Dan Abramov
 -/
 module
 
-public import ConwayRefinement.Topology.CantorBendixson
-public import ConwayRefinement.Topology.CantorBendixsonReconstruction
+public import ConwayRefinement.Topology.CantorBendixson.Basic
 public import Mathlib.Topology.Instances.ENat
-import Mathlib.Topology.DiscreteSubset
-public import Mathlib.Topology.Maps.Proper.Basic
+import Mathlib.SetTheory.Ordinal.Arithmetic
+import Mathlib.Topology.Maps.Proper.Basic
 
 /-!
 # Semantic checks for transfinite Cantor–Bendixson derivatives

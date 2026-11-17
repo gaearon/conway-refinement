@@ -5,12 +5,13 @@ Authors: Dan Abramov
 -/
 module
 
-public import ConwayRefinement.Topology.CantorBendixsonRank
+public import ConwayRefinement.Topology.CantorBendixson.Rank
 public import Mathlib.RingTheory.HahnSeries.Basic
 public import Mathlib.SetTheory.Ordinal.Exponential
-public import Mathlib.Topology.Order.LeftRightNhds
 
 import ConwayRefinement.Blueprint
+import ConwayRefinement.Topology.Order.PWOAddition
+import Mathlib.Topology.Order.LeftRightNhds
 
 /-!
 # Cantor–Bendixson ranks of closed Hahn supports

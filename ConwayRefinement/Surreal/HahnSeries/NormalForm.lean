@@ -5,9 +5,11 @@ Authors: Violeta Hernández Palacios
 -/
 module
 
-public import ConwayRefinement.Surreal.HahnSeries.NormalFormRecursion
-public import ConwayRefinement.Surreal.HahnSeries.NormalFormSupport
 public import CombinatorialGames.Surreal.Birthday.Basic
+public import CombinatorialGames.Surreal.Leading
+public import ConwayRefinement.Surreal.HahnSeries.NormalFormBasic
+import ConwayRefinement.Surreal.HahnSeries.NormalFormRecursion
+import ConwayRefinement.Surreal.HahnSeries.NormalFormSupport
 
 /-!
 # Converting between surreal Hahn series and surreals

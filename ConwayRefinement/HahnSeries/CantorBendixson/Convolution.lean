@@ -5,9 +5,12 @@ Authors: Dan Abramov
 -/
 module
 
-public import ConwayRefinement.HahnSeries.CantorBendixson.Truncation
-public import ConwayRefinement.Topology.Order.PWOAdditionFiber
-public import Mathlib.RingTheory.HahnSeries.Multiplication
+public import ConwayRefinement.HahnSeries.CantorBendixson.Basic
+public import ConwayRefinement.HahnSeries.Truncation
+public import Mathlib.Topology.Algebra.IsUniformGroup.Defs
+public import Mathlib.Topology.UniformSpace.Cauchy
+import ConwayRefinement.Topology.Order.PWOAddition
+import ConwayRefinement.Topology.Order.PWOAdditionFiber
 
 /-!
 # Finite convolution for translated Hahn truncations

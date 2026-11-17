@@ -7,12 +7,12 @@ module
 
 import ConwayRefinement.Algebra.Divisibility.PrimalPreimage
 import ConwayRefinement.HahnSeries.Germ.GermAt
-import ConwayRefinement.HahnSeries.Tests.FiniteSupportGCD
-import ConwayRefinement.Surreal.HahnSeries.Tests.CardinalIntegerPart
-import ConwayRefinement.HahnSeries.FiniteSupportGCDProof
-import ConwayRefinement.HahnSeries.FiniteSupportUnit
-import ConwayRefinement.Surreal.OmnificInteger.RefinementConjecture
-import ConwayRefinement.Surreal.ArchimedeanAssumptions
+import ConwayRefinement.HahnSeries.Nonpositive.Tests.FiniteSupportGCD
+import ConwayRefinement.Surreal.HahnSeries.Tests.IntegerPart
+import ConwayRefinement.HahnSeries.Nonpositive.FiniteSupportGCD
+import ConwayRefinement.HahnSeries.Nonpositive.FiniteSupport
+import ConwayRefinement.Surreal.OmnificInteger.Refinement
+import ConwayRefinement.Surreal.Archimedean
 import Mathlib.Data.List.Chain
 import Mathlib.RingTheory.HahnSeries.Addition
 import ConwayRefinement.HahnSeries.Truncation

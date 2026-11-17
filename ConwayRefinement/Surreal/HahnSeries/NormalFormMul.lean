@@ -9,9 +9,11 @@ Continues and modifies the Apache-2.0-licensed Conway normal-form work in Combin
 -/
 module
 
-public import ConwayRefinement.Surreal.HahnSeries.NormalFormAdd
 
 import all CombinatorialGames.Surreal.HahnSeries.Basic
+public import ConwayRefinement.Surreal.HahnSeries.NormalForm
+import ConwayRefinement.Surreal.HahnSeries.NormalFormAdd
+import ConwayRefinement.Surreal.HahnSeries.NormalFormRecursion
 
 /-!
 # Multiplicative compatibility of the surreal Conway normal form

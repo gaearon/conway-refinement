@@ -5,7 +5,9 @@ Authors: Dan Abramov
 -/
 module
 
-public import ConwayRefinement.HahnSeries.Germ.RealSeries
+public import ConwayRefinement.HahnSeries.Nonpositive.PolynomialRing
+import ConwayRefinement.HahnSeries.Germ.GermSupport
+import Mathlib.Topology.Algebra.Ring.Real
 
 /-!
 # API checks for germs at exponents

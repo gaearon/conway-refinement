@@ -163,7 +163,7 @@ These results don't have separate standalone statement files, but AI chose them 
 | Multiplicativity of the Cantor–Bendixson value | [source](ConwayRefinement/HahnSeries/Germ/AlgebraicIndependence/CantorBendixsonValueMultiplicativity.lean), [map](https://gaearon.github.io/conway-refinement/#/map/cantor-bendixson-value-multiplicative) |
 | Algebraic independence in the Cantor–Bendixson associated graded ring | [source](ConwayRefinement/HahnSeries/Germ/AlgebraicIndependence/AlgebraicIndependence.lean), [map](https://gaearon.github.io/conway-refinement/#/map/cantor-bendixson-minimal-generators-independent) |
 | Random series of finite Cantor degree, and their lower-order perturbations, are prime | [source](ConwayRefinement/HahnSeries/Primality/Random.lean), [map](https://gaearon.github.io/conway-refinement/#/map/random-series-prime) |
-| Refinement of $Z+K((G^{<0}))$ forces $K=\mathrm{Frac}(Z)$ | [source](ConwayRefinement/HahnSeries/IntegerPart/Refinement/TruncationIntegerPartFractionField.lean), [map](https://gaearon.github.io/conway-refinement/#/map/refinement-forces-coefficient-fraction-field) |
+| Refinement of $Z+K((G^{<0}))$ forces $K=\mathrm{Frac}(Z)$ | [source](ConwayRefinement/HahnSeries/IntegerPart/FractionField.lean), [map](https://gaearon.github.io/conway-refinement/#/map/refinement-forces-coefficient-fraction-field) |
 
 Please open an issue if any of these are wrong or could be clearer.
 

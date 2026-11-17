@@ -6,12 +6,11 @@ Authors: Dan Abramov
 module
 
 public import Mathlib.Algebra.GCDMonoid.Basic
-public import Mathlib.Algebra.MvPolynomial.CommRing
 
 import ConwayRefinement.Blueprint
 import Mathlib.Algebra.MvPolynomial.NoZeroDivisors
-import Mathlib.RingTheory.Polynomial.Basic
 import Mathlib.RingTheory.Polynomial.Content
+public import Mathlib.Algebra.MvPolynomial.Basic
 
 /-!
 # Greatest common divisors in multivariate polynomial rings

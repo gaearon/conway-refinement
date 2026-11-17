@@ -5,7 +5,11 @@ Authors: Dan Abramov
 -/
 module
 
-public import ConwayRefinement.Topology.CantorBendixsonRank
+public import Mathlib.Topology.Algebra.IsUniformGroup.Defs
+public import Mathlib.Topology.Order.Basic
+public import Mathlib.Topology.UniformSpace.Cauchy
+import ConwayRefinement.Topology.CantorBendixson.Rank
+import ConwayRefinement.Topology.Order.PWOAddition
 
 /-!
 # Local domination by a finite addition fiber

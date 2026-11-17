@@ -5,14 +5,12 @@ Authors: Dan Abramov
 -/
 module
 
-public import ConwayRefinement.Algebra.Divisibility.RetractionPrimality
 public import ConwayRefinement.Algebra.Divisibility.PrimalPreimage
 
-import Mathlib.Algebra.GCDMonoid.Basic
 import Mathlib.Algebra.EuclideanDomain.Int
-import Mathlib.Order.Filter.Basic
-import Mathlib.RingTheory.Int.Basic
 import Mathlib.RingTheory.Ideal.Quotient.Operations
+import ConwayRefinement.Algebra.Divisibility.RetractionPrimality
+import Mathlib.RingTheory.PrincipalIdealDomain
 
 /-!
 # Tests for primality from retractions and in a `D + M` construction

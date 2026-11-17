@@ -6,9 +6,10 @@ Authors: Dan Abramov
 module
 
 public import Mathlib.Algebra.Divisibility.Basic
-public import Mathlib.Algebra.GroupWithZero.Defs
-public import Mathlib.Algebra.Ring.Divisibility.Basic
-public import Mathlib.Algebra.Ring.Subring.Basic
+public import Mathlib.Algebra.Group.Equiv.Defs
+public import Mathlib.Algebra.Ring.Subring.Defs
+import Mathlib.Data.Finset.Attr
+import Mathlib.Tactic.Attr.Core
 
 /-!
 # Four-factor refinement

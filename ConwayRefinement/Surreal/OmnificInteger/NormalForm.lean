@@ -10,8 +10,9 @@ https://github.com/vihdzp/combinatorial-games/pull/317
 -/
 module
 
-public import ConwayRefinement.Surreal.HahnSeries.NormalFormAdd
 public import ConwayRefinement.Surreal.OmnificInteger.Basic
+public import ConwayRefinement.Surreal.HahnSeries.Transfer
+import ConwayRefinement.Surreal.HahnSeries.NormalFormAdd
 
 /-!
 # Conway normal forms of omnific integers

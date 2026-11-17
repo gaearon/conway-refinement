@@ -6,11 +6,11 @@ Authors: Dan Abramov
 module
 
 public import ConwayRefinement.Algebra.Divisibility.Refinement
-public import Mathlib.Algebra.Ring.Subring.Basic
 public import Mathlib.RingTheory.Ideal.Defs
 
 import Mathlib.Tactic.FieldSimp
-import Mathlib.Tactic.Ring
+import Mathlib.Data.Finset.Attr
+import Mathlib.Tactic.Ring.RingNF
 
 /-!
 # Denominator ideals and four-factor refinement

@@ -9,7 +9,9 @@ public import ConwayRefinement.Standalone.Mathlib.CompleteHahnGerm
 public import ConwayRefinement.HahnSeries.Germ.PolynomialRing
 
 import ConwayRefinement.Algebra.Divisibility.Refinement
+import ConwayRefinement.RingTheory.TruncationGerms.Transcendence
 import Mathlib.Algebra.Ring.Hom.InjSurj
+import Mathlib.RingTheory.Polynomial.UniqueFactorization
 
 public noncomputable section
 

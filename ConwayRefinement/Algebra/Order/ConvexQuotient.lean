@@ -5,10 +5,11 @@ Authors: Dan Abramov
 -/
 module
 
-public import Mathlib.Algebra.Order.Group.Defs
 public import Mathlib.GroupTheory.QuotientGroup.Defs
-public import Mathlib.Order.Interval.Set.OrdConnected
 import Mathlib.Tactic.Abel
+public import Mathlib.Algebra.Order.Monoid.Defs
+import Mathlib.Algebra.Order.Group.Unbundled.Basic
+import Mathlib.Order.Interval.Set.OrdConnected
 
 /-!
 # The quotient of an ordered group by a convex subgroup

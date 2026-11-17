@@ -7,21 +7,13 @@ module
 
 public import ConwayRefinement.Standalone.CombinatorialGames.Examples.OmnificFactorization
 public import ConwayRefinement.Standalone.CombinatorialGames.Support.ConwayRefinementConsequences
-public import ConwayRefinement.HahnSeries.CardinalTruncation
-public import ConwayRefinement.Surreal.HahnSeries.CardinalIntegerPart
-public import ConwayRefinement.Surreal.OmnificInteger.RefinementConjecture
+public import ConwayRefinement.HahnSeries.BoundedSupport.Basic
+public import ConwayRefinement.Surreal.HahnSeries.IntegerPart
+public import ConwayRefinement.Surreal.OmnificInteger.Refinement
 public import ConwayRefinement.Algebra.Divisibility.DenominatorIdeal
 
-import CombinatorialGames.NatOrdinal.Pow
-import Mathlib.SetTheory.Ordinal.Exponential
-import Mathlib.Data.List.Chain
-import Mathlib.RingTheory.HahnSeries.Addition
-import ConwayRefinement.HahnSeries.Truncation
-import ConwayRefinement.SetTheory.Ordinal.SetOrderType
-import ConwayRefinement.Order.Archimedean
-import Mathlib.RingTheory.HahnSeries.Multiplication
-import ConwayRefinement.Surreal.HahnSeries.Full
-import CombinatorialGames.Surreal.HahnSeries.Basic
+import ConwayRefinement.Surreal.OmnificInteger.NormalForm
+import ConwayRefinement.Surreal.HahnSeries.NormalFormMul
 import ConwayRefinement.Blueprint
 
 /-!

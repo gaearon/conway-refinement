@@ -7,7 +7,7 @@ module
 
 public import ConwayRefinement.Standalone.Mathlib.GermPolynomialRing
 public import ConwayRefinement.HahnSeries.Germ.PolynomialRing
-public import ConwayRefinement.HahnSeries.NegativeMonomialIdeal
+public import ConwayRefinement.HahnSeries.Nonpositive.NegativeMonomialIdeal
 public import Mathlib.Topology.Algebra.IsUniformGroup.Basic
 public import Mathlib.Topology.Instances.Real.Lemmas
 

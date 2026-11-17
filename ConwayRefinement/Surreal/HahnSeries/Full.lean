@@ -5,10 +5,22 @@ Authors: Dan Abramov
 -/
 module
 
-public import Mathlib.RingTheory.HahnSeries.Multiplication
-public import ConwayRefinement.Surreal.HahnSeries.NormalFormMul
 
 import all CombinatorialGames.Surreal.HahnSeries.Basic
+public import ConwayRefinement.Surreal.HahnSeries.Transfer
+import ConwayRefinement.Surreal.HahnSeries.NormalFormAdd
+import ConwayRefinement.Surreal.HahnSeries.NormalFormMul
+
+/-!
+# Conway normal forms as Hahn series
+
+Every surreal number is the sum of its Conway normal form. Recording the normal form as a Hahn
+series in `t = ω⁻¹` with dual exponents gives the full Hahn-series embedding of the surreal numbers;
+negating exponents puts it in a Hahn field whose exponent group is `Surreal` itself.
+-/
+
+section
+
 
 /-!
 # Conway normal forms in the full Hahn field
@@ -133,3 +145,41 @@ theorem toFullHahnSeries_wpow (x : Surreal.{u}) :
     simp [hi, hi']
 
 end Surreal
+
+end
+end
+
+/-!
+## Conway normal forms with signed surreal exponents
+
+The order dual in `Surreal.toFullHahnSeries` records the reversal from Conway's `ω` to
+LM24's `t = ω⁻¹`. Sending a dual exponent `i` to the ordinary surreal exponent `-i` makes
+that reversal explicit and places the normal form in a Hahn field whose exponent group is
+`Surreal` itself. This is the orientation in which the surreal Archimedean-stratum assumptions
+apply directly.
+-/
+
+section
+
+universe u
+
+public noncomputable section
+
+namespace Surreal
+
+/-- Negation identifies dual Conway exponents with signed ordinary surreal exponents. -/
+def dualExponentOrderAddMonoidIso : Surrealᵒᵈ ≃+o Surreal :=
+  { toFun := fun x ↦ -x.ofDual
+    invFun := fun x ↦ OrderDual.toDual (-x)
+    left_inv := by intro x; simp
+    right_inv := by intro x; simp
+    map_add' := by intro x y; simp [add_comm]
+    map_le_map_iff' := by
+      intro x y
+      change -x.ofDual ≤ -y.ofDual ↔ y.ofDual ≤ x.ofDual
+      exact neg_le_neg_iff }
+
+end Surreal
+
+end
+end

@@ -8,7 +8,7 @@ module
 public import ConwayRefinement.Standalone.CombinatorialGames.ConwayRefinement
 import ConwayRefinement.Blueprint
 import ConwayRefinement.Standalone.CombinatorialGames.Support.ConwayNormalForm
-import ConwayRefinement.Surreal.OmnificInteger.Refinement.ConwayRefinement
+import ConwayRefinement.Surreal.OmnificInteger.Refinement
 
 set_option linter.hashCommand false
 

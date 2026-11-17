@@ -5,12 +5,12 @@ Authors: Dan Abramov
 -/
 module
 
-public import Mathlib.Order.WellFoundedSet
-public import Mathlib.Topology.Algebra.IsUniformGroup.Basic
-public import Mathlib.Topology.Order.LeftRightNhds
 public import Mathlib.Topology.Maps.Proper.Basic
-public import Mathlib.Topology.UniformSpace.UniformEmbedding
-public import Mathlib.Topology.Algebra.Group.Pointwise
+public import Mathlib.Topology.Algebra.IsUniformGroup.Defs
+public import Mathlib.Topology.Order.Basic
+public import Mathlib.Topology.UniformSpace.Cauchy
+import Mathlib.Topology.Algebra.IsUniformGroup.Basic
+import Mathlib.Topology.Order.LeftRightNhds
 
 /-!
 # Addition on well-ordered supports

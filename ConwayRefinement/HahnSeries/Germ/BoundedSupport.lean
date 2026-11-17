@@ -6,10 +6,11 @@ Authors: Dan Abramov
 module
 
 public import ConwayRefinement.HahnSeries.Germ.PolynomialRing
-public import ConwayRefinement.HahnSeries.CardinalTruncationResidue
+public import ConwayRefinement.HahnSeries.BoundedSupport.Residue
 
 import ConwayRefinement.Blueprint
 import Mathlib.RingTheory.Polynomial.UniqueFactorization
+import ConwayRefinement.RingTheory.TruncationGerms.Transcendence
 
 /-!
 # Germs of series with fewer than `κ` support exponents

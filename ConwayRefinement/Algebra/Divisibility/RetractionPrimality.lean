@@ -5,14 +5,17 @@ Authors: Dan Abramov
 -/
 module
 
-public import Mathlib.Order.Filter.Basic
-public import Mathlib.RingTheory.Ideal.Defs
 public import Mathlib.RingTheory.Ideal.Quotient.Defs
-public import Mathlib.Algebra.GroupWithZero.Divisibility
 import Mathlib.Tactic.LinearCombination
-import Mathlib.Tactic.Ring
-import Mathlib.RingTheory.Ideal.Basic
 import ConwayRefinement.Blueprint
+public import Mathlib.Order.Filter.Defs
+import Mathlib.Data.Finset.Attr
+import Mathlib.Data.Rat.Cast.Order
+import Mathlib.Order.Filter.Basic
+import Mathlib.Tactic.NormNum.Abs
+import Mathlib.Tactic.NormNum.DivMod
+import Mathlib.Tactic.NormNum.OfScientific
+import Mathlib.Tactic.Ring.RingNF
 
 /-!
 # Primality from refinement modulo an ideal and a family of retractions

@@ -5,13 +5,13 @@ Authors: Dan Abramov
 -/
 module
 
-public import Mathlib.Algebra.Algebra.Subalgebra.Basic
-public import Mathlib.Algebra.Ring.Subring.Basic
 public import Mathlib.Algebra.Field.Subfield.Basic
-public import Mathlib.Algebra.GroupWithZero.Divisibility
-import Mathlib.Tactic.Ring
 import Mathlib.Tactic.FieldSimp
 import ConwayRefinement.Blueprint
+public import Mathlib.Algebra.Group.Irreducible.Defs
+import Mathlib.Algebra.Algebra.NonUnitalHom
+import Mathlib.Algebra.Prime.Defs
+import Mathlib.Tactic.Ring.RingNF
 
 /-!
 # Primality in a ring cut out by a residue condition

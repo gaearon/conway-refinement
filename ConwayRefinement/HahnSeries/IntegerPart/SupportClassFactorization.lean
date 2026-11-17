@@ -5,13 +5,12 @@ Authors: Dan Abramov
 -/
 module
 
-public import ConwayRefinement.HahnSeries.LimitTailQuotient
-public import ConwayRefinement.HahnSeries.ConvexQuotientSplitting
-public import ConwayRefinement.HahnSeries.SupportArchimedeanClasses
-public import ConwayRefinement.HahnSeries.IntegerPart.ConvexRestriction
-public import ConwayRefinement.Algebra.Order.ArchimedeanBall
+public import ConwayRefinement.HahnSeries.ConvexSubgroup.CommonTail
+public import ConwayRefinement.HahnSeries.ConvexSubgroup.Splitting
+public import ConwayRefinement.HahnSeries.Nonpositive.ArchimedeanClasses
 
 import ConwayRefinement.Blueprint
+import ConwayRefinement.HahnSeries.ConvexSubgroup.Restriction
 
 /-!
 # Factoring at a support class in a tail quotient

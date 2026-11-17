@@ -5,11 +5,16 @@ Authors: Dan Abramov
 -/
 module
 
-public import ConwayRefinement.RingTheory.TruncationGerms.Transcendence
 
 import ConwayRefinement.Blueprint
 import Mathlib.Algebra.Algebra.Subalgebra.Directed
-import Mathlib.Order.Zorn
+public import ConwayRefinement.RingTheory.TruncationGerms.Basic
+public import Mathlib.RingTheory.Algebraic.Defs
+public import Mathlib.RingTheory.AlgebraicIndependent.Defs
+import ConwayRefinement.RingTheory.TruncationGerms.Transcendence
+import Mathlib.RingTheory.Adjoin.Basic
+import Mathlib.RingTheory.AlgebraicIndependent.Transcendental
+import Std.Tactic.BVDecide.Normalize.Prop
 
 /-!
 # Germs of translated truncations: the ring of series

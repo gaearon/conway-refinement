@@ -6,7 +6,8 @@ Authors: Dan Abramov
 module
 
 public import ConwayRefinement.HahnSeries.Germ.BoundedSupport
-public import Mathlib.Topology.Instances.Real.Lemmas
+public import Mathlib.Data.Real.Basic
+import Mathlib.Topology.Algebra.Ring.Real
 
 /-!
 # Tests for germs of series with fewer than `κ` support exponents

@@ -5,9 +5,9 @@ Authors: Violeta Hernández Palacios
 -/
 module
 
-public import Mathlib.Algebra.Order.Hom.Monoid
 public import ConwayRefinement.Surreal.HahnSeries.Transfer
 public import ConwayRefinement.Surreal.Round
+import ConwayRefinement.Surreal.HahnSeries.NormalFormRecursion
 
 /-!
 # Additive compatibility of the surreal Conway normal form

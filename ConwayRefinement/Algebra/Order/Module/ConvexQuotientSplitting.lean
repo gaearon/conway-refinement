@@ -5,11 +5,11 @@ Authors: Dan Abramov
 -/
 module
 
-public import ConwayRefinement.Algebra.Order.ArchimedeanQuotient
-public import Mathlib.Algebra.Order.Module.Archimedean
-public import Mathlib.Algebra.Order.Monoid.Prod
-public import Mathlib.LinearAlgebra.Basis.VectorSpace
+public import ConwayRefinement.Algebra.Order.ArchimedeanClass
 public import Mathlib.LinearAlgebra.Projection
+public import Mathlib.Algebra.Order.Module.Defs
+import Mathlib.Algebra.Order.Module.Archimedean
+import Mathlib.LinearAlgebra.Basis.VectorSpace
 
 /-!
 # Ordered splitting by a convex subspace

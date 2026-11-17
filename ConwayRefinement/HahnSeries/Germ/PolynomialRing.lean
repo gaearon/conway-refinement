@@ -5,10 +5,14 @@ Authors: Dan Abramov
 -/
 module
 
-public import ConwayRefinement.HahnSeries.Germ.GermSupport
-public import ConwayRefinement.RingTheory.TruncationGerms.Transcendence
 
 import ConwayRefinement.Blueprint
+public import ConwayRefinement.HahnSeries.Germ.GermAt
+public import ConwayRefinement.RingTheory.TruncationGerms.Basic
+public import Mathlib.Algebra.EuclideanDomain.Field
+public import Mathlib.Algebra.MvPolynomial.Basic
+import ConwayRefinement.HahnSeries.Germ.GermSupport
+import ConwayRefinement.RingTheory.TruncationGerms.Transcendence
 
 /-!
 # The ring of germs is a polynomial ring

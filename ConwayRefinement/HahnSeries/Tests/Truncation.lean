@@ -5,18 +5,9 @@ Authors: Dan Abramov
 -/
 module
 
-public import Mathlib.Data.List.Chain
-public import Mathlib.RingTheory.HahnSeries.Addition
 public import ConwayRefinement.HahnSeries.Truncation
-public import CombinatorialGames.NatOrdinal.Pow
-public import Mathlib.SetTheory.Ordinal.Exponential
-public import ConwayRefinement.SetTheory.Ordinal.SetOrderType
-public import ConwayRefinement.Order.Archimedean
-public import Mathlib.RingTheory.HahnSeries.Multiplication
 
-import Mathlib.Data.Finsupp.Basic
-import Mathlib.Data.Finsupp.Single
-import Mathlib.Data.Sum.Order
+import Mathlib.Data.Rat.Floor
 
 /-!
 # API checks for Hahn-series truncations

@@ -6,9 +6,6 @@ Authors: Dan Abramov
 module
 
 public import CombinatorialGames.Surreal.Basic
-public import CombinatorialGames.Surreal.Division
-public import ConwayRefinement.Algebra.Order.ConvexQuotient
-public import ConwayRefinement.Algebra.Order.ArchimedeanQuotient
 public import ConwayRefinement.Topology.Order.CoinitialComplete
 
 import ConwayRefinement.Blueprint

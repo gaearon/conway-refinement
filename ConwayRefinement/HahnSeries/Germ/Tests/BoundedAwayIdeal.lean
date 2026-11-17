@@ -5,7 +5,10 @@ Authors: Dan Abramov
 -/
 module
 
-public import ConwayRefinement.HahnSeries.Germ.RealSeries
+public import ConwayRefinement.HahnSeries.Germ.Basic
+public import Mathlib.Data.Real.Basic
+import ConwayRefinement.HahnSeries.Germ.PolynomialRing
+import Mathlib.Topology.Algebra.Ring.Real
 
 /-!
 # API checks for the ideal of series bounded away from zero

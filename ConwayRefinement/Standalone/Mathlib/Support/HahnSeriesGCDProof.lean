@@ -7,9 +7,9 @@ module
 
 public import ConwayRefinement.Standalone.Mathlib.HahnSeriesGCD
 public import ConwayRefinement.Standalone.Mathlib.Support.SeriesConsequences
-public import ConwayRefinement.HahnSeries.Nonpositive
+public import ConwayRefinement.HahnSeries.Nonpositive.Basic
 
-import ConwayRefinement.HahnSeries.Primality.Primality
+import ConwayRefinement.HahnSeries.Nonpositive.GCD
 
 /-!
 # Proofs of the Mathlib-only gcd and primality statements

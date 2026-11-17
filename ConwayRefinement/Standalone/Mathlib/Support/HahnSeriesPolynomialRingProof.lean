@@ -6,7 +6,7 @@ Authors: Dan Abramov
 module
 
 public import ConwayRefinement.Standalone.Mathlib.HahnSeriesPolynomialRing
-public import ConwayRefinement.HahnSeries.Germ.RealSeries
+public import ConwayRefinement.HahnSeries.Nonpositive.PolynomialRing
 
 public noncomputable section
 

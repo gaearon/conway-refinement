@@ -6,7 +6,6 @@ Authors: Dan Abramov
 module
 
 public import ConwayRefinement.HahnSeries.Germ.Basic
-public import ConwayRefinement.HahnSeries.Translation
 public import ConwayRefinement.HahnSeries.Truncation
 
 public import Mathlib.RingTheory.Ideal.Quotient.Operations
@@ -15,6 +14,8 @@ import ConwayRefinement.Blueprint
 import ConwayRefinement.HahnSeries.CantorBendixson.Convolution
 import ConwayRefinement.HahnSeries.CantorBendixson.Truncation
 import ConwayRefinement.Topology.Order.LeftNeighborhood
+public import Mathlib.Topology.Algebra.IsUniformGroup.Defs
+public import Mathlib.Topology.UniformSpace.Cauchy
 
 /-!
 # The germ of a series at an exponent

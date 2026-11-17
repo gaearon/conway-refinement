@@ -10,8 +10,10 @@ public import Mathlib.Algebra.Ring.Subring.Defs
 public import ConwayRefinement.Surreal.Round
 
 import CombinatorialGames.Tactic.GameCmp
-import Mathlib.Tactic.Abel
-import Mathlib.Tactic.Ring
+import CombinatorialGames.Tactic.Register
+import Mathlib.Analysis.Normed.Group.Basic
+import Mathlib.Data.EReal.Operations
+import Mathlib.Topology.MetricSpace.Bounded
 
 /-!
 # Omnific integers

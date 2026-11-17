@@ -7,12 +7,11 @@ module
 
 public import ConwayRefinement.HahnSeries.CantorBendixson.Basic
 
-import ConwayRefinement.Blueprint
-public import ConwayRefinement.HahnSeries.Translation
-public import ConwayRefinement.Topology.CantorBendixsonReconstruction
-public import Mathlib.Topology.Algebra.Group.Basic
+public import ConwayRefinement.HahnSeries.Truncation
 
-import ConwayRefinement.Topology.Order.LeftNeighborhood
+public import Mathlib.Topology.Algebra.Group.Defs
+import ConwayRefinement.Topology.CantorBendixson.Locality
+import Mathlib.Topology.Algebra.Group.Basic
 
 /-!
 # Cantor–Bendixson ranks under translated truncation

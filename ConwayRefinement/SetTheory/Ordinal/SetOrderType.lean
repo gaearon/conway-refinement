@@ -5,13 +5,10 @@ Authors: Dan Abramov
 -/
 module
 
-public import CombinatorialGames.NatOrdinal.Basic
 public import Mathlib.Order.WellFoundedSet
-public import Mathlib.SetTheory.Ordinal.Principal
-public import Mathlib.SetTheory.Cardinal.Aleph
 
-import Mathlib.Data.Sum.Order
-import Mathlib.Order.Hom.Set
+public import Mathlib.SetTheory.Ordinal.Basic
+import Mathlib.SetTheory.Ordinal.Arithmetic
 
 /-!
 # Order type of a partially well-ordered set
