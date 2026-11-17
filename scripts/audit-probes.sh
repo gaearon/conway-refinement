@@ -14,9 +14,9 @@ audit_blueprint_data_changed=false
 audit_blueprint_phases_source="$audit_repo_root/blueprint/phases.json"
 audit_blueprint_phases_backup="$audit_logs/phases.json"
 audit_blueprint_phases_changed=false
-audit_blueprint_reference_lean_source="$audit_repo_root/ConwayRefinement/Algebra/GradedRing"
-audit_blueprint_reference_lean_source+="/OrdinalGenerators.lean"
-audit_blueprint_reference_lean_backup="$audit_logs/OrdinalGenerators.lean"
+audit_blueprint_reference_lean_source="$audit_repo_root/ConwayRefinement/RingTheory/TruncationGerms"
+audit_blueprint_reference_lean_source+="/Transcendence.lean"
+audit_blueprint_reference_lean_backup="$audit_logs/Transcendence.lean"
 audit_blueprint_reference_lean_changed=false
 
 audit_cleanup() {
@@ -164,11 +164,11 @@ from pathlib import Path
 
 path = Path(sys.argv[1])
 records = json.loads(path.read_text())
-record = next(record for record in records if record["label"] == "lem:generate")
+record = next(record for record in records if record["label"] == "lem:generation")
 record["proof"] = ""
 path.write_text(json.dumps(records))
 PY
-audit_expect_rejection blueprint-proof 'nodes have no proof prose: lem:generate' \
+audit_expect_rejection blueprint-proof 'nodes have no proof prose: lem:generation' \
   scripts/blueprint.sh check
 cp "$audit_blueprint_data_backup" "$audit_blueprint_data_source"
 audit_blueprint_data_changed=false
@@ -188,9 +188,9 @@ records = json.loads(path.read_text())
 record = next(
     record
     for record in records
-    if record["label"] == "lem:variables-of-homogeneous-relation-have-smaller-degree"
+    if record["label"] == "lem:no-linear-relations"
 )
-needle = r"\ref{lem:minimal-generators-relation-has-no-linear-term}"
+needle = r"\ref{def:germ-axioms}"
 if needle not in record["proof"]:
     raise SystemExit("blueprint reference probe could not find its proof reference")
 record["proof"] = record["proof"].replace(needle, "the preceding theorem", 1)
@@ -224,7 +224,7 @@ from pathlib import Path
 
 path = Path(sys.argv[1])
 records = json.loads(path.read_text())
-records.append(next(record for record in records if record["label"] == "lem:generate"))
+records.append(next(record for record in records if record["label"] == "lem:generation"))
 path.write_text(json.dumps(records))
 PY
 audit_expect_rejection blueprint-declaration \
