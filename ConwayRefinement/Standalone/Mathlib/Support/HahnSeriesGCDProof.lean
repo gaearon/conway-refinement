@@ -14,8 +14,8 @@ import ConwayRefinement.HahnSeries.Primality.Primality
 /-!
 # Proofs of the Mathlib-only gcd and primality statements
 
-The standalone ring `nonpos K` is `K((ℝ^{≤0}))`, the type `Berarducci.Series K` used by the proof
-modules. The polynomial presentation supplies its GCD structure. The gcd operation proves
+The standalone ring `nonpos K` is `K((ℝ^{≤0}))`, the type `HahnSeries.Nonpositive ℝ K` used by
+the proof modules. The polynomial presentation supplies its GCD structure. The gcd operation proves
 `SeriesHasGCDs`; Mathlib then turns the existence of gcds into a
 `DecompositionMonoid`, proving `SeriesIsPrimal`.
 -/
@@ -32,7 +32,7 @@ namespace SeriesHasGCDs
 theorem of_polynomiality (K : Type u) [Field K] : SeriesHasGCDs K := by
   intro hK
   letI := hK
-  obtain ⟨hGCD⟩ := Berarducci.nonemptyGCDMonoid (K := K)
+  obtain ⟨hGCD⟩ := HahnSeries.Nonpositive.nonemptyGCDMonoid (K := K)
   letI : GCDMonoid (nonpos K) := hGCD
   intro a b
   refine ⟨gcd a b, fun e ↦ ?_⟩

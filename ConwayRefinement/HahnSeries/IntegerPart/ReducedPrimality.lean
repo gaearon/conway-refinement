@@ -34,7 +34,7 @@ variable [LinearOrder G] [AddCommGroup G] [IsOrderedAddMonoid G] [Field K] [Char
 /-- A nonpositive Hahn series whose exponent group is order-isomorphic to `ℝ` is primal. -/
 theorem isPrimal_of_orderIso_real (e : G ≃+o ℝ) (a : Nonpositive G K) : IsPrimal a :=
   (RingEquiv.isPrimal_iff (embDomainRingEquiv e) a).mp
-    (Berarducci.isPrimal (embDomainRingEquiv e a))
+    (isPrimal (embDomainRingEquiv e a))
 
 end HahnSeries.Nonpositive
 

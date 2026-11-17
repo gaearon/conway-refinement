@@ -1,0 +1,161 @@
+/-
+Copyright (c) 2026 Dan Abramov. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Dan Abramov
+-/
+module
+
+public import ConwayRefinement.HahnSeries.Germ.GermAt
+public import ConwayRefinement.RingTheory.TruncationGerms.Transcendence
+
+import ConwayRefinement.Blueprint
+
+/-!
+# The ring of germs is a polynomial ring
+
+Let `G` be a nontrivial ordered abelian group whose additive uniformity is Cauchy complete, `K` a
+field of characteristic zero, and `J` the ideal of series in `K((G^{≤0}))` whose support is bounded
+away from zero. The germs `germAt γ` of nonpositive series satisfy the axioms of `TruncationGerms`,
+with the Cantor--Bendixson value of a representative as the rank of a germ. Hence the ring of
+germs `K((G^{≤0}))/J` is a polynomial ring over `K`, and in particular `J` is prime.
+-/
+
+open Set
+open scoped HahnSeries
+
+universe u v
+
+public noncomputable section
+
+namespace HahnSeries.Nonpositive
+
+variable {G : Type u} {K : Type v} [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G]
+  [UniformSpace G] [IsUniformAddGroup G] [OrderTopology G] [Nontrivial G] [CompleteSpace G]
+  [Field K] [CharZero K]
+
+/-- The Cantor--Bendixson value of a representative, as the rank of a germ. -/
+private def germRank (g : Nonpositive G K ⧸ boundedAwayIdeal G K) : Ordinal.{u} :=
+  ((Ideal.Quotient.mk_surjective g).choose : HahnSeries G K).cantorBendixsonValue
+
+omit [IsUniformAddGroup G] [CompleteSpace G] [CharZero K] in
+private theorem germRank_mk (b : Nonpositive G K) :
+    germRank (Ideal.Quotient.mk (boundedAwayIdeal G K) b) =
+      (b : HahnSeries G K).cantorBendixsonValue :=
+  cantorBendixsonValue_eq_of_sub_mem (Ideal.Quotient.eq.mp
+    (Ideal.Quotient.mk_surjective (Ideal.Quotient.mk (boundedAwayIdeal G K) b)).choose_spec)
+
+variable (G K) in
+/-- The germs `germAt γ` of nonpositive series at exponents `γ ∈ G` satisfy the axioms of
+`TruncationGerms` on `K((G^{≤0}))`, with values in the ring of germs `K((G^{≤0}))/J`. -/
+def truncationGerms : TruncationGerms K G (Nonpositive G K)
+    (Nonpositive G K ⧸ boundedAwayIdeal G K) where
+  germAt := germAt
+  germ := Ideal.Quotient.mkₐ K _
+  germ_surjective := Ideal.Quotient.mkₐ_surjective K _
+  germAt_zero := germAt_zero
+  germAt_of_pos b _ hξ := germAt_of_pos b hξ
+  convolution_finite := finite_germAt_ne_zero_and_germAt_ne_zero
+  convolution := germAt_mul
+  exists_translatedTruncation b ξ _ :=
+    ⟨translatedTruncation ξ b, fun _ hζ => germAt_translatedTruncation b ξ hζ⟩
+  rank := germRank
+  germAt_eventually_eq_zero := exists_germAt_eq_zero_of_mk_mem_range
+  germ_mem_range_of_eventually := mk_mem_range_of_germAt_eq_zero
+  rank_germAt_lt b hb := by
+    have hvne : (b : HahnSeries G K).cantorBendixsonValue ≠ 0 := fun h =>
+      hb ⟨0, by rw [map_zero]; exact
+        ((mk_eq_zero_iff_cantorBendixsonValue_eq_zero b).mpr h).symm⟩
+    obtain ⟨ε, hε, hdrop⟩ := cantorBendixsonValue_translatedTruncation_lt b hvne
+    refine ⟨ε, hε, fun ξ hεξ hξ => ?_⟩
+    change germRank (germAt ξ b) < germRank (Ideal.Quotient.mk _ b)
+    rw [germAt_apply, germRank_mk, germRank_mk]
+    exact hdrop ξ hεξ hξ
+  germAt_algebraMap k _ hξ := germAt_algebraMap k hξ
+  exists_cutoff _ _ hε := exists_germAt_cutoff _ hε
+
+@[simp]
+theorem truncationGerms_germAt (γ : G) :
+    (truncationGerms G K).germAt γ = germAt γ := (rfl)
+
+@[simp]
+theorem truncationGerms_germ (b : Nonpositive G K) :
+    (truncationGerms G K).germ b =
+      Ideal.Quotient.mk (boundedAwayIdeal G K) b := (rfl)
+
+/-- For a nontrivial ordered exponent group `G` that is Cauchy complete and a field `K` of
+characteristic zero, the quotient of `K((G^{≤0}))` by the ideal of series whose support is
+bounded away from zero is a polynomial algebra over `K`. -/
+@[blueprint "thm:complete-hahn-germ-polynomial-algebra"
+  (phase := "Polynomial presentations")
+  (title := "Polynomial presentation of the germ ring over a Cauchy-complete exponent group")
+  (statement := /--
+    Let $K$ be a field of characteristic zero and let $G$ be a nontrivial
+    ordered abelian group which is Cauchy complete for its additive
+    uniformity.  If $J$ is the ideal of series in $K((G^{\le 0}))$ whose
+    support is bounded away from zero, then for some set $I$ there is a
+    $K$-algebra isomorphism
+    \[
+      K[X_i:i\in I]\simeq K((G^{\le 0}))/J.
+    \]
+  -/)
+  (proof := /--
+    For $b\in K((G^{\le0}))$ and $\gamma\in G$ let the germ of $b$ at
+    $\gamma$ be the class modulo $J$ of the translated truncation
+    $b^{|\gamma}=t^{-\gamma}b_{|\gamma}$.  These germs vanish at positive
+    exponents, the germ at $0$ is the class of $b$, the germs of a product
+    obey the convolution formula, the germs of $b^{|\gamma}$ are the germs of
+    $b$ translated by $\gamma$, the class of $b$ is a constant exactly when
+    the germs of $b$ vanish on a left neighbourhood of $0$, and for a
+    nonconstant class the Cantor--Bendixson value strictly drops along the
+    germs on such a neighbourhood.  Order the germs by Cantor--Bendixson
+    value.  By Zorn's lemma choose a maximal algebraically independent set
+    $T$ of germs such that every element of $K[T]$ is the class of a series
+    all of whose germs lie in $K[T]$.  If $K[T]$ were proper, a germ of
+    minimal value outside it would be the class of a series $X$ whose germs
+    at negative exponents lie in $K[T]$; a minimal polynomial relation for
+    the class of $X$ over $K[T]$, pushed through the convolution formula, has
+    a derivative of lower degree which is again a relation, so the class of
+    $X$ is transcendental over $K[T]$, contradicting maximality.  Here $K[T]$
+    is a polynomial ring, hence an integral domain, and the relation $x\notin
+    K[T]$ for the class $x$ of $X$ shows that no nonzero $a\in K[T]$ has
+    $ax\in K[T]$; so $K[T]+K[T]x$ is a free $K[T]$-module, and every
+    cancellation in the argument takes place there.  Hence $T$ is a set of
+    polynomial variables for $K((G^{\le0}))/J$.
+  -/)]
+theorem exists_mvPolynomial_algEquiv_germ :
+    ∃ ι : Type (max (u + 1) v), Nonempty
+      (MvPolynomial ι K ≃ₐ[K]
+        Nonpositive G K ⧸ boundedAwayIdeal G K) :=
+  (truncationGerms G K).exists_mvPolynomial_algEquiv.{_, u + 1}
+
+variable (G K) in
+/-- For a nontrivial ordered exponent group `G` that is Cauchy complete and a field `K` of
+characteristic zero, the ideal `J` of series in `K((G^{≤0}))` whose support is bounded away from
+zero is prime: the ring of germs `K((G^{≤0}))/J` is an integral domain. For real exponents this is
+Berarducci's theorem that `J` is prime (Berarducci 2000, Corollary 9.8). -/
+@[blueprint "thm:bounded-away-ideal-prime"
+  (phase := "Polynomial presentations")
+  (title := "Primality of $J$")
+  (statement := /--
+    Let $K$ be a field of characteristic zero and let $G$ be a nontrivial
+    ordered abelian group which is Cauchy complete for its additive
+    uniformity.  If $J$ is the ideal of series in $K((G^{\le 0}))$ whose
+    support is bounded away from zero, then $K((G^{\le 0}))/J$ is an
+    integral domain; that is, $J$ is a prime ideal.  For $G=\mathbb{R}$
+    this is Berarducci's theorem that $J$ is prime [Ber00, Corollary 9.8].
+  -/)
+  (proof := /--
+    By \ref{thm:complete-hahn-germ-polynomial-algebra}, $K((G^{\le 0}))/J$
+    is isomorphic to a polynomial ring over the field $K$, which is an
+    integral domain.
+  -/)]
+theorem isDomain_germ : IsDomain (Nonpositive G K ⧸ boundedAwayIdeal G K) := by
+  obtain ⟨ι, ⟨e⟩⟩ := exists_mvPolynomial_algEquiv_germ (G := G) (K := K)
+  exact e.symm.toMulEquiv.isDomain _
+
+instance : IsDomain (Nonpositive G K ⧸ boundedAwayIdeal G K) := isDomain_germ G K
+
+instance : (boundedAwayIdeal G K).IsPrime :=
+  (Ideal.Quotient.isDomain_iff_prime _).mp inferInstance
+
+end HahnSeries.Nonpositive

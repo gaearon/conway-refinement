@@ -313,7 +313,7 @@ cp "$audit_blueprint_reference_lean_backup" "$audit_blueprint_reference_lean_sou
 audit_blueprint_reference_lean_changed=false
 
 # Documentation: editorial state in a core module comment.
-audit_probe=ConwayRefinement/HahnSeries/Germ/AlgebraicIndependence/ProbeDocumentation.lean
+audit_probe=ConwayRefinement/HahnSeries/Germ/ProbeDocumentation.lean
 audit_require_absent "$audit_probe"
 printf '%s\n' 'module' '' '/-! Temporary manuscript correspondence. -/' > "$audit_probe"
 audit_expect_rejection documentation ProbeDocumentation.lean lake exe documentation
@@ -321,7 +321,7 @@ rm -f -- "$audit_probe"
 audit_probe=""
 
 # Documentation: repository status in a published-source module comment.
-audit_probe=ConwayRefinement/HahnSeries/Factorization/ProbeDocumentation.lean
+audit_probe=ConwayRefinement/HahnSeries/Primality/ProbeDocumentation.lean
 audit_require_absent "$audit_probe"
 printf '%s\n' 'module' '' '/-! This statement is source-unverified. -/' > "$audit_probe"
 audit_expect_rejection documentation ProbeDocumentation.lean lake exe documentation

@@ -6,7 +6,7 @@ Authors: Dan Abramov
 module
 
 public import ConwayRefinement.Standalone.Mathlib.CompleteHahnGerm
-public import ConwayRefinement.HahnSeries.IntegerPart.Refinement.CompleteGermRefinement
+public import ConwayRefinement.HahnSeries.Germ.PolynomialRing
 
 import ConwayRefinement.Algebra.Divisibility.Refinement
 import Mathlib.Algebra.Ring.Hom.InjSurj
@@ -46,11 +46,12 @@ variable [NoMinOrder G]
 variable [UniformSpace G] [IsUniformAddGroup G] [OrderTopology G]
 variable [Nontrivial G] [CompleteSpace G] [CharZero K]
 
+omit [UniformSpace G] [IsUniformAddGroup G] [OrderTopology G] [CompleteSpace G] [CharZero K] in
 private theorem boundedAwayIdeal_map_eq :
-    (HahnSeries.Nonpositive.cantorBendixsonValuation (G := G) (R := K)).supp =
+    (HahnSeries.Nonpositive.boundedAwayIdeal G K) =
       (BoundedAwayIdeal G K).map seriesAlgEquiv := by
   ext y
-  rw [HahnSeries.Nonpositive.mem_cantorBendixsonValuation_supp,
+  rw [HahnSeries.Nonpositive.mem_boundedAwayIdeal,
     Ideal.mem_map_iff_of_surjective seriesAlgEquiv seriesAlgEquiv.surjective]
   constructor
   · rintro ⟨r, hr, hyr⟩
@@ -70,9 +71,9 @@ theorem isPolynomialRing (G : Type u) (K : Type v)
     HahnSeries.Nonpositive.exists_mvPolynomial_algEquiv_germ (G := G) (K := K)
   let quotientEquiv : Germ G K ≃ₐ[K]
       HahnSeries.Nonpositive G K ⧸
-        (HahnSeries.Nonpositive.cantorBendixsonValuation (G := G) (R := K)).supp :=
+        (HahnSeries.Nonpositive.boundedAwayIdeal G K) :=
     Ideal.quotientEquivAlg (BoundedAwayIdeal G K)
-      (HahnSeries.Nonpositive.cantorBendixsonValuation (G := G) (R := K)).supp
+      (HahnSeries.Nonpositive.boundedAwayIdeal G K)
       seriesAlgEquiv boundedAwayIdeal_map_eq
   exact ⟨ι, ⟨equiv.trans quotientEquiv.symm⟩⟩
 

@@ -6,7 +6,7 @@ Authors: Dan Abramov
 module
 
 public import ConwayRefinement.Standalone.Mathlib.HahnSeriesPolynomialRing
-public import ConwayRefinement.HahnSeries.PolynomialAlgebra.PolynomialRing
+public import ConwayRefinement.HahnSeries.Germ.RealSeries
 
 public noncomputable section
 
@@ -15,7 +15,7 @@ namespace ConwayRefinement.Standalone.HahnPolynomial
 universe u
 
 private def seriesEquiv (K : Type u) [Field K] :
-    Series K ≃+* Berarducci.Series K := by
+    Series K ≃+* HahnSeries.Nonpositive ℝ K := by
   have h : Series K = HahnSeries.nonpositiveSubring ℝ K := by
     ext x
     rfl
@@ -37,26 +37,24 @@ private def finiteSupportEquiv (K : Type u) [Field K] :
 
 namespace IsPolynomialRing
 
-/-- A minimal homogeneous system and lifts of its generators supply the polynomial variables. -/
+/-- The polynomial presentation of the series ring over its finite-support subring supplies the
+polynomial variables. -/
 theorem of_polynomiality (K : Type u) [Field K] :
     HahnPolynomial.IsPolynomialRing K := by
   intro hK
   letI := hK
-  obtain ⟨ι, weight, generators, hminimal, ⟨lifts⟩⟩ :=
-    Berarducci.exists_isMinimalSystem_and_generatorLifts K
+  obtain ⟨ι, ⟨e⟩⟩ :=
+    HahnSeries.Nonpositive.exists_mvPolynomial_algEquiv_finiteSupportRing.{u, 1} (K := K)
   let ringEquiv : MvPolynomial ι (FiniteSupport K) ≃+* Series K :=
     (MvPolynomial.mapEquiv ι (finiteSupportEquiv K)).trans
-      ((Berarducci.polynomialRingEquiv hminimal lifts).toRingEquiv.trans
-        (seriesEquiv K).symm)
+      (e.toRingEquiv.trans (seriesEquiv K).symm)
   let algEquiv : MvPolynomial ι (FiniteSupport K) ≃ₐ[FiniteSupport K] Series K :=
     AlgEquiv.ofRingEquiv (f := ringEquiv) fun x ↦ by
       change ringEquiv (MvPolynomial.C x) = (x : Series K)
       simp only [ringEquiv, RingEquiv.trans_apply, MvPolynomial.mapEquiv_apply,
         MvPolynomial.map_C]
-      change (seriesEquiv K).symm
-        (Berarducci.polynomialRingEquiv hminimal lifts
-          (MvPolynomial.C (finiteSupportEquiv K x))) = (x : Series K)
-      rw [Berarducci.polynomialRingEquiv_apply, Berarducci.evalAtLifts_C]
+      change (seriesEquiv K).symm (e (MvPolynomial.C (finiteSupportEquiv K x))) = (x : Series K)
+      rw [← MvPolynomial.algebraMap_eq, e.commutes]
       rfl
   exact ⟨ι, ⟨algEquiv⟩⟩
 

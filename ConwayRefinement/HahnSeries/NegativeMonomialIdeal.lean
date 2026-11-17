@@ -26,10 +26,9 @@ The reverse implication factors `b` as the monomial at its support supremum time
 translate. This characterization also records an important boundary: a series may have zero
 constant coefficient and support supremum zero, and therefore need not belong to `J`.
 
-This module defines `J` and proves its membership API. Berarducci, Corollary 9.8 proves primeness
-over a characteristic-zero field; that theorem is formalized in
-`ConwayRefinement.HahnSeries.OrdinalValue.Statements.ProductValue`. The definition and the
-lemmas below remain valid over any field.
+This module defines `J` and proves its membership API. It is the ideal `boundedAwayIdeal ℝ K` of
+`ConwayRefinement.HahnSeries.Germ.Basic`; over a field of characteristic zero it is prime
+(Berarducci, Corollary 9.8). The definition and the lemmas below remain valid over any field.
 
 The definition uses `Ideal.span`; the intrinsic membership theorem is the main interface for
 working with the ideal.

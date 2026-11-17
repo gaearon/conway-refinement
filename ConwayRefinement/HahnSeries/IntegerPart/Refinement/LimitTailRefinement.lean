@@ -114,10 +114,10 @@ theorem exists_closed_class_refinement_of_complete_tail_quotient
     exists_cardinal_germ_refinement
       (Set.range scale) hEcard hEcoinitial a b c d ha hb hc hd habcd
   obtain ⟨q, hqU, hqa, hqb, hqc, hqd⟩ := exists_closedClassRestrict_fourFactor_eq
-    (cantorBendixson_germ_eq_iff a (e * f) |>.mpr hea)
-    (cantorBendixson_germ_eq_iff b (g * h) |>.mpr heb)
-    (cantorBendixson_germ_eq_iff c (e * g) |>.mpr hec)
-    (cantorBendixson_germ_eq_iff d (f * h) |>.mpr hed) hU
+    (mk_eq_mk_iff_eventually_coeff_eq a (e * f) |>.mpr hea)
+    (mk_eq_mk_iff_eventually_coeff_eq b (g * h) |>.mpr heb)
+    (mk_eq_mk_iff_eventually_coeff_eq c (e * g) |>.mpr hec)
+    (mk_eq_mk_iff_eventually_coeff_eq d (f * h) |>.mpr hed) hU
   refine ⟨q, hqU, e, f, g, h, ?_, ?_, ?_, ?_, hecard, hfcard, hgcard, hhcard⟩
   · rwa [closedClassRestrict_mul] at hqa
   · rwa [closedClassRestrict_mul] at hqb

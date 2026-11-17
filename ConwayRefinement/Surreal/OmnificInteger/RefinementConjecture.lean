@@ -16,12 +16,7 @@ This file states the second conjecture on omnific integers from *On Numbers and 
 and LM24, Conjecture 1.1.1(2). There are no nonzero hypotheses: every equality `a * b = c * d`
 must have factors `e`, `f`, `g`, and `h` satisfying the four displayed equations.
 
-The four inputs and four witnesses range over `Surreal.OmnificInteger.{u}`. The class presentation
-by set-coded Conway cuts, modulo Conway equivalence, gives an equivalent formula in Mathlib's
-ZFC model; the comparison is proved in
-`ConwayRefinement.Surreal.ZFC.Refinement`. Its universe parameter is the universe
-of sets in that model, not a bound on the allowed option sets within it.
-
+The four inputs and four witnesses range over `Surreal.OmnificInteger.{u}`.
 -/
 
 universe u

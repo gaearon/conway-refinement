@@ -7,6 +7,7 @@ module
 
 public import ConwayRefinement.HahnSeries.IntegerPart.Refinement.CompleteGermRefinement
 public import ConwayRefinement.HahnSeries.TruncationIntegerPartPrimal
+public import Mathlib.Algebra.Order.Archimedean.Class
 
 import ConwayRefinement.Topology.Order.ArchimedeanBallBase
 import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
@@ -39,7 +40,6 @@ namespace HahnSeries.Nonpositive
 variable {G : Type u} {K : Type v}
 variable [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G]
   [UniformSpace G] [IsUniformAddGroup G] [OrderTopology G] [Nontrivial G] [CompleteSpace G]
-  [DenselyOrdered G] [NoMinOrder G] [NoMaxOrder G]
   [NoMaxOrder (FiniteArchimedeanClass G)]
   [Field K] [CharZero K]
 
@@ -47,7 +47,7 @@ private def cofinalNegativeExponent (i : ArchimedeanClass.CofinalIndex G) : G :=
   -|ArchimedeanClass.CofinalIndex.representative i|
 
 omit [UniformSpace G] [IsUniformAddGroup G] [OrderTopology G] [Nontrivial G]
-  [CompleteSpace G] [DenselyOrdered G] [NoMinOrder G] [NoMaxOrder G]
+  [CompleteSpace G]
   [NoMaxOrder (FiniteArchimedeanClass G)] in
 private theorem cofinalNegativeExponent_lt_zero (i : ArchimedeanClass.CofinalIndex G) :
     cofinalNegativeExponent i < 0 := by
@@ -56,7 +56,7 @@ private theorem cofinalNegativeExponent_lt_zero (i : ArchimedeanClass.CofinalInd
   exact ArchimedeanClass.CofinalIndex.representative_ne_zero i
 
 omit [UniformSpace G] [IsUniformAddGroup G] [OrderTopology G] [Nontrivial G]
-  [CompleteSpace G] [DenselyOrdered G] [NoMinOrder G] [NoMaxOrder G]
+  [CompleteSpace G]
   [NoMaxOrder (FiniteArchimedeanClass G)] in
 private theorem cofinalNegativeExponent_strictMono :
     StrictMono (cofinalNegativeExponent (G := G)) := by
@@ -70,7 +70,7 @@ private theorem cofinalNegativeExponent_strictMono :
   simpa using (ArchimedeanClass.mk_lt_mk.mp hclass 1)
 
 omit [UniformSpace G] [IsUniformAddGroup G] [OrderTopology G] [Nontrivial G]
-  [CompleteSpace G] [DenselyOrdered G] [NoMinOrder G] [NoMaxOrder G]
+  [CompleteSpace G]
   [NoMaxOrder (FiniteArchimedeanClass G)] in
 private theorem cofinalNegativeExponent_isPWO :
     (Set.range (cofinalNegativeExponent (G := G))).IsPWO := by
@@ -93,7 +93,7 @@ private def cofinalGermSeries : HahnSeries G K := by
       exact cofinalNegativeExponent_isPWO)
 
 omit [UniformSpace G] [IsUniformAddGroup G] [OrderTopology G] [Nontrivial G]
-  [CompleteSpace G] [DenselyOrdered G] [NoMinOrder G] [NoMaxOrder G]
+  [CompleteSpace G]
   [NoMaxOrder (FiniteArchimedeanClass G)] in
 private theorem support_cofinalGermSeries :
     (cofinalGermSeries (G := G) (K := K)).support =
@@ -110,7 +110,7 @@ private def cofinalGermNonpositive : Nonpositive G K :=
     exact (cofinalNegativeExponent_lt_zero i).le⟩
 
 omit [UniformSpace G] [IsUniformAddGroup G] [OrderTopology G] [Nontrivial G]
-  [CompleteSpace G] [DenselyOrdered G] [NoMinOrder G] [NoMaxOrder G]
+  [CompleteSpace G]
   [NoMaxOrder (FiniteArchimedeanClass G)] in
 private theorem constantCoeff_cofinalGermNonpositive :
     constantCoeff (cofinalGermNonpositive (G := G) (K := K)) = 0 := by
@@ -124,7 +124,7 @@ private theorem constantCoeff_cofinalGermNonpositive :
   exact (cofinalNegativeExponent_lt_zero i).ne hi
 
 omit [UniformSpace G] [IsUniformAddGroup G] [OrderTopology G] [Nontrivial G]
-  [CompleteSpace G] [DenselyOrdered G] [NoMinOrder G] [NoMaxOrder G]
+  [CompleteSpace G]
   [NoMaxOrder (FiniteArchimedeanClass G)] in
 private theorem cofinalIndex_exists_ge (c : FiniteArchimedeanClass G) :
     ∃ i : ArchimedeanClass.CofinalIndex G,
@@ -134,7 +134,7 @@ private theorem cofinalIndex_exists_ge (c : FiniteArchimedeanClass G) :
   exact ⟨i, hci⟩
 
 omit [UniformSpace G] [IsUniformAddGroup G] [OrderTopology G] [Nontrivial G]
-  [CompleteSpace G] [DenselyOrdered G] [NoMinOrder G] [NoMaxOrder G] in
+  [CompleteSpace G] in
 private theorem exists_cofinalNegativeExponent_gt (e : G) (he : e < 0) :
     ∃ i : ArchimedeanClass.CofinalIndex G,
       e < cofinalNegativeExponent (G := G) i := by
@@ -155,28 +155,28 @@ private theorem exists_cofinalNegativeExponent_gt (e : G) (he : e < 0) :
   have hjinterval := hi hjball
   exact ⟨j, by simpa using hjinterval.1⟩
 
-omit [DenselyOrdered G] [NoMinOrder G] [NoMaxOrder G] in
+omit [UniformSpace G] [IsUniformAddGroup G] [OrderTopology G] [CompleteSpace G] in
 private theorem cofinalGermNonpositive_germ_ne_zero :
-    Ideal.Quotient.mk (cantorBendixsonValuation (G := G) (R := K)).supp
+    Ideal.Quotient.mk (boundedAwayIdeal G K)
       (cofinalGermNonpositive (G := G) (K := K)) ≠ 0 := by
   intro hzero
-  have heq : Ideal.Quotient.mk (cantorBendixsonValuation (G := G) (R := K)).supp
+  have heq : Ideal.Quotient.mk (boundedAwayIdeal G K)
       (cofinalGermNonpositive (G := G) (K := K)) =
-      Ideal.Quotient.mk (cantorBendixsonValuation (G := G) (R := K)).supp 0 := by
+      Ideal.Quotient.mk (boundedAwayIdeal G K) 0 := by
     simpa using hzero
   obtain ⟨e, he, hcoeff⟩ :=
-    (cantorBendixson_germ_eq_iff (cofinalGermNonpositive (G := G) (K := K)) 0).mp heq
+    (mk_eq_mk_iff_eventually_coeff_eq (cofinalGermNonpositive (G := G) (K := K)) 0).mp heq
   obtain ⟨i, hei⟩ := exists_cofinalNegativeExponent_gt (G := G) e he
   have h := hcoeff (cofinalNegativeExponent (G := G) i) hei
   simp [cofinalGermNonpositive, cofinalGermSeries] at h
 
-omit [DenselyOrdered G] [NoMinOrder G] [NoMaxOrder G]
-  [NoMaxOrder (FiniteArchimedeanClass G)] in
+omit [NoMaxOrder (FiniteArchimedeanClass G)] [UniformSpace G] [IsUniformAddGroup G]
+  [OrderTopology G] [CompleteSpace G] in
 private theorem cofinalGermNonpositive_germ_not_isUnit :
-    ¬ IsUnit (Ideal.Quotient.mk (cantorBendixsonValuation (G := G) (R := K)).supp
+    ¬ IsUnit (Ideal.Quotient.mk (boundedAwayIdeal G K)
       (cofinalGermNonpositive (G := G) (K := K))) := by
   intro hunit
-  exact (constantCoeff_ne_zero_of_isUnit_cantorBendixson_germ hunit)
+  exact (constantCoeff_ne_zero_of_isUnit_mk hunit)
     constantCoeff_cofinalGermNonpositive
 
 /-- There is a series with zero constant coefficient whose germ at zero is irreducible. -/
@@ -184,10 +184,9 @@ private theorem cofinalGermNonpositive_germ_not_isUnit :
   (phase := "Refinement over Archimedean classes")
   (title := "An irreducible germ with zero constant coefficient")
   (statement := /--
-    Let $K$ be a field of characteristic zero and let $G$ be a nontrivial,
-    densely ordered abelian group with no least or greatest element and no
-    least nonzero Archimedean magnitude.  Assume that $G$ is Cauchy complete
-    for its additive uniformity.
+    Let $K$ be a field of characteristic zero and let $G$ be a nontrivial
+    ordered abelian group with no least nonzero Archimedean magnitude.
+    Assume that $G$ is Cauchy complete for its additive uniformity.
     Then some series $p\in K((G^{\le0}))$ has constant coefficient zero and
     irreducible image in the germ ring at zero.
   -/)
@@ -204,8 +203,8 @@ theorem exists_irreducible_cantorBendixson_germ_with_constantCoeff_zero :
     ∃ p : Nonpositive G K,
       constantCoeff p = 0 ∧
       Irreducible
-        (Ideal.Quotient.mk (cantorBendixsonValuation (G := G) (R := K)).supp p) := by
-  let J := (cantorBendixsonValuation (G := G) (R := K)).supp
+        (Ideal.Quotient.mk (boundedAwayIdeal G K) p) := by
+  let J := boundedAwayIdeal G K
   obtain ⟨ι, ⟨equiv⟩⟩ := exists_mvPolynomial_algEquiv_germ (G := G) (K := K)
   have hι : Nonempty ι := by
     by_contra h
@@ -276,7 +275,7 @@ theorem fracSubring_eq_top_of_hasFourFactorRefinement_truncationIntegerPart
     (Z : Subring K) (h : HasFourFactorRefinement (truncationIntegerPart G Z)) :
     Subring.fracSubring Z = ⊤ := by
   let pi := constantCoeffAlgHom (G := G) (L := K)
-  let J := (cantorBendixsonValuation (G := G) (R := K)).supp
+  let J := boundedAwayIdeal G K
   let phi : Nonpositive G K →+* Nonpositive G K ⧸ J := Ideal.Quotient.mk J
   let e := truncationIntegerPartEquivResidueSubring (G := G) (L := K) Z
   have hrefinement : HasFourFactorRefinement (Subring.residueSubring pi Z) :=
@@ -290,7 +289,7 @@ theorem fracSubring_eq_top_of_hasFourFactorRefinement_truncationIntegerPart
     (by simpa [phi, J] using hpIrr)
     (fun a ha ↦ by
       simpa [pi, phi, J, constantCoeffAlgHom_apply] using
-        (constantCoeff_ne_zero_of_isUnit_cantorBendixson_germ ha))
+        (constantCoeff_ne_zero_of_isUnit_mk ha))
     (hrefinement.isPrimal ⟨p, by simp [hpπ]⟩)
 
 end HahnSeries.Nonpositive

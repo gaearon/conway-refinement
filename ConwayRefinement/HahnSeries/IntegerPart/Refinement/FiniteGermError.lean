@@ -5,7 +5,7 @@ Authors: Dan Abramov
 -/
 module
 
-public import ConwayRefinement.HahnSeries.Germ.AlgebraicIndependence.Germ
+public import ConwayRefinement.HahnSeries.Germ.Basic
 public import ConwayRefinement.HahnSeries.SupportArchimedeanClasses
 public import ConwayRefinement.Algebra.Divisibility.Refinement
 
@@ -40,21 +40,20 @@ def fourFactorErrors (a b c d e f g h : Nonpositive G R) : Finset (Nonpositive G
   {a - e * f, b - g * h, c - e * g, d - f * h}
 
 /-- Equality of the four refinement equations in the germ quotient puts every representative
-error in the valuation support ideal. -/
+error in the ideal `J` of series bounded away from zero. -/
 theorem fourFactorErrors_mem_supp
-    [UniformSpace G] [IsUniformAddGroup G] [OrderTopology G] [Nontrivial G]
-    [CompleteSpace G] [NoMinOrder G] [NoZeroDivisors R] [CharZero R]
+    [Nontrivial G]
     {a b c d e f g h : Nonpositive G R}
-    (ha : Ideal.Quotient.mk (cantorBendixsonValuation (G := G) (R := R)).supp a =
-      Ideal.Quotient.mk (cantorBendixsonValuation (G := G) (R := R)).supp (e * f))
-    (hb : Ideal.Quotient.mk (cantorBendixsonValuation (G := G) (R := R)).supp b =
-      Ideal.Quotient.mk (cantorBendixsonValuation (G := G) (R := R)).supp (g * h))
-    (hc : Ideal.Quotient.mk (cantorBendixsonValuation (G := G) (R := R)).supp c =
-      Ideal.Quotient.mk (cantorBendixsonValuation (G := G) (R := R)).supp (e * g))
-    (hd : Ideal.Quotient.mk (cantorBendixsonValuation (G := G) (R := R)).supp d =
-      Ideal.Quotient.mk (cantorBendixsonValuation (G := G) (R := R)).supp (f * h)) :
+    (ha : Ideal.Quotient.mk (boundedAwayIdeal G R) a =
+      Ideal.Quotient.mk (boundedAwayIdeal G R) (e * f))
+    (hb : Ideal.Quotient.mk (boundedAwayIdeal G R) b =
+      Ideal.Quotient.mk (boundedAwayIdeal G R) (g * h))
+    (hc : Ideal.Quotient.mk (boundedAwayIdeal G R) c =
+      Ideal.Quotient.mk (boundedAwayIdeal G R) (e * g))
+    (hd : Ideal.Quotient.mk (boundedAwayIdeal G R) d =
+      Ideal.Quotient.mk (boundedAwayIdeal G R) (f * h)) :
     ∀ z ∈ fourFactorErrors a b c d e f g h,
-      z ∈ (cantorBendixsonValuation (G := G) (R := R)).supp := by
+      z ∈ boundedAwayIdeal G R := by
   intro z hz
   simp only [fourFactorErrors, Finset.mem_insert, Finset.mem_singleton] at hz
   rcases hz with rfl | rfl | rfl | rfl
@@ -241,16 +240,14 @@ theorem exists_closedClassRestrict_eq_zero_of_finset
 /-- One class in a cofinal set kills any finite family of errors that vanish in the
 quotient by series bounded strictly below zero. -/
 theorem exists_closedClassRestrict_eq_zero_of_finset_mem_supp
-    [UniformSpace G] [IsUniformAddGroup G] [OrderTopology G] [Nontrivial G]
-    [CompleteSpace G] [NoMinOrder G] [NoMaxOrder (FiniteArchimedeanClass G)]
-    [NoZeroDivisors R] [CharZero R]
+    [Nontrivial G] [NoMaxOrder (FiniteArchimedeanClass G)]
     {s : Finset (Nonpositive G R)}
-    (hs : ∀ b ∈ s, b ∈ (cantorBendixsonValuation (G := G) (R := R)).supp)
+    (hs : ∀ b ∈ s, b ∈ boundedAwayIdeal G R)
     {T : Set (FiniteArchimedeanClass G)} (hT : IsCofinal T) :
     ∃ c ∈ T, ∀ b ∈ s, closedClassRestrict c b = 0 := by
   classical
   choose e he hbe using fun b : s ↦
-    (mem_cantorBendixsonValuation_supp (b : Nonpositive G R)).mp (hs b.1 b.2)
+    (mem_boundedAwayIdeal (b : Nonpositive G R)).mp (hs b.1 b.2)
   let f : s → FiniteArchimedeanClass G := fun b ↦
     FiniteArchimedeanClass.mk (e b) (he b).ne
   obtain ⟨a, ha⟩ := Finset.exists_le (Finset.univ.image f)
@@ -266,18 +263,16 @@ theorem exists_closedClassRestrict_eq_zero_of_finset_mem_supp
 /-- Four refinement equations holding as germs hold exactly after restricting all representatives
 at one sufficiently late class from any cofinal family. -/
 theorem exists_closedClassRestrict_fourFactor_eq
-    [UniformSpace G] [IsUniformAddGroup G] [OrderTopology G] [Nontrivial G]
-    [CompleteSpace G] [NoMinOrder G] [NoMaxOrder (FiniteArchimedeanClass G)]
-    [NoZeroDivisors R] [CharZero R]
+    [Nontrivial G] [NoMaxOrder (FiniteArchimedeanClass G)]
     {a b c d e f g h : Nonpositive G R}
-    (ha : Ideal.Quotient.mk (cantorBendixsonValuation (G := G) (R := R)).supp a =
-      Ideal.Quotient.mk (cantorBendixsonValuation (G := G) (R := R)).supp (e * f))
-    (hb : Ideal.Quotient.mk (cantorBendixsonValuation (G := G) (R := R)).supp b =
-      Ideal.Quotient.mk (cantorBendixsonValuation (G := G) (R := R)).supp (g * h))
-    (hc : Ideal.Quotient.mk (cantorBendixsonValuation (G := G) (R := R)).supp c =
-      Ideal.Quotient.mk (cantorBendixsonValuation (G := G) (R := R)).supp (e * g))
-    (hd : Ideal.Quotient.mk (cantorBendixsonValuation (G := G) (R := R)).supp d =
-      Ideal.Quotient.mk (cantorBendixsonValuation (G := G) (R := R)).supp (f * h))
+    (ha : Ideal.Quotient.mk (boundedAwayIdeal G R) a =
+      Ideal.Quotient.mk (boundedAwayIdeal G R) (e * f))
+    (hb : Ideal.Quotient.mk (boundedAwayIdeal G R) b =
+      Ideal.Quotient.mk (boundedAwayIdeal G R) (g * h))
+    (hc : Ideal.Quotient.mk (boundedAwayIdeal G R) c =
+      Ideal.Quotient.mk (boundedAwayIdeal G R) (e * g))
+    (hd : Ideal.Quotient.mk (boundedAwayIdeal G R) d =
+      Ideal.Quotient.mk (boundedAwayIdeal G R) (f * h))
     {T : Set (FiniteArchimedeanClass G)} (hT : IsCofinal T) :
     ∃ q ∈ T,
       closedClassRestrict q a = closedClassRestrict q (e * f) ∧
@@ -303,11 +298,9 @@ theorem exists_closedClassRestrict_fourFactor_eq
 /-- Four-factor refinement in the germ quotient yields an exact refinement after one sufficiently
 late closed-class restriction. -/
 theorem exists_closedClassRestrict_refinement
-    [UniformSpace G] [IsUniformAddGroup G] [OrderTopology G] [Nontrivial G]
-    [CompleteSpace G] [NoMinOrder G] [NoMaxOrder (FiniteArchimedeanClass G)]
-    [NoZeroDivisors R] [CharZero R]
+    [Nontrivial G] [NoMaxOrder (FiniteArchimedeanClass G)]
     (hrefine : HasFourFactorRefinement
-      (Nonpositive G R ⧸ (cantorBendixsonValuation (G := G) (R := R)).supp))
+      (Nonpositive G R ⧸ boundedAwayIdeal G R))
     {a b c d : Nonpositive G R} (habcd : a * b = c * d)
     {T : Set (FiniteArchimedeanClass G)} (hT : IsCofinal T) :
     ∃ q ∈ T, ∃ e f g h : Nonpositive G R,
@@ -315,7 +308,7 @@ theorem exists_closedClassRestrict_refinement
       closedClassRestrict q b = closedClassRestrict q g * closedClassRestrict q h ∧
       closedClassRestrict q c = closedClassRestrict q e * closedClassRestrict q g ∧
       closedClassRestrict q d = closedClassRestrict q f * closedClassRestrict q h := by
-  let J := (cantorBendixsonValuation (G := G) (R := R)).supp
+  let J := boundedAwayIdeal G R
   have hquot : Ideal.Quotient.mk J a * Ideal.Quotient.mk J b =
       Ideal.Quotient.mk J c * Ideal.Quotient.mk J d := by
     simpa only [map_mul] using congrArg (Ideal.Quotient.mk J) habcd

@@ -6,21 +6,23 @@ Authors: Dan Abramov
 module
 
 public import ConwayRefinement.Standalone.Mathlib.GermPolynomialRing
-public import ConwayRefinement.HahnSeries.Nonpositive
+public import ConwayRefinement.HahnSeries.Germ.PolynomialRing
 public import ConwayRefinement.HahnSeries.NegativeMonomialIdeal
-public import ConwayRefinement.HahnSeries.OrdinalValue.Germ
+public import Mathlib.Topology.Algebra.IsUniformGroup.Basic
+public import Mathlib.Topology.Instances.Real.Lemmas
 
-import ConwayRefinement.HahnSeries.Primality.OrdinalValueQuotient
 import Mathlib.Algebra.Ring.Hom.InjSurj
+import Mathlib.RingTheory.Polynomial.UniqueFactorization
 import Mathlib.RingTheory.Ideal.Quotient.Operations
 import Mathlib.RingTheory.UniqueFactorizationDomain.Basic
 
 /-!
 # Proof that the ring of germs is a polynomial ring
 
-The standalone ideal `J` is `negativeMonomialIdeal`, so its quotient is Berarducci's `Germ K`.
-A minimal homogeneous generating system gives a polynomial presentation and hence unique
-factorisation.
+The standalone ideal `J`, spanned by the monomials `t^x` with `x < 0`, is the ideal of series whose
+support is bounded away from zero. Its quotient is therefore the ring of germs, which is a
+polynomial ring over `K` (`HahnSeries.Nonpositive.exists_mvPolynomial_algEquiv_germ`) and hence has
+unique factorisation.
 -/
 
 public noncomputable section
@@ -45,10 +47,35 @@ theorem J_eq : J K = HahnSeries.Nonpositive.negativeMonomialIdeal K := by
     obtain ⟨⟨x, hx⟩, rfl⟩ := HahnSeries.Nonpositive.mem_negativeMonomials_iff.mp h
     exact ⟨x, hx, HahnSeries.Nonpositive.coe_single _ _ _⟩
 
+/-- The ideal spanned by the monomials `t^x`, `x < 0`, is the ideal of series whose support is
+bounded away from zero. -/
+theorem negativeMonomialIdeal_eq_supp [CharZero K] :
+    HahnSeries.Nonpositive.negativeMonomialIdeal K =
+      (HahnSeries.Nonpositive.boundedAwayIdeal ℝ K) := by
+  ext b
+  rw [HahnSeries.Nonpositive.mem_negativeMonomialIdeal_iff_supportSup_lt_zero,
+    HahnSeries.Nonpositive.mem_boundedAwayIdeal]
+  by_cases hb : b = 0
+  · subst hb
+    exact ⟨fun _ => ⟨-1, by norm_num, by simp⟩, fun _ => by
+      rw [HahnSeries.Nonpositive.supportSup_zero]; exact WithBot.bot_lt_coe 0⟩
+  rw [HahnSeries.Nonpositive.supportSup_of_ne hb]
+  have hne : (b : HahnSeries ℝ K).support.Nonempty :=
+    HahnSeries.support_nonempty_iff.mpr (by simpa using hb)
+  constructor
+  · intro h
+    exact ⟨_, by exact_mod_cast h, fun x hx =>
+      le_csSup (HahnSeries.Nonpositive.bddAbove_support b) hx⟩
+  · rintro ⟨c, hc, hsub⟩
+    exact_mod_cast (csSup_le hne hsub).trans_lt hc
+
 variable (K) in
-/-- The standalone ring of germs is ring-equivalent to Berarducci's germ ring. -/
-def germRingEquiv : Germ K ≃+* Berarducci.Germ K :=
-  Ideal.quotEquivOfEq J_eq
+/-- The standalone ring of germs is ring-equivalent to the quotient by the ideal of series whose
+support is bounded away from zero. -/
+def germRingEquiv [CharZero K] : Germ K ≃+*
+    HahnSeries.Nonpositive ℝ K ⧸
+      (HahnSeries.Nonpositive.boundedAwayIdeal ℝ K) :=
+  Ideal.quotEquivOfEq (J_eq.trans negativeMonomialIdeal_eq_supp)
 
 namespace GermIsPolynomialRing
 
@@ -56,10 +83,8 @@ namespace GermIsPolynomialRing
 theorem of_polynomiality (K : Type u) [Field K] : GermIsPolynomialRing K := by
   intro hK
   letI := hK
-  obtain ⟨ι, wt, x, hx⟩ :=
-    OrdinalGraded.exists_isMinimalSystem (Berarducci.principalGrading K)
-  obtain ⟨σ⟩ := Berarducci.exists_lifts hx.mem
-  exact ⟨ι, ⟨(σ.ordinalValueQuotientAlgEquiv hx).symm.toRingEquiv.trans (germRingEquiv K).symm⟩⟩
+  obtain ⟨ι, ⟨e⟩⟩ := HahnSeries.Nonpositive.exists_mvPolynomial_algEquiv_germ (G := ℝ) (K := K)
+  exact ⟨ι, ⟨e.toRingEquiv.trans (germRingEquiv K).symm⟩⟩
 
 end GermIsPolynomialRing
 

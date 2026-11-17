@@ -37,6 +37,7 @@ variable [AddCommGroup C] [LinearOrder C] [IsOrderedAddMonoid C]
   [UniformSpace C] [IsUniformAddGroup C] [OrderTopology C] [Nontrivial C] [CompleteSpace C]
   [Field K] [CharZero K]
 
+omit [UniformSpace C] [IsUniformAddGroup C] [OrderTopology C] [CompleteSpace C] [CharZero K] in
 private theorem exists_mapDomain_germ_eq
     {D : Type u}
     [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
@@ -49,11 +50,11 @@ private theorem exists_mapDomain_germ_eq
     ∃ r < (0 : C), ∀ q > r,
       (mapDomain inc hinc hincOrder x : HahnSeries C K).coeff q =
         (mapDomain inc hinc hincOrder y : HahnSeries C K).coeff q := by
-  let JD := (cantorBendixsonValuation (G := D) (R := K)).supp
-  let JC := (cantorBendixsonValuation (G := C) (R := K)).supp
+  let JD := boundedAwayIdeal D K
+  let JC := boundedAwayIdeal C K
   have mapMemSupp (z : Nonpositive D K) (hz : z ∈ JD) :
       mapDomain inc hinc hincOrder z ∈ JC := by
-    rw [mem_cantorBendixsonValuation_supp] at hz ⊢
+    rw [mem_boundedAwayIdeal] at hz ⊢
     obtain ⟨r, hr, hzr⟩ := hz
     refine ⟨inc r, ?_, ?_⟩
     · have hle : inc r ≤ inc 0 := (hincOrder r 0).mpr hr.le
@@ -62,13 +63,14 @@ private theorem exists_mapDomain_germ_eq
     rw [support_mapDomain]
     rintro _ ⟨q, hq, rfl⟩
     exact (hincOrder q r).mpr (hzr hq)
-  apply cantorBendixson_germ_eq_iff _ _ |>.mp
+  apply mk_eq_mk_iff_eventually_coeff_eq _ _ |>.mp
   apply Ideal.Quotient.eq.mpr
   change mapDomain inc hinc hincOrder x - mapDomain inc hinc hincOrder y ∈ JC
   rw [← map_sub]
   exact mapMemSupp _
-    (Ideal.Quotient.eq.mp (cantorBendixson_germ_eq_iff x y |>.mpr hxy))
+    (Ideal.Quotient.eq.mp (mk_eq_mk_iff_eventually_coeff_eq x y |>.mpr hxy))
 
+omit [UniformSpace C] [IsUniformAddGroup C] [OrderTopology C] [CompleteSpace C] [CharZero K] in
 private theorem mapDomain_refinement
     {D : Type u}
     [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
@@ -101,6 +103,7 @@ private theorem mapDomain_refinement
     exists_mapDomain_germ_eq inc hinc hincOrder c (e * g) hec,
     exists_mapDomain_germ_eq inc hinc hincOrder d (f * h) hed⟩
 
+omit [UniformSpace C] [IsUniformAddGroup C] [OrderTopology C] [CompleteSpace C] [CharZero K] in
 private theorem exists_cardinal_refinement_mapDomain
     {D : Type u} {κ : Cardinal.{u}}
     [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
@@ -153,7 +156,6 @@ private theorem exists_cardinal_refinement_mapDomain
   · simpa only [hd₀, map_mul] using hed'
 
 variable [Module ℚ C] [PosSMulMono ℚ C] [DenselyOrdered C]
-  [NoMaxOrder (FiniteArchimedeanClass C)]
 
 /-- Cauchy-complete germ refinement preserves a cardinal support bound. -/
 @[blueprint "thm:cardinal-bounded-germ-refinement"
@@ -161,8 +163,7 @@ variable [Module ℚ C] [PosSMulMono ℚ C] [DenselyOrdered C]
   (title := "Cardinal-bounded refinement modulo series bounded away from zero")
   (statement := /--
     Let $C$ be an ordered rational vector space that is Cauchy complete for its
-    additive uniformity and whose nonzero Archimedean classes have no least
-    element in the magnitude order.  Let $K$ be a field of characteristic zero
+    additive uniformity.  Let $K$ be a field of characteristic zero
     and let $\kappa>\aleph_0$.  If $C$ has a positive coinitial subset of
     cardinality less than $\kappa$, then every equation $ab=cd$ among four
     $\kappa$-bounded series in $K((C^{\le 0}))$ admits a four-factor refinement
@@ -173,8 +174,7 @@ variable [Module ℚ C] [PosSMulMono ℚ C] [DenselyOrdered C]
     Put the supports of $a,b,c,d$ and the chosen positive coinitial set into
     one closed rational subspace $C_0$.
     The coinitial set remains positive and coinitial in $C_0$; hence $C_0$ is
-    nontrivial, has no endpoints, and its nonzero Archimedean classes have no
-    least element in the magnitude order.  As a closed subspace of $C$, it is
+    nontrivial.  As a closed subspace of $C$, it is
     Cauchy complete for its additive uniformity, and its induced order topology
     and rational vector-space structure satisfy the remaining hypotheses of
     \ref{thm:complete-hahn-germ-refinement}.  Apply that theorem over $C_0$,
@@ -241,14 +241,6 @@ theorem exists_cardinal_germ_refinement
   have hSne : S.Nonempty := by
     obtain ⟨x, hxE, -⟩ := hEcoinitial |y| habsy
     exact ⟨x, Or.inr hxE⟩
-  letI : NoMaxOrder (FiniteArchimedeanClass C₀) :=
-    AddSubgroup.finiteArchimedeanClass_noMax_of_pos_coinitial C₀.toAddSubgroup hcoinitial
-  letI : NoMinOrder C₀ := ⟨fun x ↦ by
-    obtain ⟨z, hz, -⟩ := hcoinitial |y| habsy
-    exact ⟨x - z, sub_lt_self x hz⟩⟩
-  letI : NoMaxOrder C₀ := ⟨fun x ↦ by
-    obtain ⟨z, hz, -⟩ := hcoinitial |y| habsy
-    exact ⟨x + z, lt_add_of_pos_right x hz⟩⟩
   letI : OrderTopology C₀ := by
     apply induced_orderTopology' (fun z : C₀ ↦ (z : C)) (fun {_ _} ↦ Iff.rfl)
     · intro x y hyx
@@ -266,19 +258,6 @@ theorem exists_cardinal_germ_refinement
       smul_le_smul_of_nonneg_left (α := ℚ) (β := C) hxy hq }
   letI : PosSMulStrictMono ℚ C₀ :=
     PosSMulMono.toPosSMulStrictMono (α := ℚ) (β := C₀)
-  letI : DenselyOrdered C₀ := by
-    constructor
-    intro x y hxy
-    refine ⟨(2 : ℚ)⁻¹ • (x + y), ?_, ?_⟩
-    · calc
-        x = (2 : ℚ)⁻¹ • (x + x) := by rw [smul_add, ← add_smul]; norm_num
-        _ < (2 : ℚ)⁻¹ • (x + y) := smul_lt_smul_of_pos_left
-          (add_lt_add_left hxy x |>.trans_eq (add_comm _ _)) (by norm_num)
-    · calc
-        (2 : ℚ)⁻¹ • (x + y) < (2 : ℚ)⁻¹ • (y + y) :=
-          smul_lt_smul_of_pos_left
-            (by simpa [add_comm] using add_lt_add_left hxy y) (by norm_num)
-        _ = y := by rw [smul_add, ← add_smul]; norm_num
   letI : IsUniformAddGroup C₀ := C₀.toAddSubgroup.isUniformAddGroup
   letI : Nontrivial C₀ := by
     obtain ⟨z, hz, -⟩ := hcoinitial |y| habsy
