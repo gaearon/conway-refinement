@@ -203,21 +203,25 @@ import json
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path.cwd() / "scripts"))
+from _blueprint import read_nodes, shallow_dependencies
+
 path = Path(sys.argv[1])
 records = json.loads(path.read_text())
-record = next(
-    record
-    for record in records
-    if record["label"] == "thm:bounded-hahn-germ-polynomial-algebra"
-)
-needle = r"\ref{lem:constant-germs}"
-if needle not in record["proof"]:
-    raise SystemExit("blueprint reference probe could not find its proof reference")
-record["proof"] = record["proof"].replace(needle, "the preceding theorem", 1)
+label = "thm:bounded-hahn-germ-polynomial-algebra"
+record = next(record for record in records if record["label"] == label)
+nodes = read_nodes()
+references = nodes[label].proof_references
+missing = min(references & shallow_dependencies(nodes)[label], default=None)
+if missing is None:
+    raise SystemExit(f"blueprint reference probe needs a cited immediate dependency of {label}")
+record["proof"] = "Apply the hypotheses" + "".join(
+    rf" and \ref{{{reference}}}" for reference in sorted(references - {missing})
+) + "."
 path.write_text(json.dumps(records))
 PY
 audit_expect_rejection blueprint-reference-write \
-  'proof references must cite every immediate dependency and only ancestors' \
+  'thm:bounded-hahn-germ-polynomial-algebra misses ' \
   scripts/blueprint.sh check
 if ! grep -Fq \
     'FIXME_blueprint_review_why_does_proof_depend_on := ' \
