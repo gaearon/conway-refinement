@@ -5,23 +5,24 @@ Authors: Dan Abramov
 -/
 module
 
-public import ConwayRefinement.HahnSeries.Germ.PolynomialRing
 public import ConwayRefinement.HahnSeries.BoundedSupport.Residue
+public import ConwayRefinement.HahnSeries.Germ.Basic
+public import ConwayRefinement.HahnSeries.Germ.GermAt
+public import Mathlib.Algebra.MvPolynomial.Basic
 
 import ConwayRefinement.Blueprint
+import ConwayRefinement.HahnSeries.Germ.PolynomialRing
 import Mathlib.RingTheory.Polynomial.UniqueFactorization
-import ConwayRefinement.RingTheory.TruncationGerms.Transcendence
 
 /-!
 # Germs of series with fewer than `κ` support exponents
 
 Let `κ > ℵ₀` and let `K((G^{≤0}))_κ` be the ring of nonpositive series with fewer than `κ` support
-exponents. Translated truncation and cutoff below a negative exponent do not enlarge supports, so
-they preserve this ring, and the ideal `J_κ` of series whose support is bounded away from zero is
-the trace of `J`. The germs of translated truncations therefore pull back to germ maps on
-`K((G^{≤0}))_κ` with values in `K((G^{≤0}))_κ / J_κ`, which embeds in `K((G^{≤0}))/J`, and these
-germ maps satisfy the axioms of `TruncationGerms`. When `G` is
-Cauchy complete, `K((G^{≤0}))_κ / J_κ` is a polynomial ring over `K`, so every germ is primal.
+exponents. Translated truncation preserves the support bound. The ideal `J_κ` of series whose
+support is bounded away from zero is the trace of `J`, so `K((G^{≤0}))_κ / J_κ` embeds in
+the full ring of germs. Each germ in its image has a representative all of whose germs are again
+in the image. For Cauchy-complete `G` and characteristic-zero `K`, this presents the bounded
+germ ring as a polynomial ring over `K`, so every germ is primal.
 -/
 
 open Cardinal Set
@@ -152,30 +153,6 @@ instance : Nontrivial (CardSuppLTNonpositive (G := G) (L := K) (κ := κ) ⧸
 variable [UniformSpace G] [IsUniformAddGroup G] [OrderTopology G] [CompleteSpace G]
   [CharZero K]
 
-variable (G K κ) in
-/-- The germs of translated truncations on `K((G^{≤0}))_κ` satisfy the axioms of
-`TruncationGerms`. -/
-def truncationGerms : TruncationGerms K G (CardSuppLTNonpositive (G := G) (L := K) (κ := κ))
-    (CardSuppLTNonpositive (G := G) (L := K) (κ := κ) ⧸ boundedAwayIdeal G K κ) :=
-  (Nonpositive.truncationGerms G K).comap (toNonpositiveAlgHom G K κ) (germEmbedding G K κ)
-    germEmbedding_injective (Ideal.Quotient.mkₐ K _) (Ideal.Quotient.mkₐ_surjective K _)
-    (fun _ ↦ by rw [Ideal.Quotient.mkₐ_eq_mk, germEmbedding_mk, Nonpositive.truncationGerms_germ])
-    germAt (fun _ _ ↦ by
-      change germEmbedding G K κ (Ideal.Quotient.mk _ _) = _
-      rw [germEmbedding_mk, toNonpositiveAlgHom_translatedTruncation,
-        Nonpositive.truncationGerms_germAt, Nonpositive.germAt_apply])
-    (fun b ξ _ ↦ ⟨translatedTruncation ξ b, fun ζ hζ ↦ by
-      simp only [toNonpositiveAlgHom_translatedTruncation, Nonpositive.truncationGerms_germAt]
-      exact Nonpositive.germAt_translatedTruncation (toNonpositiveAlgHom G K κ b) ξ hζ⟩)
-    (fun b ε hε ↦ by
-      obtain ⟨b', h₀, h₁, h₂, hsupp⟩ :=
-        Nonpositive.exists_germAt_cutoff (toNonpositiveAlgHom G K κ b) hε
-      refine ⟨ofNonpositive b' ((cardSupp_mono hsupp).trans_lt
-        (CardSuppLTTruncationIntegerPart.cardSupp_toNonpositiveRingHom_lt _ b)), ?_⟩
-      simp only [toNonpositiveAlgHom_apply, toNonpositiveRingHom_ofNonpositive,
-        Nonpositive.truncationGerms_germ, Nonpositive.truncationGerms_germAt]
-      exact ⟨h₀, h₁, h₂⟩)
-
 /-- For a nontrivial Cauchy-complete exponent group `G`, the ring of germs of `κ`-bounded
 nonpositive series is a polynomial algebra over `K`. -/
 @[blueprint "thm:bounded-hahn-germ-polynomial-algebra"
@@ -190,30 +167,27 @@ nonpositive series is a polynomial algebra over `K`. -/
     \]
   -/)
   (proof := /--
-    The proofs in this chapter of the absence of linear relations, of proportional germs, of the
-    transcendence lemma, of representatives after adjoining a germ, of the existence of a new germ,
-    and of the polynomial presentation of $Q$ use only the following properties of the germ maps
-    $b\mapsto[b^{|\gamma}]$, and they are carried out once in that generality: the germ at $0$ is
-    the class map; germs at positive exponents vanish, and so do the germs of constants at nonzero
-    exponents; the convolution formula \ref{lem:convolution-formula}, with finitely many nonzero
-    terms by \ref{lem:convolution-finite}; the germs of translated truncations
-    (\ref{lem:germs-of-translated-truncation}); the characterisation of constant germs
-    (\ref{lem:constant-germs}); the drop of the Cantor--Bendixson value
-    (\ref{lem:cantor-bendixson-value-drop}), a function of the class by
-    \ref{lem:cantor-bendixson-value-class}; and, for every series $b$ and $\varepsilon<0$, a series
-    with the class of $b$, the germs of $b$ above $\varepsilon$, and no nonzero germ at or below
-    $\varepsilon$, namely the part of $b$ above $\varepsilon$.
-
-    Translated truncation and passing to the part above $\varepsilon$ do not enlarge supports, so
-    they preserve $A_\kappa$. The inclusion $A_\kappa\subseteq A$ induces an injective $K$-algebra
-    homomorphism $A_\kappa/J_\kappa\to Q$ compatible with the germ maps. Hence the germ maps on
-    $A_\kappa$, with values in $A_\kappa/J_\kappa$, have all the properties listed, and the same
-    proofs give the isomorphism.
+    The inclusion $A_\kappa\subseteq A$ embeds the quotient $A_\kappa/J_\kappa$ in $Q$.
+    Let $P$ be its image and $g\in P$. Choose $b\in A_\kappa$ representing $g$.
+    Every $b^{|\xi}$ still has support of cardinality less than $\kappa$, so its class belongs
+    to $P$. Thus $P\subseteq[A(P)]$ and \ref{thm:germ-subalgebra-polynomial} applies.
   -/)]
 theorem exists_mvPolynomial_algEquiv_germ :
     ∃ ι : Type (max (u + 1) v), Nonempty (MvPolynomial ι K ≃ₐ[K]
-      CardSuppLTNonpositive (G := G) (L := K) (κ := κ) ⧸ boundedAwayIdeal G K κ) :=
-  (truncationGerms G K κ).exists_mvPolynomial_algEquiv.{_, u + 1}
+      CardSuppLTNonpositive (G := G) (L := K) (κ := κ) ⧸ boundedAwayIdeal G K κ) := by
+  let φ := germEmbedding G K κ
+  obtain ⟨ι, ⟨e⟩⟩ := Nonpositive.exists_mvPolynomial_algEquiv_of_representatives
+    φ.range (fun _ ha ↦ by
+    obtain ⟨a, rfl⟩ := ha
+    obtain ⟨b, rfl⟩ := Ideal.Quotient.mk_surjective a
+    refine ⟨toNonpositiveAlgHom G K κ b, ?_, fun ξ ↦ ?_⟩
+    · rw [Nonpositive.germMaps_germ]
+      exact (germEmbedding_mk b).symm
+    · rw [Nonpositive.germMaps_germAt]
+      refine ⟨Ideal.Quotient.mk _ (translatedTruncation ξ b), ?_⟩
+      exact (germEmbedding_mk _).trans (by
+        rw [toNonpositiveAlgHom_translatedTruncation, Nonpositive.germAt_apply]))
+  exact ⟨ι, ⟨e.trans (AlgEquiv.ofInjective φ germEmbedding_injective).symm⟩⟩
 
 /-- Every germ of a `κ`-bounded nonpositive series over a Cauchy-complete exponent group is
 primal. -/

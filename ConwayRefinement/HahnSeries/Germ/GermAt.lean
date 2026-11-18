@@ -169,12 +169,33 @@ theorem mk_eq_zero_iff_cantorBendixsonValue_eq_zero (c : Nonpositive G K) :
   rw [Ideal.Quotient.eq_zero_iff_mem]
   exact mem_boundedAwayIdeal_iff_cantorBendixsonValue_eq_zero c
 
+/-- The germ at an exponent is nonzero exactly on the closed support. -/
+@[blueprint "lem:nonzero-germs"
+  (phase := "Germs of translated truncations")
+  (title := "Exponents with nonzero germ")
+  (statement := /--
+    For $b\in K((G^{\le0}))$ and $\gamma\in G$, the germ $[b^{|\gamma}]$ is nonzero if and only
+    if $\gamma$ lies in the closure of $\operatorname{supp}(b)$.
+  -/)
+  (proof := /--
+    By \ref{def:germ-at}, $[b^{|\gamma}]=0$ exactly when the support of $b^{|\gamma}$ is bounded
+    away from $0$. Since this support is nonpositive, that is equivalent to $0$ lying outside its
+    closure. Translation by $-\gamma$ takes the closed support of $b_{|\gamma}$ at $\gamma$ to
+    the closed support of $b^{|\gamma}$ at $0$. The supports of $b$ and $b_{|\gamma}$ agree in
+    a neighbourhood of $\gamma$, since any support exponents above $\gamma$ have a least element.
+  -/)]
+theorem germAt_ne_zero_iff (b : Nonpositive G K) (γ : G) :
+    germAt γ b ≠ 0 ↔ γ ∈ closure (b : HahnSeries G K).support := by
+  rw [Ne, germAt_apply, mk_eq_zero_iff_zero_notMem_closure, not_not, coe_translatedTruncation,
+    ← mem_closedSupport, ← mem_closedSupport]
+  simpa only [neg_add_cancel] using
+    ((truncLE γ (b : HahnSeries G K)).mem_closedSupport_translate (-γ) γ).trans
+      ((b : HahnSeries G K).mem_closedSupport_truncLE γ)
+
 /-- The germ at an exponent outside the closed support vanishes. -/
 theorem germAt_eq_zero_of_notMem_closure (γ : G) (b : Nonpositive G K)
-    (h : γ ∉ closure (b : HahnSeries G K).support) : germAt γ b = 0 := by
-  rw [germAt_apply, mk_eq_zero_iff_cantorBendixsonValue_eq_zero, coe_translatedTruncation,
-    cantorBendixsonValue_translated_truncLE, if_neg]
-  rwa [mem_closedSupport]
+    (h : γ ∉ closure (b : HahnSeries G K).support) : germAt γ b = 0 :=
+  not_ne_iff.mp (mt (germAt_ne_zero_iff b γ).mp h)
 
 /-- The germ at a positive exponent vanishes. -/
 theorem germAt_of_pos (b : Nonpositive G K) {γ : G} (hγ : 0 < γ) : germAt γ b = 0 :=
@@ -202,11 +223,9 @@ private theorem mem_image_closedSupportAddFiber (b c : Nonpositive G K) (γ β :
     $[b^{|\beta}]\ne0$ and $[c^{|\gamma-\beta}]\ne0$.
   -/)
   (proof := /--
-    If $\beta$ is not in the closed support $B$ of $b$, then some interval $(\beta',\beta]$ misses
-    $\operatorname{supp}(b)$, so $b^{|\beta}$ has support in $(-\infty,\beta'-\beta]$, lies in $J$,
-    and the germ of $b$ at $\beta$ (\ref{def:germ-at}) is $0$. So the $\beta$ in question are first
-    coordinates of pairs $(\beta,\gamma-\beta)\in B\times C$, where $C$ is the closed support of
-    $c$. Both sets are well ordered, as shown in \ref{def:cantor-bendixson-value}. Pairs in
+    Let $B,C$ be the closed supports of $b,c$. By \ref{lem:nonzero-germs}, the exponents in
+    question are the first coordinates of pairs $(\beta,\gamma-\beta)\in B\times C$. Both closed
+    supports are well ordered by \ref{lem:well-ordered-closure}. Pairs in
     $B\times C$ with sum $\gamma$ are pairwise incomparable coordinatewise, and $B\times C$ is
     partially well ordered, so there are finitely many.
   -/)]
@@ -247,8 +266,7 @@ theorem exists_germAt_eq_zero_of_mk_mem_range (b : Nonpositive G K)
 omit [IsUniformAddGroup G] in
 private theorem coeff_eq_zero_of_germAt_eq_zero {b : Nonpositive G K} {ξ : G}
     (h : germAt ξ b = 0) : (b : HahnSeries G K).coeff ξ = 0 := by
-  rw [germAt_apply, mk_eq_zero_iff_cantorBendixsonValue_eq_zero, coe_translatedTruncation,
-    cantorBendixsonValue_eq_zero_iff] at h
+  rw [germAt_apply, mk_eq_zero_iff_zero_notMem_closure, coe_translatedTruncation] at h
   have h0 : (0 : G) ∉ (translate (-ξ) (truncLE ξ (b : HahnSeries G K))).support :=
     fun hh => h (subset_closure hh)
   rw [HahnSeries.mem_support, not_not, coeff_translate, HahnSeries.coeff_truncLE] at h0
@@ -308,32 +326,6 @@ theorem exists_germAt_cutoff (b : Nonpositive G K) {ε : G} (hε : ε < 0) :
 
 /-- If a series has nonzero Cantor--Bendixson value, its translated truncations at exponents in a
 left neighbourhood of `0` have strictly smaller Cantor--Bendixson value. -/
-@[blueprint "lem:cantor-bendixson-value-drop"
-  (phase := "Germs of translated truncations")
-  (title := "Drop of the Cantor--Bendixson value")
-  (statement := /--
-    Let $b\in K((G^{\le0}))$ with $V_{\mathrm{CB}}(b)\ne0$.  Then there is
-    $\varepsilon<0$ such that
-    \[
-      V_{\mathrm{CB}}(b^{|\xi})<V_{\mathrm{CB}}(b)\qquad\text{for all }
-      \xi\in(\varepsilon,0).
-    \]
-  -/)
-  (proof := /--
-    Let $C$ be the closed support of $b$ and $\xi\in G$. The points of $\operatorname{supp}(b)$
-    above $\xi$, if any, have a least element. So on some open interval around $\xi$ the truncation
-    $b_{|\xi}$ has the same support as $b$, and the closed supports of $b_{|\xi}$ and $b$ agree near
-    $\xi$. Cantor--Bendixson ranks at $\xi$ depend only on the set near $\xi$, and translation by
-    $-\xi$ is a homeomorphism taking $\xi$ to $0$. Hence, by \ref{def:cantor-bendixson-value},
-    $V_{\mathrm{CB}}(b^{|\xi})=\omega^{\operatorname{rk}_C(\xi)}$ if $\xi\in C$, and
-    $V_{\mathrm{CB}}(b^{|\xi})=0$ otherwise.
-
-    The hypothesis says $0\in C$; let $r=\operatorname{rk}_C(0)$. Then $0$ is isolated in $C^{(r)}$,
-    so some open interval around $0$ meets $C^{(r)}$ only in $0$. Every point $\xi\ne0$ of $C$ in
-    this interval has $\operatorname{rk}_C(\xi)<r$. Let $\varepsilon<0$ be its left endpoint. For
-    $\xi\in(\varepsilon,0)$ we get $V_{\mathrm{CB}}(b^{|\xi})<\omega^r=V_{\mathrm{CB}}(b)$, also
-    when $\xi\notin C$.
-  -/)]
 theorem cantorBendixsonValue_translatedTruncation_lt (b : Nonpositive G K)
     (hb : (b : HahnSeries G K).cantorBendixsonValue ≠ 0) :
     ∃ ε < (0 : G), ∀ ξ, ε < ξ → ξ < 0 →
@@ -349,25 +341,18 @@ theorem cantorBendixsonValue_translatedTruncation_lt (b : Nonpositive G K)
 
 variable [CompleteSpace G]
 
-/-- The translated truncation of a product differs from the finite convolution sum of translated
-truncations by a series of Cantor--Bendixson value zero. -/
-private theorem cantorBendixsonValue_translatedTruncation_mul_sub_sum (b c : Nonpositive G K)
-    (γ : G) :
-    ((translatedTruncation γ (b * c) -
-        ∑ p ∈ (b : HahnSeries G K).closedSupportAddFiber (c : HahnSeries G K) γ,
-          translatedTruncation p.1 b * translatedTruncation p.2 c : Nonpositive G K) :
-        HahnSeries G K).cantorBendixsonValue = 0 := by
-  rw [AddSubgroupClass.coe_sub, AddSubmonoidClass.coe_finsetSum, coe_translatedTruncation]
-  simp only [Subring.coe_mul, coe_translatedTruncation]
-  exact (b : HahnSeries G K).cantorBendixsonValue_convolution_error (c : HahnSeries G K) γ
-
 /-- The germ of a product at `γ` is the finite sum over the closed-support addition fibre. -/
 private theorem germAt_mul_eq_sum_closedSupportAddFiber (b c : Nonpositive G K) (γ : G) :
     germAt γ (b * c) =
       ∑ p ∈ (b : HahnSeries G K).closedSupportAddFiber (c : HahnSeries G K) γ,
         germAt p.1 b * germAt (γ - p.1) c := by
-  have hD := (mk_eq_zero_iff_cantorBendixsonValue_eq_zero _).mpr
-    (cantorBendixsonValue_translatedTruncation_mul_sub_sum b c γ)
+  let F := (b : HahnSeries G K).closedSupportAddFiber (c : HahnSeries G K) γ
+  have hD : Ideal.Quotient.mk 𝒥 (translatedTruncation γ (b * c) -
+      ∑ p ∈ F, translatedTruncation p.1 b * translatedTruncation p.2 c) = 0 := by
+    apply (mk_eq_zero_iff_zero_notMem_closure _).mpr
+    simp only [AddSubgroupClass.coe_sub, AddSubmonoidClass.coe_finsetSum, coe_translatedTruncation,
+      Subring.coe_mul]
+    exact (b : HahnSeries G K).zero_notMem_closure_support_convolution_error (c : HahnSeries G K) γ
   rw [map_sub, sub_eq_zero, map_sum] at hD
   rw [germAt_apply, hD]
   refine Finset.sum_congr rfl fun p hp => ?_
@@ -390,9 +375,10 @@ private theorem germAt_mul_eq_sum_closedSupportAddFiber (b c : Nonpositive G K) 
   -/)
   (proof := /--
     Let $B$ and $C$ be the closed supports of $b$ and $c$, and $F$ the set of pairs
-    $(\xi,\zeta)\in B\times C$ with $\xi+\zeta=\gamma$. It is finite, since its pairs are pairwise
-    incomparable in the partially well-ordered set $B\times C$. Take $U$ as in
-    \ref{lem:addition-fibre}, and let $\delta\in U$. The coefficient of $t^\delta$ in $bc$ is the
+    $(\xi,\zeta)\in B\times C$ with $\xi+\zeta=\gamma$. Both supports have well-ordered closures
+    by \ref{lem:well-ordered-closure}. Thus $B\times C$ is partially well ordered, and its pairwise
+    incomparable subset $F$ is finite. Take $U$ as in \ref{lem:addition-fibre}, and let
+    $\delta\in U$. The coefficient of $t^\delta$ in $bc$ is the
     sum of $b_ic_j$ over the pairs $(i,j)\in\operatorname{supp}(b)\times\operatorname{supp}(c)$ with
     $i+j=\delta$. Each such pair lies in $B\times C$ and lies below exactly one pair
     $(\xi,\zeta)\in F$; so it contributes to the coefficient of $t^\delta$ in $b_{|\xi}c_{|\zeta}$
@@ -400,15 +386,14 @@ private theorem germAt_mul_eq_sum_closedSupportAddFiber (b c : Nonpositive G K) 
     $\sum_{(\xi,\zeta)\in F}b_{|\xi}c_{|\zeta}$ have the same coefficients on $U$. The latter sum
     has support in $(-\infty,\gamma]$. So $(bc)_{|\gamma}-\sum_Fb_{|\xi}c_{|\zeta}$ vanishes on $U$,
     and after multiplying by $t^{-\gamma}$, the series $(bc)^{|\gamma}-\sum_Fb^{|\xi}c^{|\zeta}$
-    vanishes on a neighbourhood of $0$. By \ref{def:cantor-bendixson-value} it has value $0$, so it
-    lies in $J$. Taking classes as in \ref{def:germ-at},
+    vanishes on a neighbourhood of $0$. Its support is nonpositive, so it lies in $J$.
+    Taking classes as in \ref{def:germ-at},
     \[
       [(bc)^{|\gamma}]=\sum_{(\xi,\zeta)\in F}[b^{|\xi}]\,[c^{|\gamma-\xi}].
     \]
     Distinct pairs of $F$ have distinct first coordinates. A term $[b^{|\beta}][c^{|\gamma-\beta}]$
-    with $\beta$ not a first coordinate of $F$ vanishes, because $\beta\notin B$ or
-    $\gamma-\beta\notin C$, and a translated truncation at an exponent outside the closed support
-    has support bounded away from $0$. This gives the formula.
+    with $\beta$ outside those first coordinates has $\beta\notin B$ or $\gamma-\beta\notin C$.
+    Its corresponding factor vanishes by \ref{lem:nonzero-germs}. This gives the formula.
   -/)]
 theorem germAt_mul (b c : Nonpositive G K) (γ : G) :
     germAt γ (b * c) = ∑ᶠ β, germAt β b * germAt (γ - β) c := by
